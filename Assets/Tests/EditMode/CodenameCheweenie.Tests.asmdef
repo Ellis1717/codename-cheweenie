@@ -1,0 +1,6 @@
+{
+  "name": "CodenameCheweenie.Tests",
+  "references": ["CodenameCheweenie"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}
