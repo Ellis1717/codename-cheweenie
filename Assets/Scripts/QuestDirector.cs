@@ -44,7 +44,7 @@ namespace CodenameCheweenie
             Announce(companion ? companion.Befriend() : target.dialogue);
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
                 if (cat.CompleteAt(target.stage)) Announce(cat.energetic ? "Keeterman's backyard patrol complete!" : "Miss Priss approves of Cheeween Cozy!");
-            GetComponent<CozyFeedback>()?.Play(player.position);
+            if (kind != InteractionKind.Cozy) GetComponent<CozyFeedback>()?.Play(player.position);
             GameSave.Capture();
         }
         private void OnGUI()
@@ -59,8 +59,12 @@ namespace CodenameCheweenie
             int row = 0;
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
                 GUI.Box(new Rect(14, 176 + row++ * 46, Mathf.Min(620, Screen.width - 28), 42), cat.CompanionObjective + " | Friendship " + cat.Friendship + "/3", style);
-            GUI.Box(new Rect(14, Screen.height - 58, Mathf.Min(770, Screen.width - 28), 44),
-                "WASD/Stick move | E/X sniff | Space/A jump | Shift/B sprint | C/Y cozy | B/LB between | Esc/Start settings", style);
+            var input = player ? player.GetComponent<MartyInput>() : null;
+            if (input)
+                GUI.Box(new Rect(14, Screen.height - 88, Screen.width - 28, 74),
+                    "Move WASD / stick | Jump " + input.BindingLabel(DogAction.Jump) + " | Sniff " + input.BindingLabel(DogAction.Interact)
+                    + " | Sprint " + input.BindingLabel(DogAction.Sprint) + "\nCozy " + input.BindingLabel(DogAction.Cozy)
+                    + " | Between " + input.BindingLabel(DogAction.Between) + " | Settings " + input.BindingLabel(DogAction.Menu), style);
         }
     }
 }

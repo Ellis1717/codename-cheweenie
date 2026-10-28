@@ -12,6 +12,7 @@ Bootstrap creates one owned world hierarchy from an empty scene and guards again
 - `GameSave` stores versioned JSON in PlayerPrefs. `SaveLifecycle` restores quest/friendship at startup and saves on pause/quit. Input binding changes and successful interactions save immediately.
 - `CozySettings` pauses gameplay, edits options, captures bindings, swaps conflicting actions, and offers a confirmed New Game. Movement axes remain standard legacy axes.
 - `FrontEndMenu` owns the title/start/continue/new-adventure flow, controls/about pages and title pause. `BrandTheme` shares cover artwork, live typography, paw mark and colours with settings. Returning from title settings preserves the title pause; resuming suppresses gameplay input until menu buttons are released.
+- `BindingMap` restores unique, device-valid saved controls and swaps conflicts when rebinding. `InputReleaseGate` prevents title/settings button presses from leaking into gameplay. Both are pure C# rules exercised by the standalone validation harness.
 - `CheweenieBuild` validates configuration and creates an ignored bootstrap scene for Windows builds. Tests and validation harnesses are described in VALIDATION.md.
 
 ## Initial objective loop

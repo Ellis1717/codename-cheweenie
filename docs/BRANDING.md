@@ -10,6 +10,7 @@ The cover is `Assets/Resources/Branding/Cover.png`. It is loaded from Unity Reso
 - Start/Continue resumes current loaded progress. New Adventure requires a second selection when progress exists, resets missions/friendship and Marty's spawn, and preserves settings.
 - Settings is accessible before starting and during gameplay. Closing title settings returns to the paused title. Return to Title is available from gameplay settings.
 - Mouse, arrows/left stick and Enter/controller face buttons operate menus. Escape returns from information pages, cancels rebinding, or closes settings. Gameplay input waits for menu buttons to be released after resuming.
+- How to Play and the gameplay HUD show current bindings, using the selected Xbox or PlayStation button names. Changing a preset also changes those labels; custom button assignments keep the chosen naming style.
 - How to Play and About are available on the title. Quit closes standalone builds; Unity Editor ignores Application.Quit.
 
 ## Artwork provenance and final prompt

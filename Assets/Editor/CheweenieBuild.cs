@@ -29,6 +29,7 @@ namespace CodenameCheweenie.Editor
         public static void BuildWindows()
         {
             Validate();
+            PlayerSettings.productName = BrandTheme.Title;
             var previousSetup = EditorSceneManager.GetSceneManagerSetup();
             foreach (var scene in previousSetup)
                 if (string.IsNullOrEmpty(scene.path)) throw new InvalidOperationException("Save open scenes before building.");

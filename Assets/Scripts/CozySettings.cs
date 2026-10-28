@@ -22,19 +22,14 @@ namespace CodenameCheweenie
         {
             controls = UnityEngine.Object.FindFirstObjectByType<MartyInput>(); GameSave.Load();
             frontEnd = GetComponent<FrontEndMenu>();
-            RestoreBindings(GameSave.Data.keyboard, controls.keyboard, false);
-            RestoreBindings(GameSave.Data.gamepad, controls.gamepad, true);
+            controls.keyboard = RestoreBindings(GameSave.Data.keyboard, controls.keyboard, false);
+            controls.gamepad = RestoreBindings(GameSave.Data.gamepad, controls.gamepad, true);
         }
-        private static void RestoreBindings(int[] saved, KeyCode[] destination, bool pad)
+        private static KeyCode[] RestoreBindings(int[] saved, KeyCode[] defaults, bool pad)
         {
-            if (saved == null || saved.Length != destination.Length) return;
-            for (int i = 0; i < saved.Length; i++)
-            {
-                var key = (KeyCode)saved[i];
-                if (Enum.IsDefined(typeof(KeyCode), key) && IsPad(key) == pad && key != KeyCode.None) destination[i] = key;
-            }
+            var map = BindingMap.Restore(Array.ConvertAll(defaults, x => (int)x), saved, key => MartyInput.IsBindingAllowed(key, pad));
+            return Array.ConvertAll(map, x => (KeyCode)x);
         }
-        private static bool IsPad(KeyCode key) => key >= KeyCode.JoystickButton0 && key <= KeyCode.JoystickButton19;
         private void Update()
         {
             if (!controls) return;
@@ -42,17 +37,16 @@ namespace CodenameCheweenie
             bool escape = Input.GetKeyDown(KeyCode.Escape);
             if (capture >= 0)
             {
-                if (escape) { capture = -1; help = "Binding cancelled."; return; }
+                if (escape) { capture = -1; transitionFrame = Time.frameCount; help = "Binding cancelled."; return; }
                 if (Time.unscaledTime < captureAfter) return;
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
-                    if (key == KeyCode.None || IsPad(key) != padBindings || !Input.GetKeyDown(key)) continue;
-                    // Ignore per-device joystick aliases and mouse buttons when assigning keyboard actions.
-                    if (!padBindings && (key >= KeyCode.JoystickButton0 || key >= KeyCode.Mouse0 && key <= KeyCode.Mouse6)) continue;
+                    if (!MartyInput.IsBindingAllowed((int)key, padBindings) || !Input.GetKeyDown(key)) continue;
                     var bindings = padBindings ? controls.gamepad : controls.keyboard;
-                    int duplicate = Array.IndexOf(bindings, key);
-                    if (duplicate >= 0) bindings[duplicate] = bindings[capture];
-                    bindings[capture] = key; capture = -1; Save(); help = "Binding saved. Conflicting actions are swapped."; break;
+                    var map = Array.ConvertAll(bindings, x => (int)x);
+                    BindingMap.Assign(map, capture, (int)key, value => MartyInput.IsBindingAllowed(value, padBindings));
+                    for (int i = 0; i < map.Length; i++) bindings[i] = (KeyCode)map[i];
+                    capture = -1; transitionFrame = Time.frameCount; Save(); help = "Binding saved. Conflicting actions are swapped."; break;
                 }
                 return;
             }
@@ -75,6 +69,12 @@ namespace CodenameCheweenie
             selected = 0; SetOpen(true);
         }
         public void Close() { if (IsOpen) SetOpen(false); }
+        public void ReturnToTitle()
+        {
+            if (!frontEnd) frontEnd = GetComponent<FrontEndMenu>();
+            if (!frontEnd) return;
+            Close(); frontEnd.ShowTitle();
+        }
         private void SetOpen(bool open)
         {
             transitionFrame = Time.frameCount;
@@ -92,6 +92,7 @@ namespace CodenameCheweenie
         {
             if (Time.frameCount == transitionFrame) return;
             transitionFrame = Time.frameCount;
+            if (row != 13) confirmReset = false;
             var data = GameSave.Data;
             if (row == 0) data.volume = data.volume >= .99f ? 0 : Mathf.Min(1, data.volume + .2f);
             else if (row == 1) data.cameraScale = data.cameraScale > 1.25f ? .7f : data.cameraScale + .2f;
@@ -99,8 +100,8 @@ namespace CodenameCheweenie
             else if (row == 3)
             {
                 // Legacy drivers differ; presets are starting points, individual actions remain remappable.
-                bool xbox = controls.gamepad[0] == KeyCode.JoystickButton0;
-                controls.gamepad = xbox
+                data.playStationLabels = !data.playStationLabels;
+                controls.gamepad = data.playStationLabels
                     ? new[] { KeyCode.JoystickButton1, KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton9 }
                     : (KeyCode[])DefaultPad.Clone();
             }
@@ -113,7 +114,7 @@ namespace CodenameCheweenie
                 if (!confirmReset) { confirmReset = true; help = "Select New Game again to reset quest and friendship progress."; return; }
                 GameSave.NewGame(); confirmReset = false; help = "New game started. Settings preserved.";
             }
-            else if (row == 14) { SetOpen(false); frontEnd.ShowTitle(); return; }
+            else if (row == 14) { ReturnToTitle(); return; }
             Save();
         }
         private string Label(int row)
@@ -122,9 +123,9 @@ namespace CodenameCheweenie
             if (row == 0) return "Chime volume: " + Mathf.RoundToInt(d.volume * 100) + "%";
             if (row == 1) return "Camera distance: " + d.cameraScale.ToString("0.0") + "x";
             if (row == 2) return "Cozy particles: " + (d.particles ? "On" : "Off");
-            if (row == 3) return "Controller preset: " + (controls.gamepad[0] == KeyCode.JoystickButton0 ? "Xbox / standard" : "PlayStation / custom") + " (toggle)";
+            if (row == 3) return "Controller preset: " + (d.playStationLabels ? "PlayStation" : "Xbox") + " (toggle)";
             if (row == 4) return "Rebind device: " + (padBindings ? "Controller" : "Keyboard");
-            if (row <= 10) return ((DogAction)(row - 5)) + ": " + (padBindings ? controls.gamepad[row - 5] : controls.keyboard[row - 5]);
+            if (row <= 10) return ((DogAction)(row - 5)) + ": " + (padBindings ? MartyInput.GamepadLabel(controls.gamepad[row - 5]) : controls.keyboard[row - 5].ToString());
             if (row == 11) return "Reset bindings";
             if (row == 12) return frontEnd && frontEnd.ShowingTitle ? "Save and back to title" : "Save and resume";
             if (row == 14) return "Return to title";

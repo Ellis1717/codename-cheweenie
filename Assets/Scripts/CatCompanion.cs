@@ -41,6 +41,12 @@ namespace CodenameCheweenie
         }
         public void Restore(int friendship, bool complete)
         { Friendship = Mathf.Clamp(friendship, 0, 3); CompanionQuestComplete = complete; }
+        public void ResetToHome()
+        {
+            Restore(0, false); nextFriendship = 0; State = CatState.Rest;
+            nextState = Time.time + (energetic ? 1 : 5); destination = home;
+            if (body) { body.position = home; body.rotation = Quaternion.identity; }
+        }
         private void FixedUpdate()
         {
             if (!player) return;

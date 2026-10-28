@@ -33,7 +33,7 @@ House geometry, character likenesses and people are placeholders. No exact floor
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
-On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **13 pure quest checks passed outside Unity**.
+On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **36 standalone checks passed outside Unity**: 13 quest checks and 23 binding/input-release checks. Saved mappings reject invalid device codes and duplicates; help and HUD labels reflect current bindings and the selected controller preset. New Adventure resets both cats' positions, states and greeting cooldowns as well as Marty's spawn.
 
 Unity batch startup exited **198: no valid editor license**, before project import or compilation. Unity Test Runner, PlayMode, keyboard/gamepad hardware, visuals/audio, package resolution and Windows build are **unverified**. Source milestones do not yet meet the gameplay definition of done.
 

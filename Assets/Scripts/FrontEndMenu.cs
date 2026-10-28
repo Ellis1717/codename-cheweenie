@@ -86,12 +86,15 @@ namespace CodenameCheweenie
                 }
                 else
                 {
-                    BrandTheme.Fill(new Rect(64, 348, 520, 345), new Color(.045f, .065f, .09f, .96f));
+                    BrandTheme.Fill(new Rect(64, 348, 520, 390), new Color(.045f, .065f, .09f, .96f));
                     string text = page == 1
-                        ? "Make yourself at home\n\nWASD / left stick: move\nSpace / South: jump • Shift / East: sprint\nE / West: sniff and greet\nC / North: Cheeween Cozy at the blanket\nB / left shoulder: Cheween in Between\nEscape / Start: settings\n\nGreet Lakitu, greet Rio, sniff the backyard, then get Cozy. Buttons can be changed in Settings."
+                        ? "Make yourself at home\n\nWASD / left stick: move\n" + controls.BindingLabel(DogAction.Jump) + ": jump\n"
+                            + controls.BindingLabel(DogAction.Sprint) + ": sprint\n" + controls.BindingLabel(DogAction.Interact) + ": sniff and greet\n"
+                            + controls.BindingLabel(DogAction.Cozy) + ": Cheeween Cozy\n" + controls.BindingLabel(DogAction.Between) + ": Cheween in Between\n"
+                            + controls.BindingLabel(DogAction.Menu) + ": settings\n\nGreet the cats, sniff the backyard, then get Cozy. Change buttons in Settings."
                         : "Codename .... Cheweenie\n\nStarring Marty the Chiweenie, Lakitu (Keetz), and Rio (Miss Priss).\n\nMarty's specialties: Cheeween Cozy and Cheween in Between.\n\nOriginal cover concept art. House and character models are still in development.";
-                    GUI.Label(new Rect(86, 366, 474, 265), text, BrandTheme.Text(18, BrandTheme.Cream));
-                    if (BrandTheme.Button(new Rect(86, 638, 474, 40), "Back", true)) Activate(-1);
+                    GUI.Label(new Rect(86, 366, 474, 306), text, BrandTheme.Text(18, BrandTheme.Cream));
+                    if (BrandTheme.Button(new Rect(86, 682, 474, 40), "Back", true)) Activate(-1);
                 }
                 GUI.Label(new Rect(68, height - 45, 900, 30), "Arrows / stick to choose · Enter / controller face button to select", BrandTheme.Text(16, BrandTheme.Cream));
             }

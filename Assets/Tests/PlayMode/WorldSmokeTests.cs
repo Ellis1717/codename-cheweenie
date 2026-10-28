@@ -22,6 +22,9 @@ namespace CodenameCheweenie.Tests
             Assert.IsTrue(frontEnd.ShowingTitle);
             Assert.AreEqual(0, Time.timeScale, "Title must freeze gameplay");
             Assert.IsTrue(dog.GetComponent<MartyInput>().Blocked);
+            Assert.IsNotNull(Resources.Load<Texture2D>("Branding/Cover"), "Title cover must be bundled as a Resource");
+            var catHomes = new System.Collections.Generic.Dictionary<CatCompanion, Vector3>();
+            foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) catHomes.Add(cat, cat.transform.position);
             settings.OpenFromTitle(); yield return null;
             Assert.IsTrue(settings.IsOpen);
             settings.Close(); yield return null;
@@ -55,6 +58,26 @@ namespace CodenameCheweenie.Tests
             { Assert.IsTrue(cat.CompanionQuestComplete); Assert.GreaterOrEqual(cat.Friendship, 2); }
             Assert.IsNotNull(GameObject.Find("Accessible loft ramp"));
             Assert.IsNotNull(Object.FindFirstObjectByType<BetweenSpot>());
+            GameSave.Data.volume = .42f;
+            foreach (var pair in catHomes) pair.Key.GetComponent<Rigidbody>().position += Vector3.right * 2;
+            GameSave.NewGame();
+            Assert.AreEqual(0, quest.CurrentStage);
+            Assert.AreEqual(.42f, GameSave.Data.volume, "New Adventure must preserve settings");
+            Assert.Less(Vector3.Distance(body.position, new Vector3(0, .95f, -1)), .01f);
+            foreach (var pair in catHomes)
+            {
+                Assert.Less(Vector3.Distance(pair.Key.GetComponent<Rigidbody>().position, pair.Value), .01f);
+                Assert.IsFalse(pair.Key.CompanionQuestComplete);
+                Assert.AreEqual(0, pair.Key.Friendship);
+                pair.Key.Befriend(); Assert.AreEqual(1, pair.Key.Friendship, "A new adventure clears greeting cooldowns");
+            }
+            settings.OpenFromTitle(); yield return null;
+            settings.ReturnToTitle(); yield return null;
+            Assert.IsFalse(settings.IsOpen);
+            Assert.IsTrue(frontEnd.ShowingTitle);
+            Assert.AreEqual(0, Time.timeScale);
+            frontEnd.StartAdventure(false);
+            Assert.AreEqual(1, Time.timeScale, "Returning to title must not lose the gameplay time scale");
             LogAssert.NoUnexpectedReceived();
         }
         [UnityTearDown] public IEnumerator Cleanup()

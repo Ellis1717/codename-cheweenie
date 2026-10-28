@@ -8,22 +8,41 @@ namespace CodenameCheweenie
         public KeyCode[] gamepad = { KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton1,
             KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton7 };
         public bool Blocked { get; set; }
-        private int suppressedFrame = -1;
-        private bool waitForRelease;
-        public void SuppressForFrame() { suppressedFrame = Time.frameCount; waitForRelease = true; }
+        private readonly InputReleaseGate releaseGate = new InputReleaseGate();
+        public void SuppressForFrame() { releaseGate.Suppress(Time.frameCount); }
         private bool CanRead
         {
             get
             {
-                if (Blocked || Time.frameCount <= suppressedFrame) return false;
-                if (waitForRelease)
+                bool held = false;
+                if (!Blocked && releaseGate.WaitingForRelease)
                 {
-                    foreach (var key in keyboard) if (Input.GetKey(key)) return false;
-                    foreach (var key in gamepad) if (Input.GetKey(key)) return false;
-                    waitForRelease = false;
+                    foreach (var key in keyboard) held |= Input.GetKey(key);
+                    foreach (var key in gamepad) held |= Input.GetKey(key);
                 }
-                return true;
+                return releaseGate.CanRead(Time.frameCount, Blocked, held);
             }
+        }
+        public static bool IsBindingAllowed(int value, bool pad)
+        {
+            var key = (KeyCode)value;
+            if (!System.Enum.IsDefined(typeof(KeyCode), key) || key == KeyCode.None) return false;
+            if (pad) return key >= KeyCode.JoystickButton0 && key <= KeyCode.JoystickButton19;
+            return key < KeyCode.Mouse0; // No mouse buttons or device-specific joystick aliases.
+        }
+        public string BindingLabel(DogAction action)
+        {
+            string key = keyboard[(int)action].ToString().Replace("Left", "L ").Replace("Right", "R ");
+            return key + " / " + GamepadLabel(gamepad[(int)action]);
+        }
+        private static readonly string[] XboxButtons = { "A", "B", "X", "Y", "LB", "RB", "View", "Menu", "Left stick", "Right stick" };
+        private static readonly string[] PlayStationButtons = { "Square", "Cross", "Circle", "Triangle", "L1", "R1", "L2", "R2", "Share", "Options", "L3", "R3", "PS", "Touchpad" };
+        public static string GamepadLabel(KeyCode key)
+        {
+            GameSave.Load();
+            int button = (int)key - (int)KeyCode.JoystickButton0;
+            var labels = GameSave.Data.playStationLabels ? PlayStationButtons : XboxButtons;
+            return button >= 0 && button < labels.Length ? labels[button] : "Pad " + button;
         }
         public bool Held(DogAction action) => CanRead && (Input.GetKey(keyboard[(int)action]) || Input.GetKey(gamepad[(int)action]));
         public bool Pressed(DogAction action) => CanRead && (Input.GetKeyDown(keyboard[(int)action]) || Input.GetKeyDown(gamepad[(int)action]));

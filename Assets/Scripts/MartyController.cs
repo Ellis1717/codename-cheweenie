@@ -65,8 +65,13 @@ namespace CodenameCheweenie
             }
             cozyHeld = cozy;
             if (controls.Movement.sqrMagnitude > .01f || jump) IsCozy = false;
-            if (visual) visual.Animate(new Vector2(body.linearVelocity.x, body.linearVelocity.z).magnitude, IsCozy);
             if (transform.position.y < -10) { body.position = new Vector3(0, .95f, -1); body.linearVelocity = Vector3.zero; }
+        }
+
+        private void LateUpdate()
+        {
+            // Action locks must not prevent Cozy/Between animation hooks from updating.
+            if (visual) visual.Animate(new Vector2(body.linearVelocity.x, body.linearVelocity.z).magnitude, IsCozy);
         }
 
         private void FixedUpdate()

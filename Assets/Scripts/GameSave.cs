@@ -10,6 +10,7 @@ namespace CodenameCheweenie
         public bool lakituQuest, rioQuest;
         public float volume = .6f, cameraScale = 1;
         public bool particles = true;
+        public bool playStationLabels;
         public int[] keyboard, gamepad;
     }
     public static class GameSave
@@ -48,7 +49,7 @@ namespace CodenameCheweenie
             Data.lakituQuest = Data.rioQuest = false;
             var quest = UnityEngine.Object.FindFirstObjectByType<QuestDirector>();
             if (quest) quest.Restore(0);
-            foreach (var cat in UnityEngine.Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.Restore(0, false);
+            foreach (var cat in UnityEngine.Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.ResetToHome();
             UnityEngine.Object.FindFirstObjectByType<MartyController>()?.ResetToHome();
             Capture();
         }
