@@ -1,0 +1,55 @@
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityEngine.SceneManagement;
+
+namespace CodenameCheweenie.Tests
+{
+    public sealed class WorldSmokeTests
+    {
+        [UnityTest] public IEnumerator BootstrapPhysicsQuestAndCompanions()
+        {
+            GameSave.PersistenceEnabled = false;
+            CheweenieBootstrap.Build(); CheweenieBootstrap.Build();
+            yield return null;
+            Assert.AreEqual(1, Object.FindObjectsByType<MartyController>(FindObjectsSortMode.None).Length);
+            var dog = Object.FindFirstObjectByType<MartyController>();
+            var quest = Object.FindFirstObjectByType<QuestDirector>();
+            var body = dog.GetComponent<Rigidbody>();
+            quest.Restore(0);
+            foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.Restore(0, false);
+            for (int i = 0; i < 60; i++) yield return new WaitForFixedUpdate();
+            Assert.Greater(body.position.y, .6f, "Dog must remain above the floor");
+            Assert.Less(body.position.y, 1.2f, "Dog must settle onto the floor");
+            var targets = Object.FindObjectsByType<InteractableTarget>(FindObjectsSortMode.None);
+            for (int stage = 0; stage < 4; stage++)
+            {
+                InteractableTarget target = null;
+                foreach (var t in targets) if (t.stage == stage) target = t;
+                Assert.IsNotNull(target);
+                body.position = target.transform.position + new Vector3(0, .3f, -1.5f);
+                Physics.SyncTransforms();
+                if (stage == 3)
+                {
+                    quest.Activate(target); Assert.AreEqual(3, quest.CurrentStage, "Sniff must not finish the fort");
+                }
+                quest.Activate(target, stage == 3 ? InteractionKind.Cozy : InteractionKind.Sniff);
+                Assert.AreEqual(stage + 1, quest.CurrentStage);
+            }
+            foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
+            { Assert.IsTrue(cat.CompanionQuestComplete); Assert.GreaterOrEqual(cat.Friendship, 2); }
+            Assert.IsNotNull(GameObject.Find("Accessible loft ramp"));
+            Assert.IsNotNull(Object.FindFirstObjectByType<BetweenSpot>());
+            LogAssert.NoUnexpectedReceived();
+        }
+        [UnityTearDown] public IEnumerator Cleanup()
+        {
+            // All bootstrap objects belong to this test scene. Do not overwrite the player's save.
+            var quest = Object.FindFirstObjectByType<QuestDirector>();
+            if (quest) Object.Destroy(quest.gameObject);
+            yield return null;
+            GameSave.Reload(); GameSave.PersistenceEnabled = true;
+        }
+    }
+}

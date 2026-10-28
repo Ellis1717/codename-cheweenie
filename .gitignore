@@ -22,3 +22,5 @@ TestResults/
 Validation/bin/
 Validation/obj/
 !Validation/*.csproj
+Assets/Generated/
+Assets/Generated.meta

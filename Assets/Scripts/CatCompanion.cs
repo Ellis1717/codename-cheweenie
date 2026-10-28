@@ -20,6 +20,7 @@ namespace CodenameCheweenie
         private void Start()
         {
             body = GetComponent<Rigidbody>(); body.isKinematic = true;
+            gameObject.layer = 2; // Ignore Raycast: probes must not hit the querying cat.
             body.interpolation = RigidbodyInterpolation.Interpolate;
             home = transform.position; player = Object.FindFirstObjectByType<MartyController>()?.transform;
             State = CatState.Rest; nextState = Time.time + (energetic ? 1 : 5);
@@ -62,9 +63,9 @@ namespace CodenameCheweenie
             if (delta.magnitude < (State == CatState.Follow ? 2f : .2f)) return;
             Vector3 step = delta.normalized * (energetic ? 1.8f : .6f) * Time.fixedDeltaTime;
             // Simple obstacle avoidance: stop instead of pushing through furniture or climbing stories.
-            if (Physics.SphereCast(body.position + Vector3.up * .15f, .3f, delta.normalized, out _, .6f, ~0, QueryTriggerInteraction.Ignore)) return;
+            if (Physics.SphereCast(body.position + Vector3.up * .15f, .3f, delta.normalized, out _, .6f, ~(1 << 2), QueryTriggerInteraction.Ignore)) return;
             Vector3 next = body.position + step;
-            if (!Physics.Raycast(next + Vector3.up, Vector3.down, out RaycastHit floor, 2f, ~0, QueryTriggerInteraction.Ignore)) return;
+            if (!Physics.Raycast(next + Vector3.up, Vector3.down, out RaycastHit floor, 2f, ~(1 << 2), QueryTriggerInteraction.Ignore)) return;
             if (Mathf.Abs(floor.point.y + .5f - home.y) > .3f) return;
             next.y = home.y; body.MovePosition(next); body.MoveRotation(Quaternion.LookRotation(delta));
         }

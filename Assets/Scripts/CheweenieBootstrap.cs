@@ -5,11 +5,15 @@ namespace CodenameCheweenie
     public static class CheweenieBootstrap
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void Build()
+        public static void Build()
         {
             if (Object.FindFirstObjectByType<QuestDirector>() != null) return;
+            var existingRoots = new System.Collections.Generic.HashSet<GameObject>(UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects());
             GameObject world = new GameObject("Codename .... Cheweenie | Prototype World");
             var quest = world.AddComponent<QuestDirector>();
+            world.AddComponent<SaveLifecycle>();
+            world.AddComponent<CozyFeedback>();
+            world.AddComponent<CozySettings>();
             MakeSun();
             Primitive("Lawn", PrimitiveType.Cube, new Vector3(0, -0.35f, 0), new Vector3(44, 0.5f, 44), new Color(.22f, .48f, .24f));
             var headquarters = new GameObject("Modular headquarters | schematic");
@@ -27,11 +31,14 @@ namespace CodenameCheweenie
             rb.mass = 3; rb.constraints = RigidbodyConstraints.FreezeRotation;
             dog.AddComponent<MartyController>().Initialize(quest);
             dog.AddComponent<CanineVisual>();
+            dog.AddComponent<CozyBlanket>();
             var cameraObject = new GameObject("Follow Camera");
             var cam = cameraObject.AddComponent<Camera>(); cam.tag = "MainCamera";
             cameraObject.AddComponent<AudioListener>();
             cameraObject.AddComponent<CheweenieCamera>().target = dog.transform;
             quest.SetPlayer(dog.transform);
+            foreach (var root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
+                if (root != world && !existingRoots.Contains(root)) root.transform.SetParent(world.transform, true);
         }
 
         private static void MakeSun()
@@ -51,6 +58,14 @@ namespace CodenameCheweenie
             Primitive("Kitchen island", PrimitiveType.Cube, new Vector3(3.5f, .8f, 1.3f), new Vector3(2.5f, 1.4f, 1), new Color(.88f, .84f, .74f));
             Primitive("Blanket canopy", PrimitiveType.Cube, new Vector3(0, 1.65f, 6.8f), new Vector3(2.5f, .15f, 2.8f), new Color(.18f, .27f, .58f)).GetComponent<Collider>().enabled = false;
             Primitive("Patio", PrimitiveType.Cube, new Vector3(0, -.05f, -6), new Vector3(5, .12f, 4), new Color(.62f, .59f, .52f));
+            var cuddle = new GameObject("Cheween in Between | schematic cuddle spot");
+            cuddle.transform.position = new Vector3(3.5f, .95f, 7.4f); cuddle.AddComponent<BetweenSpot>();
+            for (int side = -1; side <= 1; side += 2)
+            {
+                Vector3 p = new Vector3(3.5f + side * .95f, .55f, 7.4f);
+                Primitive("Cuddle cushion", PrimitiveType.Cube, p, new Vector3(.85f, .5f, 1.5f), new Color(.5f, .35f, .48f));
+                Primitive("Cuddling person placeholder", PrimitiveType.Capsule, p + Vector3.up * .8f, new Vector3(.65f, .65f, .65f), new Color(.7f, .55f, .45f));
+            }
         }
 
         private static void MakeCharacter(string name, Vector3 position, Color color, string line, int stage)

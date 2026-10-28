@@ -19,7 +19,14 @@ namespace CodenameCheweenie
                 if (room.story == 1)
                 {
                     // Side railings leave the south landing open for the ramp.
-                    Box(root.transform, "Loft side railing", center + new Vector3(room.size.x * .5f, .7f, 0), new Vector3(.12f, 1.2f, room.size.y), wall);
+                    for (int side = -1; side <= 1; side += 2)
+                    {
+                        float edge = room.center.x + side * room.size.x * .5f;
+                        bool shared = layout.rooms.Exists(other => other != room && other.story == room.story
+                            && Mathf.Abs(other.center.x - side * other.size.x * .5f - edge) < .35f
+                            && Mathf.Abs(other.center.y - room.center.y) < (other.size.y + room.size.y) * .5f);
+                        if (!shared) Box(root.transform, "Loft side railing", center + new Vector3(side * room.size.x * .5f, .7f, 0), new Vector3(.12f, 1.2f, room.size.y), wall);
+                    }
                 }
                 if (room.northPartition)
                     Box(root.transform, "North partition", center + new Vector3(0, 1.3f, room.size.y * .5f), new Vector3(room.size.x, 2.6f, .15f), wall);

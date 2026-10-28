@@ -1,36 +1,37 @@
 # Codename .... Cheweenie 🐾
 
-A cozy, playful 3D Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman) and Rio (Sis / Little Miss / Miss Priss).
+A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
 ## Quick start
-1. Open this repository as a project in **Unity 6.3 LTS** (Universal Render Pipeline optional; built-in renderer works with this prototype).
-2. Open the project and press **Play** in any empty scene. The prototype world is built at runtime; no downloaded assets are needed.
-3. Walk with **WASD / left stick**, **Space / gamepad South (A/X)** to jump, **E / gamepad West (X/Square)** to interact, **Left Shift / gamepad East (B/Circle)** to sprint, and **C / gamepad North (Y/Triangle)** for Cheeween Cozy. The camera follows automatically.
-4. Find each cat, visit the backyard, then return to the blanket fort.
+1. Open this folder in **Unity 6.3 LTS** with an active editor license and resolve the manifest packages.
+2. Use **Input Manager (Old)** or **Both** for Active Input Handling. Run **Cheweenie > Validate project configuration**.
+3. Press Play in an empty scene. The source-first prototype builds its world at runtime.
+4. Find Lakitu, find Rio, sniff the backyard, then use **Cheeween Cozy** at the blanket fort.
 
-## Current prototype
-- Procedural two-story family-inspired headquarters, backyard and interactable blanket fort (placeholder until a house floor plan/photos are translated into exact geometry).
-- Controllable third-person Marty placeholder mesh, camera follow, controller and keyboard input, jump and sprint.
-- Cats Lakitu and Rio, proximity interaction, quest objectives and simple HUD.
-- Cozy move, mission tracking and a clear progression path for art/animation upgrades.
+| Action | Keyboard | Standard gamepad |
+| --- | --- | --- |
+| Move | WASD / arrows | Left stick |
+| Jump | Space | South / A / Cross |
+| Sniff / greet | E | West / X / Square |
+| Sprint | Left Shift | East / B / Circle |
+| Cheeween Cozy | C | North / Y / Triangle |
+| Cheween in Between | B | Left shoulder |
+| Settings | Escape | Start / Options |
 
-## Development handoff
-Read **AGENTS.md** before coding and **docs/CODEX_HANDOFF.md** for the ordered backlog. See also **docs/ARCHITECTURE.md**.
+Controller mappings vary by driver. Settings provide presets and button rebinding, saved between sessions. The camera follows automatically; settings change distance. Menu navigation uses arrows/stick and Enter/raw button 0, with Escape always available.
 
-This is a **source-first prototype**, not a compiled game. Unity editor verification, gamepad mapping on target hardware and imported dog/cat assets remain to be tested.
+## Implemented foundations
+- **M1:** pure quest progression, strict Cozy completion, ground-probed jumping, explicit input axes, EditMode tests and a PlayMode smoke test.
+- **M2:** configurable canine movement, procedural four-paw animation, optional Animator hooks, and an import-ready custom dog prefab pipeline.
+- **M3:** modular schematic room definitions, upstairs loft, railed ramp, editable dimensions and optional photo panels.
+- **M4:** distinct cat state machines, friendship, companion quests, obstacle checks and Lakitu following.
+- **M5:** blanket resting, Cheween in Between cuddle placeholders, original synthesized chime, optional sparkles, versioned save data, pause/settings menu and keyboard/controller button rebinding.
 
-## M1 validation
-## M2 character foundation
-## M3 headquarters
-## M4 companions
-Lakitu alternates energetic prowling and inspection, then follows Marty after his backyard companion quest. Rio takes slower, smaller patrols and prefers resting; her companion quest rewards blanket Cozy. Repeat friendly greetings build friendship with a cooldown. Both have obstacle checks and HUD objectives independent of the main mission. Source compilation passed; navigation and character timing remain unverified in PlayMode.
+House geometry, character likenesses and people are placeholders. No exact floor plan or user-specific house measurements are assumed. User art, rigging, final lighting and expanded world content remain future work.
 
-`HouseLayout` defines editable room sizes, story height, photo panels and ramp endpoints. The runtime builder creates ground rooms, an upstairs loft and railed ramp; all are explicitly schematic. See `docs/HEADQUARTERS.md` for configuration. Camera collision avoids clipping through walls. Source compilation passed; ramp traversal and camera behavior await Unity license activation.
+## Verification status
+On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **13 pure quest checks passed outside Unity**.
 
-Marty has an independent configurable physics controller and a procedural dog rig with animated paws, muzzle, floppy ears and tail. `MartyTuning` and `MartyVisual` Resources assets support tuning and custom FBX prefabs; see `docs/ART_IMPORT.md`. Explicit joystick axes avoid dependence on Unity's generated defaults. Keyboard uses WASD/arrows. Animation supports optional Speed/Cozy parameters with root motion disabled.
+Unity batch startup exited **198: no valid editor license**, before project import or compilation. Unity Test Runner, PlayMode, keyboard/gamepad hardware, visuals/audio, package resolution and Windows build are **unverified**. Source milestones do not yet meet the gameplay definition of done.
 
-Validation: C# assembly compilation and 13 pure quest checks passed after M1. Unity license failure still prevents import/play/controller validation of M2.
-
-Quest order and the fort's Cozy requirement now live in pure C# logic with EditMode tests. Ground probing replaces the jump velocity heuristic. Legacy input and Unity Test Framework are declared dependencies. Shader selection follows the active render pipeline.
-
-On 2026-10-28, Unity 6000.3.10f1 batch startup failed with exit 198: no valid editor license. Compilation, PlayMode, keyboard/gamepad, physics and screenshots remain pending. `Validation/Compile.csproj` checks C# against installed Unity assemblies; `Validation/QuestChecks.csproj` exercises quest rules outside Unity. These do not replace Unity gameplay tests.
+See [validation and Windows build instructions](docs/VALIDATION.md), [Marty art import](docs/ART_IMPORT.md), [editable headquarters](docs/HEADQUARTERS.md), [architecture](docs/ARCHITECTURE.md), and [development backlog](docs/CODEX_HANDOFF.md). Read AGENTS.md before changing the project.

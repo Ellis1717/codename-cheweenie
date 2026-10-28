@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-$assets = Get-ChildItem Assets -Recurse | Where-Object { $_.Extension -ne '.meta' }
+$assets = Get-ChildItem Assets -Recurse | Where-Object { $_.Extension -ne '.meta' -and $_.FullName -notmatch '\\Generated(\\|$)' }
 foreach ($asset in $assets) {
     $meta = $asset.FullName + '.meta'
     if (!(Test-Path -LiteralPath $meta)) {
@@ -8,7 +8,7 @@ foreach ($asset in $assets) {
         [IO.File]::WriteAllText($meta, $text)
     }
 }
-$files = @('.gitignore','AGENTS.md','README.md') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj)\\' } | ForEach-Object { $_.FullName })
+$files = @('.gitignore','AGENTS.md','README.md') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated)\\' -and $_.Name -ne 'Generated.meta' } | ForEach-Object { $_.FullName })
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f
     @{path=[IO.Path]::GetRelativePath((Get-Location).Path,$i.FullName).Replace('\','/'); content=[IO.File]::ReadAllText($i.FullName)}

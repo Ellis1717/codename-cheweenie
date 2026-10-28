@@ -2,13 +2,16 @@ using UnityEngine;
 
 namespace CodenameCheweenie
 {
-    [RequireComponent(typeof(Rigidbody), typeof(MartyInput))]
+    [RequireComponent(typeof(Rigidbody), typeof(MartyInput), typeof(CapsuleCollider))]
     public sealed class MartyController : MonoBehaviour
     {
         public CanineTuning tuning;
         private MartyInput controls;
         public bool IsCozy { get; private set; }
         private CanineVisual visual;
+        private float betweenUntil;
+        private Vector3 betweenDestination;
+        public bool IsBetween => betweenUntil > Time.time;
         private Rigidbody body;
         private QuestDirector quest;
         private float interactionCooldown;
@@ -21,7 +24,7 @@ namespace CodenameCheweenie
         private void Awake()
         {
             body = GetComponent<Rigidbody>(); controls = GetComponent<MartyInput>();
-            tuning = Resources.Load<CanineTuning>("MartyTuning");
+            if (!tuning) tuning = Resources.Load<CanineTuning>("MartyTuning");
             if (!tuning) tuning = ScriptableObject.CreateInstance<CanineTuning>();
             body.interpolation = RigidbodyInterpolation.Interpolate;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -31,6 +34,16 @@ namespace CodenameCheweenie
         private void Update()
         {
             interactionCooldown -= Time.deltaTime;
+            if (controls.Pressed(DogAction.Between) && !IsBetween)
+            {
+                foreach (var spot in Object.FindObjectsByType<BetweenSpot>(FindObjectsSortMode.None))
+                    if (Vector3.Distance(transform.position, spot.transform.position) <= spot.range)
+                    {
+                        IsCozy = false; betweenDestination = spot.transform.position; betweenUntil = Time.time + 2;
+                        quest.Announce("Cheween in Between! Make room for Marty!"); break;
+                    }
+            }
+            if (IsBetween || controls.Blocked) return;
             bool jump = controls.Held(DogAction.Jump);
             if (jump && !jumpHeld && Physics.Raycast(transform.position, Vector3.down, .88f, ~0, QueryTriggerInteraction.Ignore))
                 body.linearVelocity = new Vector3(body.linearVelocity.x, tuning.jumpSpeed, body.linearVelocity.z);
@@ -53,6 +66,18 @@ namespace CodenameCheweenie
 
         private void FixedUpdate()
         {
+            if (IsBetween)
+            {
+                Vector3 delta = betweenDestination - body.position;
+                if (delta.magnitude < .08f)
+                {
+                    betweenUntil = 0; quest.Announce("Marty fits right between the cuddles!");
+                    quest.GetComponent<CozyFeedback>()?.Play(body.position);
+                }
+                else if (!body.SweepTest(delta.normalized, out _, Mathf.Min(delta.magnitude, .15f), QueryTriggerInteraction.Ignore))
+                    body.MovePosition(Vector3.MoveTowards(body.position, betweenDestination, Time.fixedDeltaTime * 2));
+                body.linearVelocity = Vector3.zero; return;
+            }
             Vector3 direction = controls.Movement;
             bool sprint = controls.Held(DogAction.Sprint);
             float speed = IsCozy ? 0 : sprint ? tuning.sprintSpeed : tuning.walkSpeed;
@@ -85,6 +110,12 @@ namespace CodenameCheweenie
             if (nearest != null && quest != null)
             {
                 IsCozy = kind == InteractionKind.Cozy;
+                if (IsCozy)
+                {
+                    body.position = nearest.transform.position + Vector3.up * .3f;
+                    body.linearVelocity = Vector3.zero;
+                    quest.GetComponent<CozyFeedback>()?.Play(body.position);
+                }
                 quest.Activate(nearest, kind);
             }
             else if (quest != null) quest.Announce("Nothing close enough to sniff!");

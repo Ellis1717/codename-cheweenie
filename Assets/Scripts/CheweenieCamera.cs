@@ -9,7 +9,8 @@ namespace CodenameCheweenie
         private void LateUpdate()
         {
             if (!target) return;
-            Vector3 destination = target.position + offset;
+            GameSave.Load();
+            Vector3 destination = target.position + offset * GameSave.Data.cameraScale;
             Vector3 focus = target.position + Vector3.up * .4f;
             Vector3 delta = destination - focus;
             if (Physics.SphereCast(focus, .2f, delta.normalized, out RaycastHit hit, delta.magnitude, ~0, QueryTriggerInteraction.Ignore))
