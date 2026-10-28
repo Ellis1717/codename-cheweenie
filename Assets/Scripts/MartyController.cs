@@ -108,15 +108,7 @@ namespace CodenameCheweenie
         private void Interact(InteractionKind kind = InteractionKind.Sniff)
         {
             interactionCooldown = .3f;
-            var targets = Object.FindObjectsByType<InteractableTarget>(FindObjectsSortMode.None);
-            InteractableTarget nearest = null;
-            float best = tuning.interactionRange;
-            foreach (var candidate in targets)
-            {
-                if (kind == InteractionKind.Cozy && candidate.stage != 3) continue;
-                float dist = Vector3.Distance(transform.position, candidate.transform.position);
-                if (dist < best) { nearest = candidate; best = dist; }
-            }
+            var nearest = NearestTarget(kind);
             if (nearest != null && quest != null)
             {
                 IsCozy = kind == InteractionKind.Cozy;
@@ -129,6 +121,18 @@ namespace CodenameCheweenie
                 quest.Activate(nearest, kind);
             }
             else if (quest != null) quest.Announce("Nothing close enough to sniff!");
+        }
+        public InteractableTarget NearestTarget(InteractionKind kind = InteractionKind.Sniff)
+        {
+            InteractableTarget nearest = null;
+            float best = tuning.interactionRange;
+            foreach (var candidate in Object.FindObjectsByType<InteractableTarget>(FindObjectsSortMode.None))
+            {
+                if (kind == InteractionKind.Cozy && (candidate.stage != 3 || candidate.backyardClue != BackyardClue.None)) continue;
+                if (!candidate.CanReach(transform, best)) continue;
+                nearest = candidate; best = Vector3.Distance(transform.position, candidate.transform.position);
+            }
+            return nearest;
         }
     }
 }

@@ -53,6 +53,8 @@ static class QuestChecks
         gate.Suppress(16);
         Check(!gate.CanRead(17, false, true));
         Check(gate.CanRead(18, false, false));
-        Console.WriteLine("PASS: " + checks + " checks (" + questChecks + " quest, " + (checks - questChecks) + " bindings/input gate), outside Unity");
+        int inputChecks = checks - questChecks;
+        BackyardChecks.Run(Check);
+        Console.WriteLine("PASS: " + checks + " checks (" + questChecks + " quest, " + inputChecks + " bindings/input gate, " + (checks - questChecks - inputChecks) + " backyard), outside Unity");
     }
 }

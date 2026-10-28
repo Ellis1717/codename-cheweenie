@@ -27,13 +27,14 @@ Controller mappings vary by driver. Settings provide presets and button rebindin
 - **M3:** modular schematic room definitions, upstairs loft, railed ramp, editable dimensions and optional photo panels.
 - **M4:** distinct cat state machines, friendship, companion quests, obstacle checks and Lakitu following.
 - **M5:** blanket resting, Cheween in Between cuddle placeholders, original synthesized chime, optional sparkles, versioned save data, pause/settings menu and keyboard/controller button rebinding.
+- **M6:** a schematic backyard with stepping stones, a raised lookout, a secret hedge passage and a ribbon-recovery mission. It unlocks after the home quest; explore three landmarks in any order, find Rio's ribbon and bring it home. Companion dialogue, marker states, sight-line interaction checks and saved progress support the new loop. See [backyard route and verification](docs/BACKYARD.md).
 
 House geometry, character likenesses and people are placeholders. No exact floor plan or user-specific house measurements are assumed. User art, rigging, final lighting and expanded world content remain future work.
 
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
-On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **36 standalone checks passed outside Unity**: 13 quest checks and 23 binding/input-release checks. Saved mappings reject invalid device codes and duplicates; help and HUD labels reflect current bindings and the selected controller preset. New Adventure resets both cats' positions, states and greeting cooldowns as well as Marty's spawn.
+On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **112 standalone checks passed outside Unity**: 13 home-quest checks, 23 binding/input-release checks and 76 backyard checks. Saved mappings reject invalid device codes and duplicates; help and HUD labels reflect current bindings and the selected controller preset. New Adventure resets home/backyard missions, both cats' positions/states/cooldowns and Marty's spawn.
 
 Unity batch startup exited **198: no valid editor license**, before project import or compilation. Unity Test Runner, PlayMode, keyboard/gamepad hardware, visuals/audio, package resolution and Windows build are **unverified**. Source milestones do not yet meet the gameplay definition of done.
 
