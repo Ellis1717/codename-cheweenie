@@ -22,6 +22,9 @@ This is a **source-first prototype**, not a compiled game. Unity editor verifica
 ## M1 validation
 ## M2 character foundation
 ## M3 headquarters
+## M4 companions
+Lakitu alternates energetic prowling and inspection, then follows Marty after his backyard companion quest. Rio takes slower, smaller patrols and prefers resting; her companion quest rewards blanket Cozy. Repeat friendly greetings build friendship with a cooldown. Both have obstacle checks and HUD objectives independent of the main mission. Source compilation passed; navigation and character timing remain unverified in PlayMode.
+
 `HouseLayout` defines editable room sizes, story height, photo panels and ramp endpoints. The runtime builder creates ground rooms, an upstairs loft and railed ramp; all are explicitly schematic. See `docs/HEADQUARTERS.md` for configuration. Camera collision avoids clipping through walls. Source compilation passed; ramp traversal and camera behavior await Unity license activation.
 
 Marty has an independent configurable physics controller and a procedural dog rig with animated paws, muzzle, floppy ears and tail. `MartyTuning` and `MartyVisual` Resources assets support tuning and custom FBX prefabs; see `docs/ART_IMPORT.md`. Explicit joystick axes avoid dependence on Unity's generated defaults. Keyboard uses WASD/arrows. Animation supports optional Speed/Cozy parameters with root motion disabled.

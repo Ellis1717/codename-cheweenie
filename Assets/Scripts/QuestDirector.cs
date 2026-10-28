@@ -22,12 +22,19 @@ namespace CodenameCheweenie
         public void Activate(InteractableTarget target, InteractionKind kind = InteractionKind.Sniff)
         {
             if (!target || !player || Vector3.Distance(player.position, target.transform.position) > 2.8f) return;
+            var companion = target.GetComponent<CatCompanion>();
+            if (companion && target.stage < CurrentStage)
+            {
+                Announce(companion.Befriend()); return;
+            }
             if (!progress.TryAdvance(target.stage, kind))
             {
                 Announce("Marty Man has another mission first!");
                 return;
             }
-            Announce(target.dialogue);
+            Announce(companion ? companion.Befriend() : target.dialogue);
+            foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
+                if (cat.CompleteAt(target.stage)) Announce(cat.energetic ? "Keeterman's backyard patrol complete!" : "Miss Priss approves of Cheeween Cozy!");
         }
         private void OnGUI()
         {
@@ -36,6 +43,9 @@ namespace CodenameCheweenie
                 "CODENAME .... CHEWEENIE\nMission " + Mathf.Min(CurrentStage + 1, 4) + ": " + objectives[CurrentStage], style);
             if (Time.time < noticeUntil)
                 GUI.Box(new Rect(14, 114, Mathf.Min(620, Screen.width - 28), 52), notice, style);
+            int row = 0;
+            foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
+                GUI.Box(new Rect(14, 176 + row++ * 46, Mathf.Min(620, Screen.width - 28), 42), cat.CompanionObjective + " | Friendship " + cat.Friendship + "/3", style);
             GUI.Box(new Rect(14, Screen.height - 58, Mathf.Min(770, Screen.width - 28), 44),
                 "WASD/Stick move | E/X interact | Space/A jump | Shift/B sprint | C/Y cozy", style);
         }

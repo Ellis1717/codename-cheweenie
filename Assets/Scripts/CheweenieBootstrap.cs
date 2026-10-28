@@ -55,7 +55,11 @@ namespace CodenameCheweenie
 
         private static void MakeCharacter(string name, Vector3 position, Color color, string line, int stage)
         {
-            var cat = Primitive(name, PrimitiveType.Capsule, position, new Vector3(.75f, 1f, .9f), color);
+            var cat = new GameObject(name); cat.transform.position = position;
+            var collider = cat.AddComponent<CapsuleCollider>(); collider.height = 1; collider.radius = .3f;
+            cat.AddComponent<Rigidbody>();
+            cat.AddComponent<CatCompanion>().energetic = stage == 0;
+            PrimitiveChild(cat.transform, "cat body", PrimitiveType.Capsule, Vector3.zero, new Vector3(.6f, .5f, .75f), color, false);
             var target = cat.AddComponent<InteractableTarget>();
             target.stage = stage; target.dialogue = line;
             PrimitiveChild(cat.transform, "head", PrimitiveType.Sphere, new Vector3(0, .42f, .35f), new Vector3(.82f, .65f, .68f), color, false);
