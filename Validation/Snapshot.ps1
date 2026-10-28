@@ -4,7 +4,7 @@ foreach ($asset in $assets) {
     $meta = $asset.FullName + '.meta'
     if (!(Test-Path -LiteralPath $meta)) {
         $text = "fileFormatVersion: 2`nguid: $([guid]::NewGuid().ToString('N'))`n"
-        if ($asset.PSIsContainer) { $text += "folderAsset: yes`nDefaultImporter:`n  externalObjects: {}`n  userData: `n  assetBundleName: `n  assetBundleVariant: `n" }
+        if ($asset.PSIsContainer) { $text += "folderAsset: yes`nDefaultImporter:`n  externalObjects: {}`n  userData:`n  assetBundleName:`n  assetBundleVariant:`n" }
         [IO.File]::WriteAllText($meta, $text)
     }
 }
