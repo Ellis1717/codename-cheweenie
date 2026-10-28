@@ -25,10 +25,7 @@ namespace CodenameCheweenie
             var rb = dog.AddComponent<Rigidbody>();
             rb.mass = 3; rb.constraints = RigidbodyConstraints.FreezeRotation;
             dog.AddComponent<MartyController>().Initialize(quest);
-            PrimitiveChild(dog.transform, "Marty body", PrimitiveType.Capsule, new Vector3(0, -.15f, 0), new Vector3(.78f, .65f, 1.04f), new Color(.55f, .31f, .17f), false);
-            PrimitiveChild(dog.transform, "Marty head", PrimitiveType.Sphere, new Vector3(0, .2f, .62f), new Vector3(.65f, .56f, .6f), new Color(.67f, .43f, .23f), false);
-            PrimitiveChild(dog.transform, "left ear", PrimitiveType.Capsule, new Vector3(-.27f, .09f, .65f), new Vector3(.16f, .52f, .18f), new Color(.34f, .2f, .12f), false);
-            PrimitiveChild(dog.transform, "right ear", PrimitiveType.Capsule, new Vector3(.27f, .09f, .65f), new Vector3(.16f, .52f, .18f), new Color(.34f, .2f, .12f), false);
+            dog.AddComponent<CanineVisual>();
             var cameraObject = new GameObject("Follow Camera");
             var cam = cameraObject.AddComponent<Camera>(); cam.tag = "MainCamera";
             cameraObject.AddComponent<AudioListener>();

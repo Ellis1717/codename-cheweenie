@@ -20,6 +20,11 @@ Read **AGENTS.md** before coding and **docs/CODEX_HANDOFF.md** for the ordered b
 This is a **source-first prototype**, not a compiled game. Unity editor verification, gamepad mapping on target hardware and imported dog/cat assets remain to be tested.
 
 ## M1 validation
+## M2 character foundation
+Marty has an independent configurable physics controller and a procedural dog rig with animated paws, muzzle, floppy ears and tail. `MartyTuning` and `MartyVisual` Resources assets support tuning and custom FBX prefabs; see `docs/ART_IMPORT.md`. Explicit joystick axes avoid dependence on Unity's generated defaults. Keyboard uses WASD/arrows. Animation supports optional Speed/Cozy parameters with root motion disabled.
+
+Validation: C# assembly compilation and 13 pure quest checks passed after M1. Unity license failure still prevents import/play/controller validation of M2.
+
 Quest order and the fort's Cozy requirement now live in pure C# logic with EditMode tests. Ground probing replaces the jump velocity heuristic. Legacy input and Unity Test Framework are declared dependencies. Shader selection follows the active render pipeline.
 
 On 2026-10-28, Unity 6000.3.10f1 batch startup failed with exit 198: no valid editor license. Compilation, PlayMode, keyboard/gamepad, physics and screenshots remain pending. `Validation/Compile.csproj` checks C# against installed Unity assemblies; `Validation/QuestChecks.csproj` exercises quest rules outside Unity. These do not replace Unity gameplay tests.
