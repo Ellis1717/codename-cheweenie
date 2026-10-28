@@ -20,6 +20,11 @@ namespace CodenameCheweenie
         private bool cozyHeld;
 
         public void Initialize(QuestDirector director) { quest = director; }
+        public void ResetToHome()
+        {
+            IsCozy = false; betweenUntil = 0;
+            body.position = new Vector3(0, .95f, -1); body.rotation = Quaternion.identity; body.linearVelocity = Vector3.zero;
+        }
 
         private void Awake()
         {

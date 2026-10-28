@@ -49,6 +49,7 @@ namespace CodenameCheweenie
         }
         private void OnGUI()
         {
+            var frontEnd = GetComponent<FrontEndMenu>(); if (frontEnd && frontEnd.ShowingTitle) return;
             var settings = GetComponent<CozySettings>(); if (settings && settings.IsOpen) return;
             var style = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleLeft, fontSize = 18, wordWrap = true };
             GUI.Box(new Rect(14, 14, Mathf.Min(620, Screen.width - 28), 94),

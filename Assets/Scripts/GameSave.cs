@@ -49,6 +49,7 @@ namespace CodenameCheweenie
             var quest = UnityEngine.Object.FindFirstObjectByType<QuestDirector>();
             if (quest) quest.Restore(0);
             foreach (var cat in UnityEngine.Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.Restore(0, false);
+            UnityEngine.Object.FindFirstObjectByType<MartyController>()?.ResetToHome();
             Capture();
         }
     }

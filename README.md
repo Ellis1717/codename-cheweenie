@@ -5,8 +5,9 @@ A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman),
 ## Quick start
 1. Open this folder in **Unity 6.3 LTS** with an active editor license and resolve the manifest packages.
 2. Use **Input Manager (Old)** or **Both** for Active Input Handling. Run **Cheweenie > Validate project configuration**.
-3. Press Play in an empty scene. The source-first prototype builds its world at runtime.
-4. Find Lakitu, find Rio, sniff the backyard, then use **Cheeween Cozy** at the blanket fort.
+3. Press Play in an empty scene. The world builds behind a branded title screen. Choose **Start adventure** (or **Continue adventure** for existing progress).
+4. Open **Settings** from the title to edit volume, camera, effects and bindings. **How to play** explains controls. During gameplay, Settings also offers **Return to title**.
+5. Find Lakitu, find Rio, sniff the backyard, then use **Cheeween Cozy** at the blanket fort. **New adventure** confirms before clearing existing progress and preserves settings.
 
 | Action | Keyboard | Standard gamepad |
 | --- | --- | --- |
@@ -28,6 +29,8 @@ Controller mappings vary by driver. Settings provide presets and button rebindin
 - **M5:** blanket resting, Cheween in Between cuddle placeholders, original synthesized chime, optional sparkles, versioned save data, pause/settings menu and keyboard/controller button rebinding.
 
 House geometry, character likenesses and people are placeholders. No exact floor plan or user-specific house measurements are assumed. User art, rigging, final lighting and expanded world content remain future work.
+
+The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
 On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **13 pure quest checks passed outside Unity**.

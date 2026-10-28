@@ -11,6 +11,8 @@ foreach ($asset in $assets) {
 $files = @('.gitignore','AGENTS.md','README.md') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated)\\' -and $_.Name -ne 'Generated.meta' } | ForEach-Object { $_.FullName })
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f
-    @{path=[IO.Path]::GetRelativePath((Get-Location).Path,$i.FullName).Replace('\','/'); content=[IO.File]::ReadAllText($i.FullName)}
+    $binary = $i.Extension -in @('.png','.jpg','.jpeg','.wav','.fbx')
+    $content = if ($binary) { [Convert]::ToBase64String([IO.File]::ReadAllBytes($i.FullName)) } else { [IO.File]::ReadAllText($i.FullName) }
+    @{path=[IO.Path]::GetRelativePath((Get-Location).Path,$i.FullName).Replace('\','/'); content=$content; encoding=$(if ($binary) {'base64'} else {'utf-8'})}
 }
 ConvertTo-Json -InputObject @($items) -Depth 3 -Compress

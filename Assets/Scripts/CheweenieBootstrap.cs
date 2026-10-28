@@ -13,7 +13,7 @@ namespace CodenameCheweenie
             var quest = world.AddComponent<QuestDirector>();
             world.AddComponent<SaveLifecycle>();
             world.AddComponent<CozyFeedback>();
-            world.AddComponent<CozySettings>();
+            var settings = world.AddComponent<CozySettings>();
             MakeSun();
             Primitive("Lawn", PrimitiveType.Cube, new Vector3(0, -0.35f, 0), new Vector3(44, 0.5f, 44), new Color(.22f, .48f, .24f));
             var headquarters = new GameObject("Modular headquarters | schematic");
@@ -37,6 +37,7 @@ namespace CodenameCheweenie
             cameraObject.AddComponent<AudioListener>();
             cameraObject.AddComponent<CheweenieCamera>().target = dog.transform;
             quest.SetPlayer(dog.transform);
+            world.AddComponent<FrontEndMenu>().Initialize(dog.GetComponent<MartyInput>(), settings);
             foreach (var root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
                 if (root != world && !existingRoots.Contains(root)) root.transform.SetParent(world.transform, true);
         }
