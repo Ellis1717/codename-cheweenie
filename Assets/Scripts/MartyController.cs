@@ -23,7 +23,7 @@ namespace CodenameCheweenie
         {
             interactionCooldown -= Time.deltaTime;
             bool jump = Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.JoystickButton0);
-            if (jump && !jumpHeld && Mathf.Abs(body.linearVelocity.y) < .12f)
+            if (jump && !jumpHeld && Physics.Raycast(transform.position, Vector3.down, .88f, ~0, QueryTriggerInteraction.Ignore))
                 body.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
             jumpHeld = jump;
 
@@ -35,7 +35,7 @@ namespace CodenameCheweenie
             if (cozy && !cozyHeld)
             {
                 if (quest != null) quest.Announce("Cheeween Cozy! Marty burrows under a blanket.");
-                if (quest != null && quest.CurrentStage == 3) Interact();
+                if (quest != null && quest.CurrentStage == 3) Interact(InteractionKind.Cozy);
             }
             cozyHeld = cozy;
         }
@@ -55,7 +55,7 @@ namespace CodenameCheweenie
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.fixedDeltaTime * 10f);
         }
 
-        private void Interact()
+        private void Interact(InteractionKind kind = InteractionKind.Sniff)
         {
             interactionCooldown = .3f;
             var targets = Object.FindObjectsByType<InteractableTarget>(FindObjectsSortMode.None);
@@ -66,7 +66,7 @@ namespace CodenameCheweenie
                 float dist = Vector3.Distance(transform.position, candidate.transform.position);
                 if (dist < best) { nearest = candidate; best = dist; }
             }
-            if (nearest != null && quest != null) quest.Activate(nearest);
+            if (nearest != null && quest != null) quest.Activate(nearest, kind);
             else if (quest != null) quest.Announce("Nothing close enough to sniff!");
         }
     }

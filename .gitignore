@@ -17,3 +17,8 @@
 *.pdb
 *.mdb
 .DS_Store
+*.log
+TestResults/
+Validation/bin/
+Validation/obj/
+!Validation/*.csproj

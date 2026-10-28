@@ -15,17 +15,18 @@ namespace CodenameCheweenie
         private Transform player;
         private string notice = "Welcome home, Marty McFly!";
         private float noticeUntil = 8f;
-        public int CurrentStage { get; private set; }
+        private QuestProgress progress = new QuestProgress();
+        public int CurrentStage => progress.Stage;
         public void SetPlayer(Transform t) { player = t; }
         public void Announce(string message) { notice = message; noticeUntil = Time.time + 5f; }
-        public void Activate(InteractableTarget target)
+        public void Activate(InteractableTarget target, InteractionKind kind = InteractionKind.Sniff)
         {
-            if (target.stage != CurrentStage)
+            if (!target || !player || Vector3.Distance(player.position, target.transform.position) > 2.8f) return;
+            if (!progress.TryAdvance(target.stage, kind))
             {
                 Announce("Marty Man has another mission first!");
                 return;
             }
-            CurrentStage = Mathf.Min(CurrentStage + 1, objectives.Length - 1);
             Announce(target.dialogue);
         }
         private void OnGUI()

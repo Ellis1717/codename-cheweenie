@@ -5,7 +5,7 @@ A cozy, playful 3D Unity adventure starring Marty the Chiweenie, Lakitu (Keetz /
 ## Quick start
 1. Open this repository as a project in **Unity 6.3 LTS** (Universal Render Pipeline optional; built-in renderer works with this prototype).
 2. Open the project and press **Play** in any empty scene. The prototype world is built at runtime; no downloaded assets are needed.
-3. Walk with **WASD / left stick**, turn with **mouse / right stick**, **Space / gamepad South (A/X)** to jump, **E / gamepad West (X/Square)** to interact, **Left Shift / gamepad East (B/Circle)** to sprint, and **C / gamepad North (Y/Triangle)** for Cheeween Cozy.
+3. Walk with **WASD / left stick**, **Space / gamepad South (A/X)** to jump, **E / gamepad West (X/Square)** to interact, **Left Shift / gamepad East (B/Circle)** to sprint, and **C / gamepad North (Y/Triangle)** for Cheeween Cozy. The camera follows automatically.
 4. Find each cat, visit the backyard, then return to the blanket fort.
 
 ## Current prototype
@@ -18,3 +18,8 @@ A cozy, playful 3D Unity adventure starring Marty the Chiweenie, Lakitu (Keetz /
 Read **AGENTS.md** before coding and **docs/CODEX_HANDOFF.md** for the ordered backlog. See also **docs/ARCHITECTURE.md**.
 
 This is a **source-first prototype**, not a compiled game. Unity editor verification, gamepad mapping on target hardware and imported dog/cat assets remain to be tested.
+
+## M1 validation
+Quest order and the fort's Cozy requirement now live in pure C# logic with EditMode tests. Ground probing replaces the jump velocity heuristic. Legacy input and Unity Test Framework are declared dependencies. Shader selection follows the active render pipeline.
+
+On 2026-10-28, Unity 6000.3.10f1 batch startup failed with exit 198: no valid editor license. Compilation, PlayMode, keyboard/gamepad, physics and screenshots remain pending. `Validation/Compile.csproj` checks C# against installed Unity assemblies; `Validation/QuestChecks.csproj` exercises quest rules outside Unity. These do not replace Unity gameplay tests.

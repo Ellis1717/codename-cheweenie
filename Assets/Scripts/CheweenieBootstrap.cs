@@ -96,8 +96,8 @@ namespace CodenameCheweenie
 
         private static void ApplyColor(GameObject go, Color color)
         {
-            var shader = Shader.Find("Universal Render Pipeline/Lit");
-            if (shader == null) shader = Shader.Find("Standard");
+            var shader = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null
+                ? Shader.Find("Standard") : Shader.Find("Universal Render Pipeline/Lit");
             if (shader == null) return;
             var material = new Material(shader);
             material.color = color;
