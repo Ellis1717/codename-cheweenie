@@ -7,6 +7,7 @@ namespace CodenameCheweenie
         {
             GameSave.Load();
             var quest = GetComponent<QuestDirector>(); quest.Restore(GameSave.Data.stage);
+            GetComponent<BackyardDirector>()?.Restore(GameSave.Data.backyardState);
             foreach (var cat in UnityEngine.Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
                 cat.Restore(cat.energetic ? GameSave.Data.lakituFriendship : GameSave.Data.rioFriendship,
                     cat.energetic ? GameSave.Data.lakituQuest : GameSave.Data.rioQuest);

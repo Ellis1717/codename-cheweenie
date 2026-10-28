@@ -5,14 +5,16 @@
 - Unity 6000.3.10f1 batch startup was attempted against this project. It exited **198**, before importing or compiling: **No valid Unity Editor license found. Please activate your license.** The installed editor could not perform license activation in this session.
 - `dotnet build Validation/Compile.csproj`: runtime scripts compiled against installed Unity 6.3 engine assemblies, targeting .NET Standard 2.1, zero warnings and errors.
 - `dotnet build Validation/UnityTestsCompile.csproj`: runtime scripts, editor build utility, EditMode tests and PlayMode test compiled against installed Unity/NUnit/TestRunner assemblies, zero warnings and errors.
-- `dotnet run --project Validation/QuestChecks.csproj`: **36 checks passed outside Unity**: 13 quest checks plus 23 checks of saved binding recovery, conflict swaps, invalid assignments and menu-button release gating. Unity-specific key-code validation tests have been compiled, not executed.
+- `dotnet run --project Validation/QuestChecks.csproj`: **112 checks passed outside Unity**: 13 home-quest checks, 23 checks of saved binding recovery/conflict swaps/input gating, and 76 backyard progression checks. Unity-specific key-code and physical interaction tests have been compiled, not executed.
 - `Validation/ManifestChecks.ps1`: all declared package versions match the editor's bundled packages; asset metadata GUIDs are unique and assembly definition JSON parses. Legacy input is part of the editor and requires no separate package. This source audit does not run package resolution.
 
-Assembly compilation does not run Unity's asset import, package resolver, scene, renderer, physics, input, audio or serialization. No Unity Test Runner result, gameplay screenshot, controller test or playable Windows build is claimed. M1–M5 have source implementations; their gameplay acceptance checks remain pending.
+Assembly compilation does not run Unity's asset import, package resolver, scene, renderer, physics, input, audio or serialization. No Unity Test Runner result, gameplay screenshot, controller test or playable Windows build is claimed. M1–M6 have source implementations; their gameplay acceptance checks remain pending.
 
 The Unity startup was retried outside the sandbox on 2026-10-28; its log again reported no valid license and return code 198. `unity-continued.log` remains local/ignored. The continued review added compiled PlayMode coverage for cover-resource inclusion, Return to Title/resume, preserving volume across New Adventure, restoring both cat spawns and clearing greeting cooldowns. These Unity checks have not run.
 
 Source review also moved visual animation updates outside action locks so the Between squeeze can animate, and removed the duplicate first-Cozy feedback call. Verify squeeze visuals and a single Cozy chime during the licensed play test.
+
+M6 batch validation was attempted again using a waited Unity process: actual exit code **198**, still before import/compilation. `m6-unity.log` is local/ignored. The final source audit found nine bundled dependency versions and 42 unique asset/folder metadata GUIDs; C# compilation and all 112 standalone checks pass.
 
 ## Run after activating Unity
 
@@ -27,6 +29,7 @@ Use Unity 6.3 LTS; 6000.3.10f1 is installed on the development machine. The proj
 6. With real Xbox and PlayStation controllers, test all actions. Use Escape/Start settings to select a controller preset, then rebind individual buttons if the driver maps them differently. Navigate with stick, activate with raw button 0/Enter, and verify changes survive a restart. Escape always opens/closes the menu and cancels capture. Movement axes use standard left-stick axes 1/2 with a 0.2 dead zone; axis rebinding is not implemented.
 7. Change volume/camera/particles, complete missions, quit and relaunch. Check stage, friendship, companion objectives and bindings restore. New Game requires selecting confirmation a second time and preserves settings. Save data uses versioned JSON in Unity PlayerPrefs; character position and transient animation state are intentionally reset at startup.
 8. Check Console for errors and capture screenshots only after a successful play session. Retain real test XML/logs as evidence, without committing generated Unity folders.
+9. Follow `docs/BACKYARD.md` to verify the M6 loop, raised platform/ramp, tunnel clearance, hedge-wall interaction rejection, marker colours, companion hints, ribbon delivery, partial save restoration and New Adventure reset. Confirm the original house entrance and backyard sniffing marker remain accessible.
 
 ## Batch commands (PowerShell)
 

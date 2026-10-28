@@ -7,6 +7,8 @@
     <Compile Include="../Assets/Scripts/QuestProgress.cs" />
     <Compile Include="../Assets/Scripts/BindingMap.cs" />
     <Compile Include="../Assets/Scripts/InputReleaseGate.cs" />
+    <Compile Include="../Assets/Scripts/BackyardProgress.cs" />
+    <Compile Include="BackyardChecks.cs" />
     <Compile Include="QuestChecks.cs" />
   </ItemGroup>
 </Project>

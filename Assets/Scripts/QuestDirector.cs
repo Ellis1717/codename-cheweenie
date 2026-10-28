@@ -10,7 +10,7 @@ namespace CodenameCheweenie
             "Find Rio (Sis / Little Miss / Miss Priss)",
             "Explore the backyard sniffing zone",
             "Use Cheeween Cozy at the blanket fort",
-            "All missions completed! Marty Party!"
+            "Home mission complete! A backyard adventure awaits."
         };
         private Transform player;
         private string notice = "Welcome home, Marty McFly!";
@@ -25,11 +25,18 @@ namespace CodenameCheweenie
             if (!target || !player) return;
             var dog = player.GetComponent<MartyController>();
             float range = dog && dog.tuning ? dog.tuning.interactionRange : 2.8f;
-            if (Vector3.Distance(player.position, target.transform.position) > range) return;
+            if (!target.CanReach(player, range)) return;
+            var backyard = GetComponent<BackyardDirector>();
+            if (target.backyardClue != BackyardClue.None)
+            {
+                if (kind == InteractionKind.Sniff && backyard) backyard.Discover(target);
+                return;
+            }
             var companion = target.GetComponent<CatCompanion>();
             if (companion && target.stage < CurrentStage)
             {
-                Announce(companion.Befriend()); GameSave.Capture(); return;
+                string greeting = companion.Befriend();
+                Announce(backyard ? backyard.Greeting(companion, greeting) : greeting); GameSave.Capture(); return;
             }
             if (!companion && target.stage < CurrentStage && (target.stage != 3 || kind == InteractionKind.Cozy))
             {
@@ -59,12 +66,21 @@ namespace CodenameCheweenie
             int row = 0;
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
                 GUI.Box(new Rect(14, 176 + row++ * 46, Mathf.Min(620, Screen.width - 28), 42), cat.CompanionObjective + " | Friendship " + cat.Friendship + "/3", style);
+            var backyard = GetComponent<BackyardDirector>();
+            if (backyard && backyard.Unlocked)
+                GUI.Box(new Rect(14, 176 + row * 46, Mathf.Min(620, Screen.width - 28), 76), "BACKYARD ADVENTURE\n" + backyard.Objective, style);
             var input = player ? player.GetComponent<MartyInput>() : null;
             if (input)
+            {
+                var nearby = player.GetComponent<MartyController>().NearestTarget();
+                if (nearby)
+                    GUI.Box(new Rect(14, Screen.height - 134, Screen.width - 28, 36),
+                        (nearby.stage == 3 && nearby.backyardClue == BackyardClue.None ? input.BindingLabel(DogAction.Cozy) : input.BindingLabel(DogAction.Interact)) + ": " + nearby.name, style);
                 GUI.Box(new Rect(14, Screen.height - 88, Screen.width - 28, 74),
                     "Move WASD / stick | Jump " + input.BindingLabel(DogAction.Jump) + " | Sniff " + input.BindingLabel(DogAction.Interact)
                     + " | Sprint " + input.BindingLabel(DogAction.Sprint) + "\nCozy " + input.BindingLabel(DogAction.Cozy)
                     + " | Between " + input.BindingLabel(DogAction.Between) + " | Settings " + input.BindingLabel(DogAction.Menu), style);
+            }
         }
     }
 }
