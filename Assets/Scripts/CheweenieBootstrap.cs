@@ -12,7 +12,8 @@ namespace CodenameCheweenie
             var quest = world.AddComponent<QuestDirector>();
             MakeSun();
             Primitive("Lawn", PrimitiveType.Cube, new Vector3(0, -0.35f, 0), new Vector3(44, 0.5f, 44), new Color(.22f, .48f, .24f));
-            Primitive("House Floor", PrimitiveType.Cube, new Vector3(0, .04f, 3), new Vector3(17, .2f, 13), new Color(.61f, .48f, .34f));
+            var headquarters = new GameObject("Modular headquarters | schematic");
+            headquarters.AddComponent<HeadquartersBuilder>().Build();
             MakeHouse();
             MakeCharacter("Lakitu (Keetz / Keeterman)", new Vector3(-5, .65f, 4), new Color(.25f, .25f, .25f), "Keetz found! The Keeterman approves.", 0);
             MakeCharacter("Rio (Sis / Little Miss / Miss Priss)", new Vector3(5, .65f, 5), new Color(.85f, .73f, .63f), "Little Miss Priss has inspected you.", 1);
@@ -45,12 +46,6 @@ namespace CodenameCheweenie
         {
             // Broad open-sided floor plan so the first quest is fully navigable.
             // Geometry is deliberately schematic; real house measurements/photos are needed.
-            Color siding = new Color(.78f, .79f, .76f);
-            Primitive("North wall", PrimitiveType.Cube, new Vector3(0, 1.7f, 9.5f), new Vector3(17, 3.4f, .25f), siding);
-            Primitive("West wall", PrimitiveType.Cube, new Vector3(-8.5f, 1.7f, 3), new Vector3(.25f, 3.4f, 13), siding);
-            Primitive("East wall", PrimitiveType.Cube, new Vector3(8.5f, 1.7f, 3), new Vector3(.25f, 3.4f, 13), siding);
-            Primitive("Left entry frame", PrimitiveType.Cube, new Vector3(-5.5f, 1.7f, -3.5f), new Vector3(6, 3.4f, .25f), siding);
-            Primitive("Right entry frame", PrimitiveType.Cube, new Vector3(5.5f, 1.7f, -3.5f), new Vector3(6, 3.4f, .25f), siding);
             Primitive("Sofa", PrimitiveType.Cube, new Vector3(-3.1f, .7f, 6.4f), new Vector3(2.5f, 1.1f, 1), new Color(.32f, .38f, .45f));
             Primitive("Coffee table", PrimitiveType.Cube, new Vector3(-3, .4f, 4.1f), new Vector3(1.7f, .65f, 1.1f), new Color(.35f, .25f, .17f));
             Primitive("Kitchen island", PrimitiveType.Cube, new Vector3(3.5f, .8f, 1.3f), new Vector3(2.5f, 1.4f, 1), new Color(.88f, .84f, .74f));

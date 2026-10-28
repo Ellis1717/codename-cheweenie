@@ -58,6 +58,13 @@ namespace CodenameCheweenie
             float speed = IsCozy ? 0 : sprint ? tuning.sprintSpeed : tuning.walkSpeed;
             Vector3 current = body.linearVelocity;
             Vector3 desired = Vector3.MoveTowards(new Vector3(current.x, 0, current.z), direction * speed, tuning.acceleration * Time.fixedDeltaTime);
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit ground, .92f, ~0, QueryTriggerInteraction.Ignore)
+                && ground.normal.y > .6f && current.y < 1f && direction.sqrMagnitude > .01f)
+            {
+                Vector3 slope = Vector3.ProjectOnPlane(direction, ground.normal).normalized * speed;
+                desired = Vector3.MoveTowards(new Vector3(current.x, current.y, current.z), slope, tuning.acceleration * Time.fixedDeltaTime);
+                current.y = desired.y;
+            }
             body.linearVelocity = new Vector3(desired.x, current.y, desired.z);
             if (direction.sqrMagnitude > .02f)
                 body.MoveRotation(Quaternion.Slerp(body.rotation, Quaternion.LookRotation(direction), Time.fixedDeltaTime * tuning.turnSpeed));

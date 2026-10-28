@@ -10,6 +10,10 @@ namespace CodenameCheweenie
         {
             if (!target) return;
             Vector3 destination = target.position + offset;
+            Vector3 focus = target.position + Vector3.up * .4f;
+            Vector3 delta = destination - focus;
+            if (Physics.SphereCast(focus, .2f, delta.normalized, out RaycastHit hit, delta.magnitude, ~0, QueryTriggerInteraction.Ignore))
+                destination = focus + delta.normalized * Mathf.Max(.5f, hit.distance - .2f);
             transform.position = Vector3.Lerp(transform.position, destination, 7f * Time.deltaTime);
             transform.LookAt(target.position + Vector3.up * .4f);
         }
