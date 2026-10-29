@@ -7,6 +7,7 @@ namespace CodenameCheweenie
         public int version = 1;
         public int stage;
         public int backyardState;
+        public int neighbourhoodState;
         public int lakituFriendship, rioFriendship;
         public bool lakituQuest, rioQuest;
         public float volume = .6f, cameraScale = 1;
@@ -33,6 +34,7 @@ namespace CodenameCheweenie
             if (Data == null || Data.version != 1) Data = new SaveData();
             Data.stage = Mathf.Clamp(Data.stage, 0, QuestProgress.CompletedStage);
             Data.backyardState = Data.stage == QuestProgress.CompletedStage ? new BackyardProgress(Data.backyardState).State : 0;
+            Data.neighbourhoodState = new NeighbourhoodProgress(Data.neighbourhoodState).State;
             Data.volume = AudioPreferences.Unit(Data.volume, .6f);
             Data.musicVolume = AudioPreferences.RestoreMusic(Data.audioVersion, Data.musicVolume, Data.volume);
             Data.audioVersion = 1;
@@ -45,6 +47,8 @@ namespace CodenameCheweenie
             if (quest) Data.stage = quest.CurrentStage;
             var backyard = UnityEngine.Object.FindFirstObjectByType<BackyardDirector>();
             if (backyard) Data.backyardState = backyard.State;
+            var neighbourhood = UnityEngine.Object.FindFirstObjectByType<NeighbourhoodDirector>();
+            if (neighbourhood) Data.neighbourhoodState = neighbourhood.State;
             foreach (var cat in UnityEngine.Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
             {
                 if (cat.energetic) { Data.lakituFriendship = cat.Friendship; Data.lakituQuest = cat.CompanionQuestComplete; }
@@ -55,10 +59,12 @@ namespace CodenameCheweenie
         public static void NewGame()
         {
             Load(); Data.stage = 0; Data.backyardState = 0; Data.lakituFriendship = Data.rioFriendship = 0;
+            Data.neighbourhoodState = 0;
             Data.lakituQuest = Data.rioQuest = false;
             var quest = UnityEngine.Object.FindFirstObjectByType<QuestDirector>();
             if (quest) quest.Restore(0);
             UnityEngine.Object.FindFirstObjectByType<BackyardDirector>()?.Restore(0);
+            UnityEngine.Object.FindFirstObjectByType<NeighbourhoodDirector>()?.Restore(0);
             foreach (var cat in UnityEngine.Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.ResetToHome();
             UnityEngine.Object.FindFirstObjectByType<MartyController>()?.ResetToHome();
             Capture();

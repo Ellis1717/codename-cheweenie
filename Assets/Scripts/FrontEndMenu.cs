@@ -11,7 +11,7 @@ namespace CodenameCheweenie
         private int selected, page, transitionFrame;
         private bool confirmNewGame, stickReleased = true;
         private float playTimeScale = 1;
-        private bool HasProgress => GameSave.Data.stage > 0 || GameSave.Data.backyardState > 0 || GameSave.Data.lakituFriendship > 0 || GameSave.Data.rioFriendship > 0;
+        private bool HasProgress => GameSave.Data.stage > 0 || GameSave.Data.backyardState > 0 || GameSave.Data.neighbourhoodState > 0 || GameSave.Data.lakituFriendship > 0 || GameSave.Data.rioFriendship > 0;
 
         public void Initialize(MartyInput input, CozySettings options)
         {
