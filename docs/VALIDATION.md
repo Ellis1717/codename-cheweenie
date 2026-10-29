@@ -1,5 +1,17 @@
 # Validation and Windows deployment
 
+## Private local-map release 0.3.0 — 2026-10-29
+
+- **53 native Unity EditMode tests and 4 PlayMode tests passed**. New coverage validates the map schema, relative coordinates, invalid roads/stops, school-site reach, inherited JSON fields and migrating a three-stamp patrol into the school extension.
+- The full Windows walk passed **30 acceptance checks**, exit 0, in **370.83 seconds**, with **zero runtime errors** and **59.92 average FPS** at 1280x720. Production virtual keyboard/gamepad input completes the original quests and both Cozy moves, opens/closes the map, visits all four mapped stops, returns Home and walks back inside. Final states: home 4, backyard 31, local patrol 31. [Full-walk report](evidence/local-map-acceptance.json).
+- A subsequent optional-school schema fix and test-helper refactor were followed by native validation and a rebuild. The final distributed executable passed a separate **11-check startup/menu/input smoke**, exit 0, zero runtime errors, including loading its private map and school exterior. It checks UI/startup rather than repeating the long walk. [Final menu smoke](evidence/local-map-menu-smoke.json).
+- **145 existing standalone checks passed**; runtime/editor/test compilation passed with zero warnings/errors. Eleven package versions and 78 local asset/metadata entries were audited, including the two ignored private-map entries. The public source has 76 entries without those private resources.
+
+The local map has 92 exported road/path segments, two mapped green-space areas and a school stop at the mapped school site. Streets retain their geometry with uniform 1.5 scale. Terrain, buildings, home access and short park/school walking connectors are simplified for play. The map is not a survey or a verified public-access route.
+
+Launch `builds/LocalMapWindows/Cheweenie.exe` or extract `builds/Codename-Cheweenie-Local-Neighbourhood-0.3.0.zip`. Quit an older running game first. The desktop Play Cheweenie shortcut points to this edition. Exit through the south garden gate; use M / View / Share for the expanded map. Original missions remain playable.
+
+Private map/geocode caches, home-relative JSON and personalized screenshots remain ignored locally. The family ZIP includes its derived JSON and ODbL notice under MapData; the public PR includes only the generic loader/importer, synthetic tests and reports without addresses or coordinates. See [local map workflow and attribution](LOCAL_MAPS.md). Physical controllers and subjective speaker mix remain human checks.
 ## Neighbourhood release 0.2.0 — 2026-10-29
 
 - **46 native Unity EditMode tests and 4 PlayMode tests passed**. New coverage includes all six landmark orders, old-save compatibility, JSON serialization, independent progression, gate/ground geometry, actual quest routing and New Adventure reset.

@@ -52,8 +52,8 @@ namespace CodenameCheweenie
                 object current = null; bool moved = false; Exception failure = null;
                 try { moved = stack.Peek().MoveNext(); if (moved) current = stack.Peek().Current; }
                 catch (Exception exception) { failure = exception; }
-                if (failure != null || Time.realtimeSinceStartup - started > 240)
-                { errors.Add(failure != null ? failure.ToString() : "Self-test exceeded 240 seconds"); Finish(false); yield break; }
+                if (failure != null || Time.realtimeSinceStartup - started > 600)
+                { errors.Add(failure != null ? failure.ToString() : "Self-test exceeded 600 seconds"); Finish(false); yield break; }
                 if (!moved) { stack.Pop(); continue; }
                 if (current is IEnumerator nested) stack.Push(nested);
                 else yield return current;
@@ -92,9 +92,9 @@ namespace CodenameCheweenie
             ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(report), name + ".png"));
             yield return new WaitForSecondsRealtime(.2f);
         }
-        private IEnumerator Drive(float x, float z)
+        private IEnumerator Drive(float x, float z, bool sprint = false)
         {
-            float until = Time.realtimeSinceStartup + 15;
+            float until = Time.realtimeSinceStartup + Mathf.Max(15, Vector3.Distance(dog.transform.position, new Vector3(x, dog.transform.position.y, z)) / 3 + 5);
             float avoidUntil = 0;
             Vector2 avoid = Vector2.zero;
             while (Vector2.Distance(new Vector2(dog.transform.position.x, dog.transform.position.z), new Vector2(x, z)) > .4f)
@@ -109,7 +109,7 @@ namespace CodenameCheweenie
                     avoid = new Vector2(-direction.y, direction.x).normalized;
                     avoidUntil = Time.realtimeSinceStartup + .7f; direction = avoid;
                 }
-                Pad(Vector2.ClampMagnitude(direction * 1.5f, 1)); yield return null;
+                Pad(Vector2.ClampMagnitude(direction * 1.5f, 1), sprint ? GamepadButton.East : (GamepadButton?)null); yield return null;
             }
             Pad(Vector2.zero); yield return new WaitForSecondsRealtime(.15f);
         }
@@ -165,6 +165,13 @@ namespace CodenameCheweenie
             Check(controls.Held(DogAction.Jump), "PlayStation Cross maps to jump");
             Pad(Vector2.zero); yield return new WaitForSecondsRealtime(1);
             controls.ApplyControllerPreset(false);
+            if (Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0)
+            {
+                yield return MappedMenu();
+                settings.OpenFromTitle(); settings.ReturnToTitle();
+                Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Menu smoke returns to the paused title");
+                Check(errors.Count == 0, "No runtime errors during the menu smoke"); yield break;
+            }
             yield return Drive(0, -7.8f); yield return Drive(-6.3f, -7.8f); yield return Drive(-6.3f, 4);
             Check(dog.transform.position.y > 4.2f, "Walked up the headquarters ramp to the second story"); yield return Shot("loft");
             yield return Drive(-6.3f, -7.8f); yield return Drive(0, -7.8f);
@@ -195,6 +202,9 @@ namespace CodenameCheweenie
             yield return Drive(13.35f, -18); yield return Drive(13.35f, -8.3f); yield return Drive(0, -8.3f);
             yield return Drive(0, 2.6f); yield return Drive(5, 2.6f); yield return Interact(Target(1));
             Check(backyard.Complete, "Delivered ribbon to Rio; full adventure complete"); yield return Shot("complete");
+            if (MappedNeighbourhood.Current != null) yield return MappedTour();
+            else
+            {
             yield return Drive(0, 2.6f); yield return Drive(0, -8.3f); yield return Drive(13.35f, -8.3f);
             yield return Drive(13.35f, -13); yield return Drive(26, -13);
             Check(dog.transform.position.x > 24, "Walked through the east garden gate into the neighbourhood");
@@ -212,9 +222,39 @@ namespace CodenameCheweenie
             GameSave.Capture(); Check(GameSave.Data.neighbourhoodState == 15, "Neighbourhood completion captured independently of home and backyard progress");
             yield return Drive(13.35f, -13); yield return Drive(13.35f, -8.3f); yield return Drive(0, -8.3f); yield return Drive(0, -1);
             Check(dog.transform.position.x < 2 && dog.transform.position.z > -2, "Walked home after the neighbourhood tour");
+            }
             settings.OpenFromTitle(); settings.ReturnToTitle();
             Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Return to title works in the built player");
             Check(errors.Count == 0, "No runtime errors during the full playthrough");
+        }
+        private IEnumerator MappedTour()
+        {
+            var map = MappedNeighbourhood.Current; var director = GetComponent<NeighbourhoodDirector>();
+            yield return MappedMenu();
+            yield return Drive(0, 2.6f);
+            foreach (var point in map.tour)
+            {
+                yield return Drive(point.x, point.z, true);
+                if (point.stop == 0) continue;
+                yield return Interact(Stop((NeighbourhoodStop)point.stop));
+                Check(director.Has((NeighbourhoodStop)point.stop), "Mapped walking stop " + point.stop + " visited using production gamepad controls");
+                if (point.stop == 4) yield return Shot("local-park");
+                if (point.stop == 16) yield return Shot("local-school");
+            }
+            Check(director.Complete, "Completed the mapped park and school patrol and returned home");
+            GameSave.Capture(); Check(GameSave.Data.neighbourhoodState == 31, "Four-stop local patrol saves independently of existing quests");
+            yield return Drive(0, -1); Check(dog.transform.position.z > -2, "Walked back inside after the real-street tour");
+        }
+        private IEnumerator MappedMenu()
+        {
+            var map = MappedNeighbourhood.Current; var director = GetComponent<NeighbourhoodDirector>();
+            Check(map.IncludesSchool && GameObject.Find("School | stylized exterior"), "Mapped school exterior and walking stop are present");
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.M)); yield return new WaitForSecondsRealtime(.15f);
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState()); yield return new WaitForSecondsRealtime(.1f);
+            Check(director.MapExpanded, "Keyboard opens the full local street map"); yield return Shot("local-map");
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.M)); yield return new WaitForSecondsRealtime(.1f);
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState()); yield return new WaitForSecondsRealtime(.1f);
+            Check(!director.MapExpanded, "Keyboard closes the full local street map");
         }
     }
 }

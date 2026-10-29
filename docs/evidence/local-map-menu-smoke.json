@@ -1,0 +1,24 @@
+{
+    "passed": true,
+    "version": "0.3.0",
+    "seconds": 7.940560340881348,
+    "averageFramesPerSecond": 57.55256652832031,
+    "homeStage": 0,
+    "backyardState": 0,
+    "neighbourhoodState": 0,
+    "materialCount": 61,
+    "checks": [
+        "Branded title pauses gameplay",
+        "Music bundled in the player",
+        "Settings opens from title",
+        "Keyboard movement advances Marty",
+        "Keyboard jump leaves the ground",
+        "PlayStation Cross maps to jump",
+        "Mapped school exterior and walking stop are present",
+        "Keyboard opens the full local street map",
+        "Keyboard closes the full local street map",
+        "Menu smoke returns to the paused title",
+        "No runtime errors during the menu smoke"
+    ],
+    "errors": []
+}

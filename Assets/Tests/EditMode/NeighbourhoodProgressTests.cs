@@ -39,5 +39,14 @@ namespace CodenameCheweenie.Tests
             var restored = UnityEngine.JsonUtility.FromJson<SaveData>(UnityEngine.JsonUtility.ToJson(saved));
             Assert.AreEqual(15, restored.neighbourhoodState); Assert.AreEqual(31, restored.backyardState);
         }
+        [Test] public void ExtendedWalkKeepsOldStampsButRequiresSchoolBeforeReturning()
+        {
+            var progress = new NeighbourhoodProgress(15, true);
+            Assert.AreEqual(7, progress.State); Assert.AreEqual(3, progress.Visits); Assert.IsFalse(progress.Complete);
+            Assert.IsFalse(progress.Visit(NeighbourhoodStop.Home));
+            Assert.IsTrue(progress.Visit(NeighbourhoodStop.School)); Assert.AreEqual(4, progress.Visits);
+            Assert.IsTrue(progress.Visit(NeighbourhoodStop.Home)); Assert.AreEqual(31, progress.State);
+            Assert.IsTrue(new NeighbourhoodProgress(31, true).Complete);
+        }
     }
 }

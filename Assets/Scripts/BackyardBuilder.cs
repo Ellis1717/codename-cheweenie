@@ -11,7 +11,12 @@ namespace CodenameCheweenie
             Box("West garden fence", new Vector3(-17, .55f, -13), new Vector3(.25f, 1.3f, 12), wood);
             Box("East garden fence north", new Vector3(17, .55f, -8.5f), new Vector3(.25f, 1.3f, 3), wood);
             Box("East garden fence south", new Vector3(17, .55f, -17.5f), new Vector3(.25f, 1.3f, 3), wood);
-            Box("South garden fence", new Vector3(0, .55f, -19), new Vector3(34, 1.3f, .25f), wood);
+            if (MappedNeighbourhood.Current != null)
+            {
+                Box("South garden fence west", new Vector3(-10, .55f, -19), new Vector3(14, 1.3f, .25f), wood);
+                Box("South garden fence east", new Vector3(10, .55f, -19), new Vector3(14, 1.3f, .25f), wood);
+            }
+            else Box("South garden fence", new Vector3(0, .55f, -19), new Vector3(34, 1.3f, .25f), wood);
             Box("West entry fence", new Vector3(-12.75f, .55f, -7), new Vector3(8.5f, 1.3f, .25f), wood);
             Box("East entry fence", new Vector3(12.75f, .55f, -7), new Vector3(8.5f, 1.3f, .25f), wood);
 

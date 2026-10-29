@@ -20,6 +20,7 @@ namespace CodenameCheweenie
         private FrontEndMenu frontEnd;
         private CozySettings settings;
         private BackyardDirector backyardHud;
+        private NeighbourhoodDirector neighbourhoodHud;
         private MartyController dogHud;
         private MartyInput inputHud;
         private int controlsSignature = int.MinValue;
@@ -28,6 +29,7 @@ namespace CodenameCheweenie
         {
             cats = Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None);
             frontEnd = GetComponent<FrontEndMenu>(); settings = GetComponent<CozySettings>(); backyardHud = GetComponent<BackyardDirector>();
+            neighbourhoodHud = GetComponent<NeighbourhoodDirector>();
             if (player) { dogHud = player.GetComponent<MartyController>(); inputHud = player.GetComponent<MartyInput>(); }
         }
         public int CurrentStage => progress.Stage;
@@ -77,7 +79,7 @@ namespace CodenameCheweenie
         }
         private void OnGUI()
         {
-            if (frontEnd && frontEnd.ShowingTitle || settings && settings.IsOpen || !inputHud) return;
+            if (frontEnd && frontEnd.ShowingTitle || settings && settings.IsOpen || !inputHud || neighbourhoodHud && neighbourhoodHud.MapExpanded) return;
             Matrix4x4 before = GUI.matrix;
             float scale = Mathf.Min(Screen.width / 1280f, Screen.height / 720f);
             float width = Screen.width / scale, height = Screen.height / scale;

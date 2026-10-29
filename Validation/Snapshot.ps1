@@ -8,7 +8,7 @@ foreach ($asset in $assets) {
         [IO.File]::WriteAllText($meta, $text)
     }
 }
-$files = @('.gitignore','AGENTS.md','README.md') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject)\\' -and $_.Name -ne 'Generated.meta' } | ForEach-Object { $_.FullName })
+$files = @('.gitignore','AGENTS.md','README.md') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject|PrivateNeighbourhood)\\' -and $_.Name -notin @('Generated.meta','PrivateNeighbourhood.meta') } | ForEach-Object { $_.FullName })
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f
     $binary = $i.Extension -in @('.png','.jpg','.jpeg','.wav','.fbx')
