@@ -2,12 +2,13 @@ using UnityEngine;
 
 namespace CodenameCheweenie
 {
-    // Fictional block until the family supplies landmarks. No real addresses or private photos.
+    // Default schematic block; an ignored local map can supply the real surrounding streets.
     public sealed class NeighbourhoodBuilder : MonoBehaviour
     {
         private readonly Color path = new Color(.72f, .7f, .6f), wood = new Color(.48f, .33f, .22f);
         public void Build()
         {
+            if (MappedNeighbourhood.Current != null) { gameObject.AddComponent<MappedNeighbourhoodBuilder>().Build(MappedNeighbourhood.Current); return; }
             // Sit below the original lawn and street to avoid coplanar surfaces flickering.
             Box("Neighbourhood lawn", new Vector3(24, -.36f, -3), new Vector3(92, .5f, 64), new Color(.3f, .53f, .3f));
             Box("Quiet walking street", new Vector3(32, -.13f, -3), new Vector3(8, .06f, 54), new Color(.29f, .32f, .35f));
