@@ -40,6 +40,11 @@ namespace CodenameCheweenie
             var dog = player.GetComponent<MartyController>();
             float range = dog && dog.tuning ? dog.tuning.interactionRange : 2.8f;
             if (!target.CanReach(player, range)) return;
+            if (target.neighbourhoodStop != NeighbourhoodStop.None)
+            {
+                if (kind == InteractionKind.Sniff) GetComponent<NeighbourhoodDirector>()?.Visit(target);
+                return;
+            }
             var backyard = GetComponent<BackyardDirector>();
             if (target.backyardClue != BackyardClue.None)
             {

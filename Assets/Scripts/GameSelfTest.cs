@@ -18,7 +18,7 @@ namespace CodenameCheweenie
             public bool passed;
             public string version;
             public float seconds, averageFramesPerSecond;
-            public int homeStage, backyardState, materialCount;
+            public int homeStage, backyardState, neighbourhoodState, materialCount;
             public string[] checks, errors;
         }
         private readonly List<string> checks = new List<string>();
@@ -52,8 +52,8 @@ namespace CodenameCheweenie
                 object current = null; bool moved = false; Exception failure = null;
                 try { moved = stack.Peek().MoveNext(); if (moved) current = stack.Peek().Current; }
                 catch (Exception exception) { failure = exception; }
-                if (failure != null || Time.realtimeSinceStartup - started > 180)
-                { errors.Add(failure != null ? failure.ToString() : "Self-test exceeded 180 seconds"); Finish(false); yield break; }
+                if (failure != null || Time.realtimeSinceStartup - started > 240)
+                { errors.Add(failure != null ? failure.ToString() : "Self-test exceeded 240 seconds"); Finish(false); yield break; }
                 if (!moved) { stack.Pop(); continue; }
                 if (current is IEnumerator nested) stack.Push(nested);
                 else yield return current;
@@ -71,6 +71,7 @@ namespace CodenameCheweenie
                 passed = passed, version = Application.version, seconds = Time.realtimeSinceStartup - started,
                 averageFramesPerSecond = (Time.frameCount - firstFrame) / Mathf.Max(.01f, Time.realtimeSinceStartup - started),
                 homeStage = quest ? quest.CurrentStage : -1, backyardState = backyard ? backyard.State : -1,
+                neighbourhoodState = GetComponent<NeighbourhoodDirector>() ? GetComponent<NeighbourhoodDirector>().State : -1,
                 materialCount = Resources.FindObjectsOfTypeAll<Material>().Length, checks = checks.ToArray(), errors = errors.ToArray()
             };
             File.WriteAllText(report, JsonUtility.ToJson(result, true));
@@ -114,7 +115,7 @@ namespace CodenameCheweenie
         }
         private InteractableTarget Target(int stage, BackyardClue clue = BackyardClue.None)
         {
-            foreach (var target in InteractableTarget.Active) if (target.stage == stage && target.backyardClue == clue) return target;
+            foreach (var target in InteractableTarget.Active) if (target.stage == stage && target.backyardClue == clue && target.neighbourhoodStop == NeighbourhoodStop.None) return target;
             throw new InvalidOperationException("Missing interaction " + stage + " / " + clue);
         }
         private IEnumerator Interact(InteractableTarget target, bool cozy = false)
@@ -129,6 +130,11 @@ namespace CodenameCheweenie
             Pad(Vector2.zero); yield return new WaitForSecondsRealtime(.12f);
             Pad(Vector2.zero, cozy ? GamepadButton.North : GamepadButton.West); yield return new WaitForSecondsRealtime(.12f);
             Pad(Vector2.zero); yield return new WaitForSecondsRealtime(.2f);
+        }
+        private InteractableTarget Stop(NeighbourhoodStop stop)
+        {
+            foreach (var target in InteractableTarget.Active) if (target.neighbourhoodStop == stop) return target;
+            throw new InvalidOperationException("Missing neighbourhood stop " + stop);
         }
         private IEnumerator Run()
         {
@@ -189,6 +195,23 @@ namespace CodenameCheweenie
             yield return Drive(13.35f, -18); yield return Drive(13.35f, -8.3f); yield return Drive(0, -8.3f);
             yield return Drive(0, 2.6f); yield return Drive(5, 2.6f); yield return Interact(Target(1));
             Check(backyard.Complete, "Delivered ribbon to Rio; full adventure complete"); yield return Shot("complete");
+            yield return Drive(0, 2.6f); yield return Drive(0, -8.3f); yield return Drive(13.35f, -8.3f);
+            yield return Drive(13.35f, -13); yield return Drive(26, -13);
+            Check(dog.transform.position.x > 24, "Walked through the east garden gate into the neighbourhood");
+            yield return Drive(26, -19); yield return Interact(Stop(NeighbourhoodStop.Mailbox));
+            Check(GetComponent<NeighbourhoodDirector>().Has(NeighbourhoodStop.Mailbox), "Mailbox stamp discovered");
+            yield return Drive(26, -13); yield return Drive(47, -13); yield return Interact(Stop(NeighbourhoodStop.Garden));
+            Check(GetComponent<NeighbourhoodDirector>().Has(NeighbourhoodStop.Garden), "Crossed the street and sniffed the flower garden");
+            yield return Shot("neighbourhood-garden");
+            yield return Drive(47, -13); yield return Drive(26, -13); yield return Drive(26, 8); yield return Drive(23, 8);
+            yield return Interact(Stop(NeighbourhoodStop.Park));
+            Check(GetComponent<NeighbourhoodDirector>().Has(NeighbourhoodStop.Park), "Park stamp discovered beside the pond");
+            yield return Shot("neighbourhood-park");
+            yield return Drive(26, 8); yield return Drive(26, -13); yield return Drive(20, -13); yield return Interact(Stop(NeighbourhoodStop.Home));
+            Check(GetComponent<NeighbourhoodDirector>().Complete, "Returned to the garden gate and finished the neighbourhood patrol");
+            GameSave.Capture(); Check(GameSave.Data.neighbourhoodState == 15, "Neighbourhood completion captured independently of home and backyard progress");
+            yield return Drive(13.35f, -13); yield return Drive(13.35f, -8.3f); yield return Drive(0, -8.3f); yield return Drive(0, -1);
+            Check(dog.transform.position.x < 2 && dog.transform.position.z > -2, "Walked home after the neighbourhood tour");
             settings.OpenFromTitle(); settings.ReturnToTitle();
             Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Return to title works in the built player");
             Check(errors.Count == 0, "No runtime errors during the full playthrough");

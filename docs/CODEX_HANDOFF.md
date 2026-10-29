@@ -22,3 +22,5 @@ Project opens without missing packages, playable initial quest, no console error
 
 ## Codex setup
 In Codex, select GitHub repo `Ellis1717/codename-cheweenie`, create a cloud task using the starter prompt, and branch from `main`. If a Unity editor is absent in cloud, perform static validations and mark runtime checks as pending. No Codex session has been launched by this document alone.
+
+Neighbourhood extension (2026-10-29): a fictional walking block, open east gate, houses/park/garden, live map and independent saved sniff patrol are implemented on the neighbourhood branch. Verification: 46 EditMode tests, 4 PlayMode tests, 145 standalone checks and 26 built-player acceptance checks pass. See docs/NEIGHBOURHOOD.md and docs/VALIDATION.md. Real neighbourhood likeness still requires family-provided landmarks; no real addresses were inferred.

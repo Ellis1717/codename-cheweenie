@@ -12,6 +12,7 @@ namespace CodenameCheweenie
         private void OnDisable() { Targets.Remove(this); }
         public int stage;
         public BackyardClue backyardClue;
+        public NeighbourhoodStop neighbourhoodStop;
         [TextArea] public string dialogue;
         public bool CanReach(Transform player, float range)
         {

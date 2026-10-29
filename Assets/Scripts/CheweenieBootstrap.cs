@@ -16,6 +16,7 @@ namespace CodenameCheweenie
             QualitySettings.vSyncCount = 0;
             var quest = world.AddComponent<QuestDirector>();
             world.AddComponent<BackyardDirector>();
+            world.AddComponent<NeighbourhoodDirector>();
             world.AddComponent<SaveLifecycle>();
             world.AddComponent<GameAudio>();
             world.AddComponent<CozyFeedback>();
@@ -26,6 +27,7 @@ namespace CodenameCheweenie
             headquarters.AddComponent<HeadquartersBuilder>().Build();
             MakeHouse();
             new GameObject("Schematic backyard adventure").AddComponent<BackyardBuilder>().Build();
+            new GameObject("Neighbourhood | fictional walking block").AddComponent<NeighbourhoodBuilder>().Build();
             MakeCharacter("Lakitu (Keetz / Keeterman)", new Vector3(-5, .65f, 4), new Color(.25f, .25f, .25f), "Keetz found! The Keeterman approves.", 0);
             MakeCharacter("Rio (Sis / Little Miss / Miss Priss)", new Vector3(5, .65f, 5), new Color(.85f, .73f, .63f), "Little Miss Priss has inspected you.", 1);
             Target("Backyard sniffing zone", new Vector3(1, .75f, -9), new Color(.95f, .76f, .15f), 2, "Backyard fully sniffed!");

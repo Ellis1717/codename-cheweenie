@@ -1,6 +1,15 @@
 # Validation and Windows deployment
 
-## Latest results — 2026-10-28
+## Neighbourhood release 0.2.0 — 2026-10-29
+
+- **46 native Unity EditMode tests and 4 PlayMode tests passed**. New coverage includes all six landmark orders, old-save compatibility, JSON serialization, independent progression, gate/ground geometry, actual quest routing and New Adventure reset.
+- The release Windows executable passed **26 acceptance checks**, exit 0, with **zero runtime errors**. Production virtual keyboard/gamepad input walks the complete home/backyard adventures, both Cozy moves, the east garden gate, mailbox, flower garden, park, welcome-home sign and return indoors. Final flags: home 4, backyard 31, neighbourhood 15.
+- Final run: **126.58 seconds, 59.80 average FPS at 1280x720**, capped at 60 FPS on this development machine. This is not a cross-hardware benchmark. See [JSON result](evidence/neighbourhood-acceptance.json), [garden screenshot](screenshots/neighbourhood-garden.png) and [park screenshot](screenshots/neighbourhood-park.png).
+- **145 existing standalone checks passed**; runtime/editor/test compilation passed with zero warnings/errors. Eleven package versions and 73 metadata entries validated. No additional dependency was needed for the neighbourhood.
+- All 139 distributed player files match the tested build. The portable ZIP has 142 entries including the complete runtime and a start guide. The old local release was preserved.
+
+Launch `builds/NeighbourhoodWindows/Cheweenie.exe`, or extract `builds/Codename-Cheweenie-Neighbourhood-0.2.0.zip`. The desktop **Play Cheweenie** shortcut points to this edition. Quit any older running copy before starting the new one so two versions do not overwrite each other's saves. The neighbourhood is available immediately through the east garden gate. Its schematic geography is fictional until family landmarks are supplied. Physical controllers and subjective speaker mix remain human checks.
+## Earlier Windows/audio results — 2026-10-28
 
 Unity 6000.3.10f1 now imports and tests this project successfully. Audio validation ran in an isolated copy at `Validation/UnityAudioProject`, with a different company/product name to keep its PlayerPrefs separate from the user's game. The user's running editor was preserved. The repository now includes reproducible Unity 6.3.10f1 settings, a package lock and Both input handling.
 
