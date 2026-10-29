@@ -1,5 +1,15 @@
 # Validation and Windows deployment
 
+## Family cameos 0.8.1 — 2026-10-29
+
+The backyard sniff encounter introduces Fox Ellis as Chief Sniff Inspector: “Yep. Definitely grass.” Cheeween Cozy at the fort introduces Leo Ellis as Blanket Boss: “Five more minutes!” Marty agrees. Each on-screen line lasts eight seconds, including repeat interactions on completed saves. Encounter dialogue stays visible while companion friendship rewards are granted. Existing sound cues remain; these are text cameos.
+
+- **12 native Unity PlayMode tests passed** with the changed source (`TestResults/family-cameos-play.xml`); the Windows build completed successfully on Unity 6000.3.10f1.
+- **33 built-player cameo/input/home checks passed**, zero runtime errors, in **45.60 seconds**. Virtual controller input completes the home encounters and verifies both displayed punchlines survive companion completion; keyboard C/E replays both after completion. Existing startup, camera and movement checks run first. [Actual report](evidence/family-cameos.json).
+- All **139 packaged game files** hash-match the tested build. The portable ZIP has **143 entries**, including the controls guide and local map/license sidecar. Launch the updated desktop shortcut, `PLAY.cmd` or `builds/FamilyCameosWindows-0.8.1/Cheweenie.exe`; archive: `builds/Codename-Cheweenie-Family-Cameos-0.8.1.zip`. Close an older game first. Previous releases remain available.
+
+This is a focused dialogue/display change. The complete neighbourhood and save/restart results below apply to 0.8.0; those longer routes were not repeated for 0.8.1. Controller verification uses virtual devices.
+
 ## Cameras, controller controls and pet motion 0.8.0 — 2026-10-29
 
 Three saved views (Cozy/Explore/Low), R3/V cycling, right-stick/RMB orbit and RB/R1/Home recenter are implemented. Explore/Low movement follows the view. Analog stick magnitude now controls speed on flat ground and ramps. Menus use named A/Cross confirm, B/Circle back and Menu/Options pause; resetting bindings retains the PlayStation preset. GroundedGait drives walk/trot/run timing from actual travel/turning, holds stance paws in world space, probes the floor and adds swing lift, breathing, jump tuck, landing compression and smooth Cozy poses. Cats accelerate/decelerate and turn gradually. Original geometry, root physics, quests and save compatibility remain. [Controls, tuning and limitations](CAMERA_MOTION.md).

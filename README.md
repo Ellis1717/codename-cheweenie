@@ -2,6 +2,8 @@
 
 A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
+**Family cameos (0.8.1):** sniff the backyard zone for **Fox Ellis, Chief Sniff Inspector: “Yep. Definitely grass.”** Get Cheeween Cozy at the blanket fort for **Leo Ellis, Blanket Boss: “Five more minutes!” Marty agrees.** Both messages stay visible for eight seconds and replay when you repeat the encounter after completing it. Cat friendship rewards still apply.
+
 Marty now loads the original **Marty Explorer** mesh from your supplied character archive. His geometry and ten source colours are retained, with added leg, head, ear, tail and blink motion. Original OBJ/GLB, the Unity prefab, meshes, materials, importer and animation source are version controlled; a photo-guided alternative is retained too. See [Marty resources and editing](Assets/Art/Marty/README.md). The concept sheet has more detail than the supplied static mesh; it is an art target rather than a render of this model.
 
 Lakitu and Rio now use retained photo-guided character prefabs too, with separate coat textures, articulated legs, tail motion and blinking. The shared scenery style adds warm textured floors/walls/paths, rounded furniture, windows, fences, plants, cottage roofs and park/school details. [Cat resources](Assets/Art/Cats/README.md) · [Scenery palette and editing](Assets/Art/Scenery/README.md). Existing movement, solid routes, missions and saves are preserved; added scenery props are cosmetic.
@@ -10,7 +12,7 @@ Three saved camera views now let you choose a Cozy overview, Explore orbit or Lo
 
 ## Quick start
 
-**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The current package is `builds/CameraMotionWindows-0.8.0/Cheweenie.exe`, also promoted to `builds/Current` when that folder is not in use. Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Controller-Cameras-Motion-0.8.0.zip` to play on another Windows PC.
+**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The current package is `builds/FamilyCameosWindows-0.8.1/Cheweenie.exe`, also promoted to `builds/Current` when that folder is not in use. Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Family-Cameos-0.8.1.zip` to play on another Windows PC.
 
 Choose **Start adventure** or **Continue adventure**. WASD moves, Space jumps, E greets/sniffs, Shift sprints, C snuggles and Escape opens Settings. For the personalized neighbourhood, leave through the south garden gate and press M for the map; visit the park and school, then return Home. Settings → **Return Marty home** brings you back while keeping progress. [Editable assumptions and decisions](docs/ASSUMPTIONS.md) records provisional choices you can change later.
 
@@ -57,6 +59,9 @@ Lakitu and Rio use the supplied photos for their distinct black-and-white coat p
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
+
+The 0.8.1 cameo update passes 12 native PlayMode tests and 33 Windows cameo/input/home checks with zero runtime errors. Both controller encounters and keyboard replay were verified. [Cameo evidence](docs/evidence/family-cameos.json).
+
 On **2026-10-29**, **64 native Unity EditMode tests and 12 PlayMode tests passed** in an isolated Unity 6000.3.10f1 project. Coverage includes retained model geometry/resources, scenery, quests/saves/audio, original scene presentation, controller-only menus, camera orbit/recenter, pause input gating, view-relative analog movement and planted-paw stability. **145 standalone checks pass**; runtime/editor/test compilation has zero warnings/errors. Eleven packages and 229 local asset/metadata entries were audited.
 
 The Windows 0.8.0 full adventure passes **51 checks**, including both Cozy moves, ribbon delivery, the local park/school patrol, return indoors and home recovery. Separate launches pass ten save/restart checks and 32 menu/input/visual checks at each of 720p and 1080p. The full run averaged 59.92 FPS here with zero runtime errors. See [actual validation results and evidence](docs/VALIDATION.md). Tests use virtual input devices; physical controller hardware and subjective speaker mix remain human checks. Pet motion is procedural animation of articulated static meshes; final likeness and a fully skinned animation pipeline remain future art work. House layout and people remain schematic.

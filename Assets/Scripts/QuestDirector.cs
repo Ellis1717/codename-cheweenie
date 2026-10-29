@@ -33,9 +33,10 @@ namespace CodenameCheweenie
             if (player) { dogHud = player.GetComponent<MartyController>(); inputHud = player.GetComponent<MartyInput>(); }
         }
         public int CurrentStage => progress.Stage;
+        public string CurrentNotice => notice;
         public void Restore(int stage) { progress = new QuestProgress(stage); }
         public void SetPlayer(Transform t) { player = t; }
-        public void Announce(string message) { notice = message; noticeUntil = Time.time + 5f; }
+        public void Announce(string message, float seconds = 5f) { notice = message; noticeUntil = Time.time + seconds; }
         public void Activate(InteractableTarget target, InteractionKind kind = InteractionKind.Sniff)
         {
             if (!target || !player) return;
@@ -63,16 +64,17 @@ namespace CodenameCheweenie
             if (!companion && target.stage < CurrentStage && (target.stage != 3 || kind == InteractionKind.Cozy))
             {
                 foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.CompleteAt(target.stage);
-                Announce(target.dialogue); GameSave.Capture(); return;
+                Announce(target.dialogue, 8f); GameSave.Capture(); return;
             }
             if (!progress.TryAdvance(target.stage, kind))
             {
                 Announce("Marty Man has another mission first!");
                 return;
             }
-            Announce(companion ? companion.Befriend() : target.dialogue);
+            Announce(companion ? companion.Befriend() : target.dialogue, companion ? 5f : 8f);
+            // Keep the encounter's punchline visible while granting cat friendship.
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
-                if (cat.CompleteAt(target.stage)) Announce(cat.energetic ? "Keeterman's backyard patrol complete!" : "Miss Priss approves of Cheeween Cozy!");
+                cat.CompleteAt(target.stage);
             if (kind != InteractionKind.Cozy) GetComponent<CozyFeedback>()?.Play(player.position,
                 companion ? companion.energetic ? SoundCue.Lakitu : SoundCue.Rio : SoundCue.Discovery);
             GameSave.Capture();

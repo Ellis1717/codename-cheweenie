@@ -3,6 +3,7 @@ setlocal
 set "CHEWEENIE_GAME=%~dp0builds\Current"
 if exist "%~dp0builds\CatsSceneryWindows-0.7.0\Cheweenie.exe" set "CHEWEENIE_GAME=%~dp0builds\CatsSceneryWindows-0.7.0"
 if exist "%~dp0builds\CameraMotionWindows-0.8.0\Cheweenie.exe" set "CHEWEENIE_GAME=%~dp0builds\CameraMotionWindows-0.8.0"
+if exist "%~dp0builds\FamilyCameosWindows-0.8.1\Cheweenie.exe" set "CHEWEENIE_GAME=%~dp0builds\FamilyCameosWindows-0.8.1"
 if not exist "%CHEWEENIE_GAME%\Cheweenie.exe" set "CHEWEENIE_GAME=%~dp0builds\Windows"
 if not exist "%CHEWEENIE_GAME%\Cheweenie.exe" goto missing
 if not exist "%CHEWEENIE_GAME%\UnityPlayer.dll" goto incomplete
