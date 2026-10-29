@@ -12,12 +12,16 @@ namespace CodenameCheweenie
         {
             get
             {
-                int hash = GameSave.Data != null && GameSave.Data.playStationLabels ? 1 : 0;
+                int hash = GameSave.Data != null ? (GameSave.Data.playStationLabels ? 1 : 0)+GameSave.Data.cameraMode*17 : 0;
                 for (int i = 0; i < keyboard.Length; i++) hash = unchecked(hash * 397 ^ (int)keyboard[i] ^ (int)gamepad[i]);
                 return hash;
             }
         }
         private readonly InputReleaseGate releaseGate = new InputReleaseGate();
+        private CheweenieCamera view;
+        public bool AllowsGameplayUtilities => CanRead;
+        public bool KeyboardUtilityAvailable(KeyCode key)=>System.Array.IndexOf(keyboard,key)<0;
+        public bool PadUtilityAvailable(int xbox,int ps)=>System.Array.IndexOf(gamepad,(KeyCode)((int)KeyCode.JoystickButton0+(GameSave.Data.playStationLabels?ps:xbox)))<0;
         public void SuppressForFrame() { releaseGate.Suppress(Time.frameCount); }
         private bool CanRead
         {
@@ -70,7 +74,9 @@ namespace CodenameCheweenie
                 float x = (GameControls.GetKey(KeyCode.D) || GameControls.GetKey(KeyCode.RightArrow) ? 1 : 0) - (GameControls.GetKey(KeyCode.A) || GameControls.GetKey(KeyCode.LeftArrow) ? 1 : 0);
                 float z = (GameControls.GetKey(KeyCode.W) || GameControls.GetKey(KeyCode.UpArrow) ? 1 : 0) - (GameControls.GetKey(KeyCode.S) || GameControls.GetKey(KeyCode.DownArrow) ? 1 : 0);
                 var stick = new Vector3(GameControls.GetAxisRaw("DogStickX"), 0, -GameControls.GetAxisRaw("DogStickY"));
-                return Vector3.ClampMagnitude(new Vector3(x, 0, z) + stick, 1);
+                var movement=Vector3.ClampMagnitude(new Vector3(x, 0, z) + stick, 1);
+                if(!view&&Camera.main)view=Camera.main.GetComponent<CheweenieCamera>();
+                return view?view.ToWorldMovement(movement):movement;
             }
         }
     }

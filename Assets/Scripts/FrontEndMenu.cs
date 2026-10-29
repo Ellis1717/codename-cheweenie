@@ -33,14 +33,15 @@ namespace CodenameCheweenie
         private void Update()
         {
             if (!ShowingTitle || settings.IsOpen || Time.frameCount == transitionFrame) return;
-            if (GameControls.GetKeyDown(KeyCode.Escape))
-            { if (page != 0 || confirmNewGame) { page = 0; confirmNewGame = false; } else settings.OpenFromTitle(); return; }
+            if (GameControls.CancelPressed)
+            { if (page != 0 || confirmNewGame) { page = 0; confirmNewGame = false; } else if(GameControls.GetKeyDown(KeyCode.Escape))settings.OpenFromTitle(); return; }
+            if(GameControls.PausePressed){settings.OpenFromTitle();return;}
             float axis = GameControls.GetAxisRaw("DogStickY");
             if (Mathf.Abs(axis) < .3f) stickReleased = true;
             int direction = GameControls.GetKeyDown(KeyCode.DownArrow) ? 1 : GameControls.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
             if (stickReleased && Mathf.Abs(axis) > .6f) { direction = axis > 0 ? 1 : -1; stickReleased = false; }
             if (direction != 0) { selected = (selected + direction + 6) % 6; confirmNewGame = false; }
-            if (GameControls.GetKeyDown(KeyCode.Return) || GameControls.GetKeyDown(KeyCode.JoystickButton0) || GameControls.GetKeyDown(KeyCode.JoystickButton1))
+            if (GameControls.SubmitPressed)
                 Activate(page == 0 ? selected : -1);
         }
         private void Activate(int row)
@@ -92,7 +93,7 @@ namespace CodenameCheweenie
                         ? "Make yourself at home\n\nWASD / left stick: move\n" + controls.BindingLabel(DogAction.Jump) + ": jump\n"
                             + controls.BindingLabel(DogAction.Sprint) + ": sprint\n" + controls.BindingLabel(DogAction.Interact) + ": sniff and greet\n"
                             + controls.BindingLabel(DogAction.Cozy) + ": Cheeween Cozy\n" + controls.BindingLabel(DogAction.Between) + ": Cheween in Between\n"
-                            + controls.BindingLabel(DogAction.Menu) + ": settings\n\nGreet the cats, sniff the backyard, then get Cozy. Change buttons in Settings."
+                            + controls.BindingLabel(DogAction.Menu) + ": settings\nV / R3: camera · right stick / RMB: look\nHome / RB / R1: recenter\nGreet the cats, sniff the backyard, then get Cozy."
                         : "Codename .... Cheweenie\n\nStarring Marty the Chiweenie, Lakitu (Keetz), and Rio (Miss Priss).\n\nMarty's specialties: Cheeween Cozy and Cheween in Between.\n\nOriginal cover concept art. House and character models are still in development.";
                     GUI.Label(new Rect(86, 366, 474, 306), text, BrandTheme.Text(18, BrandTheme.Cream));
                     if (BrandTheme.Button(new Rect(86, 682, 474, 40), "Back", true)) Activate(-1);

@@ -29,6 +29,7 @@ namespace CodenameCheweenie
             var interpolation = body.interpolation; body.interpolation = RigidbodyInterpolation.None;
             body.position = new Vector3(0, .95f, -1); body.rotation = Quaternion.identity; body.linearVelocity = Vector3.zero; body.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(body.position, body.rotation); Physics.SyncTransforms(); body.interpolation = interpolation;
+            GetComponentInChildren<GroundedGait>()?.ResetContacts();
         }
 
         private void Awake()
@@ -99,6 +100,7 @@ namespace CodenameCheweenie
             Vector3 direction = controls.Movement;
             bool sprint = controls.Held(DogAction.Sprint);
             float speed = IsCozy ? 0 : sprint ? tuning.sprintSpeed : tuning.walkSpeed;
+            if(direction.sqrMagnitude>.02f)speed*=Mathf.Lerp(.25f,1,Mathf.InverseLerp(-.2f,1,Vector3.Dot(transform.forward,direction.normalized)));
             Vector3 current = body.linearVelocity;
             bool grounded = Physics.Raycast(transform.position, Vector3.down, out RaycastHit footing, .92f, ~(1 << 2), QueryTriggerInteraction.Ignore)
                 && footing.normal.y > .6f && current.y < 1;
@@ -119,13 +121,13 @@ namespace CodenameCheweenie
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit ground, .92f, ~0, QueryTriggerInteraction.Ignore)
                 && ground.normal.y > .6f && current.y < 1f && direction.sqrMagnitude > .01f)
             {
-                Vector3 slope = Vector3.ProjectOnPlane(direction, ground.normal).normalized * speed;
+                Vector3 slope = Vector3.ProjectOnPlane(direction, ground.normal).normalized * speed * Mathf.Clamp01(direction.magnitude);
                 desired = Vector3.MoveTowards(new Vector3(current.x, current.y, current.z), slope, tuning.acceleration * Time.fixedDeltaTime);
                 current.y = desired.y;
             }
             body.linearVelocity = new Vector3(desired.x, current.y, desired.z);
             if (direction.sqrMagnitude > .02f)
-                body.MoveRotation(Quaternion.Slerp(body.rotation, Quaternion.LookRotation(direction), Time.fixedDeltaTime * tuning.turnSpeed));
+                body.MoveRotation(Quaternion.RotateTowards(body.rotation, Quaternion.LookRotation(direction), Time.fixedDeltaTime * tuning.turnSpeed*36));
         }
 
         private void StepOntoLowLedge(Vector3 direction)

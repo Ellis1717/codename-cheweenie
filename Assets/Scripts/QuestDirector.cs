@@ -114,8 +114,8 @@ namespace CodenameCheweenie
             var nearby = dogHud ? dogHud.NearestTarget() : null;
             if (nearby)
             {
-                BrandTheme.Fill(new Rect(18, height - 106, width - 36, 36), panel);
-                GUI.Label(new Rect(30, height - 100, width - 60, 25),
+                BrandTheme.Fill(new Rect(18, height - 124, width - 36, 36), panel);
+                GUI.Label(new Rect(30, height - 118, width - 60, 25),
                     (nearby.stage == 3 && nearby.backyardClue == BackyardClue.None ? inputHud.BindingLabel(DogAction.Cozy) : inputHud.BindingLabel(DogAction.Interact)) + ": " + nearby.name,
                     BrandTheme.Text(16, BrandTheme.Amber, true));
             }
@@ -124,10 +124,11 @@ namespace CodenameCheweenie
                 controlsSignature = inputHud.BindingSignature;
                 controlsText = "Move WASD / stick · Jump " + inputHud.BindingLabel(DogAction.Jump) + " · Greet " + inputHud.BindingLabel(DogAction.Interact)
                     + " · Sprint " + inputHud.BindingLabel(DogAction.Sprint) + "\nCozy " + inputHud.BindingLabel(DogAction.Cozy)
-                    + " · Between " + inputHud.BindingLabel(DogAction.Between) + " · Settings " + inputHud.BindingLabel(DogAction.Menu);
+                    + " · Between " + inputHud.BindingLabel(DogAction.Between) + " · Settings " + inputHud.BindingLabel(DogAction.Menu)
+                    + "\nCamera "+((CameraPreset)GameSave.Data.cameraMode)+": V / R3 · Look: right stick / RMB drag · Recenter: Home / RB / R1";
             }
-            BrandTheme.Fill(new Rect(18, height - 60, width - 36, 44), panel);
-            GUI.Label(new Rect(30, height - 56, width - 60, 40), controlsText, BrandTheme.Text(14, BrandTheme.Cream));
+            BrandTheme.Fill(new Rect(18, height - 78, width - 36, 62), panel);
+            GUI.Label(new Rect(30, height - 74, width - 60, 58), controlsText, BrandTheme.Text(14, BrandTheme.Cream));
             GUI.matrix = before;
         }
     }

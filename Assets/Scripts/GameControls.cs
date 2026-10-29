@@ -11,6 +11,19 @@ namespace CodenameCheweenie
     {
         private static readonly Dictionary<KeyCode, Key> Keys = MakeKeys();
         public static bool SupportsKeyboard(KeyCode code) => Keys.ContainsKey(code);
+        public static bool SubmitPressed => GetKeyDown(KeyCode.Return) || (Gamepad.current?.buttonSouth.wasPressedThisFrame ?? false);
+        public static bool CancelPressed => GetKeyDown(KeyCode.Escape) || (Gamepad.current?.buttonEast.wasPressedThisFrame ?? false);
+        public static bool PausePressed => Gamepad.current?.startButton.wasPressedThisFrame ?? false;
+        public static bool CameraCyclePressed => Gamepad.current?.rightStickButton.wasPressedThisFrame ?? false;
+        public static bool CameraRecenterPressed => Gamepad.current?.rightShoulder.wasPressedThisFrame ?? false;
+        public static Vector2 LookDelta(float seconds)
+        {
+            Vector2 stick=Gamepad.current?.rightStick.ReadValue() ?? Vector2.zero;
+            if(stick.sqrMagnitude<.0324f)stick=Vector2.zero;
+            Vector2 delta=stick*120*Mathf.Min(seconds,.05f);
+            if(Mouse.current!=null&&Mouse.current.rightButton.isPressed)delta+=Mouse.current.delta.ReadValue()*.12f;
+            return delta;
+        }
         private static int pointerFrame = -1;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetPointer() { pointerFrame = -1; }

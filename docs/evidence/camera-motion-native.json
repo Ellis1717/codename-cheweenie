@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-29",
+  "unity": "6000.3.10f1",
+  "version": "0.8.0",
+  "editModePassed": 64,
+  "editModeFailed": 0,
+  "playModePassed": 12,
+  "playModeFailed": 0,
+  "standaloneChecks": 145,
+  "sourceCompileWarnings": 0,
+  "sourceCompileErrors": 0,
+  "installedPackageVersions": 11,
+  "localAssetMetadataEntries": 229,
+  "input": "Virtual keyboard, mouse and named Gamepad controls; physical controller hardware unverified",
+  "scope": "Controller menus, paused orbit gating, camera modes/orbit/recenter, view-relative analog movement, stance contact stability, idle gait and existing art/quest/save/audio suites",
+  "nativeEditReport": "TestResults/camera-motion-final-edit.xml",
+  "nativePlayReport": "TestResults/camera-motion-release-play.xml"
+}
