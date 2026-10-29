@@ -9,9 +9,13 @@ The cover is `Assets/Resources/Branding/Cover.png`. It is loaded from Unity Reso
 - Gameplay and its HUD remain paused/hidden on the title.
 - Start/Continue resumes current loaded progress. New Adventure requires a second selection when progress exists, resets missions/friendship and Marty's spawn, and preserves settings.
 - Settings is accessible before starting and during gameplay. Closing title settings returns to the paused title. Return to Title is available from gameplay settings.
-- Mouse, arrows/left stick and Enter/controller face buttons operate menus. Escape returns from information pages, cancels rebinding, or closes settings. Gameplay input waits for menu buttons to be released after resuming.
-- How to Play and the gameplay HUD show current bindings, using the selected Xbox or PlayStation button names. Changing a preset also changes those labels; custom button assignments keep the chosen naming style.
-- How to Play and About are available on the title. Quit closes standalone builds; Unity Editor ignores Application.Quit.
+- Mouse, arrows/D-pad/left stick and Enter/A/Cross operate menus. Escape/B/Circle returns from information pages or closes settings. Escape/Menu/Options cancels rebinding. Gameplay input waits for menu buttons to be released after resuming.
+- The Controls guide and gameplay HUD show current bindings, using the selected Xbox or PlayStation button names. Changing a preset also changes those labels; custom button assignments keep the chosen naming style.
+- Controls & camera, Adventure guide, Meet the crew and About are available on the title. The field guide also opens from paused Settings; see [menu guide](MENU_GUIDE.md). Quit closes standalone builds; Unity Editor ignores Application.Quit.
+
+## Illustrated crew cards — 0.9.0
+
+Three new square illustrations are retained as Resources/Branding/MartyTrail, LakituPatrol and RioCozy, with PNGs and import metadata. Marty sniffs leaves in his Explorer gear, Lakitu investigates a leaf and Rio guards her blanket/ribbon. They appear as title cards and full character-page artwork. The built-in image_gen tool used the original Explorer game render and private cat photos as references; [full prompt set](MENU_ART_PROMPTS.md). Outputs were inspected for the signature colours/markings and exclusion of people, photo backgrounds, tag details and baked-in UI text. They are illustrative interpretations; in-world geometry is unchanged. Existing cover remains retained.
 
 ## Original artwork history — superseded 2026-10-29
 

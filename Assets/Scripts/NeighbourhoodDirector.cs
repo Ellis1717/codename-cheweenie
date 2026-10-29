@@ -36,7 +36,7 @@ namespace CodenameCheweenie
         public void Restore(int state) { progress = new NeighbourhoodProgress(state, MappedNeighbourhood.Current != null && MappedNeighbourhood.Current.IncludesSchool); }
         private void Update()
         {
-            if (!frontEnd || frontEnd.ShowingTitle || settings && settings.IsOpen) return;
+            if (!frontEnd || frontEnd.ShowingTitle || frontEnd.GuideOpen || frontEnd.Transitioning || settings && settings.IsOpen) return;
             if (GameControls.GetKeyDown(KeyCode.M) || GameControls.GetKeyDown(GameSave.Data.playStationLabels ? KeyCode.JoystickButton8 : KeyCode.JoystickButton6)) expanded = !expanded;
         }
         public void Visit(InteractableTarget target)
@@ -54,7 +54,7 @@ namespace CodenameCheweenie
         }
         private void OnGUI()
         {
-            if (!player || !frontEnd || frontEnd.ShowingTitle || settings && settings.IsOpen) return;
+            if (!player || !frontEnd || frontEnd.ShowingTitle || frontEnd.GuideOpen || settings && settings.IsOpen) return;
             Matrix4x4 previous = GUI.matrix;
             float scale = Mathf.Min(Screen.width / 1280f, Screen.height / 720f), width = Screen.width / scale;
             GUI.matrix = Matrix4x4.Scale(Vector3.one * scale);

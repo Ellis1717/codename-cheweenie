@@ -14,6 +14,7 @@ namespace CodenameCheweenie
         public static bool SubmitPressed => GetKeyDown(KeyCode.Return) || (Gamepad.current?.buttonSouth.wasPressedThisFrame ?? false);
         public static bool CancelPressed => GetKeyDown(KeyCode.Escape) || (Gamepad.current?.buttonEast.wasPressedThisFrame ?? false);
         public static bool PausePressed => Gamepad.current?.startButton.wasPressedThisFrame ?? false;
+        public static bool HelpPressed => GetKeyDown(KeyCode.F1) || (Gamepad.current?.buttonNorth.wasPressedThisFrame ?? false);
         public static bool CameraCyclePressed => Gamepad.current?.rightStickButton.wasPressedThisFrame ?? false;
         public static bool CameraRecenterPressed => Gamepad.current?.rightShoulder.wasPressedThisFrame ?? false;
         public static Vector2 LookDelta(float seconds)

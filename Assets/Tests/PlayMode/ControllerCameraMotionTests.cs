@@ -46,6 +46,34 @@ namespace CodenameCheweenie.Tests
             yield return Press(GamepadButton.East);Assert.IsFalse(settings.IsOpen);
             LogAssert.NoUnexpectedReceived();
         }
+        [UnityTest] public IEnumerator FieldGuideNavigatesByControllerAndReturnsToTheCorrectPauseContext()
+        {
+            yield return Setup();var front=Object.FindFirstObjectByType<FrontEndMenu>();var settings=Object.FindFirstObjectByType<CozySettings>();
+            for(int i=0;i<3;i++)yield return Press(GamepadButton.DpadDown);yield return Press(GamepadButton.South);
+            Assert.IsTrue(front.GuideOpen);Assert.AreEqual(1,front.GuideCategory);Assert.AreEqual(0,Time.timeScale);
+            yield return Press(GamepadButton.DpadRight);Assert.AreEqual(1,front.GuideTab);
+            yield return Press(GamepadButton.DpadDown);Assert.AreEqual(2,front.GuideCategory);Assert.AreEqual(0,front.GuideTab);
+            yield return Press(GamepadButton.DpadDown);Assert.AreEqual(3,front.GuideCategory);
+            yield return Press(GamepadButton.South);Assert.AreEqual(1,front.GuideTab);yield return Press(GamepadButton.South);Assert.AreEqual(2,front.GuideTab);
+            foreach(string name in new[]{"MartyTrail","LakituPatrol","RioCozy"})Assert.IsNotNull(Resources.Load<Texture2D>("Branding/"+name));
+            yield return Press(GamepadButton.East);Assert.IsFalse(front.GuideOpen);Assert.IsTrue(front.ShowingTitle);Assert.AreEqual(0,Time.timeScale);
+            front.StartAdventure(true);yield return new WaitForSecondsRealtime(.15f);yield return Press(GamepadButton.Start);yield return Press(GamepadButton.North);
+            Assert.IsTrue(front.GuideOpen);Assert.IsFalse(settings.IsOpen);Assert.AreEqual(0,Time.timeScale);
+            var dog=Object.FindFirstObjectByType<MartyController>();Vector3 start=dog.transform.position;
+            InputSystem.QueueStateEvent(pad,new GamepadState{leftStick=Vector2.up});yield return new WaitForSecondsRealtime(.15f);InputSystem.QueueStateEvent(pad,new GamepadState());yield return null;
+            Assert.Less(Vector3.Distance(start,dog.transform.position),.01f);
+            yield return Press(GamepadButton.East);Assert.IsFalse(front.GuideOpen);Assert.IsTrue(settings.IsOpen);Assert.AreEqual(0,Time.timeScale);
+            yield return Press(GamepadButton.East);Assert.IsFalse(settings.IsOpen);Assert.AreEqual(1,Time.timeScale);
+            var keyboard=InputSystem.AddDevice<Keyboard>();
+            InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.F1));yield return new WaitForSecondsRealtime(.08f);InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.08f);
+            Assert.IsTrue(front.GuideOpen);Assert.AreEqual(0,Time.timeScale);
+            InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.Escape));yield return new WaitForSecondsRealtime(.08f);InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.08f);
+            Assert.IsFalse(front.GuideOpen);Assert.IsFalse(settings.IsOpen);Assert.AreEqual(1,Time.timeScale);
+            dog.GetComponent<MartyInput>().keyboard[(int)DogAction.Jump]=KeyCode.F1;
+            InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.F1));yield return new WaitForSecondsRealtime(.08f);InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.08f);
+            Assert.IsFalse(front.GuideOpen,"A custom F1 action takes priority over the gameplay help shortcut.");InputSystem.RemoveDevice(keyboard);
+            LogAssert.NoUnexpectedReceived();
+        }
         [UnityTest] public IEnumerator AnalogWalkIsSlowerThanFullStickAndPawsStayPlantedDuringStance()
         {
             yield return Setup();Object.FindFirstObjectByType<FrontEndMenu>().StartAdventure(true);yield return new WaitForSecondsRealtime(.2f);
