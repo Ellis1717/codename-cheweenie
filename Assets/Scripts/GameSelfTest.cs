@@ -78,7 +78,7 @@ namespace CodenameCheweenie
             var result = new Result
             {
                 passed = passed, version = Application.version, seconds = Time.realtimeSinceStartup - started,
-                scenario = Array.IndexOf(Arguments, "-cheweenie-save-write") >= 0 ? "save-write" : Array.IndexOf(Arguments, "-cheweenie-save-read") >= 0 ? "save-read" : Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0 ? "menus-and-visuals" : "full-adventure",
+                scenario = Array.IndexOf(Arguments, "-cheweenie-save-write") >= 0 ? "save-write" : Array.IndexOf(Arguments, "-cheweenie-save-read") >= 0 ? "save-read" : Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0 ? "menus-and-visuals" : Array.IndexOf(Arguments, "-cheweenie-family-smoke") >= 0 ? "family-cameos" : "full-adventure",
                 averageFramesPerSecond = (Time.frameCount - firstFrame) / Mathf.Max(.01f, Time.realtimeSinceStartup - started),
                 homeStage = quest ? quest.CurrentStage : -1, backyardState = backyard ? backyard.State : -1,
                 neighbourhoodState = GetComponent<NeighbourhoodDirector>() ? GetComponent<NeighbourhoodDirector>().State : -1,
@@ -221,9 +221,20 @@ namespace CodenameCheweenie
             yield return Interact(Target(1)); Check(quest.CurrentStage == 2, "Greeted Rio");
             yield return Drive(0, 2.6f); yield return Drive(0, -8);
             yield return Interact(Target(2)); Check(quest.CurrentStage == 3, "Initial backyard sniff complete");
+            Check(quest.CurrentNotice.Contains("Fox Ellis"), "Fox Ellis sniff-inspector punchline survives companion quest completion");
             yield return Drive(0, 2.6f); yield return Drive(0, 5.6f);
             yield return Interact(Target(3), true); Check(quest.CurrentStage == 4 && dog.IsCozy, "Cheeween Cozy completes the home mission");
+            Check(quest.CurrentNotice.Contains("Leo Ellis"), "Leo Ellis blanket-boss punchline survives companion quest completion");
             yield return Shot("cozy");
+            if(Array.IndexOf(Arguments,"-cheweenie-family-smoke")>=0)
+            {
+                InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.C));yield return new WaitForSecondsRealtime(.15f);InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.15f);
+                Check(quest.CurrentNotice.Contains("Leo Ellis"),"Keyboard Cozy replays Leo Ellis cameo after completion");
+                yield return Drive(0,-8);
+                InputSystem.QueueStateEvent(keyboard,new KeyboardState(Key.E));yield return new WaitForSecondsRealtime(.15f);InputSystem.QueueStateEvent(keyboard,new KeyboardState());yield return new WaitForSecondsRealtime(.15f);
+                Check(quest.CurrentNotice.Contains("Fox Ellis"),"Keyboard sniff replays Fox Ellis cameo after completion");
+                Check(errors.Count==0,"No runtime errors during family cameo verification");yield break;
+            }
             yield return Drive(3.5f, 5.3f);
             Pad(Vector2.zero, GamepadButton.LeftShoulder); yield return new WaitForSecondsRealtime(.12f);
             Pad(Vector2.zero); yield return new WaitForSecondsRealtime(1.8f);

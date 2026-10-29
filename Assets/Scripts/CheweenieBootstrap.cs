@@ -31,8 +31,8 @@ namespace CodenameCheweenie
             new GameObject("Neighbourhood | fictional walking block").AddComponent<NeighbourhoodBuilder>().Build();
             MakeCharacter("Lakitu (Keetz / Keeterman)", new Vector3(-5, .65f, 4), new Color(.25f, .25f, .25f), "Keetz found! The Keeterman approves.", 0);
             MakeCharacter("Rio (Sis / Little Miss / Miss Priss)", new Vector3(5, .65f, 5), new Color(.85f, .73f, .63f), "Little Miss Priss has inspected you.", 1);
-            Target("Backyard sniffing zone", new Vector3(1, .75f, -9), new Color(.95f, .76f, .15f), 2, "Backyard fully sniffed!");
-            Target("Cheeween Cozy blanket fort", new Vector3(0, .65f, 6.8f), new Color(.24f, .35f, .68f), 3, "Cheeween Cozy achieved! Mission complete.");
+            Target("Backyard sniffing zone", new Vector3(1, .75f, -9), new Color(.95f, .76f, .15f), 2, "Fox Ellis, Chief Sniff Inspector: 'Yep. Definitely grass.'");
+            Target("Cheeween Cozy blanket fort", new Vector3(0, .65f, 6.8f), new Color(.24f, .35f, .68f), 3, "Leo Ellis, Blanket Boss: 'Five more minutes!' Marty agrees.");
             var dog = new GameObject("Marty | Marty Man | Marty Party | Mr. Marty");
             dog.transform.position = new Vector3(0, .9f, -1);
             var capsule = dog.AddComponent<CapsuleCollider>();
