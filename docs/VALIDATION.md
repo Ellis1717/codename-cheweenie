@@ -1,5 +1,13 @@
 # Validation and Windows deployment
 
+## Editor TagManager import fix — 2026-10-29
+
+The source TagManager stored unnamed layers as bare `-` lines. Unity 6.3.10f1 rejected that file at the following sorting-layer section (line 41). The earlier isolated project had been normalized by Unity, masking the source formatting problem. Unnamed source layers now use explicit empty strings; all 32 layer positions and the default sorting/rendering layers are retained.
+
+The corrected source file was copied into the isolated project before native validation: **56 EditMode and 7 PlayMode tests passed**, with no settings-parser or C# compilation errors in either log. Local evidence: `TestResults/tagmanager-edit.xml/.log` and `tagmanager-play.xml/.log`. `Validation/ManifestChecks.ps1` rejects the original bare-marker form; its guard was checked against both the original Git content and corrected source. Package/metadata validation also passes. Runtime source and the previously tested Windows package are unchanged.
+
+In the main editor, allow refresh, clear old Console messages and press Play. If it retains the earlier failed settings import, save the scene and restart Unity once. The bootstrap generates the world during Play; an empty Game view before Play is expected.
+
 ## Family release 0.5.0 — 2026-10-29
 
 Launch **Play Cheweenie** on the desktop, `PLAY.cmd`, or `builds/Current/Cheweenie.exe` after closing older copies. Unity is not required. The portable archive is `builds/Codename-Cheweenie-Family-0.5.0.zip`; extract the whole archive. The sections below this release are historical results and their older launch paths are superseded by Current.
