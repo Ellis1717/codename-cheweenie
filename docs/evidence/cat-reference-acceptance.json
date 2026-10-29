@@ -1,0 +1,30 @@
+{
+    "passed": true,
+    "version": "0.4.0",
+    "seconds": 9.555048942565918,
+    "averageFramesPerSecond": 58.08442687988281,
+    "homeStage": 0,
+    "backyardState": 0,
+    "neighbourhoodState": 0,
+    "materialCount": 70,
+    "checks": [
+        "Branded title pauses gameplay",
+        "Music bundled in the player",
+        "Input System mouse opens settings from title",
+        "Input System mouse adjusts the scaled settings volume row",
+        "Mouse closes settings without unpausing the title",
+        "Input System mouse starts the adventure",
+        "Keyboard movement advances Marty",
+        "Keyboard jump leaves the ground",
+        "PlayStation Cross maps to jump",
+        "Both cats have distinct photo-guided visuals",
+        "Rio patterned face is bundled and rendered",
+        "Lakitu patterned face is bundled and rendered",
+        "Mapped school exterior and walking stop are present",
+        "Keyboard opens the full local street map",
+        "Keyboard closes the full local street map",
+        "Menu smoke returns to the paused title",
+        "No runtime errors during the menu smoke"
+    ],
+    "errors": []
+}

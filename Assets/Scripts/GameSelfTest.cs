@@ -33,6 +33,13 @@ namespace CodenameCheweenie
         private string report;
         private float started;
         private int firstFrame;
+        private string portraitLabel;
+        private void OnGUI()
+        {
+            if (string.IsNullOrEmpty(portraitLabel)) return;
+            BrandTheme.Fill(new Rect(28, 24, 470, 62), new Color(.035f, .055f, .08f, .95f));
+            GUI.Label(new Rect(42, 34, 440, 46), portraitLabel, BrandTheme.Text(26, BrandTheme.Cream, true));
+        }
         private void Check(bool condition, string description)
         {
             if (!condition) throw new InvalidOperationException(description);
@@ -187,6 +194,7 @@ namespace CodenameCheweenie
             controls.ApplyControllerPreset(false);
             if (Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0)
             {
+                yield return CatPortraits();
                 yield return MappedMenu();
                 settings.OpenFromTitle(); settings.ReturnToTitle();
                 Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Menu smoke returns to the paused title");
@@ -275,6 +283,33 @@ namespace CodenameCheweenie
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.M)); yield return new WaitForSecondsRealtime(.1f);
             InputSystem.QueueStateEvent(keyboard, new KeyboardState()); yield return new WaitForSecondsRealtime(.1f);
             Check(!director.MapExpanded, "Keyboard closes the full local street map");
+        }
+        private IEnumerator CatPortraits()
+        {
+            var cats = FindObjectsByType<CatVisual>(FindObjectsSortMode.None);
+            Check(cats.Length == 2, "Both cats have distinct photo-guided visuals");
+            var camera = Camera.main; var follow = camera.GetComponent<CheweenieCamera>();
+            Vector3 position = camera.transform.position; Quaternion rotation = camera.transform.rotation;
+            bool followEnabled = follow.enabled, questEnabled = quest.enabled;
+            var neighbourhood = GetComponent<NeighbourhoodDirector>(); bool neighbourhoodEnabled = neighbourhood.enabled;
+            var neighbourhoodWorld = FindFirstObjectByType<NeighbourhoodBuilder>(); bool worldActive = neighbourhoodWorld.gameObject.activeSelf;
+            float timeScale = Time.timeScale; Time.timeScale = 0; follow.enabled = false; quest.enabled = false; neighbourhood.enabled = false;
+            neighbourhoodWorld.gameObject.SetActive(false); // Keep private street geometry out of shareable cat portraits.
+            foreach (var cat in cats)
+            {
+                var body = cat.GetComponent<Rigidbody>(); Quaternion original = body.rotation;
+                var interpolation = body.interpolation; body.interpolation = RigidbodyInterpolation.None;
+                body.rotation = Quaternion.identity; cat.transform.rotation = Quaternion.identity; Physics.SyncTransforms();
+                var head = cat.transform.Find(cat.look + " | reference-based cat rig/Reference-patterned head");
+                Check(head && head.GetComponent<Renderer>().sharedMaterial.mainTexture, cat.look + " patterned face is bundled and rendered");
+                portraitLabel = cat.look == CatLook.Lakitu ? "LAKITU / KEETZ" : "RIO / MISS PRISS";
+                camera.transform.position = cat.transform.position + new Vector3(0, .58f, 1.85f); camera.transform.LookAt(cat.transform.position + Vector3.up * .1f);
+                yield return new WaitForSecondsRealtime(.12f); yield return Shot(cat.look == CatLook.Lakitu ? "lakitu-portrait" : "rio-portrait");
+                body.rotation = original; cat.transform.rotation = original; body.interpolation = interpolation; Physics.SyncTransforms();
+            }
+            portraitLabel = null; camera.transform.SetPositionAndRotation(position, rotation);
+            neighbourhoodWorld.gameObject.SetActive(worldActive);
+            follow.enabled = followEnabled; quest.enabled = questEnabled; neighbourhood.enabled = neighbourhoodEnabled; Time.timeScale = timeScale;
         }
     }
 }

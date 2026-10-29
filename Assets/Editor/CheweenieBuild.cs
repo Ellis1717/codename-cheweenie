@@ -59,7 +59,7 @@ namespace CodenameCheweenie.Editor
             }
             PlayerSettings.productName = BrandTheme.Title;
             PlayerSettings.companyName = "CodenameCheweenie";
-            PlayerSettings.bundleVersion = "0.3.1";
+            PlayerSettings.bundleVersion = "0.4.0";
             PlayerSettings.defaultScreenWidth = 1280; PlayerSettings.defaultScreenHeight = 720;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed; PlayerSettings.resizableWindow = true;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);

@@ -86,12 +86,9 @@ namespace CodenameCheweenie
             var collider = cat.AddComponent<CapsuleCollider>(); collider.height = 1; collider.radius = .3f;
             cat.AddComponent<Rigidbody>();
             cat.AddComponent<CatCompanion>().energetic = stage == 0;
-            PrimitiveChild(cat.transform, "cat body", PrimitiveType.Capsule, Vector3.zero, new Vector3(.6f, .5f, .75f), color, false);
+            cat.AddComponent<CatVisual>().look = stage == 0 ? CatLook.Lakitu : CatLook.Rio;
             var target = cat.AddComponent<InteractableTarget>();
             target.stage = stage; target.dialogue = line;
-            PrimitiveChild(cat.transform, "head", PrimitiveType.Sphere, new Vector3(0, .42f, .35f), new Vector3(.82f, .65f, .68f), color, false);
-            PrimitiveChild(cat.transform, "left ear", PrimitiveType.Cube, new Vector3(-.28f, .78f, .38f), new Vector3(.2f, .3f, .18f), color, false);
-            PrimitiveChild(cat.transform, "right ear", PrimitiveType.Cube, new Vector3(.28f, .78f, .38f), new Vector3(.2f, .3f, .18f), color, false);
         }
 
         private static void Target(string name, Vector3 position, Color color, int stage, string text)

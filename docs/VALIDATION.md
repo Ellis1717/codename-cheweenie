@@ -1,5 +1,15 @@
 # Validation and Windows deployment
 
+## Photo-guided cat release 0.4.0 — 2026-10-29
+
+The original Lakitu/Rio photos were recovered from the earlier game chat and used to correct the cover and runtime cat visuals. Lakitu has the mostly white face, asymmetric black eye patch/blaze, white chest/paws, pink nose and collar; Rio has the mostly black face/body, small white chin and chest bib. [Marking notes and provenance](BRANDING.md). Raw reference photos remain outside Unity in ignored PrivateReferences; they and their household/person backgrounds are not bundled or published.
+
+- **56 native EditMode tests and 5 PlayMode tests passed**, including asymmetric coat/white-chin rules, distinct profiles, generated face texture/shader availability, four paws, one original kinematic Rigidbody per cat and disabled cosmetic colliders. Existing quests, audio and input tests remain green.
+- The rebuilt Windows player passed **17 startup/input/visual checks**, exit 0, zero runtime errors. Mouse settings/start, keyboard movement/jump, controller mapping, map controls and both generated cat faces pass. Actual player screenshots were captured face-on after temporarily disabling Rigidbody interpolation for the capture pose. The private street layer and gameplay HUD are hidden in the shareable portraits: [Lakitu](screenshots/lakitu-portrait.png), [Rio](screenshots/rio-portrait.png), [title](screenshots/title.png), [settings](screenshots/settings.png). [Acceptance report](evidence/cat-reference-acceptance.json).
+- These checks establish working visuals/physics, not an exact likeness score. The cover and procedural cats remain stylized approximations. The earlier long neighbourhood walk was not repeated for this cosmetic update; native quest smoke tests still pass.
+- All 145 existing standalone checks passed, runtime/editor/test compilation had zero warnings/errors, and 11 package versions plus 81 local asset/metadata entries were audited (79 public, two private). All 139 distributed player files match the tested build; ZIP/runtime/map/licence checks pass, and original reference photos are excluded. Input System only, private neighbourhood data, music and saved progression are preserved.
+
+Launch `builds/CatReferenceWindows-0.4.0/Cheweenie.exe`, extract `builds/Codename-Cheweenie-Photo-Cats-0.4.0.zip`, or use the updated desktop Play Cheweenie shortcut after closing an older copy. Original reference photographs are not included in either distribution.
 ## Input System only release 0.3.1 — 2026-10-29
 
 The project now uses **Input System Package (New)** only (`activeInputHandler: 1`). Input System 1.17.0 was already installed; all remaining Input Manager reads are removed. Unknown axes/absent devices return neutral input. Supported saved KeyCode bindings remain compatible, including PrintScreen/context-menu aliases; unsupported old character bindings restore to usable defaults. The Windows configuration validator requires the new backend and no longer depends on legacy axes.

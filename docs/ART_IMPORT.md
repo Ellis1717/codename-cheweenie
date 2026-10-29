@@ -7,3 +7,7 @@ Import an owned or licensed FBX into `Assets/Art/Marty/`. Use metres, +Z forward
 Save the prefab as `Assets/Resources/MartyVisual.prefab`. Bootstrap loads it automatically. Visual colliders are disabled; the independent Rigidbody/capsule owns movement. Keep materials and textures inside the project. No art is downloaded by the game.
 
 Create a **Cheweenie / Canine Tuning** asset at `Assets/Resources/MartyTuning.asset` to tune acceleration, speeds, turn rate, jump speed and interaction distance. Test keyboard, controllers and animation after importing. Placeholder proportions are not final Marty likeness.
+
+## Cat reference visuals
+
+Lakitu and Rio use separate photo-guided CatVisual profiles rather than generic gray/cream capsules. The raw references are kept locally outside Unity in ignored PrivateReferences/Cats. See [current markings and cover provenance](BRANDING.md). Only derived game art is packaged; no household/person photo backgrounds are copied into the game. Custom rigged cat art can later replace the procedural visual child while preserving each original root collider, Rigidbody and CatCompanion behavior.
