@@ -107,7 +107,7 @@ namespace CodenameCheweenie
             else if (row == 3) data.particles = !data.particles;
             else if (row == 4)
             {
-                // Legacy drivers differ; presets are starting points, individual actions remain remappable.
+                // Presets retain the saved button IDs while reading named Input System controls.
                 controls.ApplyControllerPreset(!data.playStationLabels);
             }
             else if (row == 5) padBindings = !padBindings;

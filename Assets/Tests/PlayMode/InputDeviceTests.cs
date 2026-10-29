@@ -11,6 +11,7 @@ namespace CodenameCheweenie.Tests
     {
         private Keyboard keyboard;
         private Gamepad pad;
+        private Mouse mouse;
         private InputSettings.BackgroundBehavior background;
 #if UNITY_EDITOR
         private InputSettings.EditorInputBehaviorInPlayMode editorBehavior;
@@ -69,12 +70,35 @@ namespace CodenameCheweenie.Tests
             Assert.AreEqual(4, quest.CurrentStage, "Cozy validates before its Rigidbody movement can obstruct the reach check");
             Assert.IsTrue(dog.IsCozy);
             InputSystem.QueueStateEvent(pad, new GamepadState());
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.PrintScreen)); yield return null;
+            Assert.IsTrue(GameControls.GetKey(KeyCode.Print), "Existing Print bindings map to PrintScreen");
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+            mouse = InputSystem.AddDevice<Mouse>();
+            InputSystem.QueueStateEvent(mouse, new MouseState { position = new Vector2(120, Screen.height - 80) }.WithButton(MouseButton.Left));
+            yield return null;
+            var matrix = Matrix4x4.Scale(Vector3.one * 2);
+            Assert.Less(Vector2.Distance(new Vector2(60, 40), GameControls.PointerPosition(matrix)), .01f);
+            Assert.IsTrue(GameControls.TryPointerClick(new Rect(50, 30, 20, 20), matrix));
+            Assert.IsFalse(GameControls.TryPointerClick(new Rect(50, 30, 20, 20), matrix), "One click cannot activate two GUI passes");
+            Assert.AreEqual(0, GameControls.GetAxisRaw("UnknownAxis"));
+            var devices = new System.Collections.Generic.List<InputDevice>();
+            foreach (var device in InputSystem.devices) if (device is Keyboard || device is Gamepad) devices.Add(device);
+            try
+            {
+                foreach (var device in devices) InputSystem.RemoveDevice(device);
+                Assert.IsFalse(GameControls.GetKey(KeyCode.Space));
+                Assert.IsFalse(GameControls.GetKeyDown(KeyCode.JoystickButton0));
+                Assert.AreEqual(0, GameControls.GetAxisRaw("DogStickX"));
+                Assert.AreEqual(0, GameControls.GetAxisRaw("DogStickY"));
+            }
+            finally { foreach (var device in devices) InputSystem.AddDevice(device); }
             LogAssert.NoUnexpectedReceived();
         }
         [UnityTearDown] public IEnumerator Cleanup()
         {
             if (keyboard != null) InputSystem.RemoveDevice(keyboard);
             if (pad != null) InputSystem.RemoveDevice(pad);
+            if (mouse != null) InputSystem.RemoveDevice(mouse);
             InputSystem.settings.backgroundBehavior = background;
 #if UNITY_EDITOR
             InputSystem.settings.editorInputBehaviorInPlayMode = editorBehavior;

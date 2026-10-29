@@ -16,12 +16,9 @@ namespace CodenameCheweenie.Editor
             if (settings.Length > 0)
             {
                 var handler = new SerializedObject(settings[0]).FindProperty("activeInputHandler");
-                if (handler != null && handler.intValue != 2)
-                    throw new InvalidOperationException("Set Active Input Handling to Both, then restart Unity.");
+                if (handler != null && handler.intValue != 1)
+                    throw new InvalidOperationException("Set Active Input Handling to Input System Package (New), then restart Unity.");
             }
-            string input = System.IO.File.ReadAllText("ProjectSettings/InputManager.asset");
-            if (!input.Contains("m_Name: DogStickX") || !input.Contains("m_Name: DogStickY"))
-                throw new InvalidOperationException("Missing legacy fallback axes.");
             if (!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64))
                 throw new InvalidOperationException("Install Windows Build Support through Unity Hub.");
             Debug.Log("Cheweenie configuration checks passed.");
@@ -62,7 +59,7 @@ namespace CodenameCheweenie.Editor
             }
             PlayerSettings.productName = BrandTheme.Title;
             PlayerSettings.companyName = "CodenameCheweenie";
-            PlayerSettings.bundleVersion = "0.3.0";
+            PlayerSettings.bundleVersion = "0.3.1";
             PlayerSettings.defaultScreenWidth = 1280; PlayerSettings.defaultScreenHeight = 720;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed; PlayerSettings.resizableWindow = true;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);

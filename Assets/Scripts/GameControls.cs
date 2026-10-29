@@ -10,6 +10,10 @@ namespace CodenameCheweenie
     public static class GameControls
     {
         private static readonly Dictionary<KeyCode, Key> Keys = MakeKeys();
+        public static bool SupportsKeyboard(KeyCode code) => Keys.ContainsKey(code);
+        private static int pointerFrame = -1;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetPointer() { pointerFrame = -1; }
         private static Dictionary<KeyCode, Key> MakeKeys()
         {
             var result = new Dictionary<KeyCode, Key>();
@@ -23,6 +27,10 @@ namespace CodenameCheweenie
                 if (name == "RightControl") name = "RightCtrl";
                 if (name == "LeftCommand" || name == "LeftWindows") name = "LeftMeta";
                 if (name == "RightCommand" || name == "RightWindows") name = "RightMeta";
+                if (name == "Print") name = "PrintScreen";
+                if (name == "Menu") name = "ContextMenu";
+                if (name == "Break") name = "Pause";
+                if (name == "AltGr") name = "RightAlt";
                 if (Enum.TryParse(name, true, out Key key) && key != Key.None) result[code] = key;
             }
             return result;
@@ -53,20 +61,31 @@ namespace CodenameCheweenie
         {
             if (code >= KeyCode.JoystickButton0 && code <= KeyCode.JoystickButton19 && Gamepad.current != null) return Button(code)?.isPressed ?? false;
             if (Keyboard.current != null && Keys.TryGetValue(code, out Key key)) return Keyboard.current[key].isPressed;
-            return UnityEngine.Input.GetKey(code);
+            return false;
         }
         public static bool GetKeyDown(KeyCode code)
         {
             if (code >= KeyCode.JoystickButton0 && code <= KeyCode.JoystickButton19 && Gamepad.current != null) return Button(code)?.wasPressedThisFrame ?? false;
             if (Keyboard.current != null && Keys.TryGetValue(code, out Key key)) return Keyboard.current[key].wasPressedThisFrame;
-            return UnityEngine.Input.GetKeyDown(code);
+            return false;
         }
         public static float GetAxisRaw(string name)
         {
-            if (Gamepad.current == null) return UnityEngine.Input.GetAxisRaw(name);
+            if (Gamepad.current == null) return 0;
             Vector2 stick = Gamepad.current.leftStick.ReadValue();
             if (stick.sqrMagnitude < .04f) stick = Gamepad.current.dpad.ReadValue();
-            return name == "DogStickX" ? stick.x : name == "DogStickY" ? -stick.y : UnityEngine.Input.GetAxisRaw(name);
+            return name == "DogStickX" ? stick.x : name == "DogStickY" ? -stick.y : 0;
+        }
+        public static Vector2 PointerPosition(Matrix4x4 guiMatrix)
+        {
+            if (Mouse.current == null) return new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            Vector2 screen = Mouse.current.position.ReadValue();
+            return guiMatrix.inverse.MultiplyPoint3x4(new Vector3(screen.x, Screen.height - screen.y, 0));
+        }
+        public static bool TryPointerClick(Rect rect, Matrix4x4 guiMatrix)
+        {
+            if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame || pointerFrame == Time.frameCount || !rect.Contains(PointerPosition(guiMatrix))) return false;
+            pointerFrame = Time.frameCount; return true;
         }
     }
 }
