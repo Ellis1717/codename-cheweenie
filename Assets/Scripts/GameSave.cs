@@ -10,6 +10,8 @@ namespace CodenameCheweenie
         public int lakituFriendship, rioFriendship;
         public bool lakituQuest, rioQuest;
         public float volume = .6f, cameraScale = 1;
+        public int audioVersion;
+        public float musicVolume;
         public bool particles = true;
         public bool playStationLabels;
         public int[] keyboard, gamepad;
@@ -30,7 +32,9 @@ namespace CodenameCheweenie
             if (Data == null || Data.version != 1) Data = new SaveData();
             Data.stage = Mathf.Clamp(Data.stage, 0, QuestProgress.CompletedStage);
             Data.backyardState = Data.stage == QuestProgress.CompletedStage ? new BackyardProgress(Data.backyardState).State : 0;
-            Data.volume = float.IsNaN(Data.volume) ? .6f : Mathf.Clamp01(Data.volume);
+            Data.volume = AudioPreferences.Unit(Data.volume, .6f);
+            Data.musicVolume = AudioPreferences.RestoreMusic(Data.audioVersion, Data.musicVolume, Data.volume);
+            Data.audioVersion = 1;
             Data.cameraScale = float.IsNaN(Data.cameraScale) ? 1 : Mathf.Clamp(Data.cameraScale, .65f, 1.4f);
         }
         public static void Capture()

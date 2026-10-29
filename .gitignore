@@ -24,3 +24,4 @@ Validation/obj/
 !Validation/*.csproj
 Assets/Generated/
 Assets/Generated.meta
+/Validation/UnityAudioProject/

@@ -18,4 +18,4 @@ foreach ($asset in Get-ChildItem Assets -Recurse | Where-Object { $_.Extension -
     $guids[$line] = $true
     if ($asset.Extension -eq '.asmdef') { $null = Get-Content -LiteralPath $asset.FullName -Raw | ConvertFrom-Json }
 }
-"PASS: $count manifest versions match bundled packages; $($guids.Count) assets/folders have unique metadata; assembly definition JSON parses. Package resolution and Unity import remain unverified."
+"PASS: $count manifest versions match bundled packages; $($guids.Count) assets/folders have unique metadata; assembly definition JSON parses. This audit does not run package resolution or Unity import."

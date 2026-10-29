@@ -3,26 +3,18 @@ namespace CodenameCheweenie
 {
     public sealed class CozyFeedback : MonoBehaviour
     {
-        private AudioSource source;
-        private AudioClip chime;
+        private GameAudio audioBus;
         private Material sparkMaterial;
         private void Awake()
         {
-            source = gameObject.AddComponent<AudioSource>(); source.playOnAwake = false;
-            const int rate = 22050; var samples = new float[rate / 3];
-            for (int i = 0; i < samples.Length; i++)
-            {
-                float t = (float)i / rate;
-                samples[i] = Mathf.Sin(t * 2 * Mathf.PI * 660) * Mathf.Exp(-t * 14) * .18f;
-            }
-            chime = AudioClip.Create("Original cozy chime", samples.Length, 1, rate, false); chime.SetData(samples, 0);
+            audioBus = GetComponent<GameAudio>();
             var shader = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null
                 ? Shader.Find("Particles/Standard Unlit") : Shader.Find("Universal Render Pipeline/Particles/Unlit");
             if (shader) sparkMaterial = new Material(shader);
         }
-        public void Play(Vector3 position)
+        public void Play(Vector3 position, SoundCue cue = SoundCue.Discovery)
         {
-            GameSave.Load(); source.PlayOneShot(chime, GameSave.Data.volume);
+            GameSave.Load(); if (audioBus) audioBus.Play(cue);
             if (!GameSave.Data.particles || !sparkMaterial) return;
             var go = new GameObject("Cozy sparkles"); go.transform.position = position;
             var system = go.AddComponent<ParticleSystem>(); system.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -32,6 +24,6 @@ namespace CodenameCheweenie
             system.GetComponent<ParticleSystemRenderer>().sharedMaterial = sparkMaterial;
             system.Emit(16); Destroy(go, 2);
         }
-        private void OnDestroy() { if (chime) Destroy(chime); if (sparkMaterial) Destroy(sparkMaterial); }
+        private void OnDestroy() { if (sparkMaterial) Destroy(sparkMaterial); }
     }
 }

@@ -48,6 +48,7 @@ namespace CodenameCheweenie
             if (Time.frameCount == transitionFrame) return;
             transitionFrame = Time.frameCount;
             if (row != 1) confirmNewGame = false;
+            GetComponent<GameAudio>()?.Play(SoundCue.Menu);
             if (row < 0) { page = 0; return; }
             if (row == 0) StartAdventure(false);
             else if (row == 1)
