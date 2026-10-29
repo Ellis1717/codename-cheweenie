@@ -9,6 +9,9 @@
     <Compile Include="../Assets/Scripts/InputReleaseGate.cs" />
     <Compile Include="../Assets/Scripts/BackyardProgress.cs" />
     <Compile Include="BackyardChecks.cs" />
+    <Compile Include="../Assets/Scripts/AudioPreferences.cs" />
+    <Compile Include="../Assets/Scripts/OriginalAudio.cs" />
+    <Compile Include="AudioChecks.cs" />
     <Compile Include="QuestChecks.cs" />
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@ namespace CodenameCheweenie
             if (companion && target.stage < CurrentStage)
             {
                 string greeting = companion.Befriend();
+                GetComponent<GameAudio>()?.Play(companion.energetic ? SoundCue.Lakitu : SoundCue.Rio);
                 Announce(backyard ? backyard.Greeting(companion, greeting) : greeting); GameSave.Capture(); return;
             }
             if (!companion && target.stage < CurrentStage && (target.stage != 3 || kind == InteractionKind.Cozy))
@@ -51,7 +52,8 @@ namespace CodenameCheweenie
             Announce(companion ? companion.Befriend() : target.dialogue);
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
                 if (cat.CompleteAt(target.stage)) Announce(cat.energetic ? "Keeterman's backyard patrol complete!" : "Miss Priss approves of Cheeween Cozy!");
-            if (kind != InteractionKind.Cozy) GetComponent<CozyFeedback>()?.Play(player.position);
+            if (kind != InteractionKind.Cozy) GetComponent<CozyFeedback>()?.Play(player.position,
+                companion ? companion.energetic ? SoundCue.Lakitu : SoundCue.Rio : SoundCue.Discovery);
             GameSave.Capture();
         }
         private void OnGUI()

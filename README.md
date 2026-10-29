@@ -21,6 +21,8 @@ A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman),
 
 Controller mappings vary by driver. Settings provide presets and button rebinding, saved between sessions. The camera follows automatically; settings change distance. Menu navigation uses arrows/stick and Enter/raw button 0, with Escape always available.
 
+Music plays on the title and in the world, fading to a brighter loop outdoors. Settings offers separate **Music** and **Sound effects** volumes; use Left/Right or horizontal stick input to adjust. Stop and restart Play after updating scripts, and ensure Game view **Mute Audio** is off. See [audio assets and controls](docs/AUDIO.md).
+
 ## Implemented foundations
 - **M1:** pure quest progression, strict Cozy completion, ground-probed jumping, explicit input axes, EditMode tests and a PlayMode smoke test.
 - **M2:** configurable canine movement, procedural four-paw animation, optional Animator hooks, and an import-ready custom dog prefab pipeline.
@@ -34,8 +36,8 @@ House geometry, character likenesses and people are placeholders. No exact floor
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
-On **2026-10-28**, runtime, editor utility and test sources compiled against installed Unity 6.3 assemblies targeting .NET Standard 2.1 with **zero warnings/errors**. **112 standalone checks passed outside Unity**: 13 home-quest checks, 23 binding/input-release checks and 76 backyard checks. Saved mappings reject invalid device codes and duplicates; help and HUD labels reflect current bindings and the selected controller preset. New Adventure resets home/backyard missions, both cats' positions/states/cooldowns and Marty's spawn.
+On **2026-10-28**, **28 native Unity EditMode tests and two PlayMode tests passed** in an isolated project copy. They cover imported audio, title/pause flow, floor settling, home/backyard quest interactions, resets and audio playback/crossfades. Runtime, editor and test sources also compile with zero warnings/errors. **145 standalone checks pass**, including 33 audio checks.
 
-Unity batch startup exited **198: no valid editor license**, before project import or compilation. Unity Test Runner, PlayMode, keyboard/gamepad hardware, visuals/audio, package resolution and Windows build are **unverified**. Source milestones do not yet meet the gameplay definition of done.
+Unity licensing now permits import and testing; earlier exit-198 attempts are historical. Speaker output/mix quality, rendered visuals, physical keyboard/gamepad play, full manual traversal and Windows builds still need verification. The prototype retains placeholder character/house models.
 
 See [validation and Windows build instructions](docs/VALIDATION.md), [Marty art import](docs/ART_IMPORT.md), [editable headquarters](docs/HEADQUARTERS.md), [architecture](docs/ARCHITECTURE.md), and [development backlog](docs/CODEX_HANDOFF.md). Read AGENTS.md before changing the project.

@@ -16,7 +16,7 @@ Work on Codename .... Cheweenie. Read AGENTS.md, README.md, docs/ARCHITECTURE.md
 - **M7**: User-supplied art import, character rigging, lighting, UI, build pipeline for Windows.
 
 ## Definition of done
-Source status on 2026-10-28: M1–M6 have implementations on development branches, including branded title/settings and M6's schematic backyard adventure. Acceptance remains pending: the installed Unity editor has no active license. The standalone suite passes 112 checks; C# compilation is not Unity gameplay verification. See docs/VALIDATION.md and docs/BACKYARD.md. M7 still requires user-supplied art and licensed Unity import/build checks.
+Source status on 2026-10-28: M1–M6 are merged, including branded title/settings and the backyard adventure. The audio branch adds original music/cues and independent volumes. Unity now imports and runs tests: 28 EditMode and two PlayMode tests pass in an isolated copy, plus 145 standalone checks. Manual controller/visual/audio acceptance and Windows build verification remain pending. See docs/VALIDATION.md, docs/AUDIO.md and docs/BACKYARD.md. M7 still requires user-supplied art and rigging.
 
 Project opens without missing packages, playable initial quest, no console errors, control support verified with controller, screenshots, documentation, and clear deployment instructions.
 

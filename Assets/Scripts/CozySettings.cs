@@ -14,7 +14,8 @@ namespace CodenameCheweenie
         private FrontEndMenu frontEnd;
         private BrandTheme theme;
         private int transitionFrame = -1;
-        private int RowCount => frontEnd && !frontEnd.ShowingTitle ? 15 : 14;
+        private int RowCount => frontEnd && !frontEnd.ShowingTitle ? 16 : 15;
+        private bool horizontalReleased = true;
         private string help = "";
         private static readonly KeyCode[] DefaultKeys = { KeyCode.Space, KeyCode.E, KeyCode.LeftShift, KeyCode.C, KeyCode.B, KeyCode.Escape };
         private static readonly KeyCode[] DefaultPad = { KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton1, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton7 };
@@ -59,7 +60,12 @@ namespace CodenameCheweenie
             int direction = Input.GetKeyDown(KeyCode.DownArrow) ? 1 : Input.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
             if (stickReleased && Mathf.Abs(axis) > .6f && Time.unscaledTime > nextNavigate)
             { direction = axis > 0 ? 1 : -1; stickReleased = false; nextNavigate = Time.unscaledTime + .2f; }
-            if (direction != 0) { selected = (selected + direction + RowCount) % RowCount; confirmReset = false; }
+            if (direction != 0) { selected = (selected + direction + RowCount) % RowCount; confirmReset = false; return; }
+            float horizontal = Input.GetAxisRaw("DogStickX");
+            if (Mathf.Abs(horizontal) < .3f) horizontalReleased = true;
+            int adjustment = Input.GetKeyDown(KeyCode.RightArrow) ? 1 : Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0;
+            if (horizontalReleased && Mathf.Abs(horizontal) > .6f) { adjustment = horizontal > 0 ? 1 : -1; horizontalReleased = false; }
+            if (adjustment != 0 && selected <= 1) { AdjustVolume(selected, adjustment, false); return; }
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton1)) Activate(selected);
         }
         public void OpenFromTitle()
@@ -79,6 +85,7 @@ namespace CodenameCheweenie
         {
             transitionFrame = Time.frameCount;
             IsOpen = open; controls.Blocked = open || frontEnd && frontEnd.ShowingTitle; capture = -1; confirmReset = false;
+            GetComponent<GameAudio>()?.Play(SoundCue.Menu);
             if (open) { previousTimeScale = Time.timeScale; Time.timeScale = 0; }
             else { Time.timeScale = previousTimeScale; controls.SuppressForFrame(); frontEnd?.SettingsClosed(); Save(); }
         }
@@ -92,12 +99,13 @@ namespace CodenameCheweenie
         {
             if (Time.frameCount == transitionFrame) return;
             transitionFrame = Time.frameCount;
-            if (row != 13) confirmReset = false;
+            if (row != 14) confirmReset = false;
             var data = GameSave.Data;
-            if (row == 0) data.volume = data.volume >= .99f ? 0 : Mathf.Min(1, data.volume + .2f);
-            else if (row == 1) data.cameraScale = data.cameraScale > 1.25f ? .7f : data.cameraScale + .2f;
-            else if (row == 2) data.particles = !data.particles;
-            else if (row == 3)
+            if (row <= 1) { AdjustVolume(row, 1, true); return; }
+            GetComponent<GameAudio>()?.Play(SoundCue.Menu);
+            if (row == 2) data.cameraScale = data.cameraScale > 1.25f ? .7f : data.cameraScale + .2f;
+            else if (row == 3) data.particles = !data.particles;
+            else if (row == 4)
             {
                 // Legacy drivers differ; presets are starting points, individual actions remain remappable.
                 data.playStationLabels = !data.playStationLabels;
@@ -105,30 +113,39 @@ namespace CodenameCheweenie
                     ? new[] { KeyCode.JoystickButton1, KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton9 }
                     : (KeyCode[])DefaultPad.Clone();
             }
-            else if (row == 4) padBindings = !padBindings;
-            else if (row <= 10) { capture = row - 5; captureAfter = Time.unscaledTime + .25f; help = "Press a " + (padBindings ? "controller button" : "keyboard key") + ". Escape cancels."; return; }
-            else if (row == 11) { controls.keyboard = (KeyCode[])DefaultKeys.Clone(); controls.gamepad = (KeyCode[])DefaultPad.Clone(); }
-            else if (row == 12) { SetOpen(false); return; }
-            else if (row == 13)
+            else if (row == 5) padBindings = !padBindings;
+            else if (row <= 11) { capture = row - 6; captureAfter = Time.unscaledTime + .25f; help = "Press a " + (padBindings ? "controller button" : "keyboard key") + ". Escape cancels."; return; }
+            else if (row == 12) { controls.keyboard = (KeyCode[])DefaultKeys.Clone(); controls.gamepad = (KeyCode[])DefaultPad.Clone(); }
+            else if (row == 13) { SetOpen(false); return; }
+            else if (row == 14)
             {
                 if (!confirmReset) { confirmReset = true; help = "Select New Game again to reset quest and friendship progress."; return; }
                 GameSave.NewGame(); confirmReset = false; help = "New game started. Settings preserved.";
             }
-            else if (row == 14) { ReturnToTitle(); return; }
+            else if (row == 15) { ReturnToTitle(); return; }
             Save();
+        }
+        private void AdjustVolume(int row, int direction, bool wrap)
+        {
+            transitionFrame = Time.frameCount; confirmReset = false;
+            if (row == 0) GameSave.Data.volume = AudioPreferences.Step(GameSave.Data.volume, direction, wrap);
+            else GameSave.Data.musicVolume = AudioPreferences.Step(GameSave.Data.musicVolume, direction, wrap);
+            Save(); GetComponent<GameAudio>()?.Play(SoundCue.Menu);
+            help = "Music and sound effects save separately. Use Left/Right or move the stick sideways to adjust.";
         }
         private string Label(int row)
         {
             var d = GameSave.Data;
-            if (row == 0) return "Chime volume: " + Mathf.RoundToInt(d.volume * 100) + "%";
-            if (row == 1) return "Camera distance: " + d.cameraScale.ToString("0.0") + "x";
-            if (row == 2) return "Cozy particles: " + (d.particles ? "On" : "Off");
-            if (row == 3) return "Controller preset: " + (d.playStationLabels ? "PlayStation" : "Xbox") + " (toggle)";
-            if (row == 4) return "Rebind device: " + (padBindings ? "Controller" : "Keyboard");
-            if (row <= 10) return ((DogAction)(row - 5)) + ": " + (padBindings ? MartyInput.GamepadLabel(controls.gamepad[row - 5]) : controls.keyboard[row - 5].ToString());
-            if (row == 11) return "Reset bindings";
-            if (row == 12) return frontEnd && frontEnd.ShowingTitle ? "Save and back to title" : "Save and resume";
-            if (row == 14) return "Return to title";
+            if (row == 0) return "Sound effects: " + Mathf.RoundToInt(d.volume * 100) + "%   < / >";
+            if (row == 1) return "Music: " + Mathf.RoundToInt(d.musicVolume * 100) + "%   < / >";
+            if (row == 2) return "Camera distance: " + d.cameraScale.ToString("0.0") + "x";
+            if (row == 3) return "Cozy particles: " + (d.particles ? "On" : "Off");
+            if (row == 4) return "Controller preset: " + (d.playStationLabels ? "PlayStation" : "Xbox") + " (toggle)";
+            if (row == 5) return "Rebind device: " + (padBindings ? "Controller" : "Keyboard");
+            if (row <= 11) return ((DogAction)(row - 6)) + ": " + (padBindings ? MartyInput.GamepadLabel(controls.gamepad[row - 6]) : controls.keyboard[row - 6].ToString());
+            if (row == 12) return "Reset bindings";
+            if (row == 13) return frontEnd && frontEnd.ShowingTitle ? "Save and back to title" : "Save and resume";
+            if (row == 15) return "Return to title";
             return confirmReset ? "Confirm New Game" : "New Game";
         }
         private void OnGUI()
@@ -146,7 +163,7 @@ namespace CodenameCheweenie
             GUI.Label(new Rect(x + 85, y + 22, 640, 32), BrandTheme.Title, BrandTheme.Text(24, BrandTheme.Cream, true));
             GUI.Label(new Rect(x + 30, y + 72, 650, 48), "Make it cozy. Make it yours.", BrandTheme.Text(30, BrandTheme.Amber, true));
             for (int i = 0; i < RowCount; i++)
-                if (BrandTheme.Button(new Rect(x + 30, y + 137 + i * 42, 700, 36), (i == selected ? "> " : "") + Label(i), selected == i) && capture < 0)
+                if (BrandTheme.Button(new Rect(x + 30, y + 137 + i * 38, 700, 33), (i == selected ? "> " : "") + Label(i), selected == i) && capture < 0)
                 { selected = i; Activate(i); }
             GUI.Label(new Rect(x + 30, y + 780, 700, 60), help, BrandTheme.Text(17, BrandTheme.Cream));
             GUI.Label(new Rect(x + 30, y + 850, 700, 40), "Arrows / stick: choose · Enter / face button: select · Escape / Start: back", BrandTheme.Text(16, BrandTheme.Cream));

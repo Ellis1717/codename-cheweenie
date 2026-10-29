@@ -18,11 +18,14 @@ namespace CodenameCheweenie
         private bool jumpHeld;
         private bool interactHeld;
         private bool cozyHeld;
+        private GameAudio audioBus;
+        private float stepDistance, lastAirSpeed;
+        private bool wasGrounded;
 
-        public void Initialize(QuestDirector director) { quest = director; }
+        public void Initialize(QuestDirector director) { quest = director; audioBus = director.GetComponent<GameAudio>(); }
         public void ResetToHome()
         {
-            IsCozy = false; betweenUntil = 0;
+            IsCozy = false; betweenUntil = 0; stepDistance = 0; lastAirSpeed = 0; wasGrounded = false;
             body.position = new Vector3(0, .95f, -1); body.rotation = Quaternion.identity; body.linearVelocity = Vector3.zero;
         }
 
@@ -51,7 +54,10 @@ namespace CodenameCheweenie
             if (IsBetween || controls.Blocked) return;
             bool jump = controls.Held(DogAction.Jump);
             if (jump && !jumpHeld && Physics.Raycast(transform.position, Vector3.down, .88f, ~0, QueryTriggerInteraction.Ignore))
+            {
                 body.linearVelocity = new Vector3(body.linearVelocity.x, tuning.jumpSpeed, body.linearVelocity.z);
+                if (audioBus) audioBus.Play(SoundCue.Jump);
+            }
             jumpHeld = jump;
 
             bool interact = controls.Held(DogAction.Interact);
@@ -82,7 +88,7 @@ namespace CodenameCheweenie
                 if (delta.magnitude < .08f)
                 {
                     betweenUntil = 0; quest.Announce("Marty fits right between the cuddles!");
-                    quest.GetComponent<CozyFeedback>()?.Play(body.position);
+                    quest.GetComponent<CozyFeedback>()?.Play(body.position, SoundCue.Between);
                 }
                 else if (!body.SweepTest(delta.normalized, out _, Mathf.Min(delta.magnitude, .15f), QueryTriggerInteraction.Ignore))
                     body.MovePosition(Vector3.MoveTowards(body.position, betweenDestination, Time.fixedDeltaTime * 2));
@@ -92,6 +98,20 @@ namespace CodenameCheweenie
             bool sprint = controls.Held(DogAction.Sprint);
             float speed = IsCozy ? 0 : sprint ? tuning.sprintSpeed : tuning.walkSpeed;
             Vector3 current = body.linearVelocity;
+            bool grounded = Physics.Raycast(transform.position, Vector3.down, out RaycastHit footing, .92f, ~(1 << 2), QueryTriggerInteraction.Ignore)
+                && footing.normal.y > .6f && current.y < 1;
+            if (grounded && !wasGrounded && lastAirSpeed < -2.4f && audioBus) audioBus.Play(SoundCue.Land);
+            if (!grounded) lastAirSpeed = current.y;
+            else lastAirSpeed = 0;
+            wasGrounded = grounded;
+            float planarSpeed = new Vector2(current.x, current.z).magnitude;
+            if (grounded && !IsCozy && planarSpeed > .8f && !controls.Blocked)
+            {
+                stepDistance += planarSpeed * Time.fixedDeltaTime;
+                if (stepDistance > (sprint ? 1.6f : 1.2f))
+                { stepDistance = 0; if (audioBus) audioBus.Play(SoundCue.Step); }
+            }
+            else stepDistance = 0;
             Vector3 desired = Vector3.MoveTowards(new Vector3(current.x, 0, current.z), direction * speed, tuning.acceleration * Time.fixedDeltaTime);
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit ground, .92f, ~0, QueryTriggerInteraction.Ignore)
                 && ground.normal.y > .6f && current.y < 1f && direction.sqrMagnitude > .01f)
@@ -116,7 +136,7 @@ namespace CodenameCheweenie
                 {
                     body.position = nearest.transform.position + Vector3.up * .3f;
                     body.linearVelocity = Vector3.zero;
-                    quest.GetComponent<CozyFeedback>()?.Play(body.position);
+                    quest.GetComponent<CozyFeedback>()?.Play(body.position, SoundCue.Cozy);
                 }
                 quest.Activate(nearest, kind);
             }

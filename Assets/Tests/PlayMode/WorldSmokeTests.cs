@@ -8,6 +8,12 @@ namespace CodenameCheweenie.Tests
 {
     public sealed class WorldSmokeTests
     {
+        private static void Teleport(Rigidbody body, Vector3 position)
+        {
+            // Interpolated bodies defer their rendered Transform until a physics frame.
+            // These immediate interaction checks need both poses synchronized.
+            body.position = position; body.transform.position = position; Physics.SyncTransforms();
+        }
         [UnityTest] public IEnumerator BootstrapPhysicsQuestAndCompanions()
         {
             GameSave.PersistenceEnabled = false;
@@ -18,6 +24,7 @@ namespace CodenameCheweenie.Tests
             var quest = Object.FindFirstObjectByType<QuestDirector>();
             var backyard = Object.FindFirstObjectByType<BackyardDirector>();
             var body = dog.GetComponent<Rigidbody>();
+            Assert.IsNotNull(quest.GetComponent<GameAudio>());
             var frontEnd = Object.FindFirstObjectByType<FrontEndMenu>();
             var settings = Object.FindFirstObjectByType<CozySettings>();
             Assert.IsTrue(frontEnd.ShowingTitle);
@@ -45,7 +52,7 @@ namespace CodenameCheweenie.Tests
             InteractableTarget ribbon = null;
             foreach (var target in targets) if (target.backyardClue == BackyardClue.Ribbon) ribbon = target;
             Assert.IsNotNull(ribbon);
-            body.position = ribbon.transform.position + new Vector3(0, .3f, -1.5f); Physics.SyncTransforms();
+            Teleport(body, ribbon.transform.position + new Vector3(0, .3f, -1.5f)); Physics.SyncTransforms();
             quest.Activate(ribbon);
             Assert.AreEqual(0, backyard.State, "Backyard discoveries remain locked before the home mission");
             for (int stage = 0; stage < 4; stage++)
@@ -53,8 +60,10 @@ namespace CodenameCheweenie.Tests
                 InteractableTarget target = null;
                 foreach (var t in targets) if (t.stage == stage) target = t;
                 Assert.IsNotNull(target);
-                body.position = target.transform.position + new Vector3(0, .3f, -1.5f);
+                Teleport(body, target.transform.position + new Vector3(0, .3f, -1.5f));
                 Physics.SyncTransforms();
+                Assert.IsTrue(target.CanReach(dog.transform, dog.tuning.interactionRange),
+                    "Stage " + stage + " target is not reachable from " + dog.transform.position + "; body " + body.position + "; target " + target.transform.position);
                 if (stage == 3)
                 {
                     quest.Activate(target); Assert.AreEqual(3, quest.CurrentStage, "Sniff must not finish the fort");
@@ -65,7 +74,7 @@ namespace CodenameCheweenie.Tests
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
             { Assert.IsTrue(cat.CompanionQuestComplete); Assert.GreaterOrEqual(cat.Friendship, 2); }
             Assert.IsTrue(backyard.Unlocked);
-            body.position = ribbon.transform.position + new Vector3(0, .3f, -1.5f); Physics.SyncTransforms();
+            Teleport(body, ribbon.transform.position + new Vector3(0, .3f, -1.5f)); Physics.SyncTransforms();
             quest.Activate(ribbon); Assert.AreEqual(0, backyard.State, "Ribbon needs all three routes");
             foreach (var clue in new[] { BackyardClue.PawPassage, BackyardClue.Lookout, BackyardClue.ScentTrail })
             {
@@ -74,20 +83,20 @@ namespace CodenameCheweenie.Tests
                 Assert.IsNotNull(target);
                 if (clue == BackyardClue.PawPassage)
                 {
-                    body.position = new Vector3(8.7f, .7f, -13); Physics.SyncTransforms();
+                    Teleport(body, new Vector3(8.7f, .7f, -13)); Physics.SyncTransforms();
                     Assert.IsFalse(target.CanReach(dog.transform, dog.tuning.interactionRange), "The hedge wall blocks interaction");
                     quest.Activate(target); Assert.AreEqual(0, backyard.State);
                 }
-                body.position = target.transform.position + new Vector3(0, .3f, 1.5f); Physics.SyncTransforms();
+                Teleport(body, target.transform.position + new Vector3(0, .3f, 1.5f)); Physics.SyncTransforms();
                 quest.Activate(target); Assert.IsTrue(backyard.Has(clue));
             }
-            body.position = ribbon.transform.position + new Vector3(0, .3f, -1.5f); Physics.SyncTransforms();
+            Teleport(body, ribbon.transform.position + new Vector3(0, .3f, -1.5f)); Physics.SyncTransforms();
             quest.Activate(ribbon); Assert.AreEqual(15, backyard.State);
             Assert.AreEqual(15, GameSave.Data.backyardState, "Discovery is captured in the save data");
             foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
             {
                 if (cat.energetic) continue;
-                body.position = cat.transform.position + new Vector3(0, .3f, -1.5f); Physics.SyncTransforms();
+                Teleport(body, cat.transform.position + new Vector3(0, .3f, -1.5f)); Physics.SyncTransforms();
                 quest.Activate(cat.GetComponent<InteractableTarget>());
             }
             Assert.IsTrue(backyard.Complete);
@@ -96,12 +105,14 @@ namespace CodenameCheweenie.Tests
             Assert.IsNotNull(GameObject.Find("Accessible loft ramp"));
             Assert.IsNotNull(Object.FindFirstObjectByType<BetweenSpot>());
             GameSave.Data.volume = .42f;
+            GameSave.Data.musicVolume = .27f;
             foreach (var pair in catHomes) pair.Key.GetComponent<Rigidbody>().position += Vector3.right * 2;
             GameSave.NewGame();
             Assert.AreEqual(0, quest.CurrentStage);
             Assert.AreEqual(0, backyard.State);
             Assert.AreEqual(0, GameSave.Data.backyardState);
             Assert.AreEqual(.42f, GameSave.Data.volume, "New Adventure must preserve settings");
+            Assert.AreEqual(.27f, GameSave.Data.musicVolume, "New Adventure must preserve independent music volume");
             Assert.Less(Vector3.Distance(body.position, new Vector3(0, .95f, -1)), .01f);
             foreach (var pair in catHomes)
             {

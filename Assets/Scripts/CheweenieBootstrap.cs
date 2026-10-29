@@ -13,6 +13,7 @@ namespace CodenameCheweenie
             var quest = world.AddComponent<QuestDirector>();
             world.AddComponent<BackyardDirector>();
             world.AddComponent<SaveLifecycle>();
+            world.AddComponent<GameAudio>();
             world.AddComponent<CozyFeedback>();
             var settings = world.AddComponent<CozySettings>();
             MakeSun();
