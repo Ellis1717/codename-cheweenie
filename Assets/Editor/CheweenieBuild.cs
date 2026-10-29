@@ -47,6 +47,7 @@ namespace CodenameCheweenie.Editor
         }
         private static void Build(bool development)
         {
+            MartyModelBuilder.EnsureModel();
             Validate();
             PrepareMaterials();
             var previous = EditorSceneManager.GetSceneManagerSetup();
@@ -59,7 +60,7 @@ namespace CodenameCheweenie.Editor
             }
             PlayerSettings.productName = BrandTheme.Title;
             PlayerSettings.companyName = "CodenameCheweenie";
-            PlayerSettings.bundleVersion = "0.5.0";
+            PlayerSettings.bundleVersion = "0.6.1";
             PlayerSettings.forceSingleInstance = true;
             PlayerSettings.defaultScreenWidth = 1280; PlayerSettings.defaultScreenHeight = 720;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed; PlayerSettings.resizableWindow = true;

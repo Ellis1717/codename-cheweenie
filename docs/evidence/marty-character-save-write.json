@@ -1,0 +1,16 @@
+{
+    "passed": true,
+    "version": "0.6.1",
+    "scenario": "save-write",
+    "seconds": 3.5315089225769045,
+    "averageFramesPerSecond": 53.234840393066409,
+    "homeStage": 4,
+    "backyardState": 31,
+    "neighbourhoodState": 31,
+    "materialCount": 78,
+    "checks": [
+        "Isolated acceptance save written to disk",
+        "No runtime errors during isolated save verification"
+    ],
+    "errors": []
+}

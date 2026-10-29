@@ -8,11 +8,16 @@ namespace CodenameCheweenie
         private Animator animator;
         private Transform[] legs;
         private float phase;
+        private MartyModelRig rig;
+        private Vector3 restScale;
+        public bool UsesAuthoredModel => rig != null;
         private void Start()
         {
             if (!visualPrefab) visualPrefab = Resources.Load<GameObject>("MartyVisual");
             model = visualPrefab ? Instantiate(visualPrefab, transform).transform : new GameObject("Procedural canine rig").transform;
             model.SetParent(transform, false);
+            restScale = model.localScale;
+            rig = model.GetComponent<MartyModelRig>();
             if (!visualPrefab)
             {
                 Color tan = new Color(.59f, .34f, .18f);
@@ -47,7 +52,8 @@ namespace CodenameCheweenie
             if (!model) return;
             phase += Time.deltaTime * speed * 3;
             bool between = GetComponent<MartyController>().IsBetween;
-            model.localScale = cozy ? new Vector3(1, .55f, 1) : between ? new Vector3(.7f, 1, 1) : Vector3.one;
+            model.localScale = Vector3.Scale(restScale, cozy ? new Vector3(1, rig ? .78f : .55f, 1) : between ? new Vector3(.7f, 1, 1) : Vector3.one);
+            if (rig) rig.Animate(speed, cozy, between);
             if (legs != null) for (int i = 0; i < legs.Length; i++)
                 legs[i].localRotation = Quaternion.Euler(Mathf.Sin(phase + (i == 0 || i == 3 ? 0 : Mathf.PI)) * Mathf.Min(speed * 6, 30), 0, 0);
             if (!animator || !animator.runtimeAnimatorController) return;
