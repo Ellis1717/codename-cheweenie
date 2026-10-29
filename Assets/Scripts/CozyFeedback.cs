@@ -8,9 +8,14 @@ namespace CodenameCheweenie
         private void Awake()
         {
             audioBus = GetComponent<GameAudio>();
-            var shader = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null
-                ? Shader.Find("Particles/Standard Unlit") : Shader.Find("Universal Render Pipeline/Particles/Unlit");
-            if (shader) sparkMaterial = new Material(shader);
+            var template = Resources.Load<Material>("Branding/Sparkles");
+            if (template) sparkMaterial = new Material(template);
+            else
+            {
+                var shader = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null
+                    ? Shader.Find("Particles/Standard Unlit") : Shader.Find("Universal Render Pipeline/Particles/Unlit");
+                if (shader) sparkMaterial = new Material(shader);
+            }
         }
         public void Play(Vector3 position, SoundCue cue = SoundCue.Discovery)
         {

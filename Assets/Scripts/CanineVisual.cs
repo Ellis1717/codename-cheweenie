@@ -39,7 +39,7 @@ namespace CodenameCheweenie
             var go = GameObject.CreatePrimitive(PrimitiveType.Sphere); go.name = label;
             go.transform.SetParent(model, false); go.transform.localPosition = position; go.transform.localScale = scale;
             go.GetComponent<Collider>().enabled = false;
-            go.GetComponent<Renderer>().material.color = color;
+            go.GetComponent<Renderer>().sharedMaterial = WorldMaterials.For(color);
             return go.transform;
         }
         public void Animate(float speed, bool cozy)

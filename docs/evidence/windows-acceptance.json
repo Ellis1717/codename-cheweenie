@@ -1,0 +1,31 @@
+{
+    "passed": true,
+    "version": "0.1.0",
+    "seconds": 75.3404541015625,
+    "averageFramesPerSecond": 59.6757698059082,
+    "homeStage": 4,
+    "backyardState": 31,
+    "materialCount": 49,
+    "checks": [
+        "Branded title pauses gameplay",
+        "Music bundled in the player",
+        "Settings opens from title",
+        "Keyboard movement advances Marty",
+        "Keyboard jump leaves the ground",
+        "PlayStation Cross maps to jump",
+        "Walked up the headquarters ramp to the second story",
+        "Greeted Lakitu using gamepad interaction",
+        "Greeted Rio",
+        "Initial backyard sniff complete",
+        "Cheeween Cozy completes the home mission",
+        "Cheween in Between reaches the cuddle gap using the shoulder button",
+        "Scent trail discovered",
+        "Walked up the lookout ramp without teleporting",
+        "Traversed the low hedge passage",
+        "Ribbon recovered after all route clues",
+        "Delivered ribbon to Rio; full adventure complete",
+        "Return to title works in the built player",
+        "No runtime errors during the full playthrough"
+    ],
+    "errors": []
+}

@@ -1,5 +1,5 @@
 {
   "name": "CodenameCheweenie.PlayTests",
-  "references": ["CodenameCheweenie"],
+  "references": ["CodenameCheweenie", "Unity.InputSystem"],
   "optionalUnityReferences": ["TestAssemblies"]
 }

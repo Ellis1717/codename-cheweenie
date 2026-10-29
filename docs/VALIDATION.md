@@ -2,18 +2,18 @@
 
 ## Latest results — 2026-10-28
 
-Unity 6000.3.10f1 now imports and tests this project successfully. Audio validation ran in an isolated copy at `Validation/UnityAudioProject`, with a different company/product name to keep its PlayerPrefs separate from the user's game. The user's running editor and generated settings were preserved.
+Unity 6000.3.10f1 now imports and tests this project successfully. Audio validation ran in an isolated copy at `Validation/UnityAudioProject`, with a different company/product name to keep its PlayerPrefs separate from the user's game. The user's running editor was preserved. The repository now includes reproducible Unity 6.3.10f1 settings, a package lock and Both input handling.
 
-- **28 Unity EditMode tests passed**, zero failures. Includes quest progression, backyard rules, bindings and imported audio assets/volume migration.
-- **2 Unity PlayMode tests passed**, zero failures. The world smoke test checks title/settings transitions, floor settling, home and backyard quest interactions, ribbon delivery and New Adventure reset. The audio test checks scheduled music playback/time advancing on the paused title, menu audio, separate volume controls and home/backyard crossfades.
+- **30 Unity EditMode tests passed**, zero failures. Includes quest progression, backyard rules, bindings and imported audio assets/volume migration.
+- **3 Unity PlayMode tests passed**, zero failures. The world smoke test checks title/settings transitions, floor settling, home and backyard quest interactions, ribbon delivery and New Adventure reset. The virtual-device test exercises production keyboard/Xbox/PlayStation input and the Cozy-before-movement regression. The audio test checks scheduled music playback/time advancing on the paused title, menu audio, separate volume controls and home/backyard crossfades.
 - **145 standalone checks passed**: 13 home quest, 23 bindings/input gate, 76 backyard and 33 audio. Audio checks cover volume migration/mute, PCM sample safety, loop duration/stereo content and loop-boundary continuity.
 - Runtime/editor/test source compilation against installed Unity 6.3 assemblies targeting .NET Standard 2.1 passed with zero warnings/errors.
-- Nine manifest package versions match the bundled editor packages. Asset metadata and assembly-definition JSON are audited by `Validation/ManifestChecks.ps1`.
+- Eleven manifest package versions match the bundled editor packages. Asset metadata and assembly-definition JSON are audited by `Validation/ManifestChecks.ps1`.
 - Eleven original stereo WAV files were rendered: two forty-second music loops and nine short cues, approximately 7.6 MB total. Generator validates finite, non-clipped, non-silent samples.
 
 The first actual PlayMode run exposed a test setup issue: an interpolated Rigidbody teleport had not updated the rendered Transform before immediate interaction checks. The test now synchronizes both poses. The corrected world smoke and the added audio playback test pass.
 
-Headless tests do **not** verify speaker output, subjective mix quality, rendered menu layout, physical keyboard/controller input or complete manual traversal. The world smoke uses synchronized teleports for quest interactions. No Windows player build or gameplay screenshot is claimed.
+Headless tests do **not** verify speaker output, subjective mix quality, rendered menu layout, physical keyboard/controller input or complete manual traversal. The world smoke uses synchronized teleports for quest interactions. A release Windows player and rendered 1280x720 screenshots are now produced separately from the headless test runner.
 
 ## Earlier attempts
 
@@ -22,7 +22,7 @@ Before the user's Unity activation/session, batch startup exited 198 because no 
 ## Play in the editor
 
 1. Open the project in Unity 6.3 LTS. Let imports and compilation finish.
-2. Set **Active Input Handling** to **Input Manager (Old)** or **Both** if necessary; restart when prompted. Run **Cheweenie > Validate project configuration**.
+2. Set **Active Input Handling** to **Both** if necessary; restart when prompted. Run **Cheweenie > Validate project configuration**.
 3. Stop any existing Play session before testing changed scripts. Use an empty scene, then press Play and click the Game view.
 4. The title should display the cover and play the home theme even though gameplay is paused. Ensure the Game view's Mute Audio control is off.
 5. Open Settings. Adjust **Music** and **Sound effects** separately with Left/Right, horizontal stick input, or clicking/activating the row. Music should remain audible when effects are muted; menu clicks and effects should work when music is muted. Closing title settings must leave gameplay paused.
@@ -43,8 +43,8 @@ Successful headless commands used the editor below with `-batchmode -nographics 
 Editor: `C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor\Unity.exe`
 
 Local evidence (ignored by Git):
-- `TestResults/audio-edit.xml`, `TestResults/audio-edit.log`
-- `TestResults/audio-play.xml`, `TestResults/audio-play.log`
+- `TestResults/release-edit.xml`, `TestResults/release-edit.log`
+- `TestResults/release-play.xml`, `TestResults/release-play.log`
 
 Standalone commands from the project root:
 ```powershell
@@ -57,6 +57,24 @@ For a different installation, pass `-p:UnityEditorPath='C:\path\to\Editor'`. The
 
 ## Windows build
 
-Windows Build Support is installed on the development machine. Save all open scenes, then choose **Cheweenie > Build Windows prototype**. The utility validates legacy input configuration, sets the exact product title, creates an ignored bootstrap scene under `Assets/Generated`, restores the editor scene setup and builds `builds/Windows/Cheweenie.exe`. It refuses unsaved scenes/changes.
+Windows Build Support is installed on the development machine. Save all open scenes, then choose **Cheweenie > Build Windows game**. The utility validates input and Windows Build Support configuration, sets the exact product title, creates an ignored bootstrap scene under `Assets/Generated`, restores the editor scene setup and builds `builds/Windows/Cheweenie.exe`. It refuses unsaved scenes/changes.
 
-Distribute the entire Windows output folder, including its Data directory and UnityPlayer DLL. Keep build output out of Git. A standalone build still needs to be run and verified; it has not been produced as part of audio validation.
+Distribute the entire Windows output folder, including its Data directory and UnityPlayer DLL. Keep build output out of Git. The build uses Mono and LZ4HC compression. Resources materials explicitly reference world/particle shaders so the player cannot strip dynamically requested shaders. See the built-player acceptance section below.
+
+## Built-player acceptance
+
+The Windows executable supports an explicit opt-in test mode:
+
+```powershell
+& '.\builds\Windows\Cheweenie.exe' -cheweenie-self-test -cheweenie-report "$PWD\TestResults\WindowsAcceptance\result.json" -logFile "$PWD\TestResults\WindowsAcceptance\player.log"
+```
+
+This creates virtual keyboard/gamepad devices inside the game process, drives the actual Rigidbody through the route, writes JSON and screenshots, then exits 0 on success or 2 on failure. It uses isolated save reads and disables persistence, preserving real player progress. Normal launches do not create virtual devices. Run with a visible window so frame presentation/screenshots are enabled.
+
+Acceptance covers the branded title/settings, keyboard walking/jumping, PlayStation Cross mapping, headquarters ramp ascent/descent, both cats, home quest, Cheeween Cozy and Cheween in Between, backyard landmarks/ribbon delivery, and Return to Title. This is automated device input, not physical hardware testing. **Final result: PASS**, exit 0, 19 checks, 75.34 seconds, 59.68 average FPS at 1280x720 on this development machine. Home stage 4 and backyard flags 31 confirm the full mission completed; runtime errors: zero. The game targets 60 FPS. This is a single-machine capped run, not a cross-hardware performance benchmark. See [JSON report](evidence/windows-acceptance.json), [title](screenshots/title.png), [settings](screenshots/settings.png) and [completed adventure](screenshots/complete.png).
+
+## Play the portable release
+
+Open `builds/Windows/Cheweenie.exe`. Unity does not need to be running. Choose **Start adventure**, use WASD to move, Space to jump, E to greet/sniff, C for Cozy and Escape for settings. Greet Lakitu, greet Rio, sniff the backyard marker, then rest at the blanket fort. The backyard ribbon adventure unlocks afterward. Music and sound effects have separate volume controls.
+
+For another Windows PC, extract `builds/Codename-Cheweenie-Windows-0.1.0.zip` completely before launching. Keep the executable, Data folder, UnityPlayer DLL and Mono runtime together. The current art and house geometry remain prototype placeholders; the title cover is concept art rather than an in-game model preview.

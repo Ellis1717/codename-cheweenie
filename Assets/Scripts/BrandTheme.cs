@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace CodenameCheweenie
 {
@@ -8,6 +9,9 @@ namespace CodenameCheweenie
         public const string Title = "Codename .... Cheweenie";
         public static readonly Color Cream = new Color(.98f, .93f, .82f);
         public static readonly Color Amber = new Color(.96f, .69f, .34f);
+        private static readonly Dictionary<(int, Color, bool, bool), GUIStyle> Styles = new Dictionary<(int, Color, bool, bool), GUIStyle>();
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStyles() { Styles.Clear(); }
         private readonly Texture2D cover;
         private readonly Texture2D shade;
         private readonly Texture2D circle;
@@ -43,16 +47,22 @@ namespace CodenameCheweenie
             GUI.color = old;
         }
         public static GUIStyle Text(int size, Color color, bool bold = false)
+        { return Style(size, color, bold, false); }
+        private static GUIStyle Style(int size, Color color, bool bold, bool button)
         {
+            var key = (size, color, bold, button);
+            if (Styles.TryGetValue(key, out var existing)) return existing;
             var style = new GUIStyle(GUI.skin.label) { fontSize = size, wordWrap = true, fontStyle = bold ? FontStyle.Bold : FontStyle.Normal };
-            style.normal.textColor = color; return style;
+            foreach (var state in new[] { style.normal, style.hover, style.active, style.focused, style.onNormal, style.onHover, style.onActive, style.onFocused })
+            { state.textColor = color; state.background = null; }
+            if (button) { style.alignment = TextAnchor.MiddleLeft; style.padding = new RectOffset(22, 14, 0, 0); }
+            Styles[key] = style; return style;
         }
         public static bool Button(Rect rect, string text, bool selected, bool primary = false)
         {
             bool hovered = rect.Contains(Event.current.mousePosition);
             Fill(rect, primary || selected || hovered ? Amber : new Color(.09f, .12f, .16f, .94f));
-            var style = Text(20, primary || selected || hovered ? new Color(.10f, .09f, .08f) : Cream, true);
-            style.alignment = TextAnchor.MiddleLeft; style.padding = new RectOffset(22, 14, 0, 0);
+            var style = Style(20, primary || selected || hovered ? new Color(.10f, .09f, .08f) : Cream, true, true);
             return GUI.Button(rect, text, style);
         }
     }

@@ -33,14 +33,14 @@ namespace CodenameCheweenie
         private void Update()
         {
             if (!ShowingTitle || settings.IsOpen || Time.frameCount == transitionFrame) return;
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (GameControls.GetKeyDown(KeyCode.Escape))
             { if (page != 0 || confirmNewGame) { page = 0; confirmNewGame = false; } else settings.OpenFromTitle(); return; }
-            float axis = Input.GetAxisRaw("DogStickY");
+            float axis = GameControls.GetAxisRaw("DogStickY");
             if (Mathf.Abs(axis) < .3f) stickReleased = true;
-            int direction = Input.GetKeyDown(KeyCode.DownArrow) ? 1 : Input.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
+            int direction = GameControls.GetKeyDown(KeyCode.DownArrow) ? 1 : GameControls.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
             if (stickReleased && Mathf.Abs(axis) > .6f) { direction = axis > 0 ? 1 : -1; stickReleased = false; }
             if (direction != 0) { selected = (selected + direction + 6) % 6; confirmNewGame = false; }
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton1))
+            if (GameControls.GetKeyDown(KeyCode.Return) || GameControls.GetKeyDown(KeyCode.JoystickButton0) || GameControls.GetKeyDown(KeyCode.JoystickButton1))
                 Activate(page == 0 ? selected : -1);
         }
         private void Activate(int row)
