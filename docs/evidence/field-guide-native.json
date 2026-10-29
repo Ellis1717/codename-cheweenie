@@ -1,0 +1,15 @@
+{
+  "version": "0.9.0",
+  "unity": "6000.3.10f1",
+  "nativePlayPassed": 13,
+  "nativePlayFailed": 0,
+  "sourceCompileWarnings": 0,
+  "sourceCompileErrors": 0,
+  "packagesAudited": 11,
+  "assetMetadataEntries": 233,
+  "artworkCount": 3,
+  "guidePageCount": 10,
+  "input": "Virtual keyboard, mouse, named Gamepad controls; physical hardware unverified",
+  "scope": "Controller sections/tabs, title/settings/game pause context, blocked movement, keyboard help and custom F1 priority, bundled art, existing controls/physics/art/save/audio smoke coverage",
+  "nativeReport": "TestResults/field-guide-final-play.xml"
+}

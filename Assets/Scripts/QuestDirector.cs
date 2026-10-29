@@ -81,7 +81,7 @@ namespace CodenameCheweenie
         }
         private void OnGUI()
         {
-            if (frontEnd && frontEnd.ShowingTitle || settings && settings.IsOpen || !inputHud || neighbourhoodHud && neighbourhoodHud.MapExpanded) return;
+            if (frontEnd && (frontEnd.ShowingTitle || frontEnd.GuideOpen) || settings && settings.IsOpen || !inputHud || neighbourhoodHud && neighbourhoodHud.MapExpanded) return;
             Matrix4x4 before = GUI.matrix;
             float scale = Mathf.Min(Screen.width / 1280f, Screen.height / 720f);
             float width = Screen.width / scale, height = Screen.height / scale;

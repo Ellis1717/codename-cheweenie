@@ -2,6 +2,8 @@
 
 A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
+**Illustrated field guide (0.9.0):** the expanded title menu includes Controls & camera, Adventure guide, Meet the crew and About. Ten guide pages cover current bindings, cameras, recovery, missions and character biographies, with three new reference-guided illustrations. Open help with **F1** during play or **F1 / Y / Triangle** from paused Settings. [Menu guide and artwork](docs/MENU_GUIDE.md).
+
 **Family cameos (0.8.1):** sniff the backyard zone for **Fox Ellis, Chief Sniff Inspector: “Yep. Definitely grass.”** Get Cheeween Cozy at the blanket fort for **Leo Ellis, Blanket Boss: “Five more minutes!” Marty agrees.** Both messages stay visible for eight seconds and replay when you repeat the encounter after completing it. Cat friendship rewards still apply.
 
 Marty now loads the original **Marty Explorer** mesh from your supplied character archive. His geometry and ten source colours are retained, with added leg, head, ear, tail and blink motion. Original OBJ/GLB, the Unity prefab, meshes, materials, importer and animation source are version controlled; a photo-guided alternative is retained too. See [Marty resources and editing](Assets/Art/Marty/README.md). The concept sheet has more detail than the supplied static mesh; it is an art target rather than a render of this model.
@@ -12,7 +14,7 @@ Three saved camera views now let you choose a Cozy overview, Explore orbit or Lo
 
 ## Quick start
 
-**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The current package is `builds/FamilyCameosWindows-0.8.1/Cheweenie.exe`, also promoted to `builds/Current` when that folder is not in use. Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Family-Cameos-0.8.1.zip` to play on another Windows PC.
+**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The current package is `builds/FieldGuideWindows-0.9.0/Cheweenie.exe`, also promoted to `builds/Current` when that folder is not in use. Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Illustrated-Field-Guide-0.9.0.zip` to play on another Windows PC.
 
 Choose **Start adventure** or **Continue adventure**. WASD moves, Space jumps, E greets/sniffs, Shift sprints, C snuggles and Escape opens Settings. For the personalized neighbourhood, leave through the south garden gate and press M for the map; visit the park and school, then return Home. Settings → **Return Marty home** brings you back while keeping progress. [Editable assumptions and decisions](docs/ASSUMPTIONS.md) records provisional choices you can change later.
 
@@ -38,6 +40,7 @@ If an older checkout showed a `TagManager.asset` parser error, use the latest so
 | Cycle camera | V | R3 (press right stick) |
 | Look around | Hold right mouse and drag | Right stick |
 | Recenter camera | Home | RB / R1 |
+| Field guide | F1 during play or Settings | Y / Triangle from paused Settings |
 
 Named Input System controls support Xbox and PlayStation devices. Settings provide label presets and button rebinding, saved between sessions. Menus use arrows/D-pad/stick to navigate, Enter/A/Cross to confirm and Escape/B/Circle to go back. The Camera settings row cycles views with confirm and changes distance with Left/Right. Explore/Low movement follows the camera direction; a light stick push walks slowly. Custom action bindings take priority over camera utility buttons.
 
@@ -59,6 +62,9 @@ Lakitu and Rio use the supplied photos for their distinct black-and-white coat p
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
+
+The 0.9.0 menu/art update passes **13 native PlayMode tests**, **44 Windows menu/input/visual checks at each of 720p and 1080p**, and **45 playable home/cameo checks**, with zero runtime errors. Actual renders and the three new images are retained with [evidence](docs/VALIDATION.md) and [full generation prompts](docs/MENU_ART_PROMPTS.md).
+
 
 The 0.8.1 cameo update passes 12 native PlayMode tests and 33 Windows cameo/input/home checks with zero runtime errors. Both controller encounters and keyboard replay were verified. [Cameo evidence](docs/evidence/family-cameos.json).
 

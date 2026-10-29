@@ -172,6 +172,7 @@ namespace CodenameCheweenie
             Check(GetComponent<WorldArt>()&&GetComponent<WorldArt>().Ready&&GetComponent<WorldArt>().PropCount>70, "Retained scenery palette, textured surfaces and reusable props are active");
             foreach(var cat in FindObjectsByType<CatVisual>(FindObjectsSortMode.None))Check(cat.UsesRetainedModel,cat.look+" saved character prefab and coat are active");
             Check(dog.GetComponent<CanineVisual>().UsesAuthoredModel && dog.GetComponentInChildren<MartyModelRig>(), "Saved Marty character prefab is loaded instead of the primitive fallback");
+            yield return GuideProbe();
             yield return Shot("title");
             float titleScale = Mathf.Min(Screen.width / 1280f, Screen.height / 800f);
             yield return ClickGui(new Vector2(261, 483), titleScale);
@@ -431,6 +432,31 @@ namespace CodenameCheweenie
             Pad(Vector2.zero,GamepadButton.East);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.15f);Check(!GetComponent<CozySettings>().IsOpen&&Time.timeScale>0,"Controller Circle backs out and resumes without a mouse");controls.ApplyControllerPreset(false);
             var gait=dog.GetComponentInChildren<GroundedGait>();Check(gait&&gait.Travelled>.3f&&gait.Steps>4,"Marty's distance-driven gait produces ground contacts while walking");
         }
+        private IEnumerator GuideProbe()
+        {
+            var front=GetComponent<FrontEndMenu>();var settings=GetComponent<CozySettings>();
+            foreach(string name in new[]{"MartyTrail","LakituPatrol","RioCozy"})Check(Resources.Load<Texture2D>("Branding/"+name)!=null,name+" new character illustration is bundled");
+            for(int i=0;i<3;i++)yield return GuidePress(GamepadButton.DpadDown);yield return GuidePress(GamepadButton.South);
+            Check(front.GuideOpen&&front.GuideCategory==1&&Time.timeScale==0,"Controller opens the expanded control guide from title");
+            yield return Shot("guide-actions");yield return GuidePress(GamepadButton.DpadRight);yield return Shot("guide-camera");yield return GuidePress(GamepadButton.DpadRight);yield return Shot("guide-menus");
+            Check(front.GuideTab==2,"Controller pages through actions, cameras and menu/recovery help");
+            yield return GuidePress(GamepadButton.DpadDown);yield return Shot("guide-home");yield return GuidePress(GamepadButton.DpadRight);yield return Shot("guide-backyard");yield return GuidePress(GamepadButton.DpadRight);yield return Shot("guide-neighbourhood");
+            Check(front.GuideCategory==2&&front.GuideTab==2,"Adventure guide covers home, backyard and neighbourhood");
+            yield return GuidePress(GamepadButton.DpadDown);yield return Shot("guide-marty");yield return GuidePress(GamepadButton.South);yield return Shot("guide-lakitu");yield return GuidePress(GamepadButton.South);yield return Shot("guide-rio");
+            Check(front.GuideCategory==3&&front.GuideTab==2,"Controller browses all three illustrated character biographies");
+            yield return GuidePress(GamepadButton.DpadDown);yield return Shot("guide-about");yield return GuidePress(GamepadButton.East);
+            Check(!front.GuideOpen&&front.ShowingTitle&&Time.timeScale==0,"Back returns from the field guide to the paused title");
+            float scale=Mathf.Min(Screen.width/1280f,Screen.height/800f);
+            yield return ClickGui(new Vector2(261,615),scale);yield return ClickGui(new Vector2(1033,139),scale);
+            Check(front.GuideCategory==3&&front.GuideTab==2,"Input System mouse opens crew gallery and selects Rio");
+            yield return ClickGui(new Vector2(178,Screen.height/scale-104),scale);
+            yield return GuidePress(GamepadButton.Start);yield return GuidePress(GamepadButton.North);
+            Check(front.GuideOpen&&!settings.IsOpen,"Controller help shortcut opens the field guide from Settings");
+            yield return GuidePress(GamepadButton.East);Check(settings.IsOpen&&Time.timeScale==0,"Guide back restores the originating Settings menu");
+            yield return GuidePress(GamepadButton.East);Check(front.ShowingTitle&&!settings.IsOpen&&Time.timeScale==0,"Closing title Settings preserves title pause after guide navigation");
+        }
+        private IEnumerator GuidePress(GamepadButton button)
+        {Pad(Vector2.zero,button);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);}
         private IEnumerator MotionDemo()
         {
             yield return Drive(0,-9);var camera=Camera.main.GetComponent<CheweenieCamera>();GameSave.Data.cameraMode=(int)CameraPreset.Explore;camera.SnapToTarget();camera.SetOrbit(0,18);

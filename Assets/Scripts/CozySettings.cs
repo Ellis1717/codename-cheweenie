@@ -33,6 +33,7 @@ namespace CodenameCheweenie
         private void Update()
         {
             if (!controls) return;
+            if(frontEnd && (frontEnd.GuideOpen || frontEnd.Transitioning))return;
             if (Time.frameCount == transitionFrame) return;
             bool escape = GameControls.GetKeyDown(KeyCode.Escape);
             if (capture >= 0)
@@ -54,6 +55,7 @@ namespace CodenameCheweenie
             if (!IsOpen && frontEnd && frontEnd.ShowingTitle) return;
             if (toggle) { SetOpen(!IsOpen); return; }
             if (!IsOpen) return;
+            if(GameControls.HelpPressed){frontEnd.OpenGuide(1,true);return;}
             if(GameControls.CancelPressed){SetOpen(false);return;}
             float axis = GameControls.GetAxisRaw("DogStickY");
             if (Mathf.Abs(axis) < .3f) stickReleased = true;
@@ -173,7 +175,8 @@ namespace CodenameCheweenie
             for (int i = 0; i < RowCount; i++)
                 if (BrandTheme.Button(new Rect(x + 30, y + 137 + i * 38, 700, 33), (i == selected ? "> " : "") + Label(i), selected == i) && capture < 0)
                 { selected = i; Activate(i); }
-            GUI.Label(new Rect(x + 30, y + 780, 700, 60), help, BrandTheme.Text(17, BrandTheme.Cream));
+            GUI.Label(new Rect(x + 30, y + 780, 700, 32), help, BrandTheme.Text(14, BrandTheme.Cream));
+            if(BrandTheme.Button(new Rect(x+30,y+815,700,31),"Controls & field guide · F1 / Y / Triangle",false)&&capture<0)frontEnd.OpenGuide(1,true);
             GUI.Label(new Rect(x + 30, y + 850, 700, 40), "D-pad / stick: choose · A / Cross: select · B / Circle: back · Menu / Options: pause", BrandTheme.Text(15, BrandTheme.Cream));
             GUI.matrix = old; GUI.depth = oldDepth;
         }
