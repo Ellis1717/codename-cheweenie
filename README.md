@@ -3,9 +3,16 @@
 A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
 ## Quick start
+
+**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The current package is `builds/Current/Cheweenie.exe`; Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Family-0.5.0.zip` to play on another Windows PC.
+
+Choose **Start adventure** or **Continue adventure**. WASD moves, Space jumps, E greets/sniffs, Shift sprints, C snuggles and Escape opens Settings. For the personalized neighbourhood, leave through the south garden gate and press M for the map; visit the park and school, then return Home. Settings → **Return Marty home** brings you back while keeping progress. [Editable assumptions and decisions](docs/ASSUMPTIONS.md) records provisional choices you can change later.
+
+To develop or play in the editor:
+
 1. Open this folder in **Unity 6.3 LTS** with an active editor license and resolve the manifest packages.
 2. Use **Input System Package (New)** for Active Input Handling and restart Unity if prompted. Run **Cheweenie > Validate project configuration**. The manifest includes Input System 1.17.0 and Unity Pipeline 0.9.1-exp.1 for local CLI validation.
-3. Press Play in an empty scene. The world builds behind a branded title screen. Choose **Start adventure** (or **Continue adventure** for existing progress).
+3. Press Play in an empty or default scene. Bootstrap temporarily disables existing scene cameras, audio listeners and directional lights, restoring them when its world is destroyed. The world builds behind a branded title screen. Choose **Start adventure** (or **Continue adventure** for existing progress).
 4. Open **Settings** from the title to edit volume, camera, effects and bindings. **How to play** explains controls. During gameplay, Settings also offers **Return to title**.
 5. Find Lakitu, find Rio, sniff the backyard, then use **Cheeween Cozy** at the blanket fort. **New adventure** confirms before clearing existing progress and preserves settings.
 
@@ -39,8 +46,8 @@ Lakitu and Rio now use the supplied photos for their distinct black-and-white co
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
-On **2026-10-29**, **56 native Unity EditMode tests and five PlayMode tests passed** in an isolated project copy. They cover imported audio/materials, title/pause flow, floor settling, home/backyard/neighbourhood quest interactions, old-save compatibility, resets, virtual keyboard/Xbox/PlayStation controls and audio playback/crossfades. Runtime, editor and test sources also compile with zero warnings/errors. **145 standalone checks pass**, including 33 audio checks.
+On **2026-10-29**, **56 native Unity EditMode tests and seven PlayMode tests passed** in an isolated project copy. They cover imported audio/materials, title/pause flow, default-scene camera/listener ownership, home recovery, floor settling, home/backyard/neighbourhood quests, old-save compatibility, resets, virtual keyboard/Xbox/PlayStation controls and audio playback/crossfades. Runtime, editor and test sources compile with zero warnings/errors. **145 standalone checks pass**, including 33 audio checks.
 
-The Windows build includes a branded title, settings, original music and sound effects. Its full built-player playthrough passes all **30 acceptance checks**, including both Cozy moves, ribbon delivery and the complete local park-and-school patrol, with zero runtime errors and 59.9 average FPS on the development machine. Run `builds/CatReferenceWindows-0.4.0/Cheweenie.exe` or extract the portable ZIP beside it. The optional built-player acceptance mode drives the real Rigidbody with virtual input and captures rendered screenshots; see [validation evidence](docs/VALIDATION.md). Physical controller hardware and speaker mix quality still need a human check. The prototype retains placeholder character/house models.
+The Windows 0.5.0 build passes all **38 full-adventure checks**: both Cozy moves, ribbon delivery, the complete local park/school patrol, return indoors and the recovery button. The 375.47-second run had zero runtime errors and 59.93 average FPS at 1280×720 on this machine. Separate launches pass **10 save/restart checks**, restoring all missions, friendship, bindings, volumes and camera settings. Both 1280×720 and 1920×1080 pass **18 menu/input/visual checks** each. Run `PLAY.cmd`, `builds/Current/Cheweenie.exe` or extract the family ZIP. See [validation evidence](docs/VALIDATION.md). Tests use virtual devices; physical controller hardware and speaker mix quality still need a human check. The prototype retains placeholder Marty/house/people art and stylized photo-guided cats.
 
 See [validation and Windows build instructions](docs/VALIDATION.md), [Marty art import](docs/ART_IMPORT.md), [editable headquarters](docs/HEADQUARTERS.md), [architecture](docs/ARCHITECTURE.md), and [development backlog](docs/CODEX_HANDOFF.md). Read AGENTS.md before changing the project.

@@ -7,6 +7,7 @@ namespace CodenameCheweenie
         public Transform target;
         public Vector3 offset = new Vector3(0, 5.5f, -8f);
         private bool positioned;
+        public void SnapToTarget() { positioned = false; }
         private void LateUpdate()
         {
             if (!target) return;

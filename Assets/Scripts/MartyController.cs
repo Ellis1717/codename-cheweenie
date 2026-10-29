@@ -26,7 +26,9 @@ namespace CodenameCheweenie
         public void ResetToHome()
         {
             IsCozy = false; betweenUntil = 0; stepDistance = 0; lastAirSpeed = 0; wasGrounded = false;
-            body.position = new Vector3(0, .95f, -1); body.rotation = Quaternion.identity; body.linearVelocity = Vector3.zero;
+            var interpolation = body.interpolation; body.interpolation = RigidbodyInterpolation.None;
+            body.position = new Vector3(0, .95f, -1); body.rotation = Quaternion.identity; body.linearVelocity = Vector3.zero; body.angularVelocity = Vector3.zero;
+            transform.SetPositionAndRotation(body.position, body.rotation); Physics.SyncTransforms(); body.interpolation = interpolation;
         }
 
         private void Awake()

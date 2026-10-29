@@ -54,7 +54,12 @@ namespace CodenameCheweenie
                 if (cat.energetic) { Data.lakituFriendship = cat.Friendship; Data.lakituQuest = cat.CompanionQuestComplete; }
                 else { Data.rioFriendship = cat.Friendship; Data.rioQuest = cat.CompanionQuestComplete; }
             }
-            if (PersistenceEnabled) { PlayerPrefs.SetString(Key, JsonUtility.ToJson(Data)); PlayerPrefs.Save(); }
+            if (PersistenceEnabled) { PlayerPrefs.SetString(ReadKey, JsonUtility.ToJson(Data)); PlayerPrefs.Save(); }
+        }
+        internal static void ClearAcceptanceSave()
+        {
+            if (!GameSelfTest.Requested) throw new InvalidOperationException("Acceptance storage is only available in explicit self-test mode.");
+            PlayerPrefs.DeleteKey(ReadKey); PlayerPrefs.Save();
         }
         public static void NewGame()
         {
