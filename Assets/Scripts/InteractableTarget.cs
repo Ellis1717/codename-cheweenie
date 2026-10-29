@@ -4,6 +4,12 @@ namespace CodenameCheweenie
 {
     public sealed class InteractableTarget : MonoBehaviour
     {
+        private static readonly System.Collections.Generic.List<InteractableTarget> Targets = new System.Collections.Generic.List<InteractableTarget>();
+        public static System.Collections.Generic.IReadOnlyList<InteractableTarget> Active => Targets;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetTargets() { Targets.Clear(); }
+        private void OnEnable() { if (!Targets.Contains(this)) Targets.Add(this); }
+        private void OnDisable() { Targets.Remove(this); }
         public int stage;
         public BackyardClue backyardClue;
         [TextArea] public string dialogue;

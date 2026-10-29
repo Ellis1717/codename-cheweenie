@@ -19,6 +19,7 @@ namespace CodenameCheweenie
     public static class GameSave
     {
         private const string Key = "Cheweenie.Save.v1";
+        private static string ReadKey => GameSelfTest.Requested ? Key + ".SelfTest" : Key;
         public static bool PersistenceEnabled { get; set; } = true;
         public static SaveData Data { get; private set; }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -27,7 +28,7 @@ namespace CodenameCheweenie
         public static void Load()
         {
             if (Data != null) return;
-            try { Data = JsonUtility.FromJson<SaveData>(PlayerPrefs.GetString(Key, "")); }
+            try { Data = JsonUtility.FromJson<SaveData>(PlayerPrefs.GetString(ReadKey, "")); }
             catch (ArgumentException) { Data = null; }
             if (Data == null || Data.version != 1) Data = new SaveData();
             Data.stage = Mathf.Clamp(Data.stage, 0, QuestProgress.CompletedStage);

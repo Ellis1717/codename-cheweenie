@@ -8,6 +8,15 @@ namespace CodenameCheweenie
         public KeyCode[] gamepad = { KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton1,
             KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton7 };
         public bool Blocked { get; set; }
+        public int BindingSignature
+        {
+            get
+            {
+                int hash = GameSave.Data != null && GameSave.Data.playStationLabels ? 1 : 0;
+                for (int i = 0; i < keyboard.Length; i++) hash = unchecked(hash * 397 ^ (int)keyboard[i] ^ (int)gamepad[i]);
+                return hash;
+            }
+        }
         private readonly InputReleaseGate releaseGate = new InputReleaseGate();
         public void SuppressForFrame() { releaseGate.Suppress(Time.frameCount); }
         private bool CanRead
@@ -17,8 +26,8 @@ namespace CodenameCheweenie
                 bool held = false;
                 if (!Blocked && releaseGate.WaitingForRelease)
                 {
-                    foreach (var key in keyboard) held |= Input.GetKey(key);
-                    foreach (var key in gamepad) held |= Input.GetKey(key);
+                    foreach (var key in keyboard) held |= GameControls.GetKey(key);
+                    foreach (var key in gamepad) held |= GameControls.GetKey(key);
                 }
                 return releaseGate.CanRead(Time.frameCount, Blocked, held);
             }
@@ -44,16 +53,23 @@ namespace CodenameCheweenie
             var labels = GameSave.Data.playStationLabels ? PlayStationButtons : XboxButtons;
             return button >= 0 && button < labels.Length ? labels[button] : "Pad " + button;
         }
-        public bool Held(DogAction action) => CanRead && (Input.GetKey(keyboard[(int)action]) || Input.GetKey(gamepad[(int)action]));
-        public bool Pressed(DogAction action) => CanRead && (Input.GetKeyDown(keyboard[(int)action]) || Input.GetKeyDown(gamepad[(int)action]));
+        public void ApplyControllerPreset(bool playStation)
+        {
+            GameSave.Load(); GameSave.Data.playStationLabels = playStation;
+            gamepad = playStation
+                ? new[] { KeyCode.JoystickButton1, KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton9 }
+                : new[] { KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton1, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton7 };
+        }
+        public bool Held(DogAction action) => CanRead && (GameControls.GetKey(keyboard[(int)action]) || GameControls.GetKey(gamepad[(int)action]));
+        public bool Pressed(DogAction action) => CanRead && (GameControls.GetKeyDown(keyboard[(int)action]) || GameControls.GetKeyDown(gamepad[(int)action]));
         public Vector3 Movement
         {
             get
             {
                 if (!CanRead) return Vector3.zero;
-                float x = (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
-                float z = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ? 1 : 0) - (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) ? 1 : 0);
-                var stick = new Vector3(Input.GetAxisRaw("DogStickX"), 0, -Input.GetAxisRaw("DogStickY"));
+                float x = (GameControls.GetKey(KeyCode.D) || GameControls.GetKey(KeyCode.RightArrow) ? 1 : 0) - (GameControls.GetKey(KeyCode.A) || GameControls.GetKey(KeyCode.LeftArrow) ? 1 : 0);
+                float z = (GameControls.GetKey(KeyCode.W) || GameControls.GetKey(KeyCode.UpArrow) ? 1 : 0) - (GameControls.GetKey(KeyCode.S) || GameControls.GetKey(KeyCode.DownArrow) ? 1 : 0);
+                var stick = new Vector3(GameControls.GetAxisRaw("DogStickX"), 0, -GameControls.GetAxisRaw("DogStickY"));
                 return Vector3.ClampMagnitude(new Vector3(x, 0, z) + stick, 1);
             }
         }

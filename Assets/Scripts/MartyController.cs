@@ -104,6 +104,7 @@ namespace CodenameCheweenie
             if (!grounded) lastAirSpeed = current.y;
             else lastAirSpeed = 0;
             wasGrounded = grounded;
+            if (grounded && direction.sqrMagnitude > .01f) StepOntoLowLedge(direction.normalized);
             float planarSpeed = new Vector2(current.x, current.z).magnitude;
             if (grounded && !IsCozy && planarSpeed > .8f && !controls.Blocked)
             {
@@ -125,12 +126,30 @@ namespace CodenameCheweenie
                 body.MoveRotation(Quaternion.Slerp(body.rotation, Quaternion.LookRotation(direction), Time.fixedDeltaTime * tuning.turnSpeed));
         }
 
+        private void StepOntoLowLedge(Vector3 direction)
+        {
+            // A capsule alone can snag on the patio's shallow edge. Step only onto a low,
+            // walkable surface with clearance above the edge; walls and furniture remain solid.
+            Vector3 feet = body.position - Vector3.up * .8f;
+            const float height = .3f, reach = .6f;
+            if (!Physics.Raycast(feet + Vector3.up * .04f, direction, out RaycastHit edge, reach, ~(1 << 2), QueryTriggerInteraction.Ignore)
+                || edge.normal.y > .5f) return;
+            if (Physics.Raycast(feet + Vector3.up * height, direction, reach, ~(1 << 2), QueryTriggerInteraction.Ignore)) return;
+            Vector3 probe = feet + direction * reach + Vector3.up * height;
+            if (!Physics.Raycast(probe, Vector3.down, out RaycastHit landing, height, ~(1 << 2), QueryTriggerInteraction.Ignore)
+                || landing.normal.y < .8f) return;
+            float rise = landing.point.y - feet.y;
+            if (rise > .01f && rise < height) body.position += Vector3.up * (rise + .01f);
+        }
+
         private void Interact(InteractionKind kind = InteractionKind.Sniff)
         {
             interactionCooldown = .3f;
             var nearest = NearestTarget(kind);
             if (nearest != null && quest != null)
             {
+                // Validate/advance from the interaction pose before moving an interpolated Rigidbody.
+                quest.Activate(nearest, kind);
                 IsCozy = kind == InteractionKind.Cozy;
                 if (IsCozy)
                 {
@@ -138,7 +157,6 @@ namespace CodenameCheweenie
                     body.linearVelocity = Vector3.zero;
                     quest.GetComponent<CozyFeedback>()?.Play(body.position, SoundCue.Cozy);
                 }
-                quest.Activate(nearest, kind);
             }
             else if (quest != null) quest.Announce("Nothing close enough to sniff!");
         }
@@ -146,8 +164,10 @@ namespace CodenameCheweenie
         {
             InteractableTarget nearest = null;
             float best = tuning.interactionRange;
-            foreach (var candidate in Object.FindObjectsByType<InteractableTarget>(FindObjectsSortMode.None))
+            var targets = InteractableTarget.Active;
+            for (int i = 0; i < targets.Count; i++)
             {
+                var candidate = targets[i]; if (!candidate) continue;
                 if (kind == InteractionKind.Cozy && (candidate.stage != 3 || candidate.backyardClue != BackyardClue.None)) continue;
                 if (!candidate.CanReach(transform, best)) continue;
                 nearest = candidate; best = Vector3.Distance(transform.position, candidate.transform.position);

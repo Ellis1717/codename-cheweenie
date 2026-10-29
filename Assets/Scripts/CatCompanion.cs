@@ -73,7 +73,7 @@ namespace CodenameCheweenie
             Vector3 next = body.position + step;
             if (!Physics.Raycast(next + Vector3.up, Vector3.down, out RaycastHit floor, 2f, ~(1 << 2), QueryTriggerInteraction.Ignore)) return;
             if (Mathf.Abs(floor.point.y + .5f - home.y) > .3f) return;
-            next.y = home.y; body.MovePosition(next); body.MoveRotation(Quaternion.LookRotation(delta));
+            next.y = floor.point.y + .5f; body.MovePosition(next); body.MoveRotation(Quaternion.LookRotation(delta));
         }
     }
 }

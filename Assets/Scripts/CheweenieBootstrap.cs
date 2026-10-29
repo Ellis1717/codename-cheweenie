@@ -10,6 +10,10 @@ namespace CodenameCheweenie
             if (Object.FindFirstObjectByType<QuestDirector>() != null) return;
             var existingRoots = new System.Collections.Generic.HashSet<GameObject>(UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects());
             GameObject world = new GameObject("Codename .... Cheweenie | Prototype World");
+            if (GameSelfTest.Requested) { GameSave.PersistenceEnabled = false; Application.runInBackground = true; }
+            world.AddComponent<WorldMaterials>();
+            Application.targetFrameRate = 60;
+            QualitySettings.vSyncCount = 0;
             var quest = world.AddComponent<QuestDirector>();
             world.AddComponent<BackyardDirector>();
             world.AddComponent<SaveLifecycle>();
@@ -41,6 +45,7 @@ namespace CodenameCheweenie
             cameraObject.AddComponent<CheweenieCamera>().target = dog.transform;
             quest.SetPlayer(dog.transform);
             world.AddComponent<FrontEndMenu>().Initialize(dog.GetComponent<MartyInput>(), settings);
+            if (GameSelfTest.Requested) world.AddComponent<GameSelfTest>();
             foreach (var root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
                 if (root != world && !existingRoots.Contains(root)) root.transform.SetParent(world.transform, true);
         }
@@ -48,7 +53,8 @@ namespace CodenameCheweenie
         private static void MakeSun()
         {
             var light = new GameObject("Daylight").AddComponent<Light>();
-            light.type = LightType.Directional; light.intensity = 1.3f;
+            light.type = LightType.Directional; light.intensity = 1.05f;
+            light.color = new Color(1, .94f, .85f);
             light.transform.rotation = Quaternion.Euler(48, -28, 0);
             RenderSettings.ambientLight = new Color(.75f, .77f, .83f);
         }
@@ -111,12 +117,7 @@ namespace CodenameCheweenie
 
         private static void ApplyColor(GameObject go, Color color)
         {
-            var shader = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline == null
-                ? Shader.Find("Standard") : Shader.Find("Universal Render Pipeline/Lit");
-            if (shader == null) return;
-            var material = new Material(shader);
-            material.color = color;
-            go.GetComponent<Renderer>().material = material;
+            go.GetComponent<Renderer>().sharedMaterial = WorldMaterials.For(color);
         }
     }
 }

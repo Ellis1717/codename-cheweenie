@@ -16,6 +16,20 @@ namespace CodenameCheweenie
         private string notice = "Welcome home, Marty McFly!";
         private float noticeUntil = 8f;
         private QuestProgress progress = new QuestProgress();
+        private CatCompanion[] cats;
+        private FrontEndMenu frontEnd;
+        private CozySettings settings;
+        private BackyardDirector backyardHud;
+        private MartyController dogHud;
+        private MartyInput inputHud;
+        private int controlsSignature = int.MinValue;
+        private string controlsText;
+        private void Start()
+        {
+            cats = Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None);
+            frontEnd = GetComponent<FrontEndMenu>(); settings = GetComponent<CozySettings>(); backyardHud = GetComponent<BackyardDirector>();
+            if (player) { dogHud = player.GetComponent<MartyController>(); inputHud = player.GetComponent<MartyInput>(); }
+        }
         public int CurrentStage => progress.Stage;
         public void Restore(int stage) { progress = new QuestProgress(stage); }
         public void SetPlayer(Transform t) { player = t; }
@@ -58,31 +72,56 @@ namespace CodenameCheweenie
         }
         private void OnGUI()
         {
-            var frontEnd = GetComponent<FrontEndMenu>(); if (frontEnd && frontEnd.ShowingTitle) return;
-            var settings = GetComponent<CozySettings>(); if (settings && settings.IsOpen) return;
-            var style = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleLeft, fontSize = 18, wordWrap = true };
-            GUI.Box(new Rect(14, 14, Mathf.Min(620, Screen.width - 28), 94),
-                "CODENAME .... CHEWEENIE\nMission " + Mathf.Min(CurrentStage + 1, 4) + ": " + objectives[CurrentStage], style);
+            if (frontEnd && frontEnd.ShowingTitle || settings && settings.IsOpen || !inputHud) return;
+            Matrix4x4 before = GUI.matrix;
+            float scale = Mathf.Min(Screen.width / 1280f, Screen.height / 720f);
+            float width = Screen.width / scale, height = Screen.height / scale;
+            GUI.matrix = Matrix4x4.Scale(Vector3.one * scale);
+            Color panel = new Color(.045f, .065f, .09f, .9f);
+            BrandTheme.Fill(new Rect(18, 18, 450, 92), panel);
+            GUI.Label(new Rect(32, 25, 422, 25), BrandTheme.Title, BrandTheme.Text(16, BrandTheme.Amber, true));
+            GUI.Label(new Rect(32, 54, 422, 50), objectives[CurrentStage], BrandTheme.Text(18, BrandTheme.Cream, true));
+            float top = 122;
             if (Time.time < noticeUntil)
-                GUI.Box(new Rect(14, 114, Mathf.Min(620, Screen.width - 28), 52), notice, style);
-            int row = 0;
-            foreach (var cat in Object.FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
-                GUI.Box(new Rect(14, 176 + row++ * 46, Mathf.Min(620, Screen.width - 28), 42), cat.CompanionObjective + " | Friendship " + cat.Friendship + "/3", style);
-            var backyard = GetComponent<BackyardDirector>();
-            if (backyard && backyard.Unlocked)
-                GUI.Box(new Rect(14, 176 + row * 46, Mathf.Min(620, Screen.width - 28), 76), "BACKYARD ADVENTURE\n" + backyard.Objective, style);
-            var input = player ? player.GetComponent<MartyInput>() : null;
-            if (input)
             {
-                var nearby = player.GetComponent<MartyController>().NearestTarget();
-                if (nearby)
-                    GUI.Box(new Rect(14, Screen.height - 134, Screen.width - 28, 36),
-                        (nearby.stage == 3 && nearby.backyardClue == BackyardClue.None ? input.BindingLabel(DogAction.Cozy) : input.BindingLabel(DogAction.Interact)) + ": " + nearby.name, style);
-                GUI.Box(new Rect(14, Screen.height - 88, Screen.width - 28, 74),
-                    "Move WASD / stick | Jump " + input.BindingLabel(DogAction.Jump) + " | Sniff " + input.BindingLabel(DogAction.Interact)
-                    + " | Sprint " + input.BindingLabel(DogAction.Sprint) + "\nCozy " + input.BindingLabel(DogAction.Cozy)
-                    + " | Between " + input.BindingLabel(DogAction.Between) + " | Settings " + input.BindingLabel(DogAction.Menu), style);
+                BrandTheme.Fill(new Rect(18, top, 450, 66), panel);
+                GUI.Label(new Rect(30, top + 6, 426, 54), notice, BrandTheme.Text(16, BrandTheme.Cream));
+                top += 76;
             }
+            if (CurrentStage == QuestProgress.CompletedStage && backyardHud)
+            {
+                BrandTheme.Fill(new Rect(18, top, 450, 105), panel);
+                GUI.Label(new Rect(30, top + 6, 426, 24), "BACKYARD ADVENTURE", BrandTheme.Text(14, BrandTheme.Amber, true));
+                GUI.Label(new Rect(30, top + 31, 426, 68), backyardHud.Objective, BrandTheme.Text(16, BrandTheme.Cream));
+            }
+            else if (cats != null)
+            {
+                foreach (var cat in cats)
+                {
+                    if (!cat) continue;
+                    string name = cat.energetic ? "Lakitu" : "Rio";
+                    GUI.Label(new Rect(24, top, 440, 24), name + " · Friendship " + cat.Friendship + "/3", BrandTheme.Text(14, BrandTheme.Cream));
+                    top += 26;
+                }
+            }
+            var nearby = dogHud ? dogHud.NearestTarget() : null;
+            if (nearby)
+            {
+                BrandTheme.Fill(new Rect(18, height - 106, width - 36, 36), panel);
+                GUI.Label(new Rect(30, height - 100, width - 60, 25),
+                    (nearby.stage == 3 && nearby.backyardClue == BackyardClue.None ? inputHud.BindingLabel(DogAction.Cozy) : inputHud.BindingLabel(DogAction.Interact)) + ": " + nearby.name,
+                    BrandTheme.Text(16, BrandTheme.Amber, true));
+            }
+            if (controlsSignature != inputHud.BindingSignature)
+            {
+                controlsSignature = inputHud.BindingSignature;
+                controlsText = "Move WASD / stick · Jump " + inputHud.BindingLabel(DogAction.Jump) + " · Greet " + inputHud.BindingLabel(DogAction.Interact)
+                    + " · Sprint " + inputHud.BindingLabel(DogAction.Sprint) + "\nCozy " + inputHud.BindingLabel(DogAction.Cozy)
+                    + " · Between " + inputHud.BindingLabel(DogAction.Between) + " · Settings " + inputHud.BindingLabel(DogAction.Menu);
+            }
+            BrandTheme.Fill(new Rect(18, height - 60, width - 36, 44), panel);
+            GUI.Label(new Rect(30, height - 56, width - 60, 40), controlsText, BrandTheme.Text(14, BrandTheme.Cream));
+            GUI.matrix = before;
         }
     }
 }

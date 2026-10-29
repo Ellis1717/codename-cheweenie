@@ -11,8 +11,8 @@ namespace CodenameCheweenie
             Box("West garden fence", new Vector3(-17, .55f, -13), new Vector3(.25f, 1.3f, 12), wood);
             Box("East garden fence", new Vector3(17, .55f, -13), new Vector3(.25f, 1.3f, 12), wood);
             Box("South garden fence", new Vector3(0, .55f, -19), new Vector3(34, 1.3f, .25f), wood);
-            Box("West entry fence", new Vector3(-11, .55f, -7), new Vector3(12, 1.3f, .25f), wood);
-            Box("East entry fence", new Vector3(11.5f, .55f, -7), new Vector3(11, 1.3f, .25f), wood);
+            Box("West entry fence", new Vector3(-12.75f, .55f, -7), new Vector3(8.5f, 1.3f, .25f), wood);
+            Box("East entry fence", new Vector3(12.75f, .55f, -7), new Vector3(8.5f, 1.3f, .25f), wood);
 
             // Short optional hops lead toward an accessible ramp; the main quest marker stays clear.
             for (int i = 0; i < 4; i++)
@@ -24,11 +24,14 @@ namespace CodenameCheweenie
             Marker("Stepping-stone scent trail", new Vector3(-4, .65f, -11.5f), BackyardClue.ScentTrail,
                 "Keeterman's scent trail! The stepping stones point toward the raised lookout and the hedge passage.");
 
-            Box("Raised backyard lookout", new Vector3(-10, 1.05f, -15), new Vector3(5, .4f, 5), wood);
+            // Cut a ramp channel through the front edge instead of burying the incline in a box collider.
+            Box("Raised backyard lookout", new Vector3(-10, 1.05f, -15.25f), new Vector3(5, .4f, 4.5f), wood);
+            Box("Lookout west landing strip", new Vector3(-11.875f, 1.05f, -12.75f), new Vector3(1.25f, .4f, .5f), wood);
+            Box("Lookout east landing strip", new Vector3(-8.125f, 1.05f, -12.75f), new Vector3(1.25f, .4f, .5f), wood);
             Vector3 bottom = new Vector3(-10, -.1f, -9), top = new Vector3(-10, 1.25f, -13);
             Vector3 slope = top - bottom;
             var ramp = Box("Lookout ramp", (bottom + top) * .5f - Vector3.up * .1f,
-                new Vector3(2.5f, .2f, slope.magnitude + .4f), wood);
+                new Vector3(2.5f, .2f, slope.magnitude), wood);
             ramp.transform.rotation = Quaternion.LookRotation(slope.normalized);
             for (int side = -1; side <= 1; side += 2)
                 Box("Lookout side rail", new Vector3(-10 + side * 2.4f, 1.8f, -15), new Vector3(.18f, 1.1f, 5), wood);
@@ -53,7 +56,7 @@ namespace CodenameCheweenie
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube); go.name = label; go.transform.SetParent(transform, false);
             go.transform.localPosition = position; go.transform.localScale = scale;
-            go.GetComponent<Renderer>().material.color = color; return go;
+            go.GetComponent<Renderer>().sharedMaterial = WorldMaterials.For(color); return go;
         }
         private void Marker(string label, Vector3 position, BackyardClue clue, string dialogue)
         {

@@ -3,9 +3,12 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <UnityEditorPath Condition="'$(UnityEditorPath)' == ''">C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor</UnityEditorPath>
+    <InputSystemAssembly Condition="'$(InputSystemAssembly)' == ''">../Library/ScriptAssemblies/Unity.InputSystem.dll</InputSystemAssembly>
+    <InputSystemAssembly Condition="!Exists('$(InputSystemAssembly)')">UnityAudioProject/Library/ScriptAssemblies/Unity.InputSystem.dll</InputSystemAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../Assets/Scripts/**/*.cs" />
     <Reference Include="$(UnityEditorPath)/Data/Managed/UnityEngine/*.dll" />
+    <Reference Include="Unity.InputSystem"><HintPath>$(InputSystemAssembly)</HintPath></Reference>
   </ItemGroup>
 </Project>

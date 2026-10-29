@@ -35,14 +35,14 @@ namespace CodenameCheweenie
         {
             if (!controls) return;
             if (Time.frameCount == transitionFrame) return;
-            bool escape = Input.GetKeyDown(KeyCode.Escape);
+            bool escape = GameControls.GetKeyDown(KeyCode.Escape);
             if (capture >= 0)
             {
                 if (escape) { capture = -1; transitionFrame = Time.frameCount; help = "Binding cancelled."; return; }
                 if (Time.unscaledTime < captureAfter) return;
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
-                    if (!MartyInput.IsBindingAllowed((int)key, padBindings) || !Input.GetKeyDown(key)) continue;
+                    if (!MartyInput.IsBindingAllowed((int)key, padBindings) || !GameControls.GetKeyDown(key)) continue;
                     var bindings = padBindings ? controls.gamepad : controls.keyboard;
                     var map = Array.ConvertAll(bindings, x => (int)x);
                     BindingMap.Assign(map, capture, (int)key, value => MartyInput.IsBindingAllowed(value, padBindings));
@@ -51,22 +51,22 @@ namespace CodenameCheweenie
                 }
                 return;
             }
-            bool toggle = escape || Input.GetKeyDown(controls.keyboard[(int)DogAction.Menu]) || Input.GetKeyDown(controls.gamepad[(int)DogAction.Menu]);
+            bool toggle = escape || GameControls.GetKeyDown(controls.keyboard[(int)DogAction.Menu]) || GameControls.GetKeyDown(controls.gamepad[(int)DogAction.Menu]);
             if (!IsOpen && frontEnd && frontEnd.ShowingTitle) return;
             if (toggle) { SetOpen(!IsOpen); return; }
             if (!IsOpen) return;
-            float axis = Input.GetAxisRaw("DogStickY");
+            float axis = GameControls.GetAxisRaw("DogStickY");
             if (Mathf.Abs(axis) < .3f) stickReleased = true;
-            int direction = Input.GetKeyDown(KeyCode.DownArrow) ? 1 : Input.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
+            int direction = GameControls.GetKeyDown(KeyCode.DownArrow) ? 1 : GameControls.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
             if (stickReleased && Mathf.Abs(axis) > .6f && Time.unscaledTime > nextNavigate)
             { direction = axis > 0 ? 1 : -1; stickReleased = false; nextNavigate = Time.unscaledTime + .2f; }
             if (direction != 0) { selected = (selected + direction + RowCount) % RowCount; confirmReset = false; return; }
-            float horizontal = Input.GetAxisRaw("DogStickX");
+            float horizontal = GameControls.GetAxisRaw("DogStickX");
             if (Mathf.Abs(horizontal) < .3f) horizontalReleased = true;
-            int adjustment = Input.GetKeyDown(KeyCode.RightArrow) ? 1 : Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0;
+            int adjustment = GameControls.GetKeyDown(KeyCode.RightArrow) ? 1 : GameControls.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0;
             if (horizontalReleased && Mathf.Abs(horizontal) > .6f) { adjustment = horizontal > 0 ? 1 : -1; horizontalReleased = false; }
             if (adjustment != 0 && selected <= 1) { AdjustVolume(selected, adjustment, false); return; }
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.JoystickButton0) || Input.GetKeyDown(KeyCode.JoystickButton1)) Activate(selected);
+            if (GameControls.GetKeyDown(KeyCode.Return) || GameControls.GetKeyDown(KeyCode.JoystickButton0) || GameControls.GetKeyDown(KeyCode.JoystickButton1)) Activate(selected);
         }
         public void OpenFromTitle()
         {
@@ -108,10 +108,7 @@ namespace CodenameCheweenie
             else if (row == 4)
             {
                 // Legacy drivers differ; presets are starting points, individual actions remain remappable.
-                data.playStationLabels = !data.playStationLabels;
-                controls.gamepad = data.playStationLabels
-                    ? new[] { KeyCode.JoystickButton1, KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton9 }
-                    : (KeyCode[])DefaultPad.Clone();
+                controls.ApplyControllerPreset(!data.playStationLabels);
             }
             else if (row == 5) padBindings = !padBindings;
             else if (row <= 11) { capture = row - 6; captureAfter = Time.unscaledTime + .25f; help = "Press a " + (padBindings ? "controller button" : "keyboard key") + ". Escape cancels."; return; }

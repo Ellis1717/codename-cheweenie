@@ -1,4 +1,5 @@
 {
   "name": "CodenameCheweenie",
-  "rootNamespace": "CodenameCheweenie"
+  "rootNamespace": "CodenameCheweenie",
+  "references": ["Unity.InputSystem"]
 }
