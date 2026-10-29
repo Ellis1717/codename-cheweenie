@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-29",
+  "unity": "6000.3.10f1",
+  "editModePassed": 65,
+  "playModePassed": 14,
+  "renderer": "Direct3D11",
+  "stableHead": "ecc6cf7d83ffdc9bc13069e2ed1c306597bb87e5",
+  "stableProtectedHashesUnchanged": true,
+  "saveIsolation": "CheweenieGraphicsLab / Codename .... Cheweenie Visual Lab",
+  "scope": "Experimental branch; not merged into main",
+  "limitations": "Stylized static articulated meshes; shell fur, not groom/skinned/mocap assets; Unreal is a static import/lighting spike"
+}

@@ -10,8 +10,12 @@ Assets/Resources/SceneryPalette.asset whitespace=-trailing-space
 Assets/Resources/SceneryPalette.asset.meta whitespace=-trailing-space
 Assets/Resources/Motion/** whitespace=-trailing-space
 Assets/Resources/Motion.meta whitespace=-trailing-space
+Assets/Resources/VisualLab/** whitespace=-trailing-space
 
 # The source fingerprint must survive Windows Git line-ending conversion.
 Assets/Art/Marty/Source/Marty_Explorer.obj -text
 Assets/Art/Marty/Source/Marty_Explorer.glb binary
 docs/screenshots/*.gif binary
+Unreal/**/*.uasset binary
+Unreal/**/*.umap binary
+Unreal/VisualLab/SourceAssets/*.obj binary

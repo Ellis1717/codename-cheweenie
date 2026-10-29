@@ -10,7 +10,7 @@ foreach ($dependency in $manifest.dependencies.PSObject.Properties) {
     $package = Join-Path $UnityEditorPath ('Data/Resources/PackageManager/BuiltInPackages/' + $dependency.Name + '/package.json')
     if (!(Test-Path -LiteralPath $package)) {
         $found = $null
-        foreach ($cache in @('Library/PackageCache','Validation/UnityAudioProject/Library/PackageCache')) {
+        foreach ($cache in @('Library/PackageCache','Validation/UnityAudioProject/Library/PackageCache','Validation/VisualLabProject/Library/PackageCache')) {
             if (Test-Path $cache) {
                 $found = Get-ChildItem -LiteralPath $cache -Directory -Filter ($dependency.Name + '@*') | Select-Object -First 1
                 if ($found) { break }

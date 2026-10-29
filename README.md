@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Experimental graphics branch — the stable 0.9.0 game is preserved in the original checkout.** Use `LAB_PLAY.cmd` for the separate Unity graphics build and `LAB_BASELINE.cmd` for its baseline mode, with separate saves. A separate Unreal 4.27 static comparison project is under `Unreal/VisualLab`; the Unity game has not been converted. [Actual changes, tests, captures and remaining realism work](docs/VISUAL_REALISM_LAB.md).
+
 A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
 **Illustrated field guide (0.9.0):** the expanded title menu includes Controls & camera, Adventure guide, Meet the crew and About. Ten guide pages cover current bindings, cameras, recovery, missions and character biographies, with three new reference-guided illustrations. Open help with **F1** during play or **F1 / Y / Triangle** from paused Settings. [Menu guide and artwork](docs/MENU_GUIDE.md).
