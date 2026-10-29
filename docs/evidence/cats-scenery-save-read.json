@@ -1,0 +1,22 @@
+{
+    "passed": true,
+    "version": "0.7.0",
+    "scenario": "save-read",
+    "seconds": 3.6959986686706545,
+    "averageFramesPerSecond": 34.90225601196289,
+    "homeStage": 4,
+    "backyardState": 31,
+    "neighbourhoodState": 31,
+    "materialCount": 98,
+    "checks": [
+        "All mission progress restores across separate player processes",
+        "Rio friendship restores after restart",
+        "Lakitu friendship restores after restart",
+        "Music, effects and camera preferences restore after restart",
+        "Custom key bindings and PlayStation preset restore after restart",
+        "Saved adventure opens at the paused title",
+        "Continue resumes saved progress without resetting it",
+        "No runtime errors during isolated save verification"
+    ],
+    "errors": []
+}

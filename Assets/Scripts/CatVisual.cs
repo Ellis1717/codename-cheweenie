@@ -16,19 +16,35 @@ namespace CodenameCheweenie
         private Material faceMaterial;
         private Vector3 previousPosition;
         private float phase;
+        private CatModelRig savedRig;
+        public bool UsesRetainedModel => savedRig != null;
         public static readonly Color BlackFur = new Color(.025f, .03f, .035f);
         public static readonly Color WhiteFur = new Color(.94f, .94f, .93f);
         public static Color FaceCoat(CatLook cat, Vector3 direction)
         {
             Vector3 p = direction.normalized;
             if (cat == CatLook.Rio) return p.y < -.45f && p.z > .25f ? WhiteFur : BlackFur;
-            bool dark = p.y > .44f || p.z < -.1f && p.y > -.35f;
+            // Keep the front forehead white; the crown/back and left eye patch are dark.
+            bool dark = p.z < -.1f && p.y > -.35f;
             float patch = Mathf.Pow((p.x + .48f) / .65f, 2) + Mathf.Pow((p.y - .10f) / .66f, 2);
             if (patch < 1 && p.x < -.06f && p.z > .1f && p.y > -.36f) dark = true;
             if (Mathf.Abs(p.x) < .07f + .06f * (.7f - p.y) && p.z > .25f && p.y > -.25f && p.y < .76f) dark = false;
             return dark ? BlackFur : WhiteFur;
         }
         private void Start()
+        {
+            var prefab = Resources.Load<GameObject>("Cats/" + look + "Visual");
+            if (prefab)
+            {
+                model = Instantiate(prefab, transform, false).transform;
+                model.name = look + " | reference-based cat rig";
+                savedRig = model.GetComponent<CatModelRig>(); previousPosition = transform.position;
+                return;
+            }
+            BuildFallback();
+        }
+        public Transform BuildAuthoringModel() { BuildFallback(); return model; }
+        private void BuildFallback()
         {
             model = new GameObject(look + " | reference-based cat rig").transform; model.SetParent(transform, false);
             bool lakitu = look == CatLook.Lakitu;
@@ -117,12 +133,15 @@ namespace CodenameCheweenie
         {
             if (!model) return;
             float speed = Vector3.Distance(transform.position, previousPosition) / Mathf.Max(.001f, Time.deltaTime); previousPosition = transform.position;
+            if (savedRig) { savedRig.Animate(speed); return; }
             phase += Mathf.Min(speed, 4) * Time.deltaTime * 6;
             for (int i = 0; i < paws.Count; i++) paws[i].localRotation = Quaternion.Euler(Mathf.Sin(phase + (i == 0 || i == 3 ? 0 : Mathf.PI)) * Mathf.Min(speed * 10, 22), 0, 0);
             float blink = Mathf.Repeat(Time.time + (look == CatLook.Rio ? 2 : 0), 5.8f) > 5.63f ? .12f : 1;
             foreach (var eye in eyes) eye.localScale = new Vector3(1, blink, 1);
         }
         private void OnDestroy()
-        { foreach (var mesh in meshes) if (mesh) Destroy(mesh); if (faceMaterial) Destroy(faceMaterial); if (coat) Destroy(coat); }
+        { foreach (var mesh in meshes) Release(mesh); Release(faceMaterial); Release(coat); }
+        private static void Release(Object resource)
+        { if (!resource) return; if (Application.isPlaying) Destroy(resource); else DestroyImmediate(resource); }
     }
 }

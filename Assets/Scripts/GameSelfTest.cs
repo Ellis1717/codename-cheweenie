@@ -169,6 +169,8 @@ namespace CodenameCheweenie
             Check(System.Array.FindAll(FindObjectsByType<Camera>(FindObjectsSortMode.None), camera => camera.enabled).Length == 1
                 && System.Array.FindAll(FindObjectsByType<AudioListener>(FindObjectsSortMode.None), listener => listener.enabled).Length == 1, "Exactly one gameplay camera and audio listener are active");
             Check(Resources.Load<AudioClip>("Audio/Home") != null, "Music bundled in the player");
+            Check(GetComponent<WorldArt>()&&GetComponent<WorldArt>().Ready&&GetComponent<WorldArt>().PropCount>70, "Retained scenery palette, textured surfaces and reusable props are active");
+            foreach(var cat in FindObjectsByType<CatVisual>(FindObjectsSortMode.None))Check(cat.UsesRetainedModel,cat.look+" saved character prefab and coat are active");
             Check(dog.GetComponent<CanineVisual>().UsesAuthoredModel && dog.GetComponentInChildren<MartyModelRig>(), "Saved Marty character prefab is loaded instead of the primitive fallback");
             yield return Shot("title");
             float titleScale = Mathf.Min(Screen.width / 1280f, Screen.height / 800f);
@@ -203,6 +205,7 @@ namespace CodenameCheweenie
             {
                 yield return MartyPortrait();
                 yield return CatPortraits();
+                yield return SceneryPortraits();
                 yield return MappedMenu();
                 settings.OpenFromTitle(); settings.ReturnToTitle();
                 Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Menu smoke returns to the paused title");
@@ -383,6 +386,18 @@ namespace CodenameCheweenie
             body.rotation=original;dog.transform.rotation=original;body.interpolation=interpolation;Physics.SyncTransforms();
             foreach(var renderer in hidden)if(renderer)renderer.enabled=true;
             quest.enabled=questEnabled;neighbourhood.enabled=mapEnabled;follow.enabled=true;Time.timeScale=timeScale;
+        }
+        private IEnumerator SceneryPortraits()
+        {
+            var camera=Camera.main;var follow=camera.GetComponent<CheweenieCamera>();Vector3 position=camera.transform.position;Quaternion rotation=camera.transform.rotation;
+            var neighbourhood=GetComponent<NeighbourhoodDirector>();var mapWorld=FindFirstObjectByType<NeighbourhoodBuilder>();bool active=mapWorld.gameObject.activeSelf;
+            bool q=quest.enabled,n=neighbourhood.enabled;float scale=Time.timeScale;Time.timeScale=0;quest.enabled=false;neighbourhood.enabled=false;follow.enabled=false;mapWorld.gameObject.SetActive(false);
+            var farProps=new List<GameObject>();var art=transform.Find("Retained cozy scenery | visual layer");if(art)foreach(Transform prop in art)if(prop.position.magnitude>40&&prop.gameObject.activeSelf){farProps.Add(prop.gameObject);prop.gameObject.SetActive(false);}
+            var backdrop=GameObject.CreatePrimitive(PrimitiveType.Cube);backdrop.name="Temporary neutral showcase ground";backdrop.transform.position=new Vector3(0,-.45f,0);backdrop.transform.localScale=new Vector3(400,.5f,400);backdrop.GetComponent<Collider>().enabled=false;backdrop.GetComponent<Renderer>().sharedMaterial=Resources.Load<SceneryPalette>("SceneryPalette").grass;var tiles=new MaterialPropertyBlock();tiles.SetVector("_MainTex_ST",new Vector4(100,100,0,0));backdrop.GetComponent<Renderer>().SetPropertyBlock(tiles);
+            portraitLabel="COZY HEADQUARTERS";camera.transform.position=new Vector3(12,13,-16);camera.transform.LookAt(new Vector3(0,.2f,3));yield return Shot("headquarters-art");
+            portraitLabel="LIVING ROOM / CAT CREW";camera.transform.position=new Vector3(5.7f,3.3f,-1.2f);camera.transform.LookAt(new Vector3(-1.5f,.8f,5.5f));yield return Shot("living-room-art");
+            portraitLabel="BACKYARD ADVENTURE";camera.transform.position=new Vector3(22,13,-29);camera.transform.LookAt(new Vector3(0,.5f,-12));yield return Shot("backyard-art");
+            Destroy(backdrop);foreach(var prop in farProps)if(prop)prop.SetActive(true);portraitLabel=null;camera.transform.SetPositionAndRotation(position,rotation);mapWorld.gameObject.SetActive(active);quest.enabled=q;neighbourhood.enabled=n;follow.enabled=true;Time.timeScale=scale;
         }
     }
 }
