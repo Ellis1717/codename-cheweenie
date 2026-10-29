@@ -11,7 +11,7 @@ foreach ($asset in $assets) {
 $files = @('.gitignore','.gitattributes','AGENTS.md','README.md','PLAY.cmd') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject|PrivateNeighbourhood)\\' -and $_.Name -notin @('Generated.meta','PrivateNeighbourhood.meta') } | ForEach-Object { $_.FullName })
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f
-    $binary = $i.Extension -in @('.png','.jpg','.jpeg','.wav','.fbx','.glb')
+    $binary = $i.Extension -in @('.png','.jpg','.jpeg','.gif','.wav','.fbx','.glb')
     $content = if ($binary) { [Convert]::ToBase64String([IO.File]::ReadAllBytes($i.FullName)) } else { [IO.File]::ReadAllText($i.FullName) }
     @{path=[IO.Path]::GetRelativePath((Get-Location).Path,$i.FullName).Replace('\','/'); content=$content; encoding=$(if ($binary) {'base64'} else {'utf-8'})}
 }

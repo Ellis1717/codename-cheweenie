@@ -14,4 +14,6 @@ Lakitu and Rio now load saved photo-guided prefabs under Resources/Cats. Meshes,
 
 ## Shared scenery
 
+For motion, retain the three `Resources/Motion` profiles and GroundedGait/LocomotionTuning with the model rigs. [Camera and motion guide](CAMERA_MOTION.md) describes ground contacts, gait timing, tuning and the static-mesh limits. Imported fully skinned rigs can use their own Animator; the current gait operates on MartyModelRig/CatModelRig joints.
+
 The retained SceneryPalette connects original materials/textures and reusable furniture, window, fence, foliage, roof and park props. [Scenery resource guide](../Assets/Art/Scenery/README.md) explains edits and rebuilding. Runtime WorldArt preserves the tested solid layout while changing its presentation; ScenePresentation restores the user's original lighting/fog/shadow settings on teardown.

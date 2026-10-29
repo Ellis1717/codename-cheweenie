@@ -16,6 +16,8 @@ The supplied concept sheet is an illustration with more detail than the static m
 
 ## Editing and preservation
 
+Motion now uses `GroundedGait` and the retained `Resources/Motion/Marty.asset` profile: actual travel/turning drives walk/trot/run timing, ground-probed stance contacts, swing lift, breathing, jump tuck and smooth Cozy poses. This animates the existing articulated static mesh. [Controls, tuning and limits](../../../docs/CAMERA_MOTION.md).
+
 Edit `Explorer/Source_*.mat` to tune the default model. The normal Windows build preserves an existing default prefab and material edits. Explicitly importing Explorer regenerates its joint hierarchy/meshes while retaining existing source-material values and mesh GUIDs. Commit source files, prefab, mesh/material assets, `.meta` files and scripts together.
 
 The default uses +Z forward/+Y up, uniform scale 0.78 and a root offset so feet fit the original capsule. Joint assignments use the supplied model's disconnected surfaces and anatomical positions. There are no visual colliders or Rigidbody; gameplay movement, interactions and save identity remain on MartyController.

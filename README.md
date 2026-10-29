@@ -6,9 +6,11 @@ Marty now loads the original **Marty Explorer** mesh from your supplied characte
 
 Lakitu and Rio now use retained photo-guided character prefabs too, with separate coat textures, articulated legs, tail motion and blinking. The shared scenery style adds warm textured floors/walls/paths, rounded furniture, windows, fences, plants, cottage roofs and park/school details. [Cat resources](Assets/Art/Cats/README.md) · [Scenery palette and editing](Assets/Art/Scenery/README.md). Existing movement, solid routes, missions and saves are preserved; added scenery props are cosmetic.
 
+Three saved camera views now let you choose a Cozy overview, Explore orbit or Low pet-level view. Analog walking, smoother pet turns/stops and ground-aware paw contacts improve movement. See [camera/controller controls and editable motion profiles](docs/CAMERA_MOTION.md).
+
 ## Quick start
 
-**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The tested package is `builds/CatsSceneryWindows-0.7.0/Cheweenie.exe`, also promoted to `builds/Current` when that folder is not in use. Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Cat-Crew-Scenery-0.7.0.zip` to play on another Windows PC.
+**Ready-to-play local Windows build:** close an older copy, then double-click **Play Cheweenie** on the desktop or `PLAY.cmd` in this folder. The current package is `builds/CameraMotionWindows-0.8.0/Cheweenie.exe`, also promoted to `builds/Current` when that folder is not in use. Unity can stay closed. Extract the entire `builds/Codename-Cheweenie-Controller-Cameras-Motion-0.8.0.zip` to play on another Windows PC.
 
 Choose **Start adventure** or **Continue adventure**. WASD moves, Space jumps, E greets/sniffs, Shift sprints, C snuggles and Escape opens Settings. For the personalized neighbourhood, leave through the south garden gate and press M for the map; visit the park and school, then return Home. Settings → **Return Marty home** brings you back while keeping progress. [Editable assumptions and decisions](docs/ASSUMPTIONS.md) records provisional choices you can change later.
 
@@ -31,8 +33,11 @@ If an older checkout showed a `TagManager.asset` parser error, use the latest so
 | Cheeween Cozy | C | North / Y / Triangle |
 | Cheween in Between | B | Left shoulder |
 | Settings | Escape | Start / Options |
+| Cycle camera | V | R3 (press right stick) |
+| Look around | Hold right mouse and drag | Right stick |
+| Recenter camera | Home | RB / R1 |
 
-Named Input System controls support Xbox and PlayStation devices. Settings provide label presets and button rebinding, saved between sessions. The camera follows automatically; settings change distance. Menu navigation uses arrows/stick and Enter/controller face buttons, with Escape always available.
+Named Input System controls support Xbox and PlayStation devices. Settings provide label presets and button rebinding, saved between sessions. Menus use arrows/D-pad/stick to navigate, Enter/A/Cross to confirm and Escape/B/Circle to go back. The Camera settings row cycles views with confirm and changes distance with Left/Right. Explore/Low movement follows the camera direction; a light stick push walks slowly. Custom action bindings take priority over camera utility buttons.
 
 Music plays on the title and in the world, fading to a brighter loop outdoors. Settings offers separate **Music** and **Sound effects** volumes; use Left/Right or horizontal stick input to adjust. Stop and restart Play after updating scripts, and ensure Game view **Mute Audio** is off. See [audio assets and controls](docs/AUDIO.md).
 
@@ -52,8 +57,8 @@ Lakitu and Rio use the supplied photos for their distinct black-and-white coat p
 The title and settings share original cover concept artwork, a live wordmark, a paw mark, cream text and amber accents. The title freezes gameplay until Start/Continue; title settings return to the paused title. Mouse, keyboard and controller menu navigation are supported in source. See [branding and artwork provenance](docs/BRANDING.md).
 
 ## Verification status
-On **2026-10-29**, **62 native Unity EditMode tests and ten PlayMode tests passed** in an isolated project copy. They cover original model hashes/topology/colours, all retained character resources and animation, scenery assets, collision preservation, user-object exclusions, environment restoration, audio/materials, menus/recovery, quests/saves and virtual keyboard/Xbox/PlayStation controls. Runtime, editor and test sources compile with zero warnings/errors. **145 standalone checks pass**, including 33 audio checks.
+On **2026-10-29**, **64 native Unity EditMode tests and 12 PlayMode tests passed** in an isolated Unity 6000.3.10f1 project. Coverage includes retained model geometry/resources, scenery, quests/saves/audio, original scene presentation, controller-only menus, camera orbit/recenter, pause input gating, view-relative analog movement and planted-paw stability. **145 standalone checks pass**; runtime/editor/test compilation has zero warnings/errors. Eleven packages and 229 local asset/metadata entries were audited.
 
-The Windows 0.7.0 build passes all **42 full-adventure checks**, including retained characters/scenery, both Cozy moves, ribbon delivery, the complete local park/school patrol, return indoors and recovery. The 375.47-second run had zero runtime errors and 59.69 average FPS at 1280×720 on this machine. Separate launches pass **10 save/restart checks**, restoring missions, friendship, bindings, volumes and camera settings. Both 1280×720 and 1920×1080 pass **23 menu/input/visual checks** each. See [validation evidence](docs/VALIDATION.md) and [in-game interior render](docs/screenshots/living-room-art.png). Tests use virtual devices; physical hardware and speaker mix still need a human check. The house layout and people remain schematic; this is a stylized visual upgrade.
+The Windows 0.8.0 full adventure passes **51 checks**, including both Cozy moves, ribbon delivery, the local park/school patrol, return indoors and home recovery. Separate launches pass ten save/restart checks and 32 menu/input/visual checks at each of 720p and 1080p. The full run averaged 59.92 FPS here with zero runtime errors. See [actual validation results and evidence](docs/VALIDATION.md). Tests use virtual input devices; physical controller hardware and subjective speaker mix remain human checks. Pet motion is procedural animation of articulated static meshes; final likeness and a fully skinned animation pipeline remain future art work. House layout and people remain schematic.
 
-See [validation and Windows build instructions](docs/VALIDATION.md), [Marty art import](docs/ART_IMPORT.md), [editable headquarters](docs/HEADQUARTERS.md), [architecture](docs/ARCHITECTURE.md), and [development backlog](docs/CODEX_HANDOFF.md). Read AGENTS.md before changing the project.
+See [camera/controller controls and motion tuning](docs/CAMERA_MOTION.md), [validation and Windows build instructions](docs/VALIDATION.md), [Marty art import](docs/ART_IMPORT.md), [editable headquarters](docs/HEADQUARTERS.md), [architecture](docs/ARCHITECTURE.md), and [development backlog](docs/CODEX_HANDOFF.md). Read AGENTS.md before changing the project.

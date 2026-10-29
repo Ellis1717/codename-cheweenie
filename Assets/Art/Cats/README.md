@@ -9,3 +9,5 @@ The four articulated legs, tail and blinking are driven by `CatModelRig` through
 Edit the prefabs, materials and coat textures in Unity. **Cheweenie > Art > Create or rebuild retained cat characters** regenerates geometry, joints and coat paint from code; back up hand-painted coats before explicitly regenerating them. Normal Windows builds keep existing prefabs/material/texture edits. Source: CatModelBuilder, CatVisual and RetainedArtWriter. Commit all assets and `.meta` files together.
 
 The original photos remain outside Assets in ignored PrivateReferences. Their people/household backgrounds and personal tag numbers are not copied into game resources or published.
+
+Motion uses `GroundedGait` with retained `Resources/Motion/Lakitu.asset` and `Rio.asset` profiles. Actual travel/turning drives footfalls, stance contacts and swing lift; companion roots now accelerate, slow on arrival and turn gradually. [Controls, tuning and limits](../../../docs/CAMERA_MOTION.md). This is articulated procedural motion rather than a new skinned rig.

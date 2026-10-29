@@ -15,6 +15,7 @@ namespace CodenameCheweenie
         public float musicVolume;
         public bool particles = true;
         public bool playStationLabels;
+        public int cameraMode;
         public int[] keyboard, gamepad;
     }
     public static class GameSave
@@ -39,6 +40,7 @@ namespace CodenameCheweenie
             Data.musicVolume = AudioPreferences.RestoreMusic(Data.audioVersion, Data.musicVolume, Data.volume);
             Data.audioVersion = 1;
             Data.cameraScale = float.IsNaN(Data.cameraScale) ? 1 : Mathf.Clamp(Data.cameraScale, .65f, 1.4f);
+            Data.cameraMode = Mathf.Clamp(Data.cameraMode,0,2);
         }
         public static void Capture()
         {

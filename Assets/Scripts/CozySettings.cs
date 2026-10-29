@@ -18,7 +18,6 @@ namespace CodenameCheweenie
         private bool horizontalReleased = true;
         private string help = "";
         private static readonly KeyCode[] DefaultKeys = { KeyCode.Space, KeyCode.E, KeyCode.LeftShift, KeyCode.C, KeyCode.B, KeyCode.Escape };
-        private static readonly KeyCode[] DefaultPad = { KeyCode.JoystickButton0, KeyCode.JoystickButton2, KeyCode.JoystickButton1, KeyCode.JoystickButton3, KeyCode.JoystickButton4, KeyCode.JoystickButton7 };
         private void Start()
         {
             controls = UnityEngine.Object.FindFirstObjectByType<MartyInput>(); GameSave.Load();
@@ -38,7 +37,7 @@ namespace CodenameCheweenie
             bool escape = GameControls.GetKeyDown(KeyCode.Escape);
             if (capture >= 0)
             {
-                if (escape) { capture = -1; transitionFrame = Time.frameCount; help = "Binding cancelled."; return; }
+                if (escape || GameControls.PausePressed) { capture = -1; transitionFrame = Time.frameCount; help = "Binding cancelled."; return; }
                 if (Time.unscaledTime < captureAfter) return;
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
@@ -51,10 +50,11 @@ namespace CodenameCheweenie
                 }
                 return;
             }
-            bool toggle = escape || GameControls.GetKeyDown(controls.keyboard[(int)DogAction.Menu]) || GameControls.GetKeyDown(controls.gamepad[(int)DogAction.Menu]);
+            bool toggle = escape || GameControls.PausePressed || GameControls.GetKeyDown(controls.keyboard[(int)DogAction.Menu]) || GameControls.GetKeyDown(controls.gamepad[(int)DogAction.Menu]);
             if (!IsOpen && frontEnd && frontEnd.ShowingTitle) return;
             if (toggle) { SetOpen(!IsOpen); return; }
             if (!IsOpen) return;
+            if(GameControls.CancelPressed){SetOpen(false);return;}
             float axis = GameControls.GetAxisRaw("DogStickY");
             if (Mathf.Abs(axis) < .3f) stickReleased = true;
             int direction = GameControls.GetKeyDown(KeyCode.DownArrow) ? 1 : GameControls.GetKeyDown(KeyCode.UpArrow) ? -1 : 0;
@@ -66,7 +66,8 @@ namespace CodenameCheweenie
             int adjustment = GameControls.GetKeyDown(KeyCode.RightArrow) ? 1 : GameControls.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0;
             if (horizontalReleased && Mathf.Abs(horizontal) > .6f) { adjustment = horizontal > 0 ? 1 : -1; horizontalReleased = false; }
             if (adjustment != 0 && selected <= 1) { AdjustVolume(selected, adjustment, false); return; }
-            if (GameControls.GetKeyDown(KeyCode.Return) || GameControls.GetKeyDown(KeyCode.JoystickButton0) || GameControls.GetKeyDown(KeyCode.JoystickButton1)) Activate(selected);
+            if(adjustment!=0&&selected==2){GameSave.Data.cameraScale=Mathf.Clamp(GameSave.Data.cameraScale+adjustment*.1f,.65f,1.4f);Save();return;}
+            if (GameControls.SubmitPressed) Activate(selected);
         }
         public void OpenFromTitle()
         {
@@ -111,7 +112,7 @@ namespace CodenameCheweenie
             var data = GameSave.Data;
             if (row <= 1) { AdjustVolume(row, 1, true); return; }
             GetComponent<GameAudio>()?.Play(SoundCue.Menu);
-            if (row == 2) data.cameraScale = data.cameraScale > 1.25f ? .7f : data.cameraScale + .2f;
+            if (row == 2) { Camera.main.GetComponent<CheweenieCamera>().CyclePreset(); help="A/Cross: camera preset. Left/Right: distance. B/Circle: back. R3 cycles during play; right stick looks."; }
             else if (row == 3) data.particles = !data.particles;
             else if (row == 4)
             {
@@ -120,7 +121,7 @@ namespace CodenameCheweenie
             }
             else if (row == 5) padBindings = !padBindings;
             else if (row <= 11) { capture = row - 6; captureAfter = Time.unscaledTime + .25f; help = "Press a " + (padBindings ? "controller button" : "keyboard key") + ". Escape cancels."; return; }
-            else if (row == 12) { controls.keyboard = (KeyCode[])DefaultKeys.Clone(); controls.gamepad = (KeyCode[])DefaultPad.Clone(); }
+            else if (row == 12) { controls.keyboard = (KeyCode[])DefaultKeys.Clone(); controls.ApplyControllerPreset(data.playStationLabels); }
             else if (row == 13) { SetOpen(false); return; }
             else if (row == 14)
             {
@@ -144,7 +145,7 @@ namespace CodenameCheweenie
             var d = GameSave.Data;
             if (row == 0) return "Sound effects: " + Mathf.RoundToInt(d.volume * 100) + "%   < / >";
             if (row == 1) return "Music: " + Mathf.RoundToInt(d.musicVolume * 100) + "%   < / >";
-            if (row == 2) return "Camera distance: " + d.cameraScale.ToString("0.0") + "x";
+            if (row == 2) return "Camera: "+((CameraPreset)d.cameraMode)+"  ·  distance " + d.cameraScale.ToString("0.0") + "x   < / >";
             if (row == 3) return "Cozy particles: " + (d.particles ? "On" : "Off");
             if (row == 4) return "Controller preset: " + (d.playStationLabels ? "PlayStation" : "Xbox") + " (toggle)";
             if (row == 5) return "Rebind device: " + (padBindings ? "Controller" : "Keyboard");
@@ -173,7 +174,7 @@ namespace CodenameCheweenie
                 if (BrandTheme.Button(new Rect(x + 30, y + 137 + i * 38, 700, 33), (i == selected ? "> " : "") + Label(i), selected == i) && capture < 0)
                 { selected = i; Activate(i); }
             GUI.Label(new Rect(x + 30, y + 780, 700, 60), help, BrandTheme.Text(17, BrandTheme.Cream));
-            GUI.Label(new Rect(x + 30, y + 850, 700, 40), "Arrows / stick: choose · Enter / face button: select · Escape / Start: back", BrandTheme.Text(16, BrandTheme.Cream));
+            GUI.Label(new Rect(x + 30, y + 850, 700, 40), "D-pad / stick: choose · A / Cross: select · B / Circle: back · Menu / Options: pause", BrandTheme.Text(15, BrandTheme.Cream));
             GUI.matrix = old; GUI.depth = oldDepth;
         }
         private void OnDestroy() { theme?.Dispose(); if (IsOpen) { Time.timeScale = previousTimeScale > 0 ? previousTimeScale : 1; if (controls) controls.Blocked = false; } }

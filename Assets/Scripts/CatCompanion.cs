@@ -17,6 +17,7 @@ namespace CodenameCheweenie
         private float nextState;
         private float nextFriendship;
         private Vector3 destination;
+        private Vector3 velocity;
         private void Start()
         {
             body = GetComponent<Rigidbody>(); body.isKinematic = true;
@@ -45,7 +46,9 @@ namespace CodenameCheweenie
         {
             Restore(0, false); nextFriendship = 0; State = CatState.Rest;
             nextState = Time.time + (energetic ? 1 : 5); destination = home;
-            if (body) { body.position = home; body.rotation = Quaternion.identity; }
+            velocity=Vector3.zero;
+            if (body) { var interpolation=body.interpolation;body.interpolation=RigidbodyInterpolation.None;body.position = home; body.rotation = Quaternion.identity;transform.SetPositionAndRotation(body.position,body.rotation);Physics.SyncTransforms();body.interpolation=interpolation; }
+            GetComponentInChildren<GroundedGait>()?.ResetContacts();
         }
         private void FixedUpdate()
         {
@@ -60,20 +63,26 @@ namespace CodenameCheweenie
             if (State == CatState.Inspect)
             {
                 Vector3 look = player.position - body.position; look.y = 0;
-                if (look.sqrMagnitude > .01f) body.MoveRotation(Quaternion.LookRotation(look));
-                return;
+                if (look.sqrMagnitude > .01f) body.MoveRotation(Quaternion.RotateTowards(body.rotation,Quaternion.LookRotation(look),Time.fixedDeltaTime*160));
             }
-            if (State == CatState.Rest) return;
             Vector3 target = State == CatState.Follow ? player.position : destination;
             Vector3 delta = target - body.position; delta.y = 0;
-            if (delta.magnitude < (State == CatState.Follow ? 2f : .2f)) return;
-            Vector3 step = delta.normalized * (energetic ? 1.8f : .6f) * Time.fixedDeltaTime;
+            float stopping=State==CatState.Follow?2:.2f;
+            float speed=State==CatState.Rest||State==CatState.Inspect?0:(energetic?1.8f:.6f)*Mathf.Clamp01((delta.magnitude-stopping)/.6f);
+            if(delta.sqrMagnitude>.01f&&speed>0)
+            {
+                body.MoveRotation(Quaternion.RotateTowards(body.rotation,Quaternion.LookRotation(delta),Time.fixedDeltaTime*(energetic?180:110)));
+                speed*=Mathf.Clamp01((Vector3.Dot(transform.forward,delta.normalized)+.2f)/1.2f);
+            }
+            velocity=Vector3.MoveTowards(velocity,delta.normalized*speed,Time.fixedDeltaTime*(energetic?3.5f:1.5f));
+            if(velocity.sqrMagnitude<.0001f)return;
+            Vector3 step = velocity * Time.fixedDeltaTime;
             // Simple obstacle avoidance: stop instead of pushing through furniture or climbing stories.
-            if (Physics.SphereCast(body.position + Vector3.up * .15f, .3f, delta.normalized, out _, .6f, ~(1 << 2), QueryTriggerInteraction.Ignore)) return;
+            if (Physics.SphereCast(body.position + Vector3.up * .15f, .3f, velocity.normalized, out _, .6f, ~(1 << 2), QueryTriggerInteraction.Ignore)) {velocity=Vector3.zero;return;}
             Vector3 next = body.position + step;
             if (!Physics.Raycast(next + Vector3.up, Vector3.down, out RaycastHit floor, 2f, ~(1 << 2), QueryTriggerInteraction.Ignore)) return;
             if (Mathf.Abs(floor.point.y + .5f - home.y) > .3f) return;
-            next.y = floor.point.y + .5f; body.MovePosition(next); body.MoveRotation(Quaternion.LookRotation(delta));
+            next.y = floor.point.y + .5f; body.MovePosition(next);
         }
     }
 }

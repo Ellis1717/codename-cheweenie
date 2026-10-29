@@ -201,6 +201,7 @@ namespace CodenameCheweenie
             Check(controls.Held(DogAction.Jump), "PlayStation Cross maps to jump");
             Pad(Vector2.zero); yield return new WaitForSecondsRealtime(1);
             controls.ApplyControllerPreset(false);
+            yield return CameraControllerProbe();
             if (Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0)
             {
                 yield return MartyPortrait();
@@ -238,7 +239,9 @@ namespace CodenameCheweenie
             yield return Interact(Target(-1, BackyardClue.PawPassage)); Check(backyard.Has(BackyardClue.PawPassage), "Traversed the low hedge passage");
             yield return Drive(11, -18); yield return Drive(14.5f, -18);
             yield return Interact(Target(-1, BackyardClue.Ribbon)); Check(backyard.Has(BackyardClue.Ribbon), "Ribbon recovered after all route clues");
-            yield return Drive(13.35f, -18); yield return Drive(13.35f, -8.3f); yield return Drive(0, -8.3f);
+            // Retrace the clear passage; the cushion/hedge corner has insufficient
+            // clearance for a tolerance-based turn at x=13.35.
+            yield return Drive(11, -18); yield return Drive(11, -8.3f); yield return Drive(0, -8.3f);
             yield return Drive(0, 2.6f); yield return Drive(5, 2.6f); yield return Interact(Target(1));
             Check(backyard.Complete, "Delivered ribbon to Rio; full adventure complete"); yield return Shot("complete");
             if (MappedNeighbourhood.Current != null) yield return MappedTour();
@@ -263,6 +266,7 @@ namespace CodenameCheweenie
             Check(dog.transform.position.x < 2 && dog.transform.position.z > -2, "Walked home after the neighbourhood tour");
             }
             yield return RecoveryProbe();
+            if(Array.IndexOf(Arguments,"-cheweenie-motion-demo")>=0)yield return MotionDemo();
             settings.OpenFromTitle(); settings.ReturnToTitle();
             Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Return to title works in the built player");
             Check(errors.Count == 0, "No runtime errors during the full playthrough");
@@ -294,7 +298,7 @@ namespace CodenameCheweenie
                 controls.ApplyControllerPreset(true); controls.keyboard[(int)DogAction.Interact] = KeyCode.F;
                 GameSave.Data.keyboard = System.Array.ConvertAll(controls.keyboard, key => (int)key);
                 GameSave.Data.gamepad = System.Array.ConvertAll(controls.gamepad, key => (int)key);
-                GameSave.Data.volume = .42f; GameSave.Data.musicVolume = .27f; GameSave.Data.cameraScale = 1.1f;
+                GameSave.Data.volume = .42f; GameSave.Data.musicVolume = .27f; GameSave.Data.cameraScale = 1.1f;GameSave.Data.cameraMode=(int)CameraPreset.Explore;
                 GameSave.Capture(); Check(GameSave.Data.stage == 4 && GameSave.Data.neighbourhoodState == localState, "Isolated acceptance save written to disk");
             }
             else
@@ -302,7 +306,7 @@ namespace CodenameCheweenie
                 Check(quest.CurrentStage == 4 && backyard.State == 31 && neighbourhood.State == localState, "All mission progress restores across separate player processes");
                 foreach (var cat in FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
                     Check(cat.Friendship == (cat.energetic ? 2 : 3) && cat.CompanionQuestComplete, cat.energetic ? "Lakitu friendship restores after restart" : "Rio friendship restores after restart");
-                Check(Mathf.Abs(GameSave.Data.volume - .42f) < .001f && Mathf.Abs(GameSave.Data.musicVolume - .27f) < .001f && Mathf.Abs(GameSave.Data.cameraScale - 1.1f) < .001f, "Music, effects and camera preferences restore after restart");
+                Check(Mathf.Abs(GameSave.Data.volume - .42f) < .001f && Mathf.Abs(GameSave.Data.musicVolume - .27f) < .001f && Mathf.Abs(GameSave.Data.cameraScale - 1.1f) < .001f&&GameSave.Data.cameraMode==(int)CameraPreset.Explore, "Music, effects, camera distance and camera preset restore after restart");
                 Check(controls.keyboard[(int)DogAction.Interact] == KeyCode.F && GameSave.Data.playStationLabels && controls.gamepad[(int)DogAction.Menu] == KeyCode.JoystickButton9, "Custom key bindings and PlayStation preset restore after restart");
                 Check(GetComponent<FrontEndMenu>().ShowingTitle && Time.timeScale == 0, "Saved adventure opens at the paused title");
                 GetComponent<FrontEndMenu>().StartAdventure(false); yield return new WaitForSecondsRealtime(.15f);
@@ -398,6 +402,33 @@ namespace CodenameCheweenie
             portraitLabel="LIVING ROOM / CAT CREW";camera.transform.position=new Vector3(5.7f,3.3f,-1.2f);camera.transform.LookAt(new Vector3(-1.5f,.8f,5.5f));yield return Shot("living-room-art");
             portraitLabel="BACKYARD ADVENTURE";camera.transform.position=new Vector3(22,13,-29);camera.transform.LookAt(new Vector3(0,.5f,-12));yield return Shot("backyard-art");
             Destroy(backdrop);foreach(var prop in farProps)if(prop)prop.SetActive(true);portraitLabel=null;camera.transform.SetPositionAndRotation(position,rotation);mapWorld.gameObject.SetActive(active);quest.enabled=q;neighbourhood.enabled=n;follow.enabled=true;Time.timeScale=scale;
+        }
+        private IEnumerator CameraControllerProbe()
+        {
+            var camera=Camera.main.GetComponent<CheweenieCamera>();GameSave.Data.cameraMode=0;camera.SnapToTarget();
+            Pad(Vector2.zero,GamepadButton.RightStick);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);
+            Check(camera.Preset==CameraPreset.Explore,"Controller R3 cycles from Cozy to Explore camera");
+            float yaw=camera.Yaw;InputSystem.QueueStateEvent(pad,new GamepadState{rightStick=new Vector2(.8f,.25f)});yield return new WaitForSecondsRealtime(.25f);Pad(Vector2.zero);yield return null;
+            Check(Mathf.Abs(Mathf.DeltaAngle(yaw,camera.Yaw))>10,"Right stick orbits the camera without a mouse");
+            Vector3 start=dog.transform.position,forward=camera.ToWorldMovement(Vector3.forward);Pad(Vector2.up);yield return new WaitForSecondsRealtime(.25f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.2f);
+            Check(Vector3.Dot(dog.transform.position-start,forward)>.2f,"Explore camera uses controller movement relative to the view");
+            Pad(Vector2.zero,GamepadButton.RightStick);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);Check(camera.Preset==CameraPreset.Low,"Controller R3 selects the low camera preset");
+            var map=GetComponent<NeighbourhoodDirector>();bool mapHud=map.enabled;map.enabled=false;yield return Shot("camera-low");map.enabled=mapHud;
+            Pad(Vector2.zero,GamepadButton.RightShoulder);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);Check(Mathf.Abs(Mathf.DeltaAngle(camera.Yaw,dog.transform.eulerAngles.y))<5,"Controller RB/R1 recenters behind Marty");
+            Pad(Vector2.zero,GamepadButton.RightStick);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);Check(camera.Preset==CameraPreset.Cozy,"Controller camera cycle returns to Cozy overview");
+            controls.ApplyControllerPreset(true);Pad(Vector2.zero,GamepadButton.Start);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);Check(GetComponent<CozySettings>().IsOpen,"Controller Options opens the pause menu");
+            Pad(Vector2.zero,GamepadButton.East);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.15f);Check(!GetComponent<CozySettings>().IsOpen&&Time.timeScale>0,"Controller Circle backs out and resumes without a mouse");controls.ApplyControllerPreset(false);
+            var gait=dog.GetComponentInChildren<GroundedGait>();Check(gait&&gait.Travelled>.3f&&gait.Steps>4,"Marty's distance-driven gait produces ground contacts while walking");
+        }
+        private IEnumerator MotionDemo()
+        {
+            yield return Drive(0,-9);var camera=Camera.main.GetComponent<CheweenieCamera>();GameSave.Data.cameraMode=(int)CameraPreset.Explore;camera.SnapToTarget();camera.SetOrbit(0,18);
+            // Front view of a slow walk, away from the private street layer and map HUD.
+            var map=GetComponent<NeighbourhoodDirector>();bool enabled=map.enabled;map.enabled=false;portraitLabel="MARTY / GROUNDED WALK";
+            var mapWorld=FindFirstObjectByType<NeighbourhoodBuilder>();bool mapActive=mapWorld.gameObject.activeSelf;mapWorld.gameObject.SetActive(false);var hidden=new List<GameObject>();var art=transform.Find("Retained cozy scenery | visual layer");if(art)foreach(Transform prop in art)if(prop.position.magnitude>40&&prop.gameObject.activeSelf){hidden.Add(prop.gameObject);prop.gameObject.SetActive(false);}
+            Pad(new Vector2(0,-.4f));yield return new WaitForSecondsRealtime(.4f);
+            for(int i=0;i<24;i++){yield return new WaitForEndOfFrame();ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(report),"motion-"+i.ToString("00")+".png"));yield return new WaitForSecondsRealtime(.08f);}
+            Pad(Vector2.zero);portraitLabel=null;map.enabled=enabled;mapWorld.gameObject.SetActive(mapActive);foreach(var prop in hidden)if(prop)prop.SetActive(true);GameSave.Data.cameraMode=0;camera.SnapToTarget();
         }
     }
 }

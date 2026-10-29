@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618c7ff77268478c84f00237522224ba, type: 3}
+  m_Name: Marty
+  m_EditorClassIdentifier: CodenameCheweenie::CodenameCheweenie.LocomotionTuning
+  walkStride: 0.72
+  trotStride: 1.2
+  runStride: 1.8
+  trotSpeed: 2.2
+  runSpeed: 5.5
+  pawLift: 0.11
+  maxReach: 0.42
+  bodyBob: 0.015
+  bodyRoll: 1.2
+  maxStretch: 1.5

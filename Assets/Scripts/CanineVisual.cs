@@ -52,7 +52,8 @@ namespace CodenameCheweenie
             if (!model) return;
             phase += Time.deltaTime * speed * 3;
             bool between = GetComponent<MartyController>().IsBetween;
-            model.localScale = Vector3.Scale(restScale, cozy ? new Vector3(1, rig ? .78f : .55f, 1) : between ? new Vector3(.7f, 1, 1) : Vector3.one);
+            var scale=Vector3.Scale(restScale, cozy ? new Vector3(1, rig ? .78f : .55f, 1) : between ? new Vector3(.7f, 1, 1) : Vector3.one);
+            model.localScale=Vector3.Lerp(model.localScale,scale,1-Mathf.Exp(-10*Time.deltaTime));
             if (rig) rig.Animate(speed, cozy, between);
             if (legs != null) for (int i = 0; i < legs.Length; i++)
                 legs[i].localRotation = Quaternion.Euler(Mathf.Sin(phase + (i == 0 || i == 3 ? 0 : Mathf.PI)) * Mathf.Min(speed * 6, 30), 0, 0);
