@@ -48,6 +48,7 @@ namespace CodenameCheweenie
             cameraObject.AddComponent<CheweenieCamera>().target = dog.transform;
             quest.SetPlayer(dog.transform);
             world.AddComponent<FrontEndMenu>().Initialize(dog.GetComponent<MartyInput>(), settings);
+            world.AddComponent<WorldArt>().Build(existingRoots);
             if (GameSelfTest.Requested) world.AddComponent<GameSelfTest>();
             foreach (var root in UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects())
                 if (root != world && !existingRoots.Contains(root)) root.transform.SetParent(world.transform, true);

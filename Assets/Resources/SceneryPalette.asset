@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdfed687158c4ea6a437f47d2d882a75, type: 3}
+  m_Name: SceneryPalette
+  m_EditorClassIdentifier: CodenameCheweenie::CodenameCheweenie.SceneryPalette
+  wood: {fileID: 2100000, guid: 9cdcbd7506a260b4882453b7b3912e0b, type: 2}
+  grass: {fileID: 2100000, guid: fc7e3749dcd10fd4287799ad56eea9a8, type: 2}
+  stone: {fileID: 2100000, guid: 675d9aae95f74a449857e201eeb79560, type: 2}
+  paving: {fileID: 2100000, guid: 4f99a88abb0f30d47bceaf300f5ff25c, type: 2}
+  brick: {fileID: 2100000, guid: 9c737c1b035993f4d80a2b283d0b9ed8, type: 2}
+  plaster: {fileID: 2100000, guid: 0eb7e7189f9fb6f45b4b3f5a128e55a7, type: 2}
+  fabric: {fileID: 2100000, guid: 1597f4d069015894298987b24425a7a8, type: 2}
+  roof: {fileID: 2100000, guid: 65a37000695f62b4fb3a7c83342b350d, type: 2}
+  leaf: {fileID: 2100000, guid: 3720d83a42c267d4e9e06a52fc368e98, type: 2}
+  glass: {fileID: 2100000, guid: d21bb202404b74c43ac112f46214bf5e, type: 2}
+  metal: {fileID: 2100000, guid: b4ea05891347476428280184abe7d6dd, type: 2}
+  warmLight: {fileID: 2100000, guid: c4d487caea60f204e9c0c9904432a372, type: 2}
+  sofa: {fileID: 6095808779018705438, guid: 135574fe1c9364a4e84d8185ef188ac4, type: 3}
+  table: {fileID: 6018527206886320114, guid: 0b52b789a92a8fb43b807fbdeb1a262e, type: 3}
+  island: {fileID: 7940637777635006341, guid: 00b85ca45d82ea54f8e91ad659340165, type: 3}
+  cushion: {fileID: 5419761456927191102, guid: c147f480071cd134c8f511d73451f638, type: 3}
+  fence: {fileID: 7567051044098069410, guid: 958fc6c6a878a964faff993094e91314, type: 3}
+  tree: {fileID: 6001216556703828102, guid: 12e46b2b14745d34782d2f74d9273ecc, type: 3}
+  flowers: {fileID: 5387739158884011521, guid: 42370eb6d27243f43b2b6085967000e2, type: 3}
+  window: {fileID: 7076898273378788328, guid: 1d347b95dddabb0459dfe2051781f754, type: 3}
+  bench: {fileID: 265133738911395766, guid: a15cf272b8990804a8e2f951675c555b, type: 3}
+  playground: {fileID: 3466811376739976320, guid: d136e909139d4664fb818e9262c00075, type: 3}
+  rug: {fileID: 1425091399349903164, guid: 47b8c1e5ef2fb5349a1eda2bd98acfd0, type: 3}
+  gabledRoof: {fileID: 7927103265953563520, guid: b13e7d7402f68f04bb80e9b8f21ca7c9, type: 3}
+  shrub: {fileID: 7019797254257767453, guid: e9bda8f16d2edda42b33e3b4f1684ead, type: 3}

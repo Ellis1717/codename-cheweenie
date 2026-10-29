@@ -1,6 +1,7 @@
 @echo off
 setlocal
 set "CHEWEENIE_GAME=%~dp0builds\Current"
+if exist "%~dp0builds\CatsSceneryWindows-0.7.0\Cheweenie.exe" set "CHEWEENIE_GAME=%~dp0builds\CatsSceneryWindows-0.7.0"
 if not exist "%CHEWEENIE_GAME%\Cheweenie.exe" set "CHEWEENIE_GAME=%~dp0builds\Windows"
 if not exist "%CHEWEENIE_GAME%\Cheweenie.exe" goto missing
 if not exist "%CHEWEENIE_GAME%\UnityPlayer.dll" goto incomplete

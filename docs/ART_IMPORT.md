@@ -10,4 +10,8 @@ Create a **Cheweenie / Canine Tuning** asset at `Assets/Resources/MartyTuning.as
 
 ## Cat reference visuals
 
-Lakitu and Rio use separate photo-guided CatVisual profiles rather than generic gray/cream capsules. The raw references are kept locally outside Unity in ignored PrivateReferences/Cats. See [current markings and cover provenance](BRANDING.md). Only derived game art is packaged; no household/person photo backgrounds are copied into the game. Custom rigged cat art can later replace the procedural visual child while preserving each original root collider, Rigidbody and CatCompanion behavior.
+Lakitu and Rio now load saved photo-guided prefabs under Resources/Cats. Meshes, editable materials, coat PNGs, joints and authoring/runtime code are retained in Git; see [cat resource guide](../Assets/Art/Cats/README.md). The supplied archive had photos rather than cat meshes, so these are stylized authored models. Raw references remain outside Unity in ignored PrivateReferences. See [markings and cover provenance](BRANDING.md). Only derived pet art is packaged; no household/person photo backgrounds are copied. A future imported rig can replace the visual child while preserving each original root collider, Rigidbody, CatCompanion and save identity.
+
+## Shared scenery
+
+The retained SceneryPalette connects original materials/textures and reusable furniture, window, fence, foliage, roof and park props. [Scenery resource guide](../Assets/Art/Scenery/README.md) explains edits and rebuilding. Runtime WorldArt preserves the tested solid layout while changing its presentation; ScenePresentation restores the user's original lighting/fog/shadow settings on teardown.

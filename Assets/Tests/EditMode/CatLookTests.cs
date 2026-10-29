@@ -19,5 +19,7 @@ namespace CodenameCheweenie.Tests
         }
         [Test] public void TheCatsDoNotCollapseIntoTheSameCoatPattern()
         { Assert.AreNotEqual(CatVisual.FaceCoat(CatLook.Lakitu, Vector3.forward), CatVisual.FaceCoat(CatLook.Rio, Vector3.forward)); }
+        [Test] public void LakituKeepsAWhiteFrontForeheadAwayFromTheLeftMask()
+        {Assert.Greater(CatVisual.FaceCoat(CatLook.Lakitu,new Vector3(.3f,.55f,.78f)).grayscale,.8f);}
     }
 }
