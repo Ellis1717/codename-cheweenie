@@ -169,6 +169,7 @@ namespace CodenameCheweenie
             Check(System.Array.FindAll(FindObjectsByType<Camera>(FindObjectsSortMode.None), camera => camera.enabled).Length == 1
                 && System.Array.FindAll(FindObjectsByType<AudioListener>(FindObjectsSortMode.None), listener => listener.enabled).Length == 1, "Exactly one gameplay camera and audio listener are active");
             Check(Resources.Load<AudioClip>("Audio/Home") != null, "Music bundled in the player");
+            Check(dog.GetComponent<CanineVisual>().UsesAuthoredModel && dog.GetComponentInChildren<MartyModelRig>(), "Saved Marty character prefab is loaded instead of the primitive fallback");
             yield return Shot("title");
             float titleScale = Mathf.Min(Screen.width / 1280f, Screen.height / 800f);
             yield return ClickGui(new Vector2(261, 483), titleScale);
@@ -200,6 +201,7 @@ namespace CodenameCheweenie
             controls.ApplyControllerPreset(false);
             if (Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0)
             {
+                yield return MartyPortrait();
                 yield return CatPortraits();
                 yield return MappedMenu();
                 settings.OpenFromTitle(); settings.ReturnToTitle();
@@ -361,6 +363,26 @@ namespace CodenameCheweenie
             portraitLabel = null; camera.transform.SetPositionAndRotation(position, rotation);
             neighbourhoodWorld.gameObject.SetActive(worldActive);
             follow.enabled = followEnabled; quest.enabled = questEnabled; neighbourhood.enabled = neighbourhoodEnabled; Time.timeScale = timeScale;
+        }
+        private IEnumerator MartyPortrait()
+        {
+            var camera=Camera.main;var follow=camera.GetComponent<CheweenieCamera>();
+            Vector3 position=camera.transform.position;Quaternion rotation=camera.transform.rotation;
+            var hidden=new List<Renderer>();foreach(var renderer in FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                if(renderer.enabled&&!renderer.transform.IsChildOf(dog.transform)){hidden.Add(renderer);renderer.enabled=false;}
+            bool questEnabled=quest.enabled;var neighbourhood=GetComponent<NeighbourhoodDirector>();bool mapEnabled=neighbourhood.enabled;
+            quest.enabled=false;neighbourhood.enabled=false;follow.enabled=false;
+            var body=dog.GetComponent<Rigidbody>();var interpolation=body.interpolation;body.interpolation=RigidbodyInterpolation.None;
+            Quaternion original=body.rotation;body.rotation=Quaternion.identity;dog.transform.rotation=Quaternion.identity;Physics.SyncTransforms();
+            float timeScale=Time.timeScale;Time.timeScale=0;portraitLabel="MARTY / MR. MARTY";
+            var clear=camera.clearFlags;Color background=camera.backgroundColor;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.13f,.19f,.23f);
+            camera.transform.position=dog.transform.position+new Vector3(1.65f,.55f,2.5f);camera.transform.LookAt(dog.transform.position+new Vector3(0,-.12f,.1f));
+            yield return Shot("marty-portrait");
+            Check(dog.GetComponentsInChildren<Rigidbody>().Length==1&&dog.GetComponentsInChildren<Collider>().Length==1,"Marty character keeps the original gameplay Rigidbody and capsule");
+            portraitLabel=null;camera.clearFlags=clear;camera.backgroundColor=background;camera.transform.SetPositionAndRotation(position,rotation);
+            body.rotation=original;dog.transform.rotation=original;body.interpolation=interpolation;Physics.SyncTransforms();
+            foreach(var renderer in hidden)if(renderer)renderer.enabled=true;
+            quest.enabled=questEnabled;neighbourhood.enabled=mapEnabled;follow.enabled=true;Time.timeScale=timeScale;
         }
     }
 }

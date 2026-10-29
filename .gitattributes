@@ -1,0 +1,10 @@
+# Preserve Unity's generated empty scalar formatting in retained art resources.
+Assets/Art/Marty/** whitespace=-trailing-space,-blank-at-eof
+Assets/Art.meta whitespace=-trailing-space
+Assets/Art/Marty.meta whitespace=-trailing-space
+Assets/Resources/MartyVisual.prefab whitespace=-trailing-space
+Assets/Resources/MartyVisual.prefab.meta whitespace=-trailing-space
+
+# The source fingerprint must survive Windows Git line-ending conversion.
+Assets/Art/Marty/Source/Marty_Explorer.obj -text
+Assets/Art/Marty/Source/Marty_Explorer.glb binary

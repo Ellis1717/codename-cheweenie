@@ -1,5 +1,22 @@
 # Validation and Windows deployment
 
+## Retained original Marty Explorer 0.6.1 — 2026-10-29
+
+The default now uses the owner's supplied `Marty_Explorer.obj`, with its original 7,666 vertices, 15,136 triangles and ten colours. Both original OBJ/GLB are retained byte-for-byte under Assets/Art/Marty/Source. The Unity importer fits the mesh uniformly to the gameplay root and adds simple joints to disconnected surfaces. The supplied model is static, with no skin/animation clips/fur textures. The more detailed concept illustration is an art target, not the same geometry. A photo-guided alternative is also retained; [resource guide](../Assets/Art/Marty/README.md).
+
+- **59 native EditMode and 8 PlayMode tests pass** on Unity 6000.3.10f1. New checks verify original source SHA-256, GLB signature, source colours and exact vertex/triangle preservation, finite geometry/budgets, joint structure, loading, animation and Cozy pose. The original single Rigidbody/capsule and existing virtual keyboard/Xbox/PlayStation, quests, saves and audio tests remain covered.
+- The final Windows build passes **20 startup/menu/input/visual checks**, exit 0, zero runtime errors, including loading the saved character and retaining gameplay physics. The [actual Explorer player render](screenshots/marty-portrait.png) was inspected; [menu report](evidence/marty-character-menu.json). The separately retained [photo-guided alternative render](screenshots/marty-photo-alternative.png) is provided for comparison.
+- **145 standalone checks pass**; runtime/editor/test compilation has zero warnings/errors. Eleven packages and 117 local metadata entries are audited (115 public, two ignored map entries).
+- Snapshot export retains GLB as Base64. A 289-entry export round trip preserves the original GLB bytes and excludes private map/reference files. Original photos, house reference and full concept sheet stay local and ignored.
+- The final Explorer executable passes **39 full-adventure checks**, exit 0, zero runtime errors: original quests, both Cozy moves, ribbon delivery, the full park/school patrol, return indoors and home recovery. Final states are home 4/backyard 31/local 31. Run: **377.01 seconds, 59.70 average FPS at 1280×720** on this machine. [Full report](evidence/marty-character-adventure.json).
+- The packaged executable passes **2 save-write and 8 save-read checks** across separate processes, restoring missions, friendships, bindings, controller preset, volumes and camera settings. Acceptance storage is separate and removed afterward. [Write](evidence/marty-character-save-write.json), [read](evidence/marty-character-save-read.json).
+- It also passes **20 menu/input/visual checks at 1920×1080**, exit 0, zero runtime errors. [1080p report](evidence/marty-character-menu-1080.json). Native suites were repeated with isolated company/product preferences: 59 EditMode and 8 PlayMode passes.
+- All **139 packaged player files** hash-match the tested build. The **143-entry ZIP** includes runtime, start guide, private derived map and ODbL notice, with no raw reference photos. The previous Current release is preserved locally as FamilyWindows-0.5.0. Current and the desktop launcher now use Explorer 0.6.1.
+
+Launch `PLAY.cmd` or `builds/Current/Cheweenie.exe`; portable archive: `builds/Codename-Cheweenie-Marty-Explorer-0.6.1.zip`. In an already-open Unity Play session, stop and restart Play to instantiate the new resource prefab.
+
+The retained source/default/alternative prefabs, Unity mesh/material assets, metadata, importer, generator and animation code are committed together. Normal builds preserve an existing custom default and material edits. Character motion is an articulated hierarchy rather than a skinned FBX; owner review remains the final likeness check. House/people geometry is still schematic. Physical hardware, subjective mix and performance on other machines remain human checks.
+
 ## Editor TagManager import fix — 2026-10-29
 
 The source TagManager stored unnamed layers as bare `-` lines. Unity 6.3.10f1 rejected that file at the following sorting-layer section (line 41). The earlier isolated project had been normalized by Unity, masking the source formatting problem. Unnamed source layers now use explicit empty strings; all 32 layer positions and the default sorting/rendering layers are retained.
