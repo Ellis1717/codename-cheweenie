@@ -172,6 +172,7 @@ namespace CodenameCheweenie
             Check(GetComponent<WorldArt>()&&GetComponent<WorldArt>().Ready&&GetComponent<WorldArt>().PropCount>70, "Retained scenery palette, textured surfaces and reusable props are active");
             foreach(var cat in FindObjectsByType<CatVisual>(FindObjectsSortMode.None))Check(cat.UsesRetainedModel,cat.look+" saved character prefab and coat are active");
             Check(dog.GetComponent<CanineVisual>().UsesAuthoredModel && dog.GetComponentInChildren<MartyModelRig>(), "Saved Marty character prefab is loaded instead of the primitive fallback");
+            if(VisualLab.Requested){var lab=GetComponent<VisualLab>();int surfaces=0;foreach(var fur in GetComponentsInChildren<VisualLabFur>())surfaces+=fur.SurfaceCount;Check(lab&&lab.Ready&&surfaces>20,"Graphics lab has real 3D fur surfaces and active presentation");Check(dog.GetComponentInChildren<MartyModelRig>().sourceModel=="Photo-guided alternative","Graphics lab uses the retained anatomical alternative without replacing Explorer source");}
             yield return GuideProbe();
             yield return Shot("title");
             float titleScale = Mathf.Min(Screen.width / 1280f, Screen.height / 800f);
@@ -208,7 +209,8 @@ namespace CodenameCheweenie
                 yield return MartyPortrait();
                 yield return CatPortraits();
                 yield return SceneryPortraits();
-                yield return MappedMenu();
+                yield return ComparisonFortPortrait();
+                if(MappedNeighbourhood.Current!=null)yield return MappedMenu();
                 settings.OpenFromTitle(); settings.ReturnToTitle();
                 Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Menu smoke returns to the paused title");
                 Check(errors.Count == 0, "No runtime errors during the menu smoke"); yield break;
@@ -431,6 +433,17 @@ namespace CodenameCheweenie
             controls.ApplyControllerPreset(true);Pad(Vector2.zero,GamepadButton.Start);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.1f);Check(GetComponent<CozySettings>().IsOpen,"Controller Options opens the pause menu");
             Pad(Vector2.zero,GamepadButton.East);yield return new WaitForSecondsRealtime(.1f);Pad(Vector2.zero);yield return new WaitForSecondsRealtime(.15f);Check(!GetComponent<CozySettings>().IsOpen&&Time.timeScale>0,"Controller Circle backs out and resumes without a mouse");controls.ApplyControllerPreset(false);
             var gait=dog.GetComponentInChildren<GroundedGait>();Check(gait&&gait.Travelled>.3f&&gait.Steps>4,"Marty's distance-driven gait produces ground contacts while walking");
+        }
+        private IEnumerator ComparisonFortPortrait()
+        {
+            var camera=Camera.main;var follow=camera.GetComponent<CheweenieCamera>();Vector3 cameraPosition=camera.transform.position;Quaternion cameraRotation=camera.transform.rotation;
+            var map=GetComponent<NeighbourhoodDirector>();var mapWorld=FindFirstObjectByType<NeighbourhoodBuilder>();bool mapEnabled=map.enabled,worldActive=mapWorld.gameObject.activeSelf,questEnabled=quest.enabled,followEnabled=follow.enabled;float time=Time.timeScale;
+            Time.timeScale=0;map.enabled=false;mapWorld.gameObject.SetActive(false);quest.enabled=false;follow.enabled=false;
+            var bodies=new List<Rigidbody>{dog.GetComponent<Rigidbody>()};foreach(var cat in FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))bodies.Add(cat.GetComponent<Rigidbody>());
+            var positions=new List<Vector3>();var rotations=new List<Quaternion>();var interpolations=new List<RigidbodyInterpolation>();
+            for(int i=0;i<bodies.Count;i++){var body=bodies[i];positions.Add(body.position);rotations.Add(body.rotation);interpolations.Add(body.interpolation);body.interpolation=RigidbodyInterpolation.None;body.position=i==0?new Vector3(0,.95f,6):new Vector3(i==1?-1.2f:1.2f,.65f,6.6f);body.rotation=Quaternion.Euler(0,180,0);body.transform.SetPositionAndRotation(body.position,body.rotation);}
+            Physics.SyncTransforms();camera.transform.position=new Vector3(0,1.35f,2.5f);camera.transform.LookAt(new Vector3(0,1.05f,6.4f));portraitLabel="IN-GAME GRAPHICS LAB";yield return Shot("comparison-fort");portraitLabel=null;
+            for(int i=0;i<bodies.Count;i++){bodies[i].position=positions[i];bodies[i].rotation=rotations[i];bodies[i].transform.SetPositionAndRotation(positions[i],rotations[i]);bodies[i].interpolation=interpolations[i];}Physics.SyncTransforms();camera.transform.SetPositionAndRotation(cameraPosition,cameraRotation);map.enabled=mapEnabled;mapWorld.gameObject.SetActive(worldActive);quest.enabled=questEnabled;follow.enabled=followEnabled;Time.timeScale=time;
         }
         private IEnumerator GuideProbe()
         {

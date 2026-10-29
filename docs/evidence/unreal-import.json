@@ -1,0 +1,9 @@
+{
+  "created": true,
+  "engine": "4.27.2-18319896+++UE4+Release-4.27",
+  "static_pets": 3,
+  "actors": 12,
+  "map_saved": true,
+  "map": "/Game/VisualLab/Comparison",
+  "scope": "Static asset/lighting benchmark only; no Unity quests, saves, dog controller or animation port"
+}

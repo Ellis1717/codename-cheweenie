@@ -8,10 +8,12 @@ foreach ($asset in $assets) {
         [IO.File]::WriteAllText($meta, $text)
     }
 }
-$files = @('.gitignore','.gitattributes','AGENTS.md','README.md','PLAY.cmd') + @(Get-ChildItem Assets,Packages,ProjectSettings,docs,Validation -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject|PrivateNeighbourhood)\\' -and $_.Name -notin @('Generated.meta','PrivateNeighbourhood.meta') } | ForEach-Object { $_.FullName })
+$roots=@('Assets','Packages','ProjectSettings','docs','Validation');if(Test-Path Unreal){$roots+='Unreal'}
+$launchers=@('LAB_PLAY.cmd','LAB_BASELINE.cmd')|Where-Object {Test-Path -LiteralPath $_}
+$files = @('.gitignore','.gitattributes','AGENTS.md','README.md','PLAY.cmd') + @($launchers) + @(Get-ChildItem $roots -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject|VisualLabProject|PrivateNeighbourhood|Binaries|DerivedDataCache|Intermediate|Saved|__pycache__)\\' -and $_.Name -notin @('Generated.meta','PrivateNeighbourhood.meta') } | ForEach-Object { $_.FullName })
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f
-    $binary = $i.Extension -in @('.png','.jpg','.jpeg','.gif','.wav','.fbx','.glb')
+    $binary = $i.Extension -in @('.png','.jpg','.jpeg','.gif','.wav','.fbx','.glb','.uasset','.umap')
     $content = if ($binary) { [Convert]::ToBase64String([IO.File]::ReadAllBytes($i.FullName)) } else { [IO.File]::ReadAllText($i.FullName) }
     @{path=[IO.Path]::GetRelativePath((Get-Location).Path,$i.FullName).Replace('\','/'); content=$content; encoding=$(if ($binary) {'base64'} else {'utf-8'})}
 }

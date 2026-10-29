@@ -1,0 +1,12 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "4.27",
+  "Category": "Graphics comparison",
+  "Description": "Codename .... Cheweenie isolated Unreal asset/lighting experiment. Not the Unity game port.",
+  "Plugins": [
+    {"Name":"PythonScriptPlugin","Enabled":true},
+    {"Name":"EditorScriptingUtilities","Enabled":true},
+    {"Name":"OculusVR","Enabled":false},
+    {"Name":"SteamVR","Enabled":false}
+  ]
+}

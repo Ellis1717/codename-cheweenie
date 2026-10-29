@@ -41,6 +41,7 @@ namespace CodenameCheweenie
             rb.mass = 3; rb.constraints = RigidbodyConstraints.FreezeRotation;
             dog.AddComponent<MartyController>().Initialize(quest);
             dog.AddComponent<CanineVisual>();
+            if(VisualLab.Requested)world.AddComponent<VisualLab>().Configure(dog.GetComponent<CanineVisual>());
             dog.AddComponent<CozyBlanket>();
             var cameraObject = new GameObject("Follow Camera");
             var cam = cameraObject.AddComponent<Camera>(); cam.tag = "MainCamera";
