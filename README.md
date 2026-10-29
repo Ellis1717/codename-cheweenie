@@ -10,6 +10,8 @@ Choose **Start adventure** or **Continue adventure**. WASD moves, Space jumps, E
 
 To develop or play in the editor:
 
+If an older checkout showed a `TagManager.asset` parser error, use the latest source, clear historical Console entries and press Play again. Unnamed layers now use explicit empty strings; the settings validator also catches bare layer markers. The editor's Game view is empty before Play because the world is built at runtime.
+
 1. Open this folder in **Unity 6.3 LTS** with an active editor license and resolve the manifest packages.
 2. Use **Input System Package (New)** for Active Input Handling and restart Unity if prompted. Run **Cheweenie > Validate project configuration**. The manifest includes Input System 1.17.0 and Unity Pipeline 0.9.1-exp.1 for local CLI validation.
 3. Press Play in an empty or default scene. Bootstrap temporarily disables existing scene cameras, audio listeners and directional lights, restoring them when its world is destroyed. The world builds behind a branded title screen. Choose **Start adventure** (or **Continue adventure** for existing progress).

@@ -1,5 +1,9 @@
 param([string]$UnityEditorPath = 'C:\Program Files\Unity\Hub\Editor\6000.3.10f1\Editor')
 $ErrorActionPreference = 'Stop'
+# Unity's settings parser rejects a bare '-' for an unnamed layer even though
+# general YAML readers allow it. Use an explicit empty string or Unity's '- '.
+$tagManager = [IO.File]::ReadAllText((Join-Path $PWD 'ProjectSettings/TagManager.asset'))
+if ($tagManager -match '(?m)^\s*-\r?$') { throw "TagManager has a bare layer marker; use an explicit empty string for unnamed layers." }
 $manifest = Get-Content Packages/manifest.json -Raw | ConvertFrom-Json
 $count = 0
 foreach ($dependency in $manifest.dependencies.PSObject.Properties) {
