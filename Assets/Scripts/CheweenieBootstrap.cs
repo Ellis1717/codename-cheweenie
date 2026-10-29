@@ -10,6 +10,7 @@ namespace CodenameCheweenie
             if (Object.FindFirstObjectByType<QuestDirector>() != null) return;
             var existingRoots = new System.Collections.Generic.HashSet<GameObject>(UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects());
             GameObject world = new GameObject("Codename .... Cheweenie | Prototype World");
+            world.AddComponent<ScenePresentation>().TakeOver();
             if (GameSelfTest.Requested) { GameSave.PersistenceEnabled = false; Application.runInBackground = true; }
             world.AddComponent<WorldMaterials>();
             Application.targetFrameRate = 60;

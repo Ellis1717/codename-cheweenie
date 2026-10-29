@@ -16,7 +16,7 @@ Work on Codename .... Cheweenie. Read AGENTS.md, README.md, docs/ARCHITECTURE.md
 - **M7**: User-supplied art import, character rigging, lighting, UI, build pipeline for Windows.
 
 ## Definition of done
-Source status on 2026-10-28: M1–M6 are merged, including branded title/settings and the backyard adventure. The audio branch adds original music/cues and independent volumes. Unity now imports and runs tests: 30 EditMode and three PlayMode tests pass in an isolated copy, plus 145 standalone checks. A Windows release build, explicit built-player traversal acceptance mode, named controller input and rendering fixes are included. Physical controllers and subjective speaker mix still need a human check. See docs/VALIDATION.md, docs/AUDIO.md and docs/BACKYARD.md. M7 still requires user-supplied art and rigging.
+Current family release: Windows 0.5.0 packages music/effects, branded menus, Input System only, photo-guided cats and the local park/school walk. Launch PLAY.cmd or builds/Current/Cheweenie.exe. Scene presentation ownership supports empty and default Unity scenes. Pause Settings includes Return Marty home without losing progress. See docs/VALIDATION.md for actual release results and docs/ASSUMPTIONS.md for editable defaults, inferred details and placeholders. Physical controllers and subjective speaker mix remain human checks. M7 still needs final Marty/house art and rigging; existing visuals are playable prototype art.
 
 Project opens without missing packages, playable initial quest, no console errors, control support verified with controller, screenshots, documentation, and clear deployment instructions.
 

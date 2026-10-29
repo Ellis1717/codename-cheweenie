@@ -14,7 +14,7 @@ namespace CodenameCheweenie
         private FrontEndMenu frontEnd;
         private BrandTheme theme;
         private int transitionFrame = -1;
-        private int RowCount => frontEnd && !frontEnd.ShowingTitle ? 16 : 15;
+        private int RowCount => frontEnd && !frontEnd.ShowingTitle ? 17 : 15;
         private bool horizontalReleased = true;
         private string help = "";
         private static readonly KeyCode[] DefaultKeys = { KeyCode.Space, KeyCode.E, KeyCode.LeftShift, KeyCode.C, KeyCode.B, KeyCode.Escape };
@@ -81,6 +81,14 @@ namespace CodenameCheweenie
             if (!frontEnd) return;
             Close(); frontEnd.ShowTitle();
         }
+        public void ReturnHome()
+        {
+            if (!controls || frontEnd && frontEnd.ShowingTitle) return;
+            controls.GetComponent<MartyController>().ResetToHome();
+            if (Camera.main) Camera.main.GetComponent<CheweenieCamera>()?.SnapToTarget();
+            GetComponent<QuestDirector>().Announce("Back home, Marty! Your missions and friendships are saved.");
+            Close(); GameSave.Capture();
+        }
         private void SetOpen(bool open)
         {
             transitionFrame = Time.frameCount;
@@ -120,6 +128,7 @@ namespace CodenameCheweenie
                 GameSave.NewGame(); confirmReset = false; help = "New game started. Settings preserved.";
             }
             else if (row == 15) { ReturnToTitle(); return; }
+            else if (row == 16) { ReturnHome(); return; }
             Save();
         }
         private void AdjustVolume(int row, int direction, bool wrap)
@@ -143,6 +152,7 @@ namespace CodenameCheweenie
             if (row == 12) return "Reset bindings";
             if (row == 13) return frontEnd && frontEnd.ShowingTitle ? "Save and back to title" : "Save and resume";
             if (row == 15) return "Return to title";
+            if (row == 16) return "Return Marty home (keep progress)";
             return confirmReset ? "Confirm New Game" : "New Game";
         }
         private void OnGUI()

@@ -17,6 +17,7 @@ namespace CodenameCheweenie
         {
             public bool passed;
             public string version;
+            public string scenario;
             public float seconds, averageFramesPerSecond;
             public int homeStage, backyardState, neighbourhoodState, materialCount;
             public string[] checks, errors;
@@ -77,6 +78,7 @@ namespace CodenameCheweenie
             var result = new Result
             {
                 passed = passed, version = Application.version, seconds = Time.realtimeSinceStartup - started,
+                scenario = Array.IndexOf(Arguments, "-cheweenie-save-write") >= 0 ? "save-write" : Array.IndexOf(Arguments, "-cheweenie-save-read") >= 0 ? "save-read" : Array.IndexOf(Arguments, "-cheweenie-menu-smoke") >= 0 ? "menus-and-visuals" : "full-adventure",
                 averageFramesPerSecond = (Time.frameCount - firstFrame) / Mathf.Max(.01f, Time.realtimeSinceStartup - started),
                 homeStage = quest ? quest.CurrentStage : -1, backyardState = backyard ? backyard.State : -1,
                 neighbourhoodState = GetComponent<NeighbourhoodDirector>() ? GetComponent<NeighbourhoodDirector>().State : -1,
@@ -161,7 +163,11 @@ namespace CodenameCheweenie
             var frontEnd = GetComponent<FrontEndMenu>(); var settings = GetComponent<CozySettings>();
             yield return new WaitForSecondsRealtime(3.5f);
             while (!UnityEngine.Rendering.SplashScreen.isFinished) yield return null;
+            if (Array.IndexOf(Arguments, "-cheweenie-save-write") >= 0) { yield return SaveProbe(true); yield break; }
+            if (Array.IndexOf(Arguments, "-cheweenie-save-read") >= 0) { yield return SaveProbe(false); yield break; }
             Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Branded title pauses gameplay");
+            Check(System.Array.FindAll(FindObjectsByType<Camera>(FindObjectsSortMode.None), camera => camera.enabled).Length == 1
+                && System.Array.FindAll(FindObjectsByType<AudioListener>(FindObjectsSortMode.None), listener => listener.enabled).Length == 1, "Exactly one gameplay camera and audio listener are active");
             Check(Resources.Load<AudioClip>("Audio/Home") != null, "Music bundled in the player");
             yield return Shot("title");
             float titleScale = Mathf.Min(Screen.width / 1280f, Screen.height / 800f);
@@ -251,9 +257,54 @@ namespace CodenameCheweenie
             yield return Drive(13.35f, -13); yield return Drive(13.35f, -8.3f); yield return Drive(0, -8.3f); yield return Drive(0, -1);
             Check(dog.transform.position.x < 2 && dog.transform.position.z > -2, "Walked home after the neighbourhood tour");
             }
+            yield return RecoveryProbe();
             settings.OpenFromTitle(); settings.ReturnToTitle();
             Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Return to title works in the built player");
             Check(errors.Count == 0, "No runtime errors during the full playthrough");
+        }
+        private IEnumerator RecoveryProbe()
+        {
+            yield return Drive(0, -7.8f); yield return Drive(13.35f, -7.8f);
+            int home = quest.CurrentStage, yard = backyard.State, local = GetComponent<NeighbourhoodDirector>().State;
+            float music = GameSave.Data.musicVolume, effects = GameSave.Data.volume;
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Escape)); yield return new WaitForSecondsRealtime(.1f);
+            InputSystem.QueueStateEvent(keyboard, new KeyboardState()); yield return new WaitForSecondsRealtime(.1f);
+            var settings = GetComponent<CozySettings>(); Check(settings.IsOpen, "Keyboard opens the gameplay pause menu");
+            float scale = Mathf.Min(Screen.width / 800f, Screen.height / 920f);
+            yield return ClickGui(new Vector2(Screen.width / scale * .5f, (Screen.height / scale - 900) * .5f + 761.5f), scale);
+            Check(!settings.IsOpen && Time.timeScale > 0 && Vector3.Distance(dog.transform.position, new Vector3(0, .95f, -1)) < .2f, "Mouse recovery returns Marty home and resumes play");
+            Check(quest.CurrentStage == home && backyard.State == yard && GetComponent<NeighbourhoodDirector>().State == local
+                && GameSave.Data.musicVolume == music && GameSave.Data.volume == effects, "Home recovery preserves all missions and volume settings");
+            Check(Vector3.Distance(Camera.main.transform.position, dog.transform.position) < 14, "Recovery snaps the follow camera home");
+        }
+        private IEnumerator SaveProbe(bool write)
+        {
+            var neighbourhood = GetComponent<NeighbourhoodDirector>();
+            int localState = MappedNeighbourhood.Current != null && MappedNeighbourhood.Current.IncludesSchool ? 31 : 15;
+            if (write)
+            {
+                GameSave.ClearAcceptanceSave(); GameSave.PersistenceEnabled = true; GameSave.NewGame();
+                quest.Restore(4); backyard.Restore(31); neighbourhood.Restore(localState);
+                foreach (var cat in FindObjectsByType<CatCompanion>(FindObjectsSortMode.None)) cat.Restore(cat.energetic ? 2 : 3, true);
+                controls.ApplyControllerPreset(true); controls.keyboard[(int)DogAction.Interact] = KeyCode.F;
+                GameSave.Data.keyboard = System.Array.ConvertAll(controls.keyboard, key => (int)key);
+                GameSave.Data.gamepad = System.Array.ConvertAll(controls.gamepad, key => (int)key);
+                GameSave.Data.volume = .42f; GameSave.Data.musicVolume = .27f; GameSave.Data.cameraScale = 1.1f;
+                GameSave.Capture(); Check(GameSave.Data.stage == 4 && GameSave.Data.neighbourhoodState == localState, "Isolated acceptance save written to disk");
+            }
+            else
+            {
+                Check(quest.CurrentStage == 4 && backyard.State == 31 && neighbourhood.State == localState, "All mission progress restores across separate player processes");
+                foreach (var cat in FindObjectsByType<CatCompanion>(FindObjectsSortMode.None))
+                    Check(cat.Friendship == (cat.energetic ? 2 : 3) && cat.CompanionQuestComplete, cat.energetic ? "Lakitu friendship restores after restart" : "Rio friendship restores after restart");
+                Check(Mathf.Abs(GameSave.Data.volume - .42f) < .001f && Mathf.Abs(GameSave.Data.musicVolume - .27f) < .001f && Mathf.Abs(GameSave.Data.cameraScale - 1.1f) < .001f, "Music, effects and camera preferences restore after restart");
+                Check(controls.keyboard[(int)DogAction.Interact] == KeyCode.F && GameSave.Data.playStationLabels && controls.gamepad[(int)DogAction.Menu] == KeyCode.JoystickButton9, "Custom key bindings and PlayStation preset restore after restart");
+                Check(GetComponent<FrontEndMenu>().ShowingTitle && Time.timeScale == 0, "Saved adventure opens at the paused title");
+                GetComponent<FrontEndMenu>().StartAdventure(false); yield return new WaitForSecondsRealtime(.15f);
+                Check(quest.CurrentStage == 4 && neighbourhood.State == localState && Time.timeScale > 0, "Continue resumes saved progress without resetting it");
+                GameSave.PersistenceEnabled = false; GameSave.ClearAcceptanceSave();
+            }
+            Check(errors.Count == 0, "No runtime errors during isolated save verification");
         }
         private IEnumerator MappedTour()
         {
