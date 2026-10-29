@@ -32,6 +32,8 @@ namespace CodenameCheweenie.Tests
             Assert.IsFalse(MartyInput.IsBindingAllowed((int)KeyCode.Space, true));
             Assert.IsFalse(MartyInput.IsBindingAllowed((int)KeyCode.None, false));
             Assert.IsFalse(MartyInput.IsBindingAllowed(999999, false));
+            Assert.IsFalse(MartyInput.IsBindingAllowed((int)KeyCode.Exclaim, false), "Character codes without physical keys cannot become dead bindings");
+            Assert.IsTrue(MartyInput.IsBindingAllowed((int)KeyCode.Print, false));
         }
         [Test] public void MenuSelectionMustBeReleasedBeforeGameplayResumes()
         {

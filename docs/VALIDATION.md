@@ -1,5 +1,16 @@
 # Validation and Windows deployment
 
+## Input System only release 0.3.1 — 2026-10-29
+
+The project now uses **Input System Package (New)** only (`activeInputHandler: 1`). Input System 1.17.0 was already installed; all remaining Input Manager reads are removed. Unknown axes/absent devices return neutral input. Supported saved KeyCode bindings remain compatible, including PrintScreen/context-menu aliases; unsupported old character bindings restore to usable defaults. The Windows configuration validator requires the new backend and no longer depends on legacy axes.
+
+IMGUI is retained for drawing, with mouse hit-testing/presses now supplied explicitly by Input System. Click positions account for the GUI scale, and a press is consumed once even across multiple GUI passes. Keyboard and controller menu navigation remain supported.
+
+The new-only Windows player passed **14 startup/input/menu acceptance checks**, exit 0, zero runtime errors. Actual virtual mouse presses open Settings, adjust music, return to the paused title and start the adventure; keyboard walking/jumping, PlayStation Cross and map open/close also pass. [Report](evidence/input-system-only-acceptance.json). The long park/school walk was verified in release 0.3.0 below and was not repeated for this input-focused change.
+
+**53 native EditMode and 4 PlayMode tests passed** with the legacy backend disabled. Coverage includes input movement/actions, scaled mouse coordinates, one-click consumption, Print bindings and keyboard/gamepad removal while the legacy backend is disabled. Runtime/editor/test compilation passed with zero warnings/errors, and all 145 existing standalone checks passed. No Input Manager deprecation warning appeared in the new-only editor/build/player logs. All 139 packaged player files match the input-tested executable. Physical controller hardware and subjective speaker mix remain human checks.
+
+Save any unsaved scene changes and **restart the main Unity editor** after changing backends; its existing session was left open. Then press Play to bootstrap the world from the scene. An empty Game view before Play is expected. Old Console warnings may remain as historical entries. The desktop Play Cheweenie shortcut targets `builds/LocalMapWindows-0.3.1/Cheweenie.exe`; the portable archive is `builds/Codename-Cheweenie-Local-Neighbourhood-0.3.1.zip`.
 ## Private local-map release 0.3.0 — 2026-10-29
 
 - **53 native Unity EditMode tests and 4 PlayMode tests passed**. New coverage validates the map schema, relative coordinates, invalid roads/stops, school-site reach, inherited JSON fields and migrating a three-stamp patrol into the school extension.
@@ -43,7 +54,7 @@ Before the user's Unity activation/session, batch startup exited 198 because no 
 ## Play in the editor
 
 1. Open the project in Unity 6.3 LTS. Let imports and compilation finish.
-2. Set **Active Input Handling** to **Both** if necessary; restart when prompted. Run **Cheweenie > Validate project configuration**.
+2. Set **Active Input Handling** to **Input System Package (New)** if necessary; restart when prompted. Run **Cheweenie > Validate project configuration**.
 3. Stop any existing Play session before testing changed scripts. Use an empty scene, then press Play and click the Game view.
 4. The title should display the cover and play the home theme even though gameplay is paused. Ensure the Game view's Mute Audio control is off.
 5. Open Settings. Adjust **Music** and **Sound effects** separately with Left/Right, horizontal stick input, or clicking/activating the row. Music should remain audible when effects are muted; menu clicks and effects should work when music is muted. Closing title settings must leave gameplay paused.

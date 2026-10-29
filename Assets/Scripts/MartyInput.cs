@@ -37,7 +37,7 @@ namespace CodenameCheweenie
             var key = (KeyCode)value;
             if (!System.Enum.IsDefined(typeof(KeyCode), key) || key == KeyCode.None) return false;
             if (pad) return key >= KeyCode.JoystickButton0 && key <= KeyCode.JoystickButton19;
-            return key < KeyCode.Mouse0; // No mouse buttons or device-specific joystick aliases.
+            return key < KeyCode.Mouse0 && GameControls.SupportsKeyboard(key); // Unsupported old bindings restore to usable defaults.
         }
         public string BindingLabel(DogAction action)
         {

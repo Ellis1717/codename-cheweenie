@@ -60,10 +60,11 @@ namespace CodenameCheweenie
         }
         public static bool Button(Rect rect, string text, bool selected, bool primary = false)
         {
-            bool hovered = rect.Contains(Event.current.mousePosition);
+            bool hovered = rect.Contains(GameControls.PointerPosition(GUI.matrix));
             Fill(rect, primary || selected || hovered ? Amber : new Color(.09f, .12f, .16f, .94f));
             var style = Style(20, primary || selected || hovered ? new Color(.10f, .09f, .08f) : Cream, true, true);
-            return GUI.Button(rect, text, style);
+            GUI.Label(rect, text, style);
+            return GameControls.TryPointerClick(rect, GUI.matrix);
         }
     }
 }

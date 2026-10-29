@@ -25,6 +25,7 @@ namespace CodenameCheweenie
         private readonly List<string> errors = new List<string>();
         private Gamepad pad;
         private Keyboard keyboard;
+        private Mouse mouse;
         private MartyController dog;
         private MartyInput controls;
         private QuestDirector quest;
@@ -78,6 +79,7 @@ namespace CodenameCheweenie
             Application.logMessageReceived -= Log;
             if (pad != null) InputSystem.RemoveDevice(pad);
             if (keyboard != null) InputSystem.RemoveDevice(keyboard);
+            if (mouse != null) InputSystem.RemoveDevice(mouse);
             Application.Quit(passed ? 0 : 2);
         }
         private void Pad(Vector2 movement, GamepadButton? button = null)
@@ -91,6 +93,14 @@ namespace CodenameCheweenie
             yield return new WaitForEndOfFrame();
             ScreenCapture.CaptureScreenshot(Path.Combine(Path.GetDirectoryName(report), name + ".png"));
             yield return new WaitForSecondsRealtime(.2f);
+        }
+        private IEnumerator ClickGui(Vector2 point, float scale)
+        {
+            Vector2 screen = new Vector2(point.x * scale, Screen.height - point.y * scale);
+            InputSystem.QueueStateEvent(mouse, new MouseState { position = screen }.WithButton(MouseButton.Left));
+            yield return new WaitForSecondsRealtime(.12f);
+            InputSystem.QueueStateEvent(mouse, new MouseState { position = screen });
+            yield return new WaitForSecondsRealtime(.12f);
         }
         private IEnumerator Drive(float x, float z, bool sprint = false)
         {
@@ -138,7 +148,7 @@ namespace CodenameCheweenie
         }
         private IEnumerator Run()
         {
-            pad = InputSystem.AddDevice<Gamepad>(); keyboard = InputSystem.AddDevice<Keyboard>();
+            pad = InputSystem.AddDevice<Gamepad>(); keyboard = InputSystem.AddDevice<Keyboard>(); mouse = InputSystem.AddDevice<Mouse>();
             dog = FindFirstObjectByType<MartyController>(); controls = dog.GetComponent<MartyInput>();
             quest = GetComponent<QuestDirector>(); backyard = GetComponent<BackyardDirector>();
             var frontEnd = GetComponent<FrontEndMenu>(); var settings = GetComponent<CozySettings>();
@@ -147,9 +157,19 @@ namespace CodenameCheweenie
             Check(frontEnd.ShowingTitle && Time.timeScale == 0, "Branded title pauses gameplay");
             Check(Resources.Load<AudioClip>("Audio/Home") != null, "Music bundled in the player");
             yield return Shot("title");
-            settings.OpenFromTitle(); yield return new WaitForSecondsRealtime(.15f);
-            Check(settings.IsOpen && Time.timeScale == 0, "Settings opens from title"); yield return Shot("settings");
-            settings.Close(); frontEnd.StartAdventure(true); controls.ApplyControllerPreset(false);
+            float titleScale = Mathf.Min(Screen.width / 1280f, Screen.height / 800f);
+            yield return ClickGui(new Vector2(261, 483), titleScale);
+            Check(settings.IsOpen && Time.timeScale == 0, "Input System mouse opens settings from title"); yield return Shot("settings");
+            float settingsScale = Mathf.Min(Screen.width / 800f, Screen.height / 920f);
+            float rowX = Screen.width / settingsScale * .5f, rowY = (Screen.height / settingsScale - 900) * .5f;
+            float previousMusic = GameSave.Data.musicVolume;
+            yield return ClickGui(new Vector2(rowX, rowY + 191.5f), settingsScale);
+            Check(Mathf.Abs(previousMusic - GameSave.Data.musicVolume) > .01f, "Input System mouse adjusts the scaled settings volume row");
+            yield return ClickGui(new Vector2(rowX, rowY + 647.5f), settingsScale);
+            Check(!settings.IsOpen && frontEnd.ShowingTitle && Time.timeScale == 0, "Mouse closes settings without unpausing the title");
+            yield return ClickGui(new Vector2(261, 379), titleScale);
+            Check(!frontEnd.ShowingTitle && Time.timeScale > 0, "Input System mouse starts the adventure");
+            GameSave.NewGame(); controls.ApplyControllerPreset(false);
             yield return new WaitForSecondsRealtime(.2f);
             float initial = dog.transform.position.z;
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.W)); yield return new WaitForSecondsRealtime(.4f);
