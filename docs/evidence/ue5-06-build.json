@@ -1,0 +1,17 @@
+{
+  "engine": "Unreal 5.8.4",
+  "version": "0.6.0",
+  "editorCompile": "Succeeded",
+  "gameCompile": "Succeeded",
+  "initialFullCookArchive": "Succeeded",
+  "finalNativeStageArchive": "Succeeded",
+  "archiveMatchesBuiltExe": true,
+  "packagedAssertions": 85,
+  "packagedPrivateMapHeadlessChecks": 4,
+  "legacyHeadlessMovementChecks": 16,
+  "input": "Synthetic keyboard/gamepad with position/energy fixtures; physical devices unverified",
+  "audio": "Muted automation; audible mix unverified",
+  "visualQa": "Actual final digging, kitchen, jump, couch/TV and outdoor captures inspected; kitchen camera and blocking action labels repaired",
+  "privateMapExcludedFromGit": true,
+  "unityAndComparisonResourcesUnchanged": true
+}

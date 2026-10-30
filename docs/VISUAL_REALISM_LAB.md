@@ -1,6 +1,12 @@
 # Separate graphics experiment
 
-## Current demo — Cozy Patrol 0.5
+## Current demo — Cozy Patrol 0.6
+
+The pet sandbox adds saved energy, tired/normal/excited moods, mouth-carried toys, three recoverable burial patches, jumping and a real physics couch hop, original Paw TV rest, and kitchen food. Digging/eating/resting poses extend the retained rig. Context prompts and keyboard/gamepad bindings are in [the pet-action guide](UNREAL_DOG_LIFE.md). Kitchen meals and TV use dedicated camera views so furniture does not hide Marty; floating action labels were removed after rendered review. Models and scenery retain the stylized 0.5 foundation.
+
+Final 0.6 package validation passed 85 assertions across pet actions, gait, exterior, patrol and separate-process reload, plus four headless private-map assertions. Rendered play captures were reviewed; reload tests are headless. The validated launcher marker hashes 43 immutable payload files. Synthetic input/position fixtures were used, with physical devices and the audible mix still unverified. Evidence: docs/evidence/ue5-06-*.json and docs/screenshots/ue5-06-*.png.
+
+## Prior graphics foundation — Cozy Patrol 0.5
 
 Marty now uses an original cover-guided, skin-weighted 24-joint model with procedural elbow/stifle/hock/paw IK, grounded stepping, flexible ear tips and short-coat/eye/nose materials. Closed surfaces and outward normals avoid the initial open-limb/ear artifacts. Editable Blender/FBX/textures and the old static fallback are retained. V/R3 cycles a fourth close camera. This remains stylized; it does not reproduce the cover's full photographic detail. Cats remain static.
 

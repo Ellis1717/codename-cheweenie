@@ -51,6 +51,11 @@ public:
     UPROPERTY(SaveGame) int32 NeighbourDogMask=0;
     UPROPERTY(SaveGame) float Music = .25f;
     UPROPERTY(SaveGame) float Effects = .6f;
+    UPROPERTY(SaveGame) float PetEnergy=80;
+    UPROPERTY(SaveGame) int32 CarryItem=-1;
+    UPROPERTY(SaveGame) TArray<int32> HoleDepths={0,0,0};
+    UPROPERTY(SaveGame) TArray<int32> ItemHoles={-1,-1};
+    UPROPERTY(SaveGame) bool PetTVOn=false;
 };
 
 UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))
@@ -71,6 +76,7 @@ public:
     UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Save();
     UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
     void HoldMessage(float Seconds) { MessageTime=Seconds; }
+    void ActionCue(const FString& Name) { PlayCue(Name); }
     FString Objective() const;
     FString Prompt() const;
     TArray<FString> Menu() const;

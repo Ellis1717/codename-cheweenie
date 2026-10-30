@@ -4,9 +4,13 @@ The owner has chosen to set Unity aside and continue with Unreal Engine. Unreal 
 
 ## Current state
 
+The owner requested a pet-action sandbox next. Version 0.6 adds energy and tired/normal/excited states, recoverable toy burial at three marked patches, carrying/dropping, general jumps, an assisted physics sofa hop, original TV rest with a fixed view, and a kitchen meal. DogLife owns these rules independently of mission completion. Save fields are additive and transient actions cancel safely during home/door recovery. See UNREAL_DOG_LIFE.md for controls, tuning, persistence and limitations.
+
 U2 now has an original cover-guided Marty variant with a 24-joint skin-weighted skeleton, procedural canine IK, ground contacts, flexible ear bases/tips and a fourth inspection camera. Source Blender/FBX/textures and the Unreal assets are retained separately. See UNREAL_MARTY_ART.md. This is a procedural skinned rig, not motion capture or a strand fur groom; the owner-selected cover remains the visual target. U3 cats remain unchanged.
 
 At the owner's request, an initial U5 exterior now includes the headquarters exit/return door, retained local street/park/school support, a reference-guided brick/blue-garage home approximation and eight editable dog/house slots. Public fallback geometry is schematic; personalized layouts and names stay in LocalGameData outside Content and Git. Neighbour greetings save by slot. See UNREAL_NEIGHBOURHOOD.md. This is a playable scenery foundation rather than finished architecture or animated neighbour dogs.
+
+Final 0.6 validation: Editor/Game compilation, initial full cook and final native staging passed. The final package passed 85 synthetic action/gait/exterior/patrol/persistence assertions (rendered play, headless reload), plus four headless private-map checks. Four new action captures were inspected after kitchen-camera and label repairs. The launcher now selects validated 0.6, retaining 0.5/0.4. Evidence is under ue5-06 names. Physical devices and audible mix remain unverified.
 
 Final 0.5 validation: native Editor/Game compilation and packaging passed; the standalone DX12 executable passed 57 gait/exterior/patrol/persistence checks, plus four headless private-map checks. Sixteen earlier movement regressions passed at the frame cap. Actual captures were inspected after visual repairs. The validated launcher marker and immutable package hashes are retained locally; reports/screenshots are versioned under ue5-05 names. Physical hardware and subjective realism remain unverified.
 

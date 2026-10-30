@@ -2,6 +2,8 @@
 
 **Active development now targets Unreal Engine 5.8.4.** The Unity release is retained as a playable fallback. Follow the [Unreal development handoff](docs/UNREAL_HANDOFF.md) for the ordered gameplay, character, scenery and packaging milestones.
 
+**Pet sandbox, 0.6:** Marty has energy and tired/normal/excited moods. Pick up, carry, drop and bury toys; dig them up again; jump or hop onto the sofa; watch original Paw TV to rest; and eat at the kitchen bowl. [Controls, needs and save rules](docs/UNREAL_DOG_LIFE.md). New inputs: Space/Y-Triangle jumps, F/RT-R2 digs, Q/LT-L2 drops, E/X-Square interacts. The validated launcher retains 0.5 and 0.4 as fallbacks.
+
 **Marty graphics and movement, 0.5:** a new cover-guided skin-weighted character has smooth leg joints, grounded paw steps, flexible ear bases/tips, coat grain and wet eye/nose materials. Press V/R3 three times in the patrol for the close camera, then orbit to inspect him. [Art sources, tuning and limits](docs/UNREAL_MARTY_ART.md). Cats retain their previous meshes; further likeness and realism work remains.
 
 **Outside headquarters:** use the blue door with E/X-Square or choose Explore the neighbourhood. Roads, nine house exteriors, eight editable neighbour dogs, a park and school extend the demo. The launcher uses the retained private street layout when present; the public package has a schematic fallback. [Outdoor controls and neighbour names](docs/UNREAL_NEIGHBOURHOOD.md).
