@@ -4,6 +4,8 @@
 
 A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
+An additional [UE5 Marty movement prototype](Unreal/UE5MovementLab/README.md) is prepared separately. **It is not yet compiled or play-tested:** the installed C++ compiler is banned by UE5.8 and a supported toolchain must be installed first. The existing Unity game and UE5 static preview are unchanged.
+
 **Illustrated field guide (0.9.0):** the expanded title menu includes Controls & camera, Adventure guide, Meet the crew and About. Ten guide pages cover current bindings, cameras, recovery, missions and character biographies, with three new reference-guided illustrations. Open help with **F1** during play or **F1 / Y / Triangle** from paused Settings. [Menu guide and artwork](docs/MENU_GUIDE.md).
 
 **Family cameos (0.8.1):** sniff the backyard zone for **Fox Ellis, Chief Sniff Inspector: “Yep. Definitely grass.”** Get Cheeween Cozy at the blanket fort for **Leo Ellis, Blanket Boss: “Five more minutes!” Marty agrees.** Both messages stay visible for eight seconds and replay when you repeat the encounter after completing it. Cat friendship rewards still apply.

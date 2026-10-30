@@ -1,0 +1,13 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Category": "Graphics comparison",
+  "Modules": [{"Name": "CheweenieUE5Lab", "Type": "Runtime", "LoadingPhase": "Default"}],
+  "Description": "Codename .... Cheweenie isolated Marty movement prototype. Native compilation required; not the Unity adventure port.",
+  "Plugins": [
+    {"Name": "EnhancedInput", "Enabled": true},
+    {"Name": "PythonScriptPlugin", "Enabled": true},
+    {"Name": "EditorScriptingUtilities", "Enabled": true},
+    {"Name": "AndroidFileServer", "Enabled": false}
+  ]
+}
