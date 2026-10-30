@@ -180,6 +180,7 @@ void AMartyCharacter::ReturnHome()
 
 AMartyPlayMode::AMartyPlayMode()
 {
+    PrimaryActorTick.bCanEverTick = true;
     DefaultPawnClass = AMartyCharacter::StaticClass();
     HUDClass = AMartyHUD::StaticClass();
 }

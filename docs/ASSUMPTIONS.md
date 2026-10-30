@@ -35,4 +35,6 @@ This is the catalogue for **Codename .... Cheweenie**. Routine choices are made 
 
 ## Corrections to apply next
 
+Unreal-first development supersedes Unity-specific engine requirements for new work, per the owner's request. Preserve Unity as a fallback. See docs/UNREAL_HANDOFF.md. A26's initial compiler blocker has been investigated further: v14.38 is installed but fails on UE5.8 headers; current v14.44+ tools are still required. The separate Build Tools download/install attempt was blocked by automatic approval review.
+
 Add notes here using the ID above. No corrections are currently pending from the owner.

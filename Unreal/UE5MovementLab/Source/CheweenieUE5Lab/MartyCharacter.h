@@ -49,6 +49,14 @@ class AMartyPlayMode : public AGameModeBase
 public:
     AMartyPlayMode();
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
+private:
+    void SmokeCheck(bool Passed, const FString& Name);
+    int32 SmokeStage = 0;
+    double SmokeTime = 0;
+    FVector SmokePosition;
+    TArray<FString> SmokePassed;
+    TArray<FString> SmokeFailed;
 };
 
 UCLASS()

@@ -4,9 +4,11 @@
 
 ## Build prerequisite
 
-Unreal Engine 5.8.4 is installed at `D:\Epic Games\UE_5.8`. The installed Microsoft compiler v14.42 is explicitly **banned by UnrealBuildTool** because of compiler defects. The attempted native build failed before C++ compilation. Windows SDK 10.0.22621.0 is present.
+Unreal Engine 5.8.4 is installed at `D:\Epic Games\UE_5.8`. Microsoft compiler v14.42 is explicitly **banned by UnrealBuildTool** because of compiler defects. A side-by-side v14.38 installation subsequently succeeded, but the real native build failed inside the engine's shared precompiled headers (C7539/C4346 and follow-on errors). It is insufficient for this project despite passing the engine's minimum-version check. Windows SDK 10.0.22621.0 is present.
 
-Open Visual Studio Installer **as administrator**, choose Modify → Individual components, and add **MSVC v143 – VS 2022 C++ x64/x86 build tools (v14.38–17.8)** alongside the existing compiler. Version 14.38 meets this engine's minimum and is outside its banned ranges. A current supported v14.44 or v14.50 is also suitable. The automatic installer attempt returned code 5007 because it was not elevated. No compiler-ban override is used.
+Install current **Visual Studio 2022 C++ Build Tools with MSVC v14.44**, or a supported newer compiler. Updating Visual Studio 2022 to 17.14 makes its v14.44 tools available; the existing 17.12 product graph did not contain the requested v14.44 component. A separate current Build Tools installation can instead be placed on D:. The attempt to download/install that separate package was rejected by automatic approval review ("blocked by policy"). No compiler-ban override or engine-source workaround is used. The build script checks for v14.44+ before invoking UnrealBuildTool, which still performs its own detailed compatibility checks.
+
+Microsoft references: [install C++ Build Tools](https://learn.microsoft.com/en-us/cpp/overview/acquire-msvc?view=msvc-170), [installer command-line options](https://learn.microsoft.com/en-us/visualstudio/install/use-command-line-parameters-to-install-visual-studio?view=visualstudio).
 
 From PowerShell in this folder:
 
@@ -48,3 +50,5 @@ Bindings use Enhanced Input. Diagonal motion is clamped; analog magnitude is ret
 5. Repeat with a physical Xbox/PlayStation controller, then inspect the native log for errors. Capture an actual gameplay image.
 
 The read-only `Scripts/audit_assets.py` runs in the content-only preview project; its output audits assets, not native code or input. Actual verification is recorded in `docs/VISUAL_REALISM_LAB.md`.
+
+`TEST.ps1` prepares an opt-in `-CheweenieSmoke` native runtime run with twelve synthetic input/ground/boundary checks and a fresh JSON report. `TEST.ps1 -Render` additionally requires a fresh gameplay screenshot from the native DX12 offscreen game. This harness has **not executed successfully** because the native module has not compiled. Neither mode substitutes for testing a physical controller. Build uses Unreal's local executor (`-NoXGE`), avoiding the installed external build accelerator.

@@ -1,10 +1,12 @@
 # Codename .... Cheweenie 🐾
 
+**Active development now targets Unreal Engine 5.8.4.** The Unity release is retained as a playable fallback. Follow the [Unreal development handoff](docs/UNREAL_HANDOFF.md) for the ordered gameplay, character, scenery and packaging milestones.
+
 **Optional graphics labs — the stable 0.9.0 game is preserved in the original checkout.** Use `LAB_PLAY.cmd` for the separate Unity graphics build and `LAB_BASELINE.cmd` for its baseline mode, with separate saves. `LAB_UE5.cmd` opens a separate Unreal 5.8.4 room preview with the three static pets, Lumen lighting and cozy furnishings (installed UE5 editor required). The original Unreal 4.27 project remains under `Unreal/VisualLab`; the Unity game has not been converted. [UE5 preview instructions](Unreal/UE5VisualLab/README.md) · [Actual changes, tests, captures and remaining realism work](docs/VISUAL_REALISM_LAB.md).
 
-A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
+The preserved Unity adventure stars Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
-An additional [UE5 Marty movement prototype](Unreal/UE5MovementLab/README.md) is prepared separately. **It is not yet compiled or play-tested:** the installed C++ compiler is banned by UE5.8 and a supported toolchain must be installed first. The existing Unity game and UE5 static preview are unchanged.
+The [UE5 Marty movement prototype](Unreal/UE5MovementLab/README.md) is prepared separately. **It has not compiled or passed play testing:** installed v14.42 is banned, and the subsequently installed v14.38 fails on UE5.8 headers. Current v14.44+ C++ tools are required. The Unity fallback and UE5 static preview are unchanged.
 
 **Illustrated field guide (0.9.0):** the expanded title menu includes Controls & camera, Adventure guide, Meet the crew and About. Ten guide pages cover current bindings, cameras, recovery, missions and character biographies, with three new reference-guided illustrations. Open help with **F1** during play or **F1 / Y / Triangle** from paused Settings. [Menu guide and artwork](docs/MENU_GUIDE.md).
 

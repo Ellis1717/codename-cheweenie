@@ -4,6 +4,8 @@ Repository: https://github.com/Ellis1717/codename-cheweenie
 Default branch: main
 
 ## Remote Codex starter prompt
+**Current direction:** the owner has set Unity aside and selected Unreal Engine for active development. Follow [UNREAL_HANDOFF.md](UNREAL_HANDOFF.md). The Unity milestones below are retained history and fallback documentation.
+
 Work on Codename .... Cheweenie. Read AGENTS.md, README.md, docs/ARCHITECTURE.md and all scripts. First ensure Unity 6.3 LTS opens and compiles the prototype. Fix any issues, then execute milestones M1–M5 below in successive focused commits/PRs. Preserve a playable state at each stage; report tests actually run and remaining blockers. Use placeholder assets if needed. Do not silently replace user-specific house details with invented facts.
 
 ## Milestones
