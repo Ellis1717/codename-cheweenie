@@ -4,6 +4,8 @@ The owner has chosen to set Unity aside and continue with Unreal Engine. Unreal 
 
 ## Current state
 
+All six Unreal feature PRs (#18–#23) are merged to main. Post-merge source commit 364a092 built/packaged successfully and passed 115 native assertions plus three audio waveform checks, with fresh rendered title/kitchen review and no packaged Error/Fatal log categories. See docs/evidence/ue5-main-merge.json. The original main checkout is synchronized and its desktop launcher uses the independently validated post-merge build; prior releases, owner data and Unity remain intact. Physical controls and subjective listening are unverified.
+
 Audio 0.6.1 adds original synthesized bark/scratch/chew/toy effects and imports retained steps/jump/landing/outdoor music. B / LB-L1 barks with a cooldown; action sounds use saved effects volume and Home/Backyard music follows location. See UNREAL_AUDIO.md. Sources remain separate from Unity and no original resources are overwritten.
 
 The owner requested a pet-action sandbox next. Version 0.6 adds energy and tired/normal/excited states, recoverable toy burial at three marked patches, carrying/dropping, general jumps, an assisted physics sofa hop, original TV rest with a fixed view, and a kitchen meal. DogLife owns these rules independently of mission completion. Save fields are additive and transient actions cancel safely during home/door recovery. See UNREAL_DOG_LIFE.md for controls, tuning, persistence and limitations.

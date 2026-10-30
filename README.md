@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Merged main verified (2026-10-30):** Unreal PRs #18–#23 are merged. A fresh Windows package built from main passed 115 synthetic keyboard/gamepad gameplay, persistence, recovery and audio assertions, plus three bark/music/mute waveform checks. Actual title/kitchen captures were reviewed. [Post-merge results](docs/evidence/ue5-main-merge.json). Physical controllers and subjective listening remain unverified.
+
 **Active development now targets Unreal Engine 5.8.4.** The Unity release is retained as a playable fallback. Follow the [Unreal development handoff](docs/UNREAL_HANDOFF.md) for the ordered gameplay, character, scenery and packaging milestones.
 
 **Audio, 0.6.1:** B / LB-L1 barks; paw steps, digging, chewing, toy pickup/drop, jumping and landing have dedicated sounds. Retained home/backyard music loops follow the location, with separate saved music/effects volumes. [Audio sources and verification](docs/UNREAL_AUDIO.md).
