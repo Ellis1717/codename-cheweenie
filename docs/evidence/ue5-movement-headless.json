@@ -1,0 +1,23 @@
+{
+	"engine": "5.8.4-58902052+++UE5+Release-5.8",
+	"scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+	"passed": [
+		"Spawn lands on room floor",
+		"W keyboard binding moves Marty",
+		"Keyboard release stops Marty",
+		"V switches camera distance",
+		"H returns Marty home",
+		"Synthetic left stick preserves analog walking",
+		"Stick release stops Marty",
+		"A/Cross enables hurry",
+		"R3 switches camera distance",
+		"A/Cross release restores walking",
+		"Menu/Options returns Marty home",
+		"Right stick orbits camera",
+		"Right stick up looks upward",
+		"RB/R1 recenters camera",
+		"Room boundaries block sustained movement without falling",
+		"Sofa blocks actual character movement"
+	],
+	"failed": []
+}

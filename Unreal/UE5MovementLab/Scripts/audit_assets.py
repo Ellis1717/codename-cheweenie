@@ -24,6 +24,27 @@ for name in ('Marty', 'Lakitu', 'Rio'):
 labels = {a.get_actor_label() for a in actors.get_all_level_actors()}
 assert 'Solid floor' in labels and 'Blue woven rug' in labels, 'Movement room surfaces missing'
 report['comparison_actors'] = len(actors.get_all_level_actors())
+mesh_editor = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+report['traversal_collision'] = {}
+def enum_value(kind, name):
+    # UE5.8 preserves prefixes on some reflected enums (for example ECC_PAWN).
+    matches = [getattr(kind, key) for key in dir(kind) if key.upper() == name or key.upper().endswith('_' + name)]
+    assert matches and all(value == matches[0] for value in matches), 'Ambiguous/missing enum member: ' + name + ' in ' + repr(dir(kind))
+    return matches[0]
+
+for label in ('Solid floor', 'Blue woven rug', 'Sofa seat', 'Back wall'):
+    found = [a for a in actors.get_all_level_actors() if a.get_actor_label() == label]
+    assert len(found) == 1, 'Missing/duplicate traversal surface: ' + label
+    component = found[0].static_mesh_component
+    count = mesh_editor.get_simple_collision_count(component.static_mesh)
+    enabled = component.get_collision_enabled()
+    pawn = component.get_collision_response_to_channel(enum_value(unreal.CollisionChannel, 'PAWN'))
+    camera = component.get_collision_response_to_channel(enum_value(unreal.CollisionChannel, 'CAMERA'))
+    assert count > 0, 'Traversal surface has no simple collision: ' + label
+    assert enabled in (unreal.CollisionEnabled.QUERY_ONLY, unreal.CollisionEnabled.QUERY_AND_PHYSICS), 'Traversal queries disabled: ' + label
+    # CollisionResponse is also a reflected struct name; use the returned enum's actual type.
+    assert pawn == enum_value(type(pawn), 'BLOCK') and camera == enum_value(type(camera), 'BLOCK'), 'Traversal/camera collision not blocking: ' + label
+    report['traversal_collision'][label] = {'simple_shapes': count, 'enabled': str(enabled), 'pawn': str(pawn), 'camera': str(camera)}
 os.makedirs(os.path.join(root, 'Saved'), exist_ok=True)
 with open(os.path.join(root, 'Saved', 'asset-audit.json'), 'w', encoding='utf-8') as stream:
     json.dump(report, stream, indent=2)

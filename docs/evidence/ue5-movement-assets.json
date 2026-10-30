@@ -30,5 +30,31 @@
       "bottom_cm": 6.0
     }
   },
-  "comparison_actors": 59
+  "comparison_actors": 59,
+  "traversal_collision": {
+    "Solid floor": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    },
+    "Blue woven rug": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    },
+    "Sofa seat": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    },
+    "Back wall": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    }
+  }
 }

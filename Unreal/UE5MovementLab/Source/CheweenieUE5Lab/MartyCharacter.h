@@ -54,6 +54,8 @@ private:
     void SmokeCheck(bool Passed, const FString& Name);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
+    float SmokeYaw = 0;
+    float SmokePitch = 0;
     FVector SmokePosition;
     TArray<FString> SmokePassed;
     TArray<FString> SmokeFailed;

@@ -16,6 +16,6 @@ if(-not(Test-Path -LiteralPath $content)) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\UE5VisualLab\Content') -Destination $content -Recurse
 }
 $project=Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject'
-& $build CheweenieUE5LabEditor Win64 Development "-Project=$project" -WaitMutex -MaxParallelActions=2 -NoXGE
-if($LASTEXITCODE -ne 0){throw "Native compilation failed ($LASTEXITCODE). Check the compiler requirement in README.md."}
+& $build CheweenieUE5LabEditor Win64 Development "-Project=$project" -WaitMutex -MaxParallelActions=1 -NoXGE -NoUBA
+if($LASTEXITCODE -ne 0){throw "Native compilation failed ($LASTEXITCODE). Inspect UnrealBuildTool output for the failing source line."}
 if(-not(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Binaries\Win64\UnrealEditor-CheweenieUE5Lab.dll'))){throw 'Native module DLL missing after build.'}

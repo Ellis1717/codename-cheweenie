@@ -35,6 +35,8 @@ This is the catalogue for **Codename .... Cheweenie**. Routine choices are made 
 
 ## Corrections to apply next
 
-Unreal-first development supersedes Unity-specific engine requirements for new work, per the owner's request. Preserve Unity as a fallback. See docs/UNREAL_HANDOFF.md. A26's initial compiler blocker has been investigated further: v14.38 is installed but fails on UE5.8 headers; current v14.44+ tools are still required. The separate Build Tools download/install attempt was blocked by automatic approval review.
+Unreal-first development supersedes Unity-specific engine requirements for new work, per the owner's request. Preserve Unity as a fallback. See docs/UNREAL_HANDOFF.md. A26's compiler blocker is now resolved: updating through the existing Microsoft installer supplied MSVC 14.44.35229, and native compilation passed. The earlier separate installer attempt was blocked; it was not used. Sixteen native synthetic keyboard/gamepad checks passed in headless and rendered DX12 runs. Physical controllers and realistic pet animation remain open.
+
+Current Unreal movement defaults are provisional: 32% of the display mesh scale, 100 cm/s walking, 230 cm/s hurry, and three camera distances of 220/330/140 cm. Upward stick input looks upward without legacy input multipliers. Runtime box blockers approximate the upholstered sofa footprint after a real movement test exposed undersized sphere collision. Tune these in Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp; original comparison assets remain intact.
 
 Add notes here using the ID above. No corrections are currently pending from the owner.

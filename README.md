@@ -6,7 +6,7 @@
 
 The preserved Unity adventure stars Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 
-The [UE5 Marty movement prototype](Unreal/UE5MovementLab/README.md) is prepared separately. **It has not compiled or passed play testing:** installed v14.42 is banned, and the subsequently installed v14.38 fails on UE5.8 headers. Current v14.44+ C++ tools are required. The Unity fallback and UE5 static preview are unchanged.
+The [UE5 Marty movement prototype](Unreal/UE5MovementLab/README.md) now compiles on Unreal 5.8.4 and passes sixteen checks in both native headless and rendered DX12 gameplay runs using synthetic keyboard/gamepad input. It includes controllable Marty, three cameras, recovery, room boundaries and sofa collision. Run `LAB_UE5_MARTY.cmd` after building its native module; this machine also has a **Play Cheweenie Unreal** desktop shortcut. [Actual playable view](docs/screenshots/ue5-marty-movement.png). It still uses static pet models; physical controller checks and authored animation remain open. The Unity fallback and UE5 static preview are unchanged.
 
 **Illustrated field guide (0.9.0):** the expanded title menu includes Controls & camera, Adventure guide, Meet the crew and About. Ten guide pages cover current bindings, cameras, recovery, missions and character biographies, with three new reference-guided illustrations. Open help with **F1** during play or **F1 / Y / Triangle** from paused Settings. [Menu guide and artwork](docs/MENU_GUIDE.md).
 

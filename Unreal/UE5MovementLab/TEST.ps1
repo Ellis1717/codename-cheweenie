@@ -18,7 +18,7 @@ $report=Join-Path $PSScriptRoot 'Saved\movement-smoke.json'
 if(-not(Test-Path -LiteralPath $report)){throw 'Native runtime report missing.'}
 if((Get-Item -LiteralPath $report).LastWriteTimeUtc -lt $startedAt){throw 'Native runtime report is stale.'}
 $result=Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
-if($result.failed.Count -ne 0 -or $result.passed.Count -lt 12){throw 'Native acceptance checks did not all pass.'}
+if($result.failed.Count -ne 0 -or $result.passed.Count -lt 16){throw 'Native acceptance checks did not all pass.'}
 if($Render) {
     $capture=Join-Path $PSScriptRoot 'Saved\MovementGameplay.png'
     if(-not(Test-Path -LiteralPath $capture)){throw 'Gameplay capture missing.'}
