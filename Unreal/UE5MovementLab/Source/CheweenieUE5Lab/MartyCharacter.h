@@ -52,6 +52,7 @@ private:
     void PetJump();
     void Dig();
     void DropToy();
+    void Bark();
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -82,6 +83,7 @@ private:
     void TickGaitSmoke(float Delta);
     void TickOutsideSmoke(float Delta);
     void TickLifeSmoke(float Delta);
+    void TickAudioSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

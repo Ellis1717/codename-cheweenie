@@ -48,3 +48,5 @@ Unreal-first development supersedes Unity-specific engine requirements for new w
 Current Unreal movement defaults are provisional: 32% of the display mesh scale, 100 cm/s walking, 230 cm/s hurry, and three camera distances of 220/330/140 cm. Upward stick input looks upward without legacy input multipliers. Runtime box blockers approximate the upholstered sofa footprint after a real movement test exposed undersized sphere collision. Tune these in Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp; original comparison assets remain intact.
 
 Add notes here using the ID above. No corrections are currently pending from the owner.
+
+Audio 0.6.1 assumes an original stylized synthesized yap rather than a recording of Marty. B / LB-L1 barks with a 1.2-second cooldown and no energy cost. Home/Backyard retain the original project music. Separate saved music/effect volumes apply to all new sounds. Source WAVs/generator are retained for replacement and tuning; physical devices and subjective listening are unverified.

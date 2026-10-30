@@ -89,12 +89,16 @@ public:
     bool Enabled = true;
     FString Slot;
     int32 LoadedSoundCount() const { return Sounds.Num(); }
+    void UpdateMusic();
+    bool MusicPlaying() const;
+    FString MusicTrack;
+    FString LastCue;
+    int32 AudibleCueCount=0;
 private:
     AMartyCharacter* Marty() const;
     void SetScreen(ECozyScreen Next);
     void RebuildMarkers();
     void PlayCue(const FString& Name);
-    void UpdateMusic();
     void BuildFort();
     void CompleteRoom();
     UPROPERTY() TArray<TObjectPtr<AStaticMeshActor>> Markers;

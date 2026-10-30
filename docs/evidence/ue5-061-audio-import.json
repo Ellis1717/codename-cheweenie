@@ -1,0 +1,76 @@
+{
+  "engine": "5.8.4-58902052+++UE5+Release-5.8",
+  "sounds": {
+    "Home": {
+      "asset": "/Game/Adventure/Audio/Home.Home",
+      "original_wav_sha256": "02d07c2e7769a76a5605ac937979f7e278ba89b61806c839ac91c20c38bd7464",
+      "looping": true
+    },
+    "Menu": {
+      "asset": "/Game/Adventure/Audio/Menu.Menu",
+      "original_wav_sha256": "9aa15a1348520ea9205c401651e33dad1563047d99f7ff53d484e38e4b8c4401",
+      "looping": false
+    },
+    "Discovery": {
+      "asset": "/Game/Adventure/Audio/Discovery.Discovery",
+      "original_wav_sha256": "abc35cc7f89724cac2e49e9bdded66b48307ad9a2b17e38a4fd1fd251483760b",
+      "looping": false
+    },
+    "Lakitu": {
+      "asset": "/Game/Adventure/Audio/Lakitu.Lakitu",
+      "original_wav_sha256": "dcc86587762a21a1ccbb375ed0bdd33f18d4038114da57738f63f1fa84e6cca0",
+      "looping": false
+    },
+    "Rio": {
+      "asset": "/Game/Adventure/Audio/Rio.Rio",
+      "original_wav_sha256": "1db34449df756a3e4ddfc8a6db58160393066794442194ab4f24025f9fe33023",
+      "looping": false
+    },
+    "Cozy": {
+      "asset": "/Game/Adventure/Audio/Cozy.Cozy",
+      "original_wav_sha256": "2ed31f88695dd0b0bba121296374e0e65ecc6367f5a19be0390c3f9e833cff1d",
+      "looping": false
+    },
+    "Backyard": {
+      "asset": "/Game/Adventure/Audio/Backyard.Backyard",
+      "original_wav_sha256": "978b864d424a4f8824da7c7ff74c63be315a13d9dad181c3aa475a6c994d5671",
+      "looping": true
+    },
+    "Step": {
+      "asset": "/Game/Adventure/Audio/Step.Step",
+      "original_wav_sha256": "720fb1971df114fa563df203874bac352b4210f0e4716593cdcb79581f2d41c2",
+      "looping": false
+    },
+    "Jump": {
+      "asset": "/Game/Adventure/Audio/Jump.Jump",
+      "original_wav_sha256": "136e5b59267222a3619888e2ef517d733863653cc397608c821dc09bf67f22e6",
+      "looping": false
+    },
+    "Land": {
+      "asset": "/Game/Adventure/Audio/Land.Land",
+      "original_wav_sha256": "40bff4bedb99a0973829d07be41e4962f3ceacde95d3afaf7caead26cc931272",
+      "looping": false
+    },
+    "Bark": {
+      "asset": "/Game/Adventure/Audio/Bark.Bark",
+      "original_wav_sha256": "abb81c780f063000e0b91c5e7640687e68e70ae8f1d0ac6d76ff9be76ba40333",
+      "looping": false
+    },
+    "Dig": {
+      "asset": "/Game/Adventure/Audio/Dig.Dig",
+      "original_wav_sha256": "5c90ea73cc548dcab6609f0cbb57236c0905f28d22e8d1dcd86111f581394328",
+      "looping": false
+    },
+    "Crunch": {
+      "asset": "/Game/Adventure/Audio/Crunch.Crunch",
+      "original_wav_sha256": "408da4a83f0a0db46a9d6074fe2150cf9baeee6b4894d3b9f35f1f1befeb4d64",
+      "looping": false
+    },
+    "Toy": {
+      "asset": "/Game/Adventure/Audio/Toy.Toy",
+      "original_wav_sha256": "3d275d6302d29a6e88fa12b303af9f160a7d38cd1df249ed5c1998c28b00893b",
+      "looping": false
+    }
+  },
+  "cover": "/Game/Adventure/Art/Cover"
+}

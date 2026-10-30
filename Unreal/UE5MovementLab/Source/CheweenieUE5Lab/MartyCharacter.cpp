@@ -183,6 +183,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Enhanced->BindAction(JumpAction,ETriggerEvent::Completed,this,&AMartyCharacter::StopJumping);
         Button(EKeys::F,EKeys::Gamepad_RightTrigger,&AMartyCharacter::Dig);
         Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&AMartyCharacter::DropToy);
+        Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&AMartyCharacter::Bark);
     }
     Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Move);
     Enhanced->BindAction(MouseAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Look);
@@ -231,6 +232,7 @@ bool AMartyCharacter::CanPlay() const { const auto* Session=Adventure(); return 
 void AMartyCharacter::PetJump(){if(CanPlay()&&Life&&Life->PayJump())Jump();}
 void AMartyCharacter::Dig(){if(Life)Life->Dig();}
 void AMartyCharacter::DropToy(){if(Life)Life->Drop();}
+void AMartyCharacter::Bark(){if(Life)Life->Bark();}
 void AMartyCharacter::MenuConfirm() { if(auto* Session=Adventure()) Session->Confirm(); }
 void AMartyCharacter::MenuBack() { if(auto* Session=Adventure()) Session->Back(); }
 void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }

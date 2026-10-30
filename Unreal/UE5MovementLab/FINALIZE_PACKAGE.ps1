@@ -1,7 +1,7 @@
 param([string]$PackageRoot,[string]$TestRoot)
 $ErrorActionPreference='Stop'
-if(!$PackageRoot){$PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\builds\UnrealAdventure-0.6.0'))}
-if(!$TestRoot){$TestRoot=Join-Path $PSScriptRoot 'Saved\Packaged06'}
+if(!$PackageRoot){$PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\builds\UnrealAdventure-0.6.1'))}
+if(!$TestRoot){$TestRoot=Join-Path $PSScriptRoot 'Saved\Packaged061'}
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot);$TestRoot=[IO.Path]::GetFullPath($TestRoot)
 $windows=Join-Path $PackageRoot 'Windows'
 $game=Join-Path $windows 'CheweenieUE5Lab\Binaries\Win64\CheweenieUE5Lab.exe'
@@ -9,7 +9,7 @@ if(!(Test-Path -LiteralPath $game)){throw 'Packaged game missing'}
 $payload=@(Get-ChildItem -LiteralPath $windows -Recurse -File | Where-Object {$_.FullName -notmatch '[\\/]Saved[\\/]'})
 $newest=($payload | Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1).LastWriteTimeUtc
 $checks=0
-$required=@{'Gait\marty-gait.json'=14;'Outside\outside-smoke.json'=12;'Adventure\adventure-smoke.json'=25;'Adventure\adventure-resume.json'=6;'Life\life-smoke.json'=23;'Life\life-resume.json'=5}
+$required=@{'Gait\marty-gait.json'=14;'Outside\outside-smoke.json'=12;'Adventure\adventure-smoke.json'=25;'Adventure\adventure-resume.json'=6;'Life\life-smoke.json'=23;'Life\life-resume.json'=5;'Audio\audio-smoke.json'=10}
 foreach($relative in $required.Keys){
     $path=Join-Path $TestRoot $relative
     if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale packaged test report: '+$relative)}
@@ -17,7 +17,12 @@ foreach($relative in $required.Keys){
     if($report.failed.Count -or $report.passed.Count -lt $required[$relative]){throw ('Packaged test failed/incomplete: '+$relative)}
     $checks+=$report.passed.Count
 }
-if($checks -lt 85){throw 'Expected at least 85 packaged assertions'}
+if($checks -lt 95){throw 'Expected at least 95 packaged assertions'}
+$audioPath=Join-Path $TestRoot 'Audio\audio-waveforms.json'
+if(!(Test-Path $audioPath) -or (Get-Item $audioPath).LastWriteTimeUtc -lt $newest){throw 'Missing/stale audio waveform evidence'}
+$audio=Get-Content $audioPath -Raw|ConvertFrom-Json
+if($audio.Barks.rms -le .0002 -or $audio.Music.rms -le .0002 -or $audio.Muted.rms -ge .0002){throw 'Audio output or mute check failed'}
+foreach($name in @('Barks','Music','Muted')){if($audio.$name.peak -ge .999 -or $audio.$name.seconds -le .5){throw 'Clipped or truncated audio capture'}}
 foreach($relative in @('Gait\MartyPortrait.png','Gait\MartyWalk.png','Outside\OutsideArrival.png','Outside\OutsidePark.png','Outside\OutsideSchool.png','Adventure\AdventureTitle.png','Life\LifeDig.png','Life\LifeKitchen.png','Life\LifeJump.png','Life\LifeCouchTV.png')){
     $path=Join-Path $TestRoot $relative
     if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale rendered capture: '+$relative)}
@@ -34,6 +39,6 @@ foreach($relative in @('Outside\OutsideArrival.png','Outside\OutsidePark.png','O
     }finally{$bitmap.Dispose()}
 }
 $files=@($payload|ForEach-Object {[ordered]@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');bytes=$_.Length;sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}})
-$marker=[ordered]@{version='0.6.0';rendered=$true;checks=$checks;input='Synthetic keyboard/gamepad; physical hardware unverified';runtimeSavedExcluded=$true;files=$files}
+$marker=[ordered]@{version='0.6.1';rendered=$true;checks=$checks;input='Synthetic keyboard/gamepad; physical hardware unverified';runtimeSavedExcluded=$true;files=$files}
 $marker|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated.json')
 'Validated package enabled in UNREAL_PLAY.cmd: '+$checks+' assertions, '+$files.Count+' immutable payload files'

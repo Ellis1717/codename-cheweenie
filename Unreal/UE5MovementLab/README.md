@@ -1,4 +1,6 @@
-# Codename .... Cheweenie — Cozy Patrol 0.6
+# Codename .... Cheweenie — Cozy Patrol 0.6.1
+
+Audio 0.6.1 adds B / LB-L1 bark, action effects, and location music. See [audio controls and retained sources](../../docs/UNREAL_AUDIO.md).
 
 The pet sandbox adds energy/moods, carrying and burying toys, marked dig patches, real physics jumps/sofa hops, original TV rest and kitchen meals. [Pet actions and tuning](../../docs/UNREAL_DOG_LIFE.md). Existing mission progress and pet resources are retained; new save fields use compatible defaults.
 
@@ -10,7 +12,7 @@ See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md) and [Marty's cove
 
 ## Play
 
-UNREAL_PLAY.cmd prefers the validated 0.6.0 package, then validated 0.5.0, then preserved 0.4.0, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
+UNREAL_PLAY.cmd prefers the validated 0.6.1 package, then 0.6.0, then validated 0.5.0, then preserved 0.4.0, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 |---|---|---|
@@ -18,6 +20,7 @@ UNREAL_PLAY.cmd prefers the validated 0.6.0 package, then validated 0.5.0, then 
 | Hurry | Hold Shift | Hold A / Cross |
 | Interact / pick up / bury / eat / couch / TV | E | X / Square |
 | Jump | Space | Y / Triangle |
+| Bark | B | LB / L1 |
 | Dig / drop toy | F / Q | RT-R2 / LT-L2 |
 | Camera / recenter | V / R | R3 / RB-R1 |
 | Pause | Escape | Menu / Options |
@@ -35,6 +38,7 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
     .\IMPORT_AUDIO.ps1
     .\IMPORT_MARTY.ps1
     .\TEST_GAIT.ps1 -Render
+    .\TEST_AUDIO.ps1
     .\TEST_LIFE.ps1
     .\TEST_OUTSIDE.ps1
     .\TEST.ps1
@@ -44,11 +48,13 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
 
 Scripts accept engine/cache paths. BUILD gathers newly added C++ files and limits concurrency with XGE/UBA acceleration disabled after an earlier memory-commit failure. Shader compilation uses the verified UE5.8 local-only setting. An early cook retried an optional distributed backend before local fallback; future cooks avoid that backend.
 
-Content/Adventure is versioned: the retained cover and six original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
+Content/Adventure is versioned: the retained cover and fourteen retained/original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
 
-PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.6.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE now requires the 0.6 pet-action/persistence reports in addition to the existing rendered checks.
+PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.6.1. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE now requires audio-device/waveform evidence and the 0.6 pet-action/persistence reports in addition to the existing rendered checks.
 
 ## Actual verification
+
+Version 0.6.1: Editor/Game compilation and full cook/archive succeeded. The final standalone build passed 95 assertions: ten audio-device checks plus the 85 pet/gait/exterior/patrol/reload checks. Bark and music master-submix recordings were nonzero without clipping; mute output was exactly zero. Four headless private-map and sixteen legacy editor-game movement checks passed. Actual kitchen/HUD capture was inspected. Packaged logs have no Error/Fatal categories. The launcher now selects this validated package; 0.6.0 and older packages remain intact. [Audio report](../../docs/evidence/ue5-061-audio-packaged.json), [waveforms](../../docs/evidence/ue5-061-audio-waveforms.json), [package hashes](../../docs/evidence/ue5-061-package.json). Synthetic gamepad/keyboard input was used; physical devices and subjective listening remain unverified.
 
 Version 0.6: native Editor/Game builds and initial full cook/archive succeeded; the final native camera/HUD repair was rebuilt and staged over that cooked package. The final executable passed 85 assertions: 23 pet actions + five pet reload, 14 gait, 12 exterior, 25 patrol + six patrol reload. Play phases used rendered DX12; reload phases were headless. Four additional headless private-map checks and sixteen legacy editor-game movement checks passed. Actual digging, kitchen, jump and couch/TV captures were inspected. Camera/label issues were repaired before this final run. Synthetic keys and position/energy fixtures were used; physical controllers and audible mix remain unverified. Final test logs have no Error/Fatal categories. FINALIZE_PACKAGE verified fresh reports/captures and hashed 43 immutable payload files before enabling the desktop launcher. [Pet report](../../docs/evidence/ue5-06-life-packaged.json), [package record](../../docs/evidence/ue5-06-package.json), [kitchen capture](../../docs/screenshots/ue5-06-kitchen.png) and [couch capture](../../docs/screenshots/ue5-06-couch-tv.png).
 
