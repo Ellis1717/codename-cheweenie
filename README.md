@@ -1,5 +1,9 @@
 # Codename .... Cheweenie 🐾
 
+**Marty 0.7:** more detailed short-coat geometry and 4K texture maps, visible health/energy bars, backpack storage, lying down/getting up, roll-over and shake-paw tricks, three paces and an optional two-stick body-sway mode. C / B-Circle opens tricks and controls; Tab / View-Touchpad opens the bag. [Controls, art sources and limitations](docs/UNREAL_MARTY_07.md).
+
+The 0.7 native builds/package passed 151 synthetic gameplay assertions plus audio and full-HD coat-render checks. [Actual results and verification limits](docs/evidence/ue5-07-build.json). Physical controllers remain unverified; previous releases and Unity are preserved.
+
 **Merged main verified (2026-10-30):** Unreal PRs #18–#23 are merged. A fresh Windows package built from main passed 115 synthetic keyboard/gamepad gameplay, persistence, recovery and audio assertions, plus three bark/music/mute waveform checks. Actual title/kitchen captures were reviewed. [Post-merge results](docs/evidence/ue5-main-merge.json). Physical controllers and subjective listening remain unverified.
 
 **Active development now targets Unreal Engine 5.8.4.** The Unity release is retained as a playable fallback. Follow the [Unreal development handoff](docs/UNREAL_HANDOFF.md) for the ordered gameplay, character, scenery and packaging milestones.

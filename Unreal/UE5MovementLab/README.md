@@ -1,4 +1,6 @@
-# Codename .... Cheweenie — Cozy Patrol 0.6.1
+# Codename .... Cheweenie — Cozy Patrol 0.7
+
+Marty 0.7 adds a separate detailed-coat variant, health/backpack HUD, dog tricks and spring-driven alternative body controls. [New controls and source guide](../../docs/UNREAL_MARTY_07.md).
 
 Audio 0.6.1 adds B / LB-L1 bark, action effects, and location music. See [audio controls and retained sources](../../docs/UNREAL_AUDIO.md).
 
@@ -12,7 +14,7 @@ See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md) and [Marty's cove
 
 ## Play
 
-UNREAL_PLAY.cmd prefers the validated 0.6.1 package, then 0.6.0, then validated 0.5.0, then preserved 0.4.0, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
+UNREAL_PLAY.cmd prefers the validated 0.7.0 package, then 0.6.1 and 0.6.0, then validated 0.5.0, then preserved 0.4.0, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 |---|---|---|
@@ -21,6 +23,8 @@ UNREAL_PLAY.cmd prefers the validated 0.6.1 package, then 0.6.0, then validated 
 | Interact / pick up / bury / eat / couch / TV | E | X / Square |
 | Jump | Space | Y / Triangle |
 | Bark | B | LB / L1 |
+| Tricks / pace / alternate controls | C | B / Circle |
+| Backpack | Tab | View / Touchpad |
 | Dig / drop toy | F / Q | RT-R2 / LT-L2 |
 | Camera / recenter | V / R | R3 / RB-R1 |
 | Pause | Escape | Menu / Options |
@@ -38,6 +42,7 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
     .\IMPORT_AUDIO.ps1
     .\IMPORT_MARTY.ps1
     .\TEST_GAIT.ps1 -Render
+    .\TEST_TRICKS.ps1
     .\TEST_AUDIO.ps1
     .\TEST_LIFE.ps1
     .\TEST_OUTSIDE.ps1
@@ -50,9 +55,11 @@ Scripts accept engine/cache paths. BUILD gathers newly added C++ files and limit
 
 Content/Adventure is versioned: the retained cover and fourteen retained/original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
 
-PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.6.1. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE now requires audio-device/waveform evidence and the 0.6 pet-action/persistence reports in addition to the existing rendered checks.
+PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.7.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE requires 131 packaged assertions, fresh action captures, audio-device/waveform evidence and a 1920×1080 tan-coat render check. Use IMPORT_REALCOAT.ps1 for the separate detailed model; IMPORT_MARTY.ps1 remains available for the preserved smooth model.
 
 ## Actual verification
+
+Version 0.7, 2026-10-30: native Editor/Game compilation, full cook/archive and final native staging succeeded. The final standalone package passed 131 assertions, four headless private-map checks and sixteen legacy editor-game movement checks: **151 native assertions**, plus three bark/music/mute waveform checks and one full-HD coat colour/resolution check. Play phases used rendered DX12; reload/private-map phases and legacy movement were headless. Final packaged logs contain no Error/Fatal categories or material fallbacks. The 1920×1080 portrait and five trick/backpack/body-control captures were visually inspected. Finalization hashed 43 immutable payload files; the archived Game executable matches the native build. Synthetic input and gameplay fixtures were used; physical controllers, subjective listening/likeness and measured performance remain unverified. Marty remains stylized, with skin-weighted polygon fur and spring poses rather than a Groom or ragdoll. [Results and repaired failures](../../docs/evidence/ue5-07-build.json), [package record](../../docs/evidence/ue5-07-package.json), [portrait](../../docs/screenshots/ue5-07-portrait.png), [controls and tuning](../../docs/UNREAL_MARTY_07.md). Prior releases and Unity remain intact.
 
 Post-merge main, 2026-10-30: PRs #18–#23 were merged into main and the original checkout was fast-forwarded. The game tree matches the combined feature branches. Main commit 364a092 was built and fully cooked/archived into a separate preserved package, then passed 95 packaged assertions, four headless private-map checks, sixteen legacy movement checks and three audio waveform checks. Play phases use rendered DX12; persistence phases are headless. Final packaged logs contain no Error/Fatal categories. Fresh title and kitchen captures were inspected; finalization hashed 43 immutable files. The original main checkout and desktop shortcut now launch this verified package through an ignored local build link; private map/roster copies stay outside Git. Earlier packages and Unity resources are preserved. [Results](../../docs/evidence/ue5-main-merge.json), [package record](../../docs/evidence/ue5-main-package.json), [title](../../docs/screenshots/ue5-main-title.png). Synthetic input/position fixtures were used; physical controls and subjective listening remain unverified.
 

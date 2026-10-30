@@ -10,7 +10,7 @@ class UMaterialInstanceDynamic;
 class ACameraActor;
 
 UENUM(BlueprintType)
-enum class EDogActivity:uint8 { Idle, Digging, Eating, WatchingTV, CouchHop };
+enum class EDogActivity:uint8 { Idle, Digging, Eating, WatchingTV, CouchHop, Lying, Rolling, Shaking };
 
 // Pet needs and cozy verbs are independent of mission completion and the movement motor.
 UCLASS(ClassGroup=(Cheweenie),meta=(BlueprintSpawnableComponent))
@@ -25,6 +25,24 @@ public:
     UFUNCTION(BlueprintCallable) void Drop();
     UFUNCTION(BlueprintCallable) void Bark();
     int32 BarkCount=0;
+    void LieDown();
+    void StandUp();
+    void RollOver();
+    void ShakePaw();
+    void Stow();
+    void Retrieve();
+    void CyclePace();
+    FString PaceName() const;
+    FString BackpackText() const;
+    float WalkSpeed() const;
+    float Health() const;
+    float ActionProgress() const;
+    UFUNCTION(BlueprintCallable) void AdjustHealth(float Amount);
+    void ToggleBodyControls();
+    bool UsesBodyControls() const;
+    void SetBodyStick(FVector2D Value);
+    void ClearBodyStick();
+    float BodyRoll=0,BodyPitch=0,BodyYawSpeed=0;
     UFUNCTION(BlueprintCallable) bool Interact();
     UFUNCTION(BlueprintCallable) bool PayJump();
     UFUNCTION(BlueprintCallable) void StopWatching();
@@ -69,5 +87,8 @@ private:
     int32 PendingPatch=INDEX_NONE;
     bool Initialized=false;
     float BarkCooldown=0,StepClock=0;
+    float TrickDuration=1;
+    FVector2D BodyStick=FVector2D::ZeroVector,BodyVelocity=FVector2D::ZeroVector;
+    void TickBodyControls(float Delta);
     bool WasAirborne=false;
 };

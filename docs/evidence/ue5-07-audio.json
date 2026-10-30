@@ -1,0 +1,16 @@
+{
+	"scope": "Synthetic keyboard/gamepad and real audio-device master-submix recordings. Physical controls and subjective listening unverified.",
+	"passed": [
+		"All fourteen music/effect assets load from the real map",
+		"Home music plays on the actual audio device",
+		"Keyboard B triggers the bark cue",
+		"Bark cooldown prevents button spam",
+		"Controller LB triggers the same bark cue",
+		"Outdoor travel selects looping backyard music",
+		"Effects volume zero suppresses bark playback",
+		"Return home restores the home music track",
+		"All pet action cues spawn on the audio device",
+		"Pause suppresses bark input"
+	],
+	"failed": []
+}

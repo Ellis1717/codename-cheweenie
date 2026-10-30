@@ -1,8 +1,11 @@
 // Real skin and real traversal tests. No user save slot, no physical-device claims.
 #include "MartyCharacter.h"
 #include "MartyGait.h"
+#include "DogLife.h"
 #include "CozyAdventure.h"
 #include "Components/PoseableMeshComponent.h"
+#include "Engine/SkinnedAsset.h"
+#include "Materials/MaterialInterface.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputKeyEventArgs.h"
@@ -34,6 +37,9 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         if(SmokeTime>(FApp::CanEverRender()?50:3))
         {
             SmokeCheck(Gait&&Gait->Ready&&Skin&&Skin->GetSkinnedAsset(),TEXT("Skin-weighted Marty and 24 anatomical joints load"));
+            SmokeCheck(Skin->GetSkinnedAsset()->GetName()==TEXT("Marty_RealCoat"),TEXT("Detailed short-coat model loads as the playable character"));
+            bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur"))FineFur=true;
+            SmokeCheck(FineFur,TEXT("Skin-weighted fine fur material remains assigned in the real game"));
             SmokeCheck(Bone(TEXT("front_l_upper")).X>Bone(TEXT("hind_l_upper")).X+20,TEXT("Imported centimetre rig faces positive X"));
             const FVector Knee=UMartyGait::SolveKnee(FVector(0,0,20),FVector(0,0,2),12,11,-1);
             SmokeCheck(FMath::IsNearlyEqual(Knee.Size2D(),FMath::Abs(Knee.X),.01)&&Knee.X<0&&FMath::IsNearlyEqual((Knee-FVector(0,0,20)).Size(),12.f,.01),TEXT("Two-bone foreleg IK bends elbow backward at fixed bone length"));
@@ -46,7 +52,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
             PC->SetControlRotation(FRotator(-8,145,0));Next();
         }break;
     case 1:
-        if(SmokeTime>2){Shot(TEXT("MartyPortrait.png"));SmokePosition=Bone(TEXT("front_l_lower"));SmokePitch=Skin->GetBoneRotationByName(TEXT("ear_tip_l"),EBoneSpaces::ComponentSpace).Roll;SmokeYaw=Gait->Cycle;Next();}break;
+        if(SmokeTime>2){FVector2D Pixel;if(PC->ProjectWorldLocationToScreen(Skin->GetBoneLocationByName(TEXT("spine"),EBoneSpaces::WorldSpace),Pixel)){FFileHelper::SaveStringToFile(FString::Printf(TEXT("{\"x\":%.2f,\"y\":%.2f}"),Pixel.X,Pixel.Y),*(Root/TEXT("CoatProbe.json")));}Shot(TEXT("MartyPortrait.png"));SmokePosition=Bone(TEXT("front_l_lower"));SmokePitch=Skin->GetBoneRotationByName(TEXT("ear_tip_l"),EBoneSpaces::ComponentSpace).Roll;SmokeYaw=Gait->Cycle;Next();}break;
     case 2:
         if(SmokeTime<.12f)break;
         PC->SetControlRotation(FRotator(-12,0,0));if(!SmokeMoving){Key(EKeys::W,true);SmokeMoving=true;}
@@ -58,15 +64,16 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
             SmokeCheck(Gait->PlantedPaws>=1&&Gait->PlantedPaws<=4,TEXT("Locomotion retains supporting stance paws"));
             SmokeCheck(!Skin->GetBoneRotationByName(TEXT("ear_tip_l"),EBoneSpaces::ComponentSpace).ContainsNaN()&&Skin->GetBoneIndex(TEXT("ear_tip_l"))!=INDEX_NONE,TEXT("Flexible ear tips are independently skinned and posed"));
             SmokeCheck(FMath::Abs(FRotator::NormalizeAxis(Skin->GetBoneRotationByName(TEXT("ear_tip_l"),EBoneSpaces::ComponentSpace).Roll-SmokePitch))>1,TEXT("Ear tips visibly change angle during actual travel"));
-            Shot(TEXT("MartyWalk.png"));Key(EKeys::W,false);SmokeMoving=false;Key(EKeys::LeftShift,true);Next();
+            Shot(TEXT("MartyWalk.png"));Key(EKeys::W,false);SmokeMoving=false;Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();
         }break;
     case 3:
         Axis(EKeys::Gamepad_LeftY,.8f);
-        if(SmokeTime>.6)
+        if(SmokeTime>.6&&(Pawn->GetVelocity().Size2D()>130||SmokeTime>2))
         {
+            UE_LOG(LogTemp,Display,TEXT("GAIT_HURRY speed=%.2f requested=%d max=%.2f pos=%s"),Pawn->GetVelocity().Size2D(),Pawn->Life->SprintRequested,Pawn->GetCharacterMovement()->MaxWalkSpeed,*Pawn->GetActorLocation().ToString());
             SmokeCheck(Pawn->GetVelocity().Size2D()>130,TEXT("Analog controller hurry drives the trot at higher speed"));
             SmokeCheck(Gait->MaxJointBend>0&&FMath::IsFinite(Gait->MaxJointBend),TEXT("Trotting IK remains finite"));
-            Shot(TEXT("MartyTrot.png"));Axis(EKeys::Gamepad_LeftY,0);Key(EKeys::LeftShift,false);Key(EKeys::Gamepad_Special_Right,true);Next();
+            Shot(TEXT("MartyTrot.png"));Axis(EKeys::Gamepad_LeftY,0);Key(EKeys::Gamepad_FaceButton_Bottom,false);Key(EKeys::Gamepad_Special_Right,true);Next();
         }break;
     case 4:
         if(SmokeTime>.2){Key(EKeys::Gamepad_Special_Right,false);SmokeYaw=Gait->Cycle;SmokePosition=Bone(TEXT("front_l_paw"));Next();}break;

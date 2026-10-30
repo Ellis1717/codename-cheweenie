@@ -11,7 +11,7 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks };
 
 USTRUCT(BlueprintType)
 struct FCozyStop
@@ -56,6 +56,10 @@ public:
     UPROPERTY(SaveGame) TArray<int32> HoleDepths={0,0,0};
     UPROPERTY(SaveGame) TArray<int32> ItemHoles={-1,-1};
     UPROPERTY(SaveGame) bool PetTVOn=false;
+    UPROPERTY(SaveGame) float PetHealth=100;
+    UPROPERTY(SaveGame) TArray<int32> BagItems;
+    UPROPERTY(SaveGame) int32 PetPace=0;
+    UPROPERTY(SaveGame) bool BodyControls=false;
 };
 
 UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))
@@ -77,6 +81,8 @@ public:
     UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
     void HoldMessage(float Seconds) { MessageTime=Seconds; }
     void ActionCue(const FString& Name) { PlayCue(Name); }
+    void OpenBackpack();
+    void OpenTricks();
     FString Objective() const;
     FString Prompt() const;
     TArray<FString> Menu() const;

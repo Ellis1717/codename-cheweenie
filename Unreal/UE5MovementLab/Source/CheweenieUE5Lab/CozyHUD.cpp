@@ -28,11 +28,17 @@ bool AMartyHUD::DrawAdventureHUD()
         DrawText(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol"),FLinearColor::White,X+24,Y+62);
         if(Session->Screen == ECozyScreen::Controls)
         {
-            const TArray<FString> Lines={TEXT("WASD / arrows / left stick: walk"),TEXT("Mouse / right stick: look around"),TEXT("Shift / A-Cross: hurry   |   E / X-Square: interact"),TEXT("V / R3: camera   |   R / RB-R1: recenter"),TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / LB: bark"),TEXT("Esc / Menu-Options: pause   |   H: return home"),TEXT("Menus: arrows / D-pad, Enter / A-Cross, Backspace / B-Circle"),TEXT("Sniff golden snacks, visit both cats, then get Cheeween Cozy.")};
+            const TArray<FString> Lines={TEXT("WASD / arrows / left stick: walk"),TEXT("Mouse / right stick: look around"),TEXT("Shift / A-Cross: hurry   |   E / X-Square: interact"),TEXT("V / R3: camera   |   R / RB-R1: recenter"),TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / LB: bark"),TEXT("Tab / View-Touchpad: backpack | C / B-Circle: tricks"),TEXT("Esc / Menu-Options: pause   |   H: return home"),TEXT("Menus: arrows / D-pad, Enter / A-Cross, Backspace / B-Circle"),TEXT("Sniff golden snacks, visit both cats, then get Cheeween Cozy.")};
             for(int32 I=0;I<Lines.Num();++I) DrawText(Lines[I],FLinearColor::White,X+24,Y+105+I*28);
         }
         const auto Items=Session->Menu();
-        const float First=Session->Screen==ECozyScreen::Controls ? Y+350 : Y+115;
+        if(Session->Screen==ECozyScreen::Backpack)
+        {
+            const auto* PC=GetWorld()->GetFirstPlayerController();const auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
+            if(P&&P->Life){DrawText(P->Life->BackpackText(),FLinearColor::White,X+24,Y+105);DrawText(P->Life->Status(),FLinearColor(.7f,1,.7f),X+24,Y+140);}
+            DrawText(TEXT("Carry in mouth, stow safely, retrieve, drop or bury."),FLinearColor::White,X+24,Y+180);
+        }
+        const float First=Session->Screen==ECozyScreen::Controls ? Y+350 : Session->Screen==ECozyScreen::Backpack?Y+225:Y+115;
         for(int32 I=0;I<Items.Num();++I)
         {
             const float Row=First+I*44;
@@ -51,13 +57,22 @@ bool AMartyHUD::DrawAdventureHUD()
     }
     else
     {
-        DrawRect(FLinearColor(.025f,.055f,.07f,.88f),16,16,760,120);
+        DrawRect(FLinearColor(.025f,.055f,.07f,.88f),16,16,760,170);
         const bool Outside=Mode->Neighbourhood&&Mode->Neighbourhood->Outside;
         DrawText(Outside?TEXT("Neighbourhood walk: meet the dogs, visit the park and school"):Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
         DrawText(TEXT("Move: WASD / left stick | Interact: E / X-Square | Pause: Esc / Options"),FLinearColor::White,28,57);
-        DrawText(TEXT("Look: mouse / right stick | Hurry: Shift / A-Cross | Camera: V / R3"),FLinearColor::White,28,79);
+        DrawText(Session->Progress->BodyControls?TEXT("Body controls: LS steers | RS swings/turns | Mouse: look | V / R3: camera"):TEXT("Look: mouse / right stick | Hurry: Shift / A-Cross | Camera: V / R3"),FLinearColor::White,28,79);
         const auto* OwnerPC=GetWorld()->GetFirstPlayerController();const auto* Pet=OwnerPC?Cast<AMartyCharacter>(OwnerPC->GetPawn()):nullptr;
         if(Pet&&Pet->Life)DrawText(Pet->Life->Status(),Pet->Life->Energy()<25?FLinearColor(1,.6f,.3f):FLinearColor(.7f,1,.7f),28,105,nullptr,1.1f);
+        if(Pet&&Pet->Life)
+        {
+            DrawText(FString::Printf(TEXT("Health %d / 100"),FMath::RoundToInt(Pet->Life->Health())),FLinearColor::White,28,130);
+            DrawRect(FLinearColor(.2f,.08f,.08f),28,151,180,8);DrawRect(FLinearColor(.9f,.32f,.35f),28,151,Pet->Life->Health()*1.8f,8);
+            DrawText(TEXT("Energy"),FLinearColor::White,250,130);DrawRect(FLinearColor(.08f,.18f,.1f),250,151,180,8);DrawRect(FLinearColor(.3f,.85f,.45f),250,151,Pet->Life->Energy()*1.8f,8);
+            DrawRect(FLinearColor(.025f,.055f,.07f,.88f),Width-295,16,279,100);
+            DrawText(FString::Printf(TEXT("BACKPACK %d / 4"),Session->Progress->BagItems.Num()),FLinearColor(.9f,.82f,.6f),Width-282,30);
+            DrawText(TEXT("Tab / View-Touchpad: open backpack"),FLinearColor::White,Width-282,80);
+        }
         const FString Prompt=Session->Prompt();
         if(!Prompt.IsEmpty()) DrawText(Prompt,FLinearColor(1,.9f,.5f),Width*.5f-140,Height-110,nullptr,1.6f);
         if(!Session->Progress->Complete&&!Outside)
@@ -65,7 +80,7 @@ bool AMartyHUD::DrawAdventureHUD()
             for(int32 I=0;I<Session->Mission->Snacks.Num();++I) if(!(Session->Progress->SnackMask & (1<<I)))
             {
                 const auto& Stop=Session->Mission->Snacks[I]; const FVector P=Project(Stop.Position+FVector(0,0,32));
-                if(P.Z>0 && P.X>0 && P.X<Width && P.Y>145 && P.Y<Height-60) DrawText(TEXT("SNACK"),FLinearColor(1,.85f,.35f),P.X-22,P.Y);
+                if(P.Z>0 && P.X>0 && P.X<Width && P.Y>175 && P.Y<Height-60) DrawText(TEXT("SNACK"),FLinearColor(1,.85f,.35f),P.X-22,P.Y);
             }
             if(Session->Progress->SnackMask==(1<<Session->Mission->Snacks.Num())-1)
             {
@@ -81,6 +96,7 @@ bool AMartyHUD::DrawAdventureHUD()
         const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
         if(Pawn){const FString LifePrompt=Pawn->Life?Pawn->Life->Prompt():FString();DrawText(LifePrompt.IsEmpty()?Mode->Neighbourhood->Prompt(Pawn):LifePrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
         DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / LB: bark"),FLinearColor(.8f,.9f,1),28,Height-145);
+        DrawText(TEXT("C / B-Circle: tricks, pace and controls | Tab / View: backpack"),FLinearColor(.8f,.9f,1),28,Height-170);
     }
     if(!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;

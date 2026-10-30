@@ -6,7 +6,7 @@ $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=if($GameExe){[IO.Path
 $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
 # Keep silent submixes rendering during acceptance so mute exports real zero samples.
 # Normal play retains Unreal's silence optimization.
-$info.Arguments=$project+'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720 -AudioMixer -ini:Engine:[Audio]:UnfocusedVolumeMultiplier=1.0 -ExecCmds="au.NeverDisableSubmixes 1" -CheweenieAudioSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Audio.log"'
+$info.Arguments=$project+'-dx12 -RenderOffscreen -ForceRes -windowed -ResX=1280 -ResY=720 -AudioMixer -ini:Engine:[Audio]:UnfocusedVolumeMultiplier=1.0 -ExecCmds="au.NeverDisableSubmixes 1" -CheweenieAudioSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Audio.log"'
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
 $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
 while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Audio test timed out'}}

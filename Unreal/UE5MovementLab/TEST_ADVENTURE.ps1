@@ -6,7 +6,7 @@ New-Item -ItemType Directory -Path $OutputRoot -Force | Out-Null
 foreach($phase in @('patrol','resume')) {
     $info=[Diagnostics.ProcessStartInfo]::new()
     $info.FileName=if($GameExe){[IO.Path]::GetFullPath($GameExe)}else{Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor.exe'}
-    $backend=if($Render -and $phase -eq 'patrol'){'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
+    $backend=if($Render -and $phase -eq 'patrol'){'-dx12 -RenderOffscreen -ForceRes -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
     $resume=if($phase -eq 'resume'){' -CheweenieResumeCheck'}else{''}
     $projectArg=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
     $info.Arguments=$projectArg+$backend+' -CheweenieAdventureSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $OutputRoot ('Adventure-'+$phase+'.log'))+'"'
