@@ -1,6 +1,6 @@
 # Codename .... Cheweenie 🐾
 
-**Experimental graphics branch — the stable 0.9.0 game is preserved in the original checkout.** Use `LAB_PLAY.cmd` for the separate Unity graphics build and `LAB_BASELINE.cmd` for its baseline mode, with separate saves. A separate Unreal 4.27 static comparison project is under `Unreal/VisualLab`; the Unity game has not been converted. [Actual changes, tests, captures and remaining realism work](docs/VISUAL_REALISM_LAB.md).
+**Optional graphics labs — the stable 0.9.0 game is preserved in the original checkout.** Use `LAB_PLAY.cmd` for the separate Unity graphics build and `LAB_BASELINE.cmd` for its baseline mode, with separate saves. `LAB_UE5.cmd` opens a separate Unreal 5.8.4 room preview with the three static pets, Lumen lighting and cozy furnishings (installed UE5 editor required). The original Unreal 4.27 project remains under `Unreal/VisualLab`; the Unity game has not been converted. [UE5 preview instructions](Unreal/UE5VisualLab/README.md) · [Actual changes, tests, captures and remaining realism work](docs/VISUAL_REALISM_LAB.md).
 
 A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
 

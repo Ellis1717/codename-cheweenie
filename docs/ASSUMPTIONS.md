@@ -29,6 +29,8 @@ This is the catalogue for **Codename .... Cheweenie**. Routine choices are made 
 | A23 | Fox Ellis is the backyard “Chief Sniff Inspector”; Leo Ellis is the fort's “Blanket Boss.” Lines replay after completion and last eight seconds, with existing sound cues. | Owner-supplied names for playful on-screen cameos. Cat friendship rewards remain. | Text: CheweenieBootstrap. Display: QuestDirector. |
 | A24 | Eight title options and ten field-guide pages with live bindings, mission help and three illustrated crew cards. F1 opens help during play; F1/Y/Triangle from Settings. | Chosen comprehensive menu defaults. Guide pauses and returns to its original title/play/settings context. New imagegen illustrations preserve the current model identity/cat markings; meshes and cover remain separate. | Live: field guide and Settings. Code/art: FrontEndMenu, GuideContent, Branding PNGs; docs/MENU_ART_PROMPTS.md. |
 
+| A25 | UE5 5.8.4 runs as a separate static-pet room viewer with software Lumen, DX12/SM6, virtual shadows and a furnished schematic room. Unity remains the playable adventure; UE4 comparison is retained. | Owner authorized a separate Unreal experiment and installation without impacting the existing game. No full port, skinned rig, groom or frame-rate target is claimed. Desktop input was unavailable during UE5 capture; physical controller checks remain open. | Art/build: Unreal/UE5VisualLab; LAB_UE5.cmd. Cache/engine paths are launcher parameters. |
+
 ## Corrections to apply next
 
 Add notes here using the ID above. No corrections are currently pending from the owner.
