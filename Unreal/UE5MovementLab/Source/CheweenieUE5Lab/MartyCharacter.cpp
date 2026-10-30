@@ -1,4 +1,8 @@
 #include "MartyCharacter.h"
+#include "MartyGait.h"
+#include "Neighbourhood.h"
+#include "Components/PoseableMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "CozyAdventure.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
@@ -11,6 +15,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialInterface.h"
+#include "Materials/Material.h"
 #include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -42,12 +47,20 @@ AMartyCharacter::AMartyCharacter()
     Visual->SetRelativeLocation(FVector(0, 0, -28));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> Pet(TEXT("/Game/VisualLab/Pets/Marty.Marty"));
     if (Pet.Succeeded()) Visual->SetStaticMesh(Pet.Object);
+    Skin=CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("MartySkinnedCharacter"));
+    Skin->SetupAttachment(GetRootComponent());Skin->SetRelativeLocation(FVector(0,0,-28));
+    Skin->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Skin->VisibilityBasedAnimTickOption=EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> Rig(TEXT("/Game/Adventure/Marty/Marty_CoverRig.Marty_CoverRig"));
+    if(Rig.Succeeded()) {Skin->SetSkinnedAssetAndUpdate(Rig.Object);Visual->SetVisibility(false);}
+    Gait=CreateDefaultSubobject<UMartyGait>(TEXT("GroundedCanineGait"));
     Boom = CreateDefaultSubobject<USpringArmComponent>(TEXT("FollowingCamera"));
     Boom->SetupAttachment(GetRootComponent());
     Boom->TargetArmLength = 220;
     Boom->SocketOffset = FVector(0, 0, 35);
     Boom->bUsePawnControlRotation = true;
-    Boom->bEnableCameraLag = true;
+    // Direct follow keeps the dog framed across the indoor/outdoor portals and tour jumps.
+    Boom->bEnableCameraLag = false;
     Boom->CameraLagSpeed = 8;
     auto* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(Boom);
@@ -57,6 +70,16 @@ AMartyCharacter::AMartyCharacter()
 void AMartyCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    if(Skin->GetSkinnedAsset())
+        for(int32 I=0;I<Skin->GetNumMaterials();++I)
+        {
+            const auto* Material=Skin->GetMaterial(I);
+            UE_LOG(LogTemp,Display,TEXT("MARTY_MATERIAL slot=%d path=%s skeletal=%d"),I,Material?*Material->GetPathName():TEXT("null"),Material?Material->GetMaterial()->GetUsageByFlag(MATUSAGE_SkeletalMesh):false);
+        }
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieLegacyMarty")))
+    {
+        Skin->SetVisibility(false);Visual->SetVisibility(true);Gait->SetComponentTickEnabled(false);
+    }
     TeleportTo(FVector(-200, -200, 60), FRotator(0, 40, 0));
     Home = GetActorLocation();
     Recenter();
@@ -74,6 +97,12 @@ void AMartyCharacter::PossessedBy(AController* NewController)
         }
     }
     Recenter();
+}
+
+void AMartyCharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    if(GetActorLocation().Z< -600)ReturnHome();
 }
 
 void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
@@ -199,9 +228,9 @@ void AMartyCharacter::Interact() { if(auto* Session=Adventure()) Session->Intera
 void AMartyCharacter::CycleCamera()
 {
     if (!CanPlay()) return;
-    CameraPreset = (CameraPreset + 1) % 3;
-    const float Distances[] = {220, 330, 140};
-    const float Heights[] = {35, 90, 0};
+    CameraPreset = (CameraPreset + 1) % 4;
+    const float Distances[] = {220, 330, 140, 120};
+    const float Heights[] = {35, 90, 0, 0};
     Boom->TargetArmLength = Distances[CameraPreset];
     Boom->SocketOffset.Z = Heights[CameraPreset];
 }
@@ -211,6 +240,7 @@ void AMartyCharacter::Recenter()
 }
 void AMartyCharacter::ReturnHome()
 {
+    if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
     GetCharacterMovement()->StopMovementImmediately();
     TeleportTo(Home, FRotator::ZeroRotator);
     Recenter();
@@ -220,6 +250,7 @@ AMartyPlayMode::AMartyPlayMode()
 {
     PrimaryActorTick.bCanEverTick = true;
     Adventure=CreateDefaultSubobject<UCozyAdventure>(TEXT("AdventureSession"));
+    Neighbourhood=CreateDefaultSubobject<UCheweenieNeighbourhood>(TEXT("Neighbourhood"));
     DefaultPawnClass = AMartyCharacter::StaticClass();
     HUDClass = AMartyHUD::StaticClass();
 }
@@ -273,5 +304,5 @@ void AMartyHUD::DrawHUD()
     DrawText(TEXT("Codename .... Cheweenie | Marty movement lab"), FLinearColor::White, 28, 25);
     DrawText(TEXT("Move: WASD / arrows / left stick   |   Look: mouse / right stick"), FLinearColor::White, 28, 48);
     DrawText(TEXT("Hurry: Shift / A-Cross   |   Camera: V / R3   |   Recenter: R / RB-R1"), FLinearColor::White, 28, 69);
-    DrawText(TEXT("Return home: H / Start-Options   |   Static model: animation art is pending"), FLinearColor::White, 28, 90);
+    DrawText(TEXT("Return home: H / Start-Options   |   Marty: skinned procedural canine gait"), FLinearColor::White, 28, 90);
 }

@@ -1,0 +1,32 @@
+{
+	"engine": "5.8.4-58902052+++UE5+Release-5.8",
+	"scope": "Real mission traversal and native synthetic menu/interaction input; isolated acceptance save slot; physical hardware unverified",
+	"passed": [
+		"Branded title is the initial screen",
+		"Six original music/effect assets load",
+		"Title menu blocks gameplay movement",
+		"Enter starts the patrol",
+		"Menu/Options opens pause",
+		"Pause freezes player movement",
+		"D-pad navigates menu options",
+		"A/Cross opens settings and selecting a volume row keeps them open",
+		"D-pad adjusts and saves music preference",
+		"B/Circle returns to the parent menu",
+		"Escape resumes the patrol",
+		"Walking to first snack collects it",
+		"Standing on a collected snack grants no duplicate",
+		"Second snack advances patrol",
+		"All snacks unlock the companion visits",
+		"Interaction outside the destination cannot advance progress",
+		"Keyboard interaction completes Lakitu visit",
+		"X/Square completes Rio visit but still requires the fort",
+		"Cheeween Cozy completes the mission",
+		"Blanket Boss family cameo appears",
+		"Completion menu blocks movement",
+		"Victory can continue into free roam",
+		"New patrol requires confirmation and defaults to Keep",
+		"Cancel restart preserves completed progress",
+		"Mission checkpoints are written to the isolated save slot"
+	],
+	"failed": []
+}

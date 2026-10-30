@@ -48,6 +48,7 @@ public:
     UPROPERTY(SaveGame) int32 SnackMask = 0;
     UPROPERTY(SaveGame) int32 VisitIndex = 0;
     UPROPERTY(SaveGame) bool Complete = false;
+    UPROPERTY(SaveGame) int32 NeighbourDogMask=0;
     UPROPERTY(SaveGame) float Music = .25f;
     UPROPERTY(SaveGame) float Effects = .6f;
 };
@@ -69,6 +70,7 @@ public:
     UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Start(bool Fresh);
     UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Save();
     UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
+    void HoldMessage(float Seconds) { MessageTime=Seconds; }
     FString Objective() const;
     FString Prompt() const;
     TArray<FString> Menu() const;

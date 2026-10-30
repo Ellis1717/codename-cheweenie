@@ -1,10 +1,10 @@
-# Codename .... Cheweenie — Cozy Patrol 0.4
+# Codename .... Cheweenie — Cozy Patrol 0.5
 
-The Unreal version now has a small complete adventure loop: title → patrol → three snacks → Lakitu → Rio → blanket fort → Cheeween Cozy → free roam or replay. It retains the existing Marty/cat models and adds the original cover, music/effects, saved checkpoints, menus, a fort and a closed room backdrop. It is a foundation for more gameplay, not the full Unity adventure or a finished character-animation/art pass.
+The Unreal version has a small complete adventure loop: title → patrol → three snacks → Lakitu → Rio → blanket fort → Cheeween Cozy → free roam or replay. Version 0.5 adds a cover-guided skin-weighted Marty, procedural canine leg/ear movement and a fourth close inspection camera. The cats retain their previous static models. See [Marty art and movement](UNREAL_MARTY_ART.md) for source, tuning and limitations. This is a foundation for more gameplay, not the full Unity adventure or a finished photorealistic art pass.
 
 ## Play
 
-Run root UNREAL_PLAY.cmd. It prefers the local packaged Windows 0.4.0 build when present, and otherwise opens the installed Unreal editor-game. Play Cheweenie Unreal on the desktop is the convenient entry point on this machine.
+Run root UNREAL_PLAY.cmd. It prefers the local packaged Windows 0.5.0 build when present, falls back to the preserved 0.4.0 package, then opens the installed Unreal editor-game. Play Cheweenie Unreal on the desktop is the convenient entry point on this machine.
 
 Choose Continue / start patrol. Golden snacks collect when Marty walks close enough. After finding all three, follow the destination label/distance, approach Lakitu and then Rio, and press Interact. Visit the blue blanket fort last. The completion menu offers free roam or another patrol. Fox Ellis is the Chief Sniff Inspector; Leo Ellis is the Blanket Boss.
 
@@ -65,7 +65,7 @@ From Unreal/UE5MovementLab:
     .\TEST_ADVENTURE.ps1 -Render
     .\PACKAGE.ps1
 
-BUILD uses installed Unreal 5.8.4, MSVC 14.44+ and a Windows SDK. Serial compilation with acceleration disabled reduces memory commitment. Source-file gathering allows newly added C++ files to enter the build. Engine/cache locations are parameters in the scripts. Package output is ignored under builds/UnrealAdventure-0.4.0.
+BUILD uses installed Unreal 5.8.4, MSVC 14.44+ and a Windows SDK. Serial compilation with acceleration disabled reduces memory commitment. Source-file gathering allows newly added C++ files to enter the build. Engine/cache locations are parameters in the scripts. Current package output is ignored under builds/UnrealAdventure-0.5.0; 0.4.0 remains the archived fallback.
 
 Close the running copy before overwriting its package directory, or provide a different OutputRoot. Runtime Saved folders contain preferences, progress, crash-handler configuration and caches; keep those separate when preparing a clean distribution. Integrity records hash the immutable payload rather than mutable Saved data.
 

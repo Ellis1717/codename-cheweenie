@@ -1,12 +1,14 @@
-# Codename .... Cheweenie — Cozy Patrol 0.4
+# Codename .... Cheweenie — Cozy Patrol 0.5
 
 A small standalone Windows adventure is now packaged and tested. Run root UNREAL_PLAY.cmd or Play Cheweenie Unreal on the desktop. Find three snacks, visit Lakitu and Rio, then get Cheeween Cozy at the blanket fort. Title/help/pause/sound menus, checkpoint saves, completion, free roam, replay, original audio and the Fox/Leo cameos are included.
 
-See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md). The retained Unity release and both comparison projects remain intact. The game still uses static pet meshes; realistic animation and the full neighbourhood/world port remain future work.
+Choose Explore the neighbourhood or use the blue OUTSIDE door with E/X-Square. The exterior adds roads, houses, eight editable dog neighbours, park/school destinations and tour-board shortcuts. The local launcher can read the retained private street layout without putting it in public Content. [Neighbourhood and dog names](../../docs/UNREAL_NEIGHBOURHOOD.md).
+
+See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md) and [Marty's cover-guided model and gait](../../docs/UNREAL_MARTY_ART.md). Marty now uses a separate skin-weighted mesh with 24 joints, grounded procedural leg motion, flexible ears and a close inspection camera. Cats retain their static meshes. The retained Unity release and both comparison projects remain intact; detailed scenery and companion animation remain future work.
 
 ## Play
 
-UNREAL_PLAY.cmd prefers builds/UnrealAdventure-0.4.0/Windows/CheweenieUE5Lab.exe and otherwise opens the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. The immutable package payload is approximately 0.99 GiB across 51 files; runtime Saved data is additional and excluded from the hash record.
+UNREAL_PLAY.cmd prefers builds/UnrealAdventure-0.5.0/Windows/CheweenieUE5Lab.exe, then the preserved 0.4.0 package, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 |---|---|---|
@@ -27,6 +29,9 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
 
     .\BUILD.ps1
     .\IMPORT_AUDIO.ps1
+    .\IMPORT_MARTY.ps1
+    .\TEST_GAIT.ps1 -Render
+    .\TEST_OUTSIDE.ps1
     .\TEST.ps1
     .\TEST_ADVENTURE.ps1
     .\TEST_ADVENTURE.ps1 -Render
@@ -36,9 +41,13 @@ Scripts accept engine/cache paths. BUILD gathers newly added C++ files and limit
 
 Content/Adventure is versioned: the retained cover and six original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
 
-PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.4.0. StageOnly reuses an already built/cooked result when updating archive options. The local distribution excludes debug symbols and includes the standard prerequisite installer.
+PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.5.0. StageOnly reuses an already built/cooked result when updating archive options. The local distribution excludes debug symbols and includes the standard prerequisite installer.
 
 ## Actual verification
+
+Version 0.5: native Editor/Game compilation and cook/archive succeeded. The final standalone DX12 executable passed 14 gait + 12 exterior + 25 patrol + six persistence/replay checks. Four additional packaged headless checks passed with the retained private map. Sixteen earlier editor-game movement checks passed at the 60 FPS cap. Final screenshots were inspected after correcting signs, skin surfaces, outdoor lighting and teleport camera framing. [Build report](../../docs/evidence/ue5-05-build.json), [package hashes](../../docs/evidence/ue5-05-package.json), [Marty capture](../../docs/screenshots/ue5-05-marty.png) and [outdoor capture](../../docs/screenshots/ue5-05-park.png). The launcher now uses this validated package; rebuilding invalidates its marker until FINALIZE_PACKAGE.ps1 accepts fresh rendered reports/captures.
+
+Earlier 0.4 baseline, retained for comparison:
 
 The editor-game full patrol passed 25 checks headlessly and in rendered DX12, with cross-process save/reload acceptance. The latest second-process run passed six persistence/replay checks, including confirmed fresh patrol retaining preferences. The original sixteen movement/camera/collision checks still pass.
 

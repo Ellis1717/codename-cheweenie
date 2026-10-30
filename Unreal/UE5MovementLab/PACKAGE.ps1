@@ -1,7 +1,9 @@
 param([string]$EngineRoot='D:\Epic Games\UE_5.8',[string]$CacheRoot='D:\CheweenieValidation\UE5Cache',[string]$OutputRoot,[switch]$StageOnly)
 $ErrorActionPreference='Stop'
-if(-not $OutputRoot){$OutputRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\builds\UnrealAdventure-0.4.0'))}
+if(-not $OutputRoot){$OutputRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\builds\UnrealAdventure-0.5.0'))}
 $OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
+$validationMarker=Join-Path $OutputRoot 'validated.json'
+if(Test-Path -LiteralPath $validationMarker){Remove-Item -LiteralPath $validationMarker}
 if(-not(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Content\Adventure\Audio\Home.uasset'))){throw 'Retained adventure audio missing; run IMPORT_AUDIO.ps1.'}
 $uat=Join-Path $EngineRoot 'Engine\Build\BatchFiles\RunUAT.bat'
 if(-not(Test-Path -LiteralPath $uat)){throw 'Unreal Automation Tool missing; supply -EngineRoot.'}

@@ -11,6 +11,9 @@ class USpringArmComponent;
 class UStaticMeshComponent;
 class UCozyAdventure;
 class UTexture2D;
+class UMartyGait;
+class UPoseableMeshComponent;
+class UCheweenieNeighbourhood;
 struct FInputActionValue;
 
 UCLASS()
@@ -20,11 +23,14 @@ class AMartyCharacter : public ACharacter
 public:
     AMartyCharacter();
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
     virtual void PossessedBy(AController* NewController) override;
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
     void CycleCamera();
     void ReturnHome();
     int32 CameraPreset = 0;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UPoseableMeshComponent> Skin;
 private:
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
@@ -64,9 +70,12 @@ public:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCozyAdventure> Adventure;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
     void TickAdventureSmoke(float Delta);
+    void TickGaitSmoke(float Delta);
+    void TickOutsideSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

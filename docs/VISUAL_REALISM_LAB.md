@@ -1,6 +1,16 @@
 # Separate graphics experiment
 
-## Current game foundation — Cozy Patrol 0.4
+## Current demo — Cozy Patrol 0.5
+
+Marty now uses an original cover-guided, skin-weighted 24-joint model with procedural elbow/stifle/hock/paw IK, grounded stepping, flexible ear tips and short-coat/eye/nose materials. Closed surfaces and outward normals avoid the initial open-limb/ear artifacts. Editable Blender/FBX/textures and the old static fallback are retained. V/R3 cycles a fourth close camera. This remains stylized; it does not reproduce the cover's full photographic detail. Cats remain static.
+
+The headquarters door and title Explore option lead to a larger exterior with a reference-guided brick/blue-garage home, eight editable dog/house slots, roads, park, school and tour shortcuts. This machine's launcher loads the retained private OSM street file from ignored LocalGameData; public builds have a schematic fallback. Original private photos/address/map coordinates are not committed. Source and controls: UNREAL_MARTY_ART.md and UNREAL_NEIGHBOURHOOD.md.
+
+Final 0.5 native Editor/Game builds and packaging passed. The standalone DX12 client passed 57 checks (14 gait, 12 exterior, 25 patrol, six persistence/replay). Four more packaged headless checks validated the private map; the earlier sixteen movement checks passed at the 60 FPS cap. Actual packaged screenshots were inspected. Early testing exposed missing skeletal material usage/save, open surfaces, signs spawned at the origin, an uncapped analog test, transient memory exhaustion, dark outdoor shadows and camera/capture timing problems. These were corrected before the final package. No system memory settings or unrelated apps were changed. A validated marker gates the desktop launcher; rebuilding falls back to preserved 0.4 until fresh reports/captures pass finalization. Physical devices, audible mix, subjective realism and measured performance remain open.
+
+Evidence: docs/evidence/ue5-05-*.json and docs/screenshots/ue5-05-*.png. Hashes cover immutable payload only; runtime Saved files are excluded. Unity and the independent comparison projects are unchanged.
+
+## Prior game foundation — Cozy Patrol 0.4
 
 At the owner's request, the latest work prioritizes a complete extensible game loop. The Unreal adventure includes the branded title, mouse/controller menu handlers, help, pause/recovery, sound preferences, original music/effects, three snack pickups, ordered Lakitu/Rio interactions, Cheeween Cozy completion, Fox/Leo cameos, free roam/replay and checkpoint saves. Extra walls close the photography room and the fort rests on the floor. Models remain static; the ending is not an authored snuggle animation.
 

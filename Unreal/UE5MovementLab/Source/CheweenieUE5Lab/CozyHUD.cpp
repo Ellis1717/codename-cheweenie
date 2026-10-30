@@ -1,5 +1,6 @@
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
+#include "Neighbourhood.h"
 #include "Engine/Canvas.h"
 #include "Engine/Texture2D.h"
 #include "GameFramework/PlayerController.h"
@@ -50,12 +51,13 @@ bool AMartyHUD::DrawAdventureHUD()
     else
     {
         DrawRect(FLinearColor(.025f,.055f,.07f,.88f),16,16,760,90);
-        DrawText(Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
+        const bool Outside=Mode->Neighbourhood&&Mode->Neighbourhood->Outside;
+        DrawText(Outside?TEXT("Neighbourhood walk: meet the dogs, visit the park and school"):Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
         DrawText(TEXT("Move: WASD / left stick | Interact: E / X-Square | Pause: Esc / Options"),FLinearColor::White,28,57);
         DrawText(TEXT("Look: mouse / right stick | Hurry: Shift / A-Cross | Camera: V / R3"),FLinearColor::White,28,79);
         const FString Prompt=Session->Prompt();
         if(!Prompt.IsEmpty()) DrawText(Prompt,FLinearColor(1,.9f,.5f),Width*.5f-140,Height-110,nullptr,1.6f);
-        if(!Session->Progress->Complete)
+        if(!Session->Progress->Complete&&!Outside)
         {
             for(int32 I=0;I<Session->Mission->Snacks.Num();++I) if(!(Session->Progress->SnackMask & (1<<I)))
             {
@@ -70,6 +72,11 @@ bool AMartyHUD::DrawAdventureHUD()
                 if(Pawn) DrawText(FString::Printf(TEXT("Destination: %.1f m"),FVector::Dist2D(Pawn->GetActorLocation(),Stop.Position)/100),FLinearColor::White,28,118);
             }
         }
+    }
+    if(Session->Screen==ECozyScreen::Playing&&Mode->Neighbourhood)
+    {
+        const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
+        if(Pawn)DrawText(Mode->Neighbourhood->Prompt(Pawn),FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);
     }
     if(!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;

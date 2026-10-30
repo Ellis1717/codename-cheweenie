@@ -1,0 +1,15 @@
+{
+  "engine": "Unreal 5.8.4",
+  "version": "0.5.0",
+  "editorCompile": "Succeeded",
+  "gameCompile": "Succeeded",
+  "cookArchive": "Succeeded",
+  "archiveMatchesBuiltExe": true,
+  "packagedRenderedChecks": 57,
+  "packagedPrivateMapHeadlessChecks": 4,
+  "legacyHeadlessMovementChecks": 16,
+  "physicalDevices": "Unverified",
+  "renderer": "DX12/SM6, Lumen, virtual shadows; 60 FPS cap (not a measured performance claim)",
+  "privateMapExcludedFromArchive": true,
+  "visualQa": "Actual packaged Marty/door/park/school/title captures inspected; signs, closed mesh surfaces, lighting and teleport camera corrected"
+}

@@ -1,0 +1,18 @@
+{
+	"scope": "Actual door and walking input; teleported fixtures for dog/landmark selection; schematic map only; physical devices unverified",
+	"passed": [
+		"Schematic exterior builds nine houses, eight dog slots and connected routes",
+		"Actual indoor walking reaches the exit door prompt",
+		"Keyboard interaction opens door and transfers Marty outside",
+		"Outside arrival lands on collision ground",
+		"Door transition preserves the indoor mission",
+		"Real movement walks on the larger exterior ground",
+		"Controller interaction greets a dog and saves its slot",
+		"Repeated dog greeting does not duplicate friendship",
+		"Working tour board reaches the park destination",
+		"Tour continues to the school exterior",
+		"H safely returns from the neighbourhood to headquarters",
+		"Controller opens the exterior home door to return inside"
+	],
+	"failed": []
+}
