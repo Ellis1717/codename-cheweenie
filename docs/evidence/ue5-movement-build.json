@@ -1,0 +1,14 @@
+{
+  "max_parallel_actions": 1,
+  "msvc": "14.44.35229",
+  "target": "CheweenieUE5LabEditor",
+  "flags": [
+    "-NoXGE",
+    "-NoUBA"
+  ],
+  "engine": "5.8.4",
+  "result": "Succeeded",
+  "sdk": "10.0.22621.0",
+  "scope": "Native module compilation; gameplay results retained separately",
+  "configuration": "Development Win64"
+}

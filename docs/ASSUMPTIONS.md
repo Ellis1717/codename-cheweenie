@@ -31,6 +31,12 @@ This is the catalogue for **Codename .... Cheweenie**. Routine choices are made 
 
 | A25 | UE5 5.8.4 runs as a separate static-pet room viewer with software Lumen, DX12/SM6, virtual shadows and a furnished schematic room. Unity remains the playable adventure; UE4 comparison is retained. | Owner authorized a separate Unreal experiment and installation without impacting the existing game. No full port, skinned rig, groom or frame-rate target is claimed. Desktop input was unavailable during UE5 capture; physical controller checks remain open. | Art/build: Unreal/UE5VisualLab; LAB_UE5.cmd. Cache/engine paths are launcher parameters. |
 
+| A26 | A separate UE5 native movement project uses the retained static Marty mesh, Enhanced Input, three camera views and runtime room boundaries. Cats remain static. Its copied Content is generated from the versioned UE5 preview; no original assets are replaced. | Chosen incremental traversal milestone before authored rigs. Native compilation is blocked by the engine's ban on installed MSVC v14.42; installer requires Windows elevation. No new gameplay test is claimed. | Source/build instructions: Unreal/UE5MovementLab. Root LAB_UE5_MARTY.cmd requires a successful native build first. |
+
 ## Corrections to apply next
+
+Unreal-first development supersedes Unity-specific engine requirements for new work, per the owner's request. Preserve Unity as a fallback. See docs/UNREAL_HANDOFF.md. A26's compiler blocker is now resolved: updating through the existing Microsoft installer supplied MSVC 14.44.35229, and native compilation passed. The earlier separate installer attempt was blocked; it was not used. Sixteen native synthetic keyboard/gamepad checks passed in headless and rendered DX12 runs. Physical controllers and realistic pet animation remain open.
+
+Current Unreal movement defaults are provisional: 32% of the display mesh scale, 100 cm/s walking, 230 cm/s hurry, and three camera distances of 220/330/140 cm. Upward stick input looks upward without legacy input multipliers. Runtime box blockers approximate the upholstered sofa footprint after a real movement test exposed undersized sphere collision. Tune these in Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp; original comparison assets remain intact.
 
 Add notes here using the ID above. No corrections are currently pending from the owner.

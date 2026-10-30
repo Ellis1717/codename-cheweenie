@@ -1,0 +1,60 @@
+{
+  "engine": "5.8.4-58902052+++UE5+Release-5.8",
+  "scope": "Read-only asset audit; native gameplay unverified",
+  "pets": {
+    "Marty": {
+      "material_slots": 8,
+      "size_cm": [
+        211.9000015258788,
+        91.50054931640625,
+        141.25
+      ],
+      "bottom_cm": 6.0
+    },
+    "Lakitu": {
+      "material_slots": 10,
+      "size_cm": [
+        142.84999847412104,
+        74.00000381469725,
+        119.00000762939453
+      ],
+      "bottom_cm": 6.0
+    },
+    "Rio": {
+      "material_slots": 8,
+      "size_cm": [
+        137.85461425781244,
+        86.0609016418457,
+        119.00000762939453
+      ],
+      "bottom_cm": 6.0
+    }
+  },
+  "comparison_actors": 59,
+  "traversal_collision": {
+    "Solid floor": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    },
+    "Blue woven rug": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    },
+    "Sofa seat": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    },
+    "Back wall": {
+      "simple_shapes": 1,
+      "enabled": "<CollisionEnabled.QUERY_AND_PHYSICS: 3>",
+      "pawn": "<CollisionResponseType.ECR_BLOCK: 2>",
+      "camera": "<CollisionResponseType.ECR_BLOCK: 2>"
+    }
+  }
+}

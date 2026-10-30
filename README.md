@@ -1,8 +1,12 @@
 # Codename .... Cheweenie 🐾
 
+**Active development now targets Unreal Engine 5.8.4.** The Unity release is retained as a playable fallback. Follow the [Unreal development handoff](docs/UNREAL_HANDOFF.md) for the ordered gameplay, character, scenery and packaging milestones.
+
 **Optional graphics labs — the stable 0.9.0 game is preserved in the original checkout.** Use `LAB_PLAY.cmd` for the separate Unity graphics build and `LAB_BASELINE.cmd` for its baseline mode, with separate saves. `LAB_UE5.cmd` opens a separate Unreal 5.8.4 room preview with the three static pets, Lumen lighting and cozy furnishings (installed UE5 editor required). The original Unreal 4.27 project remains under `Unreal/VisualLab`; the Unity game has not been converted. [UE5 preview instructions](Unreal/UE5VisualLab/README.md) · [Actual changes, tests, captures and remaining realism work](docs/VISUAL_REALISM_LAB.md).
 
-A cozy Unity adventure starring Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
+The preserved Unity adventure stars Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
+
+The [UE5 Marty movement prototype](Unreal/UE5MovementLab/README.md) now compiles on Unreal 5.8.4 and passes sixteen checks in both native headless and rendered DX12 gameplay runs using synthetic keyboard/gamepad input. It includes controllable Marty, three cameras, recovery, room boundaries and sofa collision. Run `LAB_UE5_MARTY.cmd` after building its native module; this machine also has a **Play Cheweenie Unreal** desktop shortcut. [Actual playable view](docs/screenshots/ue5-marty-movement.png). It still uses static pet models; physical controller checks and authored animation remain open. The Unity fallback and UE5 static preview are unchanged.
 
 **Illustrated field guide (0.9.0):** the expanded title menu includes Controls & camera, Adventure guide, Meet the crew and About. Ten guide pages cover current bindings, cameras, recovery, missions and character biographies, with three new reference-guided illustrations. Open help with **F1** during play or **F1 / Y / Triangle** from paused Settings. [Menu guide and artwork](docs/MENU_GUIDE.md).
 
