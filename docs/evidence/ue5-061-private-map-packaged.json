@@ -1,0 +1,9 @@
+{
+	"passed": [
+		"Retained private streets validate and instantiate without publishing coordinates",
+		"Private park, school and schematic homes are present",
+		"Marty walks on the private-map ground",
+		"Private-map recovery returns to headquarters"
+	],
+	"failed": []
+}

@@ -7,6 +7,7 @@ The Unreal demo now adds pet needs and a small sandbox alongside the existing pa
 | Action | Keyboard | Xbox / PlayStation |
 |---|---|---|
 | Jump from the ground | Space | Y / Triangle |
+| Bark (0.6.1) | B | LB / L1 |
 | Dig at a marked patch | F | RT / R2 |
 | Pick up, bury, eat, hop onto couch, watch/stop TV | E near the relevant object | X / Square |
 | Drop the carried toy | Q | LT / L2 |
@@ -14,6 +15,8 @@ The Unreal demo now adds pet needs and a small sandbox alongside the existing pa
 | Recover home, keeping carried/buried items | H or pause menu | Pause → Return Marty home |
 
 Patrol interactions keep priority near the active cat/fort destination. Otherwise nearby toys and cozy objects use the same Interact button. Controls are also listed in the in-game help. Physical controllers still need owner verification; automated tests send the same generic gamepad keys.
+
+Barking, action effects and location music are described in [the audio guide](UNREAL_AUDIO.md).
 
 ## Energy and moods
 

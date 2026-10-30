@@ -1,0 +1,23 @@
+{
+  "engine": "Unreal 5.8.4",
+  "version": "0.6.1",
+  "editorCompile": "Succeeded",
+  "gameCompile": "Succeeded",
+  "fullCookArchive": "Succeeded",
+  "archiveMatchesBuiltExe": true,
+  "packagedAssertions": 95,
+  "audioAssertions": 10,
+  "waveformChecks": [
+    "Bark nonzero and unclipped",
+    "Music nonzero and unclipped",
+    "Mute exactly silent"
+  ],
+  "packagedPrivateMapHeadlessChecks": 4,
+  "legacyHeadlessMovementChecks": 16,
+  "runtimeErrorFatalCategories": 0,
+  "input": "Synthetic keyboard/gamepad; physical devices unverified",
+  "listening": "Subjective speaker/headphone mix unverified",
+  "audioTestOverrides": "UnfocusedVolumeMultiplier=1 and NeverDisableSubmixes=1 only in acceptance",
+  "visualQa": "Actual final packaged kitchen/HUD capture inspected",
+  "unityAndComparisonResourcesUnchanged": true
+}

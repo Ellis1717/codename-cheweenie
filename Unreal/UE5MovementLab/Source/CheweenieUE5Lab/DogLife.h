@@ -23,6 +23,8 @@ public:
     virtual void TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function) override;
     UFUNCTION(BlueprintCallable) void Dig();
     UFUNCTION(BlueprintCallable) void Drop();
+    UFUNCTION(BlueprintCallable) void Bark();
+    int32 BarkCount=0;
     UFUNCTION(BlueprintCallable) bool Interact();
     UFUNCTION(BlueprintCallable) bool PayJump();
     UFUNCTION(BlueprintCallable) void StopWatching();
@@ -66,4 +68,6 @@ private:
     float ActionTime=0,SaveTime=0,FoodCooldown=0,TVTime=0,HopDelay=0;
     int32 PendingPatch=INDEX_NONE;
     bool Initialized=false;
+    float BarkCooldown=0,StepClock=0;
+    bool WasAirborne=false;
 };

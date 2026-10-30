@@ -115,7 +115,12 @@ void UDogLife::Dig()
 {
     if(!Playing()||Busy())return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}
     if(Energy()<6){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
-    Data()->PetEnergy-=6;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Discovery"));
+    Data()->PetEnergy-=6;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
+}
+void UDogLife::Bark()
+{
+    if(!Playing()||Busy()||BarkCooldown>0)return;
+    BarkCooldown=1.2f;++BarkCount;Excitement=FMath::Max(Excitement,4.f);Tell(TEXT("Marty: Woof woof! Very important dog announcement."),TEXT("Bark"));
 }
 void UDogLife::Drop()
 {
@@ -123,13 +128,13 @@ void UDogLife::Drop()
     const int32 I=Data()->CarryItem;FVector P=Pawn()->GetActorLocation()+Pawn()->GetActorForwardVector()*55;P.Z-=20;
     FHitResult Hit;FCollisionQueryParams Q(SCENE_QUERY_STAT(ToyDrop),false,Pawn());
     if(GetWorld()->LineTraceSingleByChannel(Hit,P+FVector(0,0,80),P-FVector(0,0,160),ECC_Visibility,Q))P.Z=Hit.ImpactPoint.Z+9;
-    LooseLocations[I]=P;Data()->CarryItem=-1;SyncItems();Save();Tell(TEXT("Toy dropped. Pick it up again with E / X-Square."));
+    LooseLocations[I]=P;Data()->CarryItem=-1;SyncItems();Save();Tell(TEXT("Toy dropped. Pick it up again with E / X-Square."),TEXT("Toy"));
 }
 bool UDogLife::PayJump()
 {
     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling())return false;
     if(Energy()<8){Tell(TEXT("Not enough energy to jump. Rest or eat some food."));return false;}
-    StopWatching();Data()->PetEnergy-=8;Excitement=6;Save();return true;
+    StopWatching();Data()->PetEnergy-=8;Excitement=6;Save();Session()->ActionCue(TEXT("Jump"));return true;
 }
 void UDogLife::StopWatching()
 {
@@ -142,17 +147,17 @@ bool UDogLife::Interact()
     if(H>=0&&D->CarryItem>=0&&D->HoleDepths[H]==3)
     {
         if(D->ItemHoles.Contains(H)){Tell(TEXT("There is already a treasure here. Dig it up first."));return true;}
-        D->ItemHoles[D->CarryItem]=H;D->CarryItem=-1;Excitement=15;SyncItems();Save();Tell(TEXT("Buried treasure! Marty looks extremely pleased with himself."),TEXT("Cozy"));return true;
+        D->ItemHoles[D->CarryItem]=H;D->CarryItem=-1;Excitement=15;SyncItems();Save();Tell(TEXT("Buried treasure! Marty looks extremely pleased with himself."),TEXT("Dig"));return true;
     }
     if(D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)
         if(D->ItemHoles[I]<0&&FVector::Dist2D(Pawn()->GetActorLocation(),Items[I]->GetActorLocation())<70)
-        {D->CarryItem=I;Excitement=12;Save();Tell(TEXT("Marty carries his treasure in his mouth. Q / LT drops it; E buries it at an open hole."));return true;}
+        {D->CarryItem=I;Excitement=12;Save();Tell(TEXT("Marty carries his treasure in his mouth. Q / LT drops it; E buries it at an open hole."),TEXT("Toy"));return true;}
     if(FVector::Dist2D(Pawn()->GetActorLocation(),Bowl)<80)
     {
         if(FoodCooldown>0){Tell(TEXT("The bowl will refill soon. Marty can rest in the meantime."));return true;}
         Activity=EDogActivity::Eating;ActionTime=1.5f;Pawn()->GetCharacterMovement()->StopMovementImmediately();Pawn()->SetActorRotation(FRotator(0,(Bowl-Pawn()->GetActorLocation()).Rotation().Yaw,0));
         if(TVCamera){const FVector View=Bowl+FVector(180,-220,135);TVCamera->SetActorLocationAndRotation(View,(Bowl+FVector(0,0,20)-View).Rotation());if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(TVCamera,.2f);}
-        Tell(TEXT("Kitchen snack time. Crunch, crunch!"));return true;
+        Tell(TEXT("Kitchen snack time. Crunch, crunch!"),TEXT("Crunch"));return true;
     }
     if(OnCouch())
     {
@@ -184,6 +189,10 @@ void UDogLife::FinishAction()
 void UDogLife::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
     Super::TickComponent(Delta,Type,Function);Initialize();if(!Playing()||!Initialized)return;auto* D=Data();auto* P=Pawn();
+    BarkCooldown=FMath::Max(0.f,BarkCooldown-Delta);
+    const bool Airborne=P->GetCharacterMovement()->IsFalling();
+    if(WasAirborne&&!Airborne)Session()->ActionCue(TEXT("Land"));WasAirborne=Airborne;
+    if(!Airborne&&!Busy()&&P->GetVelocity().Size2D()>8){StepClock-=Delta;if(StepClock<=0){Session()->ActionCue(TEXT("Step"));StepClock=P->GetVelocity().Size2D()>130?.24f:.4f;}}else StepClock=0;
     FoodCooldown=FMath::Max(0.f,FoodCooldown-Delta);Excitement=FMath::Max(0.f,Excitement-Delta);
     const float Speed=P->GetVelocity().Size2D();if(Activity==EDogActivity::WatchingTV&&(!OnCouch()||Speed>8))StopWatching();
     if(Activity==EDogActivity::CouchHop&&HopDelay>0)

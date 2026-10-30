@@ -1,0 +1,20 @@
+{
+	"scope": "Native skin-weighted mesh, analytic canine IK, synthetic keyboard/gamepad. Physical devices and subjective realism unverified.",
+	"passed": [
+		"Skin-weighted Marty and 24 anatomical joints load",
+		"Imported centimetre rig faces positive X",
+		"Two-bone foreleg IK bends elbow backward at fixed bone length",
+		"Hind stifle bends forward rather than copying foreleg anatomy",
+		"Fourth camera provides a close character inspection view",
+		"Keyboard traversal advances gait by measured travel",
+		"Skinned elbow and knee actually bend while walking",
+		"Locomotion retains supporting stance paws",
+		"Flexible ear tips are independently skinned and posed",
+		"Ear tips visibly change angle during actual travel",
+		"Analog controller hurry drives the trot at higher speed",
+		"Trotting IK remains finite",
+		"Pause freezes gait and paw pose",
+		"Return-home and stopping recover a stable four-paw idle"
+	],
+	"failed": []
+}

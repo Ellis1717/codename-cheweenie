@@ -1,6 +1,8 @@
 @echo off
 set "CHEWEENIE_LOCAL_ARGS=-CheweenieNeighbourhood="%~dp0LocalGameData\streets.json" -CheweenieDogs="%~dp0LocalGameData\NeighbourDogs.json""
-if exist "%~dp0builds\UnrealAdventure-0.6.0\validated.json" (
+if exist "%~dp0builds\UnrealAdventure-0.6.1\validated.json" (
+  start "" "%~dp0builds\UnrealAdventure-0.6.1\Windows\CheweenieUE5Lab.exe" -dx12 -windowed -ResX=1280 -ResY=720 %CHEWEENIE_LOCAL_ARGS%
+) else if exist "%~dp0builds\UnrealAdventure-0.6.0\validated.json" (
   start "" "%~dp0builds\UnrealAdventure-0.6.0\Windows\CheweenieUE5Lab.exe" -dx12 -windowed -ResX=1280 -ResY=720 %CHEWEENIE_LOCAL_ARGS%
 ) else if exist "%~dp0builds\UnrealAdventure-0.5.0\validated.json" (
   start "" "%~dp0builds\UnrealAdventure-0.5.0\Windows\CheweenieUE5Lab.exe" -dx12 -windowed -ResX=1280 -ResY=720 %CHEWEENIE_LOCAL_ARGS%

@@ -92,7 +92,7 @@ void AMartyPlayMode::TickAdventureSmoke(float Delta)
     case 0:
         if(SmokeTime<(FApp::CanEverRender()?60:2))break;
         SmokeCheck(Session->Screen==ECozyScreen::Title,TEXT("Branded title is the initial screen"));
-        SmokeCheck(Session->LoadedSoundCount()==6,TEXT("Six original music/effect assets load"));
+        SmokeCheck(Session->LoadedSoundCount()==14,TEXT("Fourteen retained/original music and effect assets load"));
         Shot(TEXT("AdventureTitle.png"));SmokePosition=Pawn->GetActorLocation();Key(EKeys::W,true);Next();break;
     case 1:
         if(SmokeTime<.7)break;Key(EKeys::W,false);

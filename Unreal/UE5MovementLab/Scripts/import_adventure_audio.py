@@ -8,12 +8,13 @@ root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 source = os.path.abspath(os.path.join(root, '..', '..', 'Assets', 'Resources', 'Audio'))
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 report = {'engine': unreal.SystemLibrary.get_engine_version(), 'sounds': {}}
-for name in ('Home', 'Menu', 'Discovery', 'Lakitu', 'Rio', 'Cozy'):
+for name in ('Home', 'Menu', 'Discovery', 'Lakitu', 'Rio', 'Cozy', 'Backyard', 'Step', 'Jump', 'Land', 'Bark', 'Dig', 'Crunch', 'Toy'):
+    wav_source = os.path.join(root, 'AudioSources') if name in ('Bark', 'Dig', 'Crunch', 'Toy') else source
     path = '/Game/Adventure/Audio/' + name
     wave = unreal.EditorAssetLibrary.load_asset(path) if unreal.EditorAssetLibrary.does_asset_exist(path) else None
     if not wave:
         task = unreal.AssetImportTask()
-        task.filename = os.path.join(source, name + '.wav')
+        task.filename = os.path.join(wav_source, name + '.wav')
         task.destination_path = '/Game/Adventure/Audio'
         task.destination_name = name
         task.automated = True
@@ -21,12 +22,12 @@ for name in ('Home', 'Menu', 'Discovery', 'Lakitu', 'Rio', 'Cozy'):
         tools.import_asset_tasks([task])
         wave = unreal.EditorAssetLibrary.load_asset(path)
         assert wave, 'Sound import failed: ' + name
-        wave.set_editor_property('looping', name == 'Home')
+        wave.set_editor_property('looping', name in ('Home', 'Backyard'))
         unreal.EditorAssetLibrary.save_loaded_asset(wave)
     assert isinstance(wave, unreal.SoundWave), 'Expected a SoundWave: ' + name
-    if name == 'Home':
+    if name in ('Home', 'Backyard'):
         assert wave.get_editor_property('looping'), 'Home music must loop (or explicitly change the game audio design)'
-    with open(os.path.join(source, name + '.wav'), 'rb') as stream:
+    with open(os.path.join(wav_source, name + '.wav'), 'rb') as stream:
         digest = hashlib.sha256(stream.read()).hexdigest()
     report['sounds'][name] = {'asset': wave.get_path_name(), 'original_wav_sha256': digest, 'looping': wave.get_editor_property('looping')}
 cover_path = '/Game/Adventure/Art/Cover'

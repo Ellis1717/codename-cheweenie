@@ -28,7 +28,7 @@ bool AMartyHUD::DrawAdventureHUD()
         DrawText(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol"),FLinearColor::White,X+24,Y+62);
         if(Session->Screen == ECozyScreen::Controls)
         {
-            const TArray<FString> Lines={TEXT("WASD / arrows / left stick: walk"),TEXT("Mouse / right stick: look around"),TEXT("Shift / A-Cross: hurry   |   E / X-Square: interact"),TEXT("V / R3: camera   |   R / RB-R1: recenter"),TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop"),TEXT("Esc / Menu-Options: pause   |   H: return home"),TEXT("Menus: arrows / D-pad, Enter / A-Cross, Backspace / B-Circle"),TEXT("Sniff golden snacks, visit both cats, then get Cheeween Cozy.")};
+            const TArray<FString> Lines={TEXT("WASD / arrows / left stick: walk"),TEXT("Mouse / right stick: look around"),TEXT("Shift / A-Cross: hurry   |   E / X-Square: interact"),TEXT("V / R3: camera   |   R / RB-R1: recenter"),TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / LB: bark"),TEXT("Esc / Menu-Options: pause   |   H: return home"),TEXT("Menus: arrows / D-pad, Enter / A-Cross, Backspace / B-Circle"),TEXT("Sniff golden snacks, visit both cats, then get Cheeween Cozy.")};
             for(int32 I=0;I<Lines.Num();++I) DrawText(Lines[I],FLinearColor::White,X+24,Y+105+I*28);
         }
         const auto Items=Session->Menu();
@@ -80,7 +80,7 @@ bool AMartyHUD::DrawAdventureHUD()
     {
         const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
         if(Pawn){const FString LifePrompt=Pawn->Life?Pawn->Life->Prompt():FString();DrawText(LifePrompt.IsEmpty()?Mode->Neighbourhood->Prompt(Pawn):LifePrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
-        DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop toy"),FLinearColor(.8f,.9f,1),28,Height-145);
+        DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / LB: bark"),FLinearColor(.8f,.9f,1),28,Height-145);
     }
     if(!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;

@@ -46,6 +46,7 @@ void UCozyAdventure::BeginPlay()
     Slot = FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke")) ? TEXT("CheweenieGaitAcceptance") : FParse::Param(FCommandLine::Get(), TEXT("CheweenieAdventureSmoke")) ? TEXT("CheweenieAdventureAcceptance") : TEXT("CheweenieAdventureV1");
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOutsideSmoke"))){Slot=TEXT("CheweenieOutsideAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeSmoke"))){Slot=TEXT("CheweenieLifeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAudioSmoke"))){Slot=TEXT("CheweenieAudioAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke"))) UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && !FParse::Param(FCommandLine::Get(),TEXT("CheweenieResumeCheck")))
         UGameplayStatics::DeleteGameInSlot(Slot,0);
@@ -67,7 +68,7 @@ void UCozyAdventure::BeginPlay()
     if (Progress->SnackMask != (1 << Mission->Snacks.Num()) - 1) { Progress->VisitIndex = 0; Progress->Complete = false; }
     Progress->Music = FMath::Clamp(Progress->Music, 0.f, 1.f);
     Progress->Effects = FMath::Clamp(Progress->Effects, 0.f, 1.f);
-    for (const FString& Name : {TEXT("Home"), TEXT("Menu"), TEXT("Discovery"), TEXT("Lakitu"), TEXT("Rio"), TEXT("Cozy")})
+    for (const FString& Name : {TEXT("Home"), TEXT("Menu"), TEXT("Discovery"), TEXT("Lakitu"), TEXT("Rio"), TEXT("Cozy"), TEXT("Backyard"), TEXT("Step"), TEXT("Jump"), TEXT("Land"), TEXT("Bark"), TEXT("Dig"), TEXT("Crunch"), TEXT("Toy")})
     {
         const FString Path = TEXT("/Game/Adventure/Audio/") + Name + TEXT(".") + Name;
         if (auto* Sound = LoadObject<USoundBase>(nullptr, *Path)) Sounds.Add(Name, Sound);
@@ -118,6 +119,7 @@ void UCozyAdventure::Back()
 void UCozyAdventure::Confirm()
 {
     if (!Enabled || !Progress) return;
+    UpdateMusic();
     if (Screen == ECozyScreen::Playing) return;
     const ECozyScreen Current = Screen;
     if (Current == ECozyScreen::Title)
@@ -285,14 +287,27 @@ void UCozyAdventure::CompleteRoom()
 }
 void UCozyAdventure::PlayCue(const FString& Name)
 {
-    if(Name.IsEmpty()) return;
+    if(Name.IsEmpty()||!Progress||Progress->Effects<=0) return;
     if(!Sounds.Contains(Name))
         if(auto* Asset=LoadObject<USoundBase>(nullptr,*(TEXT("/Game/Adventure/Audio/")+Name+TEXT(".")+Name))) Sounds.Add(Name,Asset);
-    if (USoundBase* Sound=Sounds.FindRef(Name)) UGameplayStatics::PlaySound2D(this,Sound,Progress->Effects);
+    if (USoundBase* Sound=Sounds.FindRef(Name)) if(UGameplayStatics::SpawnSound2D(this,Sound,Progress->Effects)){LastCue=Name;++AudibleCueCount;}
 }
 void UCozyAdventure::UpdateMusic()
 {
-    if (!MusicPlayer)
-        if(USoundBase* Sound=Sounds.FindRef(TEXT("Home"))) MusicPlayer=UGameplayStatics::SpawnSound2D(this,Sound,Progress->Music,1,0,nullptr,false,false);
+    if(!Progress)return;
+    const auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>();
+    const FString Desired=Screen==ECozyScreen::Playing&&Mode&&Mode->Neighbourhood&&Mode->Neighbourhood->Outside?TEXT("Backyard"):TEXT("Home");
+    if(!MusicPlayer||MusicTrack!=Desired)
+    {
+        MusicTrack=Desired;
+        if(USoundBase* Sound=Sounds.FindRef(Desired))
+        {
+            if(MusicPlayer){MusicPlayer->Stop();MusicPlayer->SetSound(Sound);MusicPlayer->Play();}
+            else MusicPlayer=UGameplayStatics::SpawnSound2D(this,Sound,FMath::Max(.001f,Progress->Music),1,0,nullptr,false,false);
+            if(MusicPlayer)MusicPlayer->FadeIn(.35f,Progress->Music);
+        }
+    }
     if(MusicPlayer) MusicPlayer->SetVolumeMultiplier(Progress->Music);
+    if(MusicPlayer&&Progress->Music>0&&!MusicPlayer->IsPlaying())MusicPlayer->Play();
 }
+bool UCozyAdventure::MusicPlaying() const{return MusicPlayer&&MusicPlayer->IsPlaying();}
