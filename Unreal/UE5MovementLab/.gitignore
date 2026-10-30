@@ -6,4 +6,5 @@ DerivedDataCache/
 *.sln
 *.VC.db
 __pycache__/
-Content/
+Content/*
+!Content/Adventure/

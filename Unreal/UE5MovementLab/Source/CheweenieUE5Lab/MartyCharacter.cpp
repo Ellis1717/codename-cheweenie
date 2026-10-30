@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "CozyAdventure.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -19,6 +20,8 @@
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "UObject/ConstructorHelpers.h"
 
 AMartyCharacter::AMartyCharacter()
@@ -123,7 +126,25 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     Mapping->MapKey(RecenterAction, EKeys::R);
     Mapping->MapKey(RecenterAction, EKeys::Gamepad_RightShoulder);
     Mapping->MapKey(HomeAction, EKeys::H);
-    Mapping->MapKey(HomeAction, EKeys::Gamepad_Special_Right);
+    if (FParse::Param(FCommandLine::Get(), TEXT("CheweenieSmoke"))) Mapping->MapKey(HomeAction, EKeys::Gamepad_Special_Right);
+    else
+    {
+        auto Button = [&](FKey Keyboard, FKey Pad, auto Callback)
+        {
+            auto* ButtonAction = Action(EInputActionValueType::Boolean);
+            MenuActions.Add(ButtonAction);
+            Mapping->MapKey(ButtonAction, Keyboard); Mapping->MapKey(ButtonAction, Pad);
+            Enhanced->BindAction(ButtonAction, ETriggerEvent::Started, this, Callback);
+        };
+        Button(EKeys::Enter,EKeys::Gamepad_FaceButton_Bottom,&AMartyCharacter::MenuConfirm);
+        Button(EKeys::BackSpace,EKeys::Gamepad_FaceButton_Right,&AMartyCharacter::MenuBack);
+        Button(EKeys::Escape,EKeys::Gamepad_Special_Right,&AMartyCharacter::MenuPause);
+        Button(EKeys::Up,EKeys::Gamepad_DPad_Up,&AMartyCharacter::MenuUp);
+        Button(EKeys::Down,EKeys::Gamepad_DPad_Down,&AMartyCharacter::MenuDown);
+        Button(EKeys::Left,EKeys::Gamepad_DPad_Left,&AMartyCharacter::MenuLeft);
+        Button(EKeys::Right,EKeys::Gamepad_DPad_Right,&AMartyCharacter::MenuRight);
+        Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&AMartyCharacter::Interact);
+    }
     Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Move);
     Enhanced->BindAction(MouseAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Look);
     Enhanced->BindAction(StickAction, ETriggerEvent::Triggered, this, &AMartyCharacter::LookStick);
@@ -140,7 +161,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 
 void AMartyCharacter::Move(const FInputActionValue& Value)
 {
-    if (!Controller) return;
+    if (!Controller || !CanPlay()) return;
     FVector2D Axis = Value.Get<FVector2D>();
     Axis = Axis.GetClampedToMaxSize(1);
     const FRotator Heading(0, Controller->GetControlRotation().Yaw, 0);
@@ -149,19 +170,35 @@ void AMartyCharacter::Move(const FInputActionValue& Value)
 }
 void AMartyCharacter::Look(const FInputActionValue& Value)
 {
+    if (!CanPlay()) return;
     const FVector2D Axis = Value.Get<FVector2D>();
     AddControllerYawInput(Axis.X);
     AddControllerPitchInput(Axis.Y);
 }
 void AMartyCharacter::LookStick(const FInputActionValue& Value)
 {
+    if (!CanPlay()) return;
     const FVector2D Axis = Value.Get<FVector2D>() * (80.f * GetWorld()->GetDeltaSeconds());
     AddControllerYawInput(Axis.X);
     AddControllerPitchInput(Axis.Y);
 }
-void AMartyCharacter::SetSprint(bool Active) { GetCharacterMovement()->MaxWalkSpeed = Active ? 230 : 100; }
+void AMartyCharacter::SetSprint(bool Active) { GetCharacterMovement()->MaxWalkSpeed = Active && CanPlay() ? 230 : 100; }
+UCozyAdventure* AMartyCharacter::Adventure() const
+{
+    auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>(); return Mode ? Mode->Adventure.Get() : nullptr;
+}
+bool AMartyCharacter::CanPlay() const { const auto* Session=Adventure(); return !Session || Session->AllowsMovement(); }
+void AMartyCharacter::MenuConfirm() { if(auto* Session=Adventure()) Session->Confirm(); }
+void AMartyCharacter::MenuBack() { if(auto* Session=Adventure()) Session->Back(); }
+void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }
+void AMartyCharacter::MenuUp() { if(auto* Session=Adventure()) Session->Navigate(-1); }
+void AMartyCharacter::MenuDown() { if(auto* Session=Adventure()) Session->Navigate(1); }
+void AMartyCharacter::MenuLeft() { if(auto* Session=Adventure()) Session->Adjust(-1); }
+void AMartyCharacter::MenuRight() { if(auto* Session=Adventure()) Session->Adjust(1); }
+void AMartyCharacter::Interact() { if(auto* Session=Adventure()) Session->Interact(); }
 void AMartyCharacter::CycleCamera()
 {
+    if (!CanPlay()) return;
     CameraPreset = (CameraPreset + 1) % 3;
     const float Distances[] = {220, 330, 140};
     const float Heights[] = {35, 90, 0};
@@ -182,6 +219,7 @@ void AMartyCharacter::ReturnHome()
 AMartyPlayMode::AMartyPlayMode()
 {
     PrimaryActorTick.bCanEverTick = true;
+    Adventure=CreateDefaultSubobject<UCozyAdventure>(TEXT("AdventureSession"));
     DefaultPawnClass = AMartyCharacter::StaticClass();
     HUDClass = AMartyHUD::StaticClass();
 }
@@ -194,7 +232,7 @@ void AMartyPlayMode::BeginPlay()
         const UStaticMesh* Mesh = It->GetStaticMeshComponent()->GetStaticMesh();
         if (!Mesh) continue;
         const FString Path = Mesh->GetPathName();
-        if (Path == TEXT("/Game/VisualLab/Pets/Marty.Marty")) It->Destroy();
+        if (Path == TEXT("/Game/VisualLab/Pets/Marty.Marty")) { It->Destroy(); continue; }
         else if (Path == TEXT("/Game/VisualLab/Pets/Lakitu.Lakitu") || Path == TEXT("/Game/VisualLab/Pets/Rio.Rio"))
             It->SetActorScale3D(FVector(.32f));
         // A stretched sphere's simple physics shape does not follow its sofa silhouette.
@@ -230,6 +268,7 @@ void AMartyHUD::DrawHUD()
 {
     Super::DrawHUD();
     if (!Canvas) return;
+    if (DrawAdventureHUD()) return;
     DrawRect(FLinearColor(0.025f, 0.035f, 0.04f, .88f), 16, 16, 700, 100);
     DrawText(TEXT("Codename .... Cheweenie | Marty movement lab"), FLinearColor::White, 28, 25);
     DrawText(TEXT("Move: WASD / arrows / left stick   |   Look: mouse / right stick"), FLinearColor::White, 28, 48);

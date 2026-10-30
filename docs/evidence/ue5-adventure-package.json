@@ -1,0 +1,272 @@
+{
+  "engine": "5.8.4",
+  "version": "0.4.0",
+  "configuration": "Development Win64",
+  "package_result": "Succeeded",
+  "archive_result": "Succeeded",
+  "requires_editor": false,
+  "file_count": 51,
+  "total_bytes": 1063025021.0,
+  "mutable_project_saved_excluded": true,
+  "patrol_checks": 25,
+  "persistence_replay_checks": 6,
+  "built_game_matches_archive": true,
+  "scope": "Packaged DX12 native synthetic input; physical devices and audible mix unverified",
+  "files": [
+    {
+      "path": "CheweenieUE5Lab.exe",
+      "bytes": 171520,
+      "sha256": "9d6bcc7619ad4648ea25bc5b6a57a1c2f19f5bfca756b73b846a758113603c7e"
+    },
+    {
+      "path": "Manifest_DebugFiles_Win64.txt",
+      "bytes": 447,
+      "sha256": "49bf2f211cc5767ce5e9e800c0139897567faa85c5874288820a959f8104abfc"
+    },
+    {
+      "path": "Manifest_NonUFSFiles_Win64.txt",
+      "bytes": 3091,
+      "sha256": "12e3cb15c39a4e933435f4decea695ed5d296940e18df928dc3351c15deff152"
+    },
+    {
+      "path": "Manifest_UFSFiles_Win64.txt",
+      "bytes": 215656,
+      "sha256": "02903e6eda206d642451a0777310b9db6366053ef1c9185af0743537141fb6af"
+    },
+    {
+      "path": "NOTICES.txt",
+      "bytes": 111,
+      "sha256": "ba49ae5586f817b36a2772269f71f899cb1f54b5f2720fad951319edd5e140b8"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/CheweenieUE5Lab.exe",
+      "bytes": 331945472,
+      "sha256": "463833c24dd25fd1ec3f2f9c8e770c7bb586835669943d65069e6758a0fb08ef"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/CheweenieUE5Lab.pdb",
+      "bytes": 367308800,
+      "sha256": "8da2d91a9bafefdf7b19cd5def263dbde206320390ebc9aacefe58499d3e0bbb"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbb12.dll",
+      "bytes": 342456,
+      "sha256": "c489b6bd4dd2be18d4f8778e3f86caa7672ec8a206c9a54228b3bb60e2923f76"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbbmalloc.dll",
+      "bytes": 117176,
+      "sha256": "aca208101bba1e440e6fae6580eedd45508ec405c9674063baf7ca23d29316bd"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/D3D12Core.dll",
+      "bytes": 4831768,
+      "sha256": "f0cbdba3043bc30e2a17dfd7d6c05e61c9c4098eb1d5ee8ccd2ab3f4696e8e20"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll",
+      "bytes": 4943344,
+      "sha256": "180a630861dc88d26db517da787009edf75e4c83309b819814b84b86f8db36c1"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/DML/x64/DirectML.dll",
+      "bytes": 18538488,
+      "sha256": "4e357e48c3fb00e5ac868f2b33ba5576873c013349e2cc1d7a9be0071253ac62"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.pak",
+      "bytes": 11229707,
+      "sha256": "1fd39f2edef9dee34b537566d9bea9aec65a642136dbb48bc6d02e62f9c0540f"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.ucas",
+      "bytes": 211847520,
+      "sha256": "b352a1db43c8a5443870ae4e8fe7f731ac02134f3e9d3d6e41ca341c8da637f8"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.utoc",
+      "bytes": 206495,
+      "sha256": "51584ca2ed5ac5a5d95fa6485c18b4224fc6448a4bad57e9bd191ae210a70939"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/global.ucas",
+      "bytes": 3208608,
+      "sha256": "97b998fea8ef72cdb25af7bebb4ef8c365395152a7a57a6223cfe1e1b192670e"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/global.utoc",
+      "bytes": 782,
+      "sha256": "2aa92e7feff1353b5263cdcb1e3db94929e7c83008b614c2f3676c3f8a93bccf"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/DbgHelp/dbghelp.dll",
+      "bytes": 2232688,
+      "sha256": "441a7ccee2f854352366e783fcb79fe895d09ad4c577689319e1a664f296c4a3"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/MsQuic/v220/win64/msquic.dll",
+      "bytes": 2547080,
+      "sha256": "27c231d80310ea9005a6b0c17054f28887272723477e7292a7f9d63b6d1579ee"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/NVIDIA/NVaftermath/Win64/GFSDK_Aftermath_Lib.x64.dll",
+      "bytes": 5799016,
+      "sha256": "ce49be4194706417ccdc57833aec478faa1e08646157688c879fe616d43abd65"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Ogg/Win64/VS2015/libogg_64.dll",
+      "bytes": 59832,
+      "sha256": "c719a5f165e4afe29e92a7eee9762c2e9f301a177885ab1ab8d2c7f57d4a86bf"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbis_64.dll",
+      "bytes": 1724856,
+      "sha256": "b8a3e31a6c2d401809bae7aa0fd29f49c2114eeccfba4dc5c7ac8eddbd4b7a98"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbisfile_64.dll",
+      "bytes": 48568,
+      "sha256": "6d0e4395bc4d0ef501c3f7f7b4e63fa0cf2ab2ca80328560b7cb10e6d5a171cf"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.dll",
+      "bytes": 8161680,
+      "sha256": "583db3d1acd76363f0f67d9da414dd147ca9ffab4a47824027351b063fe66aea"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.json",
+      "bytes": 13848,
+      "sha256": "9e55221c225dce4b5448bac7dadb7e39fd216f51354dde02e58f950f4a0dd80b"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.dll",
+      "bytes": 2890128,
+      "sha256": "8e080a40ac452c4b249b9060e2f4c208af9159afba9e75e91d1c55d85e387d04"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.json",
+      "bytes": 23055,
+      "sha256": "578bde354874789671dee1a96468c965619c9f3ba16cfa65f850e81a80674087"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.dll",
+      "bytes": 8166288,
+      "sha256": "780c4bcae69a50e38181edfd20a58780fa02539f4ff302c8c4a0e2899ee7a0cb"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.json",
+      "bytes": 28099,
+      "sha256": "71d4e243a2af74874f4f61378bdfe3753cb01ce5eb9b98400d83612bf882a815"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.dll",
+      "bytes": 1485200,
+      "sha256": "9682f7f508855980b9c31147493c962d43a0798c4596870cd7c5dee009859ea2"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.json",
+      "bytes": 66696,
+      "sha256": "6095c28691757e083a8c1bef3c69ca76a8b5017e21acaf55d1bc7e82221a0fbe"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.dll",
+      "bytes": 415632,
+      "sha256": "7026da236cecadd40b6a1723d0881349d9471592d98cabd60994f99dc2db3e53"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.json",
+      "bytes": 4455,
+      "sha256": "18ecafc9a65e1b7af8cd0e36dc936026cdb3aed333c4ea5a7c17d6d9465cfaf4"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.dll",
+      "bytes": 397192,
+      "sha256": "485eb9b7f0320bd1af3af03dbe3a052d6f5e9cda14496bbe1a062d626d501eae"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.json",
+      "bytes": 1910,
+      "sha256": "a1e980a24be9a16a826b00c27d61b85ee0e2e17226dc9c4e8eec031879e5f26a"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.dll",
+      "bytes": 19509136,
+      "sha256": "27fc6a4ca52244f18337a652db638865abd679f6e1d129bf4770fd3e6c4f1a60"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.json",
+      "bytes": 95917,
+      "sha256": "5c464b84457776d92a674de506f7b7a489294583a7d7609f78fcc52bc4406d09"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Windows/WinPixEventRuntime/x64/WinPixEventRuntime.dll",
+      "bytes": 69056,
+      "sha256": "f5f6f69210cc958b92285ff444e2ef48f5c46b4d6470b07960739dbcb6554b54"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Windows/XAudio2_9/x64/xaudio2_9redist.dll",
+      "bytes": 858152,
+      "sha256": "e6ae545b31a5453f1b1002d434cc802a6088cf05c5faa414d7ebe00264161506"
+    },
+    {
+      "path": "Engine/Config/StagedBuild_CheweenieUE5Lab.ini",
+      "bytes": 3,
+      "sha256": "f1945cd6c19e56b3c1c78943ef5ec18116907a4ca1efc40a57d48ab1db7adfc5"
+    },
+    {
+      "path": "Engine/Content/Renderer/TessellationTable.bin",
+      "bytes": 259568,
+      "sha256": "edc4f3b628a139c5e185bbaeca661c95c1f427368d3b92892c5cff36c56dd941"
+    },
+    {
+      "path": "Engine/Content/Slate/Cursor/invisible.cur",
+      "bytes": 326,
+      "sha256": "fef3980fa567e9c45d5d8dcaa432a2c1a3f3bb17fe67d7ab198164f56c142aa1"
+    },
+    {
+      "path": "Engine/Content/SlateDebug/Fonts/LastResort.tps",
+      "bytes": 930,
+      "sha256": "0f775fa99d05e21d43d2d06d55982b23dcdccdb512a9a5a07aff674f212c41b8"
+    },
+    {
+      "path": "Engine/Content/SlateDebug/Fonts/LastResort.ttf",
+      "bytes": 5395052,
+      "sha256": "fff0f8de0b868b964950fe97c9b60f893e9bc85a4f90b3629c5693db058b97b9"
+    },
+    {
+      "path": "Engine/Extras/GPUDumpViewer/GPUDumpViewer.html",
+      "bytes": 195428,
+      "sha256": "eb599b5171e99d7c2e35732abf9525baeb39b9c2ac86619522f307c57cc90384"
+    },
+    {
+      "path": "Engine/Extras/GPUDumpViewer/OpenGPUDumpViewer.bat",
+      "bytes": 879,
+      "sha256": "e8f7ef9c88697041bd87902b76e52558979ca866c7450b1da108a94a027f441b"
+    },
+    {
+      "path": "Engine/Extras/GPUDumpViewer/OpenGPUDumpViewer.sh",
+      "bytes": 2165,
+      "sha256": "1b222b5d5aad6dd9b5b9f0a1c72d38635149540f2c7a368600ec76c1d304390a"
+    },
+    {
+      "path": "Engine/Extras/Redist/en-us/vc_redist.arm64.exe",
+      "bytes": 11751688,
+      "sha256": "ebc1b8dc6731b2c7e791dd619aba19d5554b9e678364f3c2a35f125baafc0f54"
+    },
+    {
+      "path": "Engine/Extras/Redist/en-us/vc_redist.x64.exe",
+      "bytes": 18569648,
+      "sha256": "6ffdeeff6aae9f5dcd52217571b2c2a47de367af8aa3db953542bf25c4c29a0d"
+    },
+    {
+      "path": "Engine/Plugins/NNE/NNERuntimeORT/Binaries/ThirdParty/Onnxruntime/Win64/onnxruntime.dll",
+      "bytes": 17339384,
+      "sha256": "eacc4d935137d67ab0cc1b896472d1de551dfc6545ed9ad74ab842400272e036"
+    },
+    {
+      "path": "Engine/Saved/Config/Windows/Manifest.ini",
+      "bytes": 25,
+      "sha256": "531bfb7088f544a87ff1268a69a3648dc0648ba49aaca9c3c67d4c4dcf87f088"
+    }
+  ]
+}

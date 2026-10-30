@@ -9,6 +9,8 @@ class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
 class UStaticMeshComponent;
+class UCozyAdventure;
+class UTexture2D;
 struct FInputActionValue;
 
 UCLASS()
@@ -29,6 +31,16 @@ private:
     void LookStick(const FInputActionValue& Value);
     void Recenter();
     void SetSprint(bool Active);
+    bool CanPlay() const;
+    UCozyAdventure* Adventure() const;
+    void MenuConfirm();
+    void MenuBack();
+    void MenuPause();
+    void MenuUp();
+    void MenuDown();
+    void MenuLeft();
+    void MenuRight();
+    void Interact();
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -39,6 +51,7 @@ private:
     UPROPERTY() TObjectPtr<UInputAction> CameraAction;
     UPROPERTY() TObjectPtr<UInputAction> RecenterAction;
     UPROPERTY() TObjectPtr<UInputAction> HomeAction;
+    UPROPERTY() TArray<TObjectPtr<UInputAction>> MenuActions;
     FVector Home;
 };
 
@@ -50,12 +63,15 @@ public:
     AMartyPlayMode();
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCozyAdventure> Adventure;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
+    void TickAdventureSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;
     float SmokePitch = 0;
+    bool SmokeMoving = false;
     FVector SmokePosition;
     TArray<FString> SmokePassed;
     TArray<FString> SmokeFailed;
@@ -67,4 +83,8 @@ class AMartyHUD : public AHUD
     GENERATED_BODY()
 public:
     virtual void DrawHUD() override;
+    virtual void NotifyHitBoxClick(FName BoxName) override;
+private:
+    bool DrawAdventureHUD();
+    UPROPERTY() TObjectPtr<UTexture2D> Cover;
 };

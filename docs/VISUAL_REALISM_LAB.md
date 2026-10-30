@@ -1,5 +1,23 @@
 # Separate graphics experiment
 
+## Current game foundation — Cozy Patrol 0.4
+
+At the owner's request, the latest work prioritizes a complete extensible game loop. The Unreal adventure includes the branded title, mouse/controller menu handlers, help, pause/recovery, sound preferences, original music/effects, three snack pickups, ordered Lakitu/Rio interactions, Cheeween Cozy completion, Fox/Leo cameos, free roam/replay and checkpoint saves. Extra walls close the photography room and the fort rests on the floor. Models remain static; the ending is not an authored snuggle animation.
+
+CozyAdventure owns mission/session/save/audio rules, CozyHUD owns presentation/hitboxes, and MartyCharacter retains movement/camera ownership. CozyMissionDefinition Data Assets can override stops, labels, dialogue, radii and sound names. Session commands are Blueprint-callable. [Play and extension guide](UNREAL_GAMEPLAY.md). Owned Content/Adventure assets are versioned separately from generated comparison content. Unity source/assets/settings and both independent comparison projects remain unchanged.
+
+Native editor compilation, the full rendered patrol and the original sixteen movement checks passed. The patrol has 25 checks; cross-process persistence/replay has six, including confirmed restart retaining preferences. A first restart test needed a released-input frame between confirm keys; final runs pass. Menu review fixed volume-row selection returning to the parent menu; acceptance now exercises the HUD hitbox handler. That checks the handler, not OS mouse coordinates.
+
+The standalone Development Win64 game built/cooked/staged/archived successfully and independently passed 25 patrol plus six persistence/replay checks under DX12. Tests drive the real pawn around the full patrol with synthetic input, rather than teleporting to collect objectives. Fresh title/play/completion captures were inspected. Packaged patrol/resume logs have no Error/Fatal categories. Muted tests verify audio assets/preferences; physical devices, audible mix and owner likeness remain human checks.
+
+[Headless patrol](evidence/ue5-adventure-headless.json) · [rendered patrol](evidence/ue5-adventure-rendered.json) · [persistence/replay](evidence/ue5-adventure-resume.json) · [packaged patrol](evidence/ue5-adventure-packaged.json) · [packaged persistence](evidence/ue5-adventure-packaged-resume.json) · [package/integrity record](evidence/ue5-adventure-package.json) · [audio/art provenance](evidence/ue5-adventure-assets.json).
+
+Actual packaged captures: [title](screenshots/ue5-adventure-packaged-title.png), [gameplay](screenshots/ue5-adventure-packaged-play.png), [completion](screenshots/ue5-adventure-packaged-complete.png). Cover illustration is explicitly labeled and does not represent current 3D model quality.
+
+Use UNREAL_PLAY.cmd or Play Cheweenie Unreal on the desktop. The Windows folder is approximately one GiB and needs no Unreal Editor to play. Source/assets are retained in Git; builds remain ignored. Keep the whole Windows folder together. Mutable Saved data is excluded from payload hashes. First-start driver PSO compilation can hitch; no frame-rate target is claimed.
+
+Build/cook uses installed tools and serial native actions. The verified UE5.8 local shader setting replaces the older XGE-only switch: an initial cook retried a distributed backend before local recovery. A later rebuild hit PCH memory commitment while the playable copy was open; it succeeded after closing only the copy launched for this task. No global memory settings or unrelated apps were changed. Native acceptance and packaging validate this Unreal-only change; Unity tests were not rerun.
+
 These optional experiments accompany the stable **Codename .... Cheweenie** 0.9.0 game. They are not replacement releases. The original checkout, desktop Play Cheweenie shortcut, current build, models and saves are preserved. The initial Unity/Unreal 4.27 comparison was merged in PR #17; the UE5 preview is a subsequent, separate change.
 
 ## Try the Unity lab

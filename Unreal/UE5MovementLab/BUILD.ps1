@@ -12,10 +12,11 @@ $supported=@($installations | ForEach-Object {
 if($supported.Count -eq 0){throw 'Install current Visual Studio 2022 C++ Build Tools v14.44 or newer. v14.42 is banned; v14.38 passes detection but fails compiling UE5.8 headers. See README.md.'}
 # Materialize an independent copy from the retained preview. Never overwrite a hand-edited copy.
 $content=Join-Path $PSScriptRoot 'Content'
-if(-not(Test-Path -LiteralPath $content)) {
-    Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\UE5VisualLab\Content') -Destination $content -Recurse
+if(-not(Test-Path -LiteralPath (Join-Path $content 'VisualLab'))) {
+    New-Item -ItemType Directory -Path $content -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\UE5VisualLab\Content\VisualLab') -Destination (Join-Path $content 'VisualLab') -Recurse
 }
 $project=Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject'
-& $build CheweenieUE5LabEditor Win64 Development "-Project=$project" -WaitMutex -MaxParallelActions=1 -NoXGE -NoUBA
+& $build CheweenieUE5LabEditor Win64 Development "-Project=$project" -WaitMutex -MaxParallelActions=1 -NoXGE -NoUBA -gather
 if($LASTEXITCODE -ne 0){throw "Native compilation failed ($LASTEXITCODE). Inspect UnrealBuildTool output for the failing source line."}
 if(-not(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Binaries\Win64\UnrealEditor-CheweenieUE5Lab.dll'))){throw 'Native module DLL missing after build.'}

@@ -9,9 +9,9 @@ foreach ($asset in $assets) {
     }
 }
 $roots=@('Assets','Packages','ProjectSettings','docs','Validation');if(Test-Path Unreal){$roots+='Unreal'}
-$launchers=@('LAB_PLAY.cmd','LAB_BASELINE.cmd','LAB_UE5.cmd','LAB_UE5_MARTY.cmd')|Where-Object {Test-Path -LiteralPath $_}
+$launchers=@('LAB_PLAY.cmd','LAB_BASELINE.cmd','LAB_UE5.cmd','LAB_UE5_MARTY.cmd','UNREAL_PLAY.cmd')|Where-Object {Test-Path -LiteralPath $_}
 $files = @('.gitignore','.gitattributes','AGENTS.md','README.md','PLAY.cmd') + @($launchers) + @(Get-ChildItem $roots -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject|VisualLabProject|PrivateNeighbourhood|Binaries|DerivedDataCache|Intermediate|Saved|__pycache__)\\' -and $_.Name -notin @('Generated.meta','PrivateNeighbourhood.meta') } | ForEach-Object { $_.FullName })
-$files = $files | Where-Object { $_ -notmatch '[\\/]Unreal[\\/]UE5MovementLab[\\/]Content[\\/]' }
+$files = $files | Where-Object { $_ -notmatch '[\\/]Unreal[\\/]UE5MovementLab[\\/]Content[\\/](VisualLab|Python)[\\/]' }
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f
     $binary = $i.Extension -in @('.png','.jpg','.jpeg','.gif','.wav','.fbx','.glb','.uasset','.umap')
