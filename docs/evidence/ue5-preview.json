@@ -1,0 +1,49 @@
+{
+  "engine": "5.8.4-58902052+++UE5+Release-5.8",
+  "map_saved": true,
+  "map": "/Game/VisualLab/Comparison",
+  "static_pets": [
+    "Marty | static comparison",
+    "Lakitu | static comparison",
+    "Rio | static comparison"
+  ],
+  "actor_count": 59,
+  "lumen_gi": 1,
+  "lumen_reflections": 1,
+  "distance_fields": 1,
+  "scope": "Static pet and scenery graphics preview; default free-camera pawn; no Unity gameplay port",
+  "pet_materials": {
+    "Marty": [
+      "/Game/VisualLab/UE5Materials/Marty_M0.Marty_M0",
+      "/Game/VisualLab/UE5Materials/Marty_M1.Marty_M1",
+      "/Game/VisualLab/UE5Materials/Marty_M4.Marty_M4",
+      "/Game/VisualLab/UE5Materials/Marty_M7.Marty_M7",
+      "/Game/VisualLab/UE5Materials/Marty_M5.Marty_M5",
+      "/Game/VisualLab/UE5Materials/Marty_M2.Marty_M2",
+      "/Game/VisualLab/UE5Materials/Marty_M3.Marty_M3",
+      "/Game/VisualLab/UE5Materials/Marty_M6.Marty_M6"
+    ],
+    "Lakitu": [
+      "/Game/VisualLab/UE5Materials/Lakitu_M0.Lakitu_M0",
+      "/Game/VisualLab/UE5Materials/Lakitu_M7.Lakitu_M7",
+      "/Game/VisualLab/UE5Materials/Lakitu_M8.Lakitu_M8",
+      "/Game/VisualLab/UE5Materials/Lakitu_M9.Lakitu_M9",
+      "/Game/VisualLab/UE5Materials/Lakitu_M2.Lakitu_M2",
+      "/Game/VisualLab/UE5Materials/Lakitu_M1.Lakitu_M1",
+      "/Game/VisualLab/UE5Materials/Lakitu_M3.Lakitu_M3",
+      "/Game/VisualLab/UE5Materials/Lakitu_M4.Lakitu_M4",
+      "/Game/VisualLab/UE5Materials/Lakitu_M5.Lakitu_M5",
+      "/Game/VisualLab/UE5Materials/Lakitu_M6.Lakitu_M6"
+    ],
+    "Rio": [
+      "/Game/VisualLab/UE5Materials/Rio_M0.Rio_M0",
+      "/Game/VisualLab/UE5Materials/Rio_M2.Rio_M2",
+      "/Game/VisualLab/UE5Materials/Rio_M1.Rio_M1",
+      "/Game/VisualLab/UE5Materials/Rio_M7.Rio_M7",
+      "/Game/VisualLab/UE5Materials/Rio_M3.Rio_M3",
+      "/Game/VisualLab/UE5Materials/Rio_M4.Rio_M4",
+      "/Game/VisualLab/UE5Materials/Rio_M5.Rio_M5",
+      "/Game/VisualLab/UE5Materials/Rio_M6.Rio_M6"
+    ]
+  }
+}

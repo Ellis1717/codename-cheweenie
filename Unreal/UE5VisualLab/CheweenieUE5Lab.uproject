@@ -1,0 +1,11 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Category": "Graphics comparison",
+  "Description": "Codename .... Cheweenie isolated UE5 lighting and scenery preview. Static pets; not a Unity gameplay port.",
+  "Plugins": [
+    {"Name": "PythonScriptPlugin", "Enabled": true},
+    {"Name": "EditorScriptingUtilities", "Enabled": true},
+    {"Name": "AndroidFileServer", "Enabled": false}
+  ]
+}

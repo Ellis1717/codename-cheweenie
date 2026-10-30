@@ -9,7 +9,7 @@ foreach ($asset in $assets) {
     }
 }
 $roots=@('Assets','Packages','ProjectSettings','docs','Validation');if(Test-Path Unreal){$roots+='Unreal'}
-$launchers=@('LAB_PLAY.cmd','LAB_BASELINE.cmd')|Where-Object {Test-Path -LiteralPath $_}
+$launchers=@('LAB_PLAY.cmd','LAB_BASELINE.cmd','LAB_UE5.cmd')|Where-Object {Test-Path -LiteralPath $_}
 $files = @('.gitignore','.gitattributes','AGENTS.md','README.md','PLAY.cmd') + @($launchers) + @(Get-ChildItem $roots -Recurse -File | Where-Object { $_.FullName -notmatch '\\(bin|obj|Generated|UnityAudioProject|VisualLabProject|PrivateNeighbourhood|Binaries|DerivedDataCache|Intermediate|Saved|__pycache__)\\' -and $_.Name -notin @('Generated.meta','PrivateNeighbourhood.meta') } | ForEach-Object { $_.FullName })
 $items = foreach ($f in $files) {
     $i = Get-Item -LiteralPath $f

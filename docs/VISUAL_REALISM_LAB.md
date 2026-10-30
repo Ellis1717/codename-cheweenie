@@ -1,6 +1,6 @@
 # Separate graphics experiment
 
-This branch is an experiment alongside the stable **Codename .... Cheweenie** 0.9.0 game. It is not a replacement release. The original checkout, desktop Play Cheweenie shortcut, current build, models and saves are preserved. The branch has not been merged into main.
+These optional experiments accompany the stable **Codename .... Cheweenie** 0.9.0 game. They are not replacement releases. The original checkout, desktop Play Cheweenie shortcut, current build, models and saves are preserved. The initial Unity/Unreal 4.27 comparison was merged in PR #17; the UE5 preview is a subsequent, separate change.
 
 ## Try the Unity lab
 
@@ -41,10 +41,24 @@ The next useful asset milestone is one carefully authored Marty rig: connected s
 
 `Unreal/VisualLab/CheweenieVisualLab.uproject` is a separate **Unreal 4.27.2** asset/lighting spike made with the installed engine. It retains three imported static pet meshes, their coat textures/materials, source OBJ/MTL/JSON exports and a generated comparison room. It has a default free-camera pawn; it does **not** port the Unity quests, saves, Marty controller, pets' animation or family game UI. See [Unreal instructions](../Unreal/VisualLab/README.md).
 
-UE5 was not found installed during this audit. The 4.27 spike does not exercise UE5 Lumen/Nanite and cannot decide their final quality/performance. An eventual UE5 prototype should be another project copy, beginning with one rigged pet and one finished room. Keep the stable Unity release while comparing actual moving gameplay at the intended resolution.
+UE5 was not installed during the original 4.27 audit. Unreal Engine 5.8.4 has since been installed separately on D:. The 4.27 spike does not exercise Lumen/Nanite. The new UE5 project below retains a distinct copy; the stable Unity release remains available.
 
 The installed Unreal editor successfully rebuilt/saved a 12-actor room with exactly three static pet actors, and a standalone editor-game launch produced an [actual material-ready render](screenshots/unreal-comparison.png). Early captures showed compiling placeholder materials and overexposure; the fill light was reduced. Shader compilation and lighting remain a rough benchmark setup, not a finished art scene. Unreal gameplay/controller interaction was not acceptance-tested.
 
 Unreal can help with indirect lighting/reflections, but the same simplified mesh remains simplified in another engine. The main next investment is character/environment asset quality. Engine choice should follow that controlled prototype rather than a full rewrite first.
 
 Primary references: [Epic: Lumen](https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-technical-details-in-unreal-engine), [Epic: hardware requirements](https://dev.epicgames.com/documentation/en-us/unreal-engine/hardware-and-software-specifications-for-unreal-engine), [Epic: editor Python](https://dev.epicgames.com/documentation/en-us/unreal-engine/scripting-the-editor-using-python?application_version=4.27), [Unity: Built-In surface shaders](https://docs.unity.com/en-us/engine/6000.3/manual/materials-and-shaders/shaders/writing-shaders-birp/writing-surface/sl-surface).
+
+## UE5 room preview — 0.2.0
+
+Run `LAB_UE5.cmd` for a separate **Unreal 5.8.4** editor-game viewer, or open `Unreal/UE5VisualLab/CheweenieUE5Lab.uproject`. This requires the installed engine; it is not a packaged standalone game. The Unity release and original 4.27 project remain unchanged.
+
+The UE5 copy retains Marty, Lakitu and Rio's static meshes and coat textures, and rebuilds its own material graphs from the retained source colour/texture metadata. A 59-actor room adds oak floorboards, textured plaster, a framed window, woven blue rug, rounded sofa/cushions, a side table and planter. Daylight, a soft window source, a warm lamp and a subtle frontal fill illuminate the pets. Project-local settings enable DX12/SM6, software Lumen GI/reflections, mesh distance fields, virtual shadows and TSR. Hardware ray tracing is disabled; Nanite and grooms are not introduced.
+
+Native generation on 5.8.4 saved the map, found exactly three pet actors, verified all material slots point to the UE5 material folder, and confirmed GI/reflections/distance-field console settings are enabled. [Generated asset/settings report](evidence/ue5-preview.json). A native DX12 editor-game process reached play startup. Keyboard interaction and physical controllers could not be exercised because Windows desktop capture/input became unavailable. Bindings were inspected in the installed `DefaultPawn.cpp`; left/right sticks, WASD, mouse and vertical viewer controls are documented in the [UE5 README](../Unreal/UE5VisualLab/README.md).
+
+Unreal's own offscreen DX12 render capture was used for visual inspection. Exposure and game-view overlays were corrected through actual captures; the final image is retained below. The capture waits for viewport warmup and 64 screenshot accumulation frames, then exits. This checks rendering, not physical controller behavior or gameplay performance. Early shader/PSO compilation can cause startup hitches. No frame-rate target is claimed.
+
+[Actual UE5 room render](screenshots/ue5-preview.png). The pets are still stylized static exports, without a skin-weighted skeleton, groom or authored walk/Cozy animation. The free camera is the viewer, not Marty. This is a rendering/scenery comparison, not the complete Unity adventure port. The next meaningful Unreal milestone remains one properly rigged, moving Marty character before committing to a full rewrite.
+
+Snapshot export retains the UE5 launcher and binary Content assets while excluding Saved, Intermediate, Binaries and caches. The export check found the UE5 map as base64 and no generated engine folders. Unity source, packages, ProjectSettings and the 4.27 source/assets have no diff; Unity's existing test suite was not rerun for this isolated Unreal change.
