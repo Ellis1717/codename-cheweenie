@@ -1,0 +1,98 @@
+#pragma once
+#include "CoreMinimal.h"
+#include "Components/ActorComponent.h"
+#include "Engine/DataAsset.h"
+#include "GameFramework/SaveGame.h"
+#include "CozyAdventure.generated.h"
+
+class AStaticMeshActor;
+class UAudioComponent;
+class USoundBase;
+class AMartyCharacter;
+
+UENUM(BlueprintType)
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete };
+
+USTRUCT(BlueprintType)
+struct FCozyStop
+{
+    GENERATED_BODY()
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FName Id;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FString Label;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FVector Position = FVector::ZeroVector;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) float Radius = 55;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FString Dialogue;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FString SoundName = TEXT("Menu");
+};
+
+// Author a Data Asset of this class to replace the default patrol without changing the pawn.
+UCLASS(BlueprintType)
+class UCozyMissionDefinition : public UDataAsset
+{
+    GENERATED_BODY()
+public:
+    UCozyMissionDefinition();
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FString MissionId = TEXT("first-sniff-patrol-v1");
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) FString Title = TEXT("The Great Cozy Patrol");
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) TArray<FCozyStop> Snacks;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite) TArray<FCozyStop> Visits;
+};
+
+UCLASS()
+class UCozyAdventureSave : public USaveGame
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(SaveGame) int32 Version = 1;
+    UPROPERTY(SaveGame) FString MissionId;
+    UPROPERTY(SaveGame) int32 SnackMask = 0;
+    UPROPERTY(SaveGame) int32 VisitIndex = 0;
+    UPROPERTY(SaveGame) bool Complete = false;
+    UPROPERTY(SaveGame) float Music = .25f;
+    UPROPERTY(SaveGame) float Effects = .6f;
+};
+
+UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))
+class UCozyAdventure : public UActorComponent
+{
+    GENERATED_BODY()
+public:
+    UCozyAdventure();
+    virtual void BeginPlay() override;
+    virtual void TickComponent(float Delta, ELevelTick TickType, FActorComponentTickFunction* ThisTick) override;
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Confirm();
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Back();
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Pause();
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Navigate(int32 Direction);
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Adjust(int32 Direction);
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Interact();
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Start(bool Fresh);
+    UFUNCTION(BlueprintCallable,Category="Cheweenie|Adventure") void Save();
+    UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
+    FString Objective() const;
+    FString Prompt() const;
+    TArray<FString> Menu() const;
+    FString Heading() const;
+    UPROPERTY(BlueprintReadOnly) ECozyScreen Screen = ECozyScreen::Title;
+    UPROPERTY(BlueprintReadOnly) int32 Selection = 0;
+    UPROPERTY(BlueprintReadOnly) TObjectPtr<UCozyAdventureSave> Progress;
+    UPROPERTY(BlueprintReadOnly) TObjectPtr<UCozyMissionDefinition> Mission;
+    UPROPERTY(BlueprintReadOnly) FString Message;
+    bool Enabled = true;
+    FString Slot;
+    int32 LoadedSoundCount() const { return Sounds.Num(); }
+private:
+    AMartyCharacter* Marty() const;
+    void SetScreen(ECozyScreen Next);
+    void RebuildMarkers();
+    void PlayCue(const FString& Name);
+    void UpdateMusic();
+    void BuildFort();
+    void CompleteRoom();
+    UPROPERTY() TArray<TObjectPtr<AStaticMeshActor>> Markers;
+    UPROPERTY() TMap<FString,TObjectPtr<USoundBase>> Sounds;
+    UPROPERTY() TObjectPtr<UAudioComponent> MusicPlayer;
+    ECozyScreen ReturnScreen = ECozyScreen::Title;
+    float MessageTime = 0;
+    float PulseTime = 0;
+};

@@ -1,0 +1,15 @@
+{
+  "engine": "5.8.4",
+  "msvc": "14.44.35229",
+  "sdk": "10.0.22621.0",
+  "editor_build": "Succeeded",
+  "game_build": "Succeeded",
+  "native_game_matches_packaged": true,
+  "max_parallel_actions": 1,
+  "gather_new_source_files": true,
+  "accelerators_disabled": [
+    "XGE",
+    "UBA"
+  ],
+  "cook_and_archive": "Succeeded"
+}

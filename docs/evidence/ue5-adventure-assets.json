@@ -1,0 +1,36 @@
+{
+  "engine": "5.8.4-58902052+++UE5+Release-5.8",
+  "sounds": {
+    "Home": {
+      "asset": "/Game/Adventure/Audio/Home.Home",
+      "original_wav_sha256": "02d07c2e7769a76a5605ac937979f7e278ba89b61806c839ac91c20c38bd7464",
+      "looping": true
+    },
+    "Menu": {
+      "asset": "/Game/Adventure/Audio/Menu.Menu",
+      "original_wav_sha256": "9aa15a1348520ea9205c401651e33dad1563047d99f7ff53d484e38e4b8c4401",
+      "looping": false
+    },
+    "Discovery": {
+      "asset": "/Game/Adventure/Audio/Discovery.Discovery",
+      "original_wav_sha256": "abc35cc7f89724cac2e49e9bdded66b48307ad9a2b17e38a4fd1fd251483760b",
+      "looping": false
+    },
+    "Lakitu": {
+      "asset": "/Game/Adventure/Audio/Lakitu.Lakitu",
+      "original_wav_sha256": "dcc86587762a21a1ccbb375ed0bdd33f18d4038114da57738f63f1fa84e6cca0",
+      "looping": false
+    },
+    "Rio": {
+      "asset": "/Game/Adventure/Audio/Rio.Rio",
+      "original_wav_sha256": "1db34449df756a3e4ddfc8a6db58160393066794442194ab4f24025f9fe33023",
+      "looping": false
+    },
+    "Cozy": {
+      "asset": "/Game/Adventure/Audio/Cozy.Cozy",
+      "original_wav_sha256": "2ed31f88695dd0b0bba121296374e0e65ecc6367f5a19be0390c3f9e833cff1d",
+      "looping": false
+    }
+  },
+  "cover": "/Game/Adventure/Art/Cover"
+}
