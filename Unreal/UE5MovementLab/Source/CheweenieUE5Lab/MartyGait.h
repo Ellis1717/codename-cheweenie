@@ -31,6 +31,7 @@ public:
     UPROPERTY() TObjectPtr<UPoseableMeshComponent> Skin;
     static FVector SolveKnee(FVector Hip,FVector Foot,float Upper,float Lower,float BendDirection);
     void ResetContacts();
+    FVector MouthWorld() const;
 private:
     TArray<FMartyLeg> Legs;
     TMap<FName,FTransform> Rest;

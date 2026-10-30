@@ -1,4 +1,6 @@
-# Codename .... Cheweenie — Cozy Patrol 0.5
+# Codename .... Cheweenie — Cozy Patrol 0.6
+
+The pet sandbox adds energy/moods, carrying and burying toys, marked dig patches, real physics jumps/sofa hops, original TV rest and kitchen meals. [Pet actions and tuning](../../docs/UNREAL_DOG_LIFE.md). Existing mission progress and pet resources are retained; new save fields use compatible defaults.
 
 A small standalone Windows adventure is now packaged and tested. Run root UNREAL_PLAY.cmd or Play Cheweenie Unreal on the desktop. Find three snacks, visit Lakitu and Rio, then get Cheeween Cozy at the blanket fort. Title/help/pause/sound menus, checkpoint saves, completion, free roam, replay, original audio and the Fox/Leo cameos are included.
 
@@ -8,13 +10,15 @@ See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md) and [Marty's cove
 
 ## Play
 
-UNREAL_PLAY.cmd prefers builds/UnrealAdventure-0.5.0/Windows/CheweenieUE5Lab.exe, then the preserved 0.4.0 package, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
+UNREAL_PLAY.cmd prefers the validated 0.6.0 package, then validated 0.5.0, then preserved 0.4.0, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 |---|---|---|
 | Move / look | WASD or arrows / mouse | Left / right stick |
 | Hurry | Hold Shift | Hold A / Cross |
-| Interact | E | X / Square |
+| Interact / pick up / bury / eat / couch / TV | E | X / Square |
+| Jump | Space | Y / Triangle |
+| Dig / drop toy | F / Q | RT-R2 / LT-L2 |
 | Camera / recenter | V / R | R3 / RB-R1 |
 | Pause | Escape | Menu / Options |
 | Return home | H or pause menu | Pause menu |
@@ -31,6 +35,7 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
     .\IMPORT_AUDIO.ps1
     .\IMPORT_MARTY.ps1
     .\TEST_GAIT.ps1 -Render
+    .\TEST_LIFE.ps1
     .\TEST_OUTSIDE.ps1
     .\TEST.ps1
     .\TEST_ADVENTURE.ps1
@@ -41,11 +46,13 @@ Scripts accept engine/cache paths. BUILD gathers newly added C++ files and limit
 
 Content/Adventure is versioned: the retained cover and six original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
 
-PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.5.0. StageOnly reuses an already built/cooked result when updating archive options. The local distribution excludes debug symbols and includes the standard prerequisite installer.
+PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.6.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE now requires the 0.6 pet-action/persistence reports in addition to the existing rendered checks.
 
 ## Actual verification
 
-Version 0.5: native Editor/Game compilation and cook/archive succeeded. The final standalone DX12 executable passed 14 gait + 12 exterior + 25 patrol + six persistence/replay checks. Four additional packaged headless checks passed with the retained private map. Sixteen earlier editor-game movement checks passed at the 60 FPS cap. Final screenshots were inspected after correcting signs, skin surfaces, outdoor lighting and teleport camera framing. [Build report](../../docs/evidence/ue5-05-build.json), [package hashes](../../docs/evidence/ue5-05-package.json), [Marty capture](../../docs/screenshots/ue5-05-marty.png) and [outdoor capture](../../docs/screenshots/ue5-05-park.png). The launcher now uses this validated package; rebuilding invalidates its marker until FINALIZE_PACKAGE.ps1 accepts fresh rendered reports/captures.
+Version 0.6: native Editor/Game builds and initial full cook/archive succeeded; the final native camera/HUD repair was rebuilt and staged over that cooked package. The final executable passed 85 assertions: 23 pet actions + five pet reload, 14 gait, 12 exterior, 25 patrol + six patrol reload. Play phases used rendered DX12; reload phases were headless. Four additional headless private-map checks and sixteen legacy editor-game movement checks passed. Actual digging, kitchen, jump and couch/TV captures were inspected. Camera/label issues were repaired before this final run. Synthetic keys and position/energy fixtures were used; physical controllers and audible mix remain unverified. Final test logs have no Error/Fatal categories. FINALIZE_PACKAGE verified fresh reports/captures and hashed 43 immutable payload files before enabling the desktop launcher. [Pet report](../../docs/evidence/ue5-06-life-packaged.json), [package record](../../docs/evidence/ue5-06-package.json), [kitchen capture](../../docs/screenshots/ue5-06-kitchen.png) and [couch capture](../../docs/screenshots/ue5-06-couch-tv.png).
+
+Version 0.5: native Editor/Game compilation and cook/archive succeeded. The final standalone DX12 executable passed 14 gait + 12 exterior + 25 patrol + six persistence/replay checks. Four additional packaged headless checks passed with the retained private map. Sixteen earlier editor-game movement checks passed at the 60 FPS cap. Final screenshots were inspected after correcting signs, skin surfaces, outdoor lighting and teleport camera framing. [Build report](../../docs/evidence/ue5-05-build.json), [package hashes](../../docs/evidence/ue5-05-package.json), [Marty capture](../../docs/screenshots/ue5-05-marty.png) and [outdoor capture](../../docs/screenshots/ue5-05-park.png). This validated 0.5 package remains available; rebuilding invalidates its marker until FINALIZE_PACKAGE.ps1 accepts fresh rendered reports/captures.
 
 Earlier 0.4 baseline, retained for comparison:
 

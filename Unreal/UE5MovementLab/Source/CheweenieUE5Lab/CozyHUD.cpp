@@ -1,6 +1,7 @@
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
+#include "DogLife.h"
 #include "Engine/Canvas.h"
 #include "Engine/Texture2D.h"
 #include "GameFramework/PlayerController.h"
@@ -27,7 +28,7 @@ bool AMartyHUD::DrawAdventureHUD()
         DrawText(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol"),FLinearColor::White,X+24,Y+62);
         if(Session->Screen == ECozyScreen::Controls)
         {
-            const TArray<FString> Lines={TEXT("WASD / arrows / left stick: walk"),TEXT("Mouse / right stick: look around"),TEXT("Shift / A-Cross: hurry   |   E / X-Square: interact"),TEXT("V / R3: camera   |   R / RB-R1: recenter"),TEXT("Esc / Menu-Options: pause   |   H: return home"),TEXT("Menus: arrows / D-pad, Enter / A-Cross, Backspace / B-Circle"),TEXT("Sniff golden snacks, visit both cats, then get Cheeween Cozy.")};
+            const TArray<FString> Lines={TEXT("WASD / arrows / left stick: walk"),TEXT("Mouse / right stick: look around"),TEXT("Shift / A-Cross: hurry   |   E / X-Square: interact"),TEXT("V / R3: camera   |   R / RB-R1: recenter"),TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop"),TEXT("Esc / Menu-Options: pause   |   H: return home"),TEXT("Menus: arrows / D-pad, Enter / A-Cross, Backspace / B-Circle"),TEXT("Sniff golden snacks, visit both cats, then get Cheeween Cozy.")};
             for(int32 I=0;I<Lines.Num();++I) DrawText(Lines[I],FLinearColor::White,X+24,Y+105+I*28);
         }
         const auto Items=Session->Menu();
@@ -50,11 +51,13 @@ bool AMartyHUD::DrawAdventureHUD()
     }
     else
     {
-        DrawRect(FLinearColor(.025f,.055f,.07f,.88f),16,16,760,90);
+        DrawRect(FLinearColor(.025f,.055f,.07f,.88f),16,16,760,120);
         const bool Outside=Mode->Neighbourhood&&Mode->Neighbourhood->Outside;
         DrawText(Outside?TEXT("Neighbourhood walk: meet the dogs, visit the park and school"):Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
         DrawText(TEXT("Move: WASD / left stick | Interact: E / X-Square | Pause: Esc / Options"),FLinearColor::White,28,57);
         DrawText(TEXT("Look: mouse / right stick | Hurry: Shift / A-Cross | Camera: V / R3"),FLinearColor::White,28,79);
+        const auto* OwnerPC=GetWorld()->GetFirstPlayerController();const auto* Pet=OwnerPC?Cast<AMartyCharacter>(OwnerPC->GetPawn()):nullptr;
+        if(Pet&&Pet->Life)DrawText(Pet->Life->Status(),Pet->Life->Energy()<25?FLinearColor(1,.6f,.3f):FLinearColor(.7f,1,.7f),28,105,nullptr,1.1f);
         const FString Prompt=Session->Prompt();
         if(!Prompt.IsEmpty()) DrawText(Prompt,FLinearColor(1,.9f,.5f),Width*.5f-140,Height-110,nullptr,1.6f);
         if(!Session->Progress->Complete&&!Outside)
@@ -62,7 +65,7 @@ bool AMartyHUD::DrawAdventureHUD()
             for(int32 I=0;I<Session->Mission->Snacks.Num();++I) if(!(Session->Progress->SnackMask & (1<<I)))
             {
                 const auto& Stop=Session->Mission->Snacks[I]; const FVector P=Project(Stop.Position+FVector(0,0,32));
-                if(P.Z>0 && P.X>0 && P.X<Width && P.Y>110 && P.Y<Height-60) DrawText(TEXT("SNACK"),FLinearColor(1,.85f,.35f),P.X-22,P.Y);
+                if(P.Z>0 && P.X>0 && P.X<Width && P.Y>145 && P.Y<Height-60) DrawText(TEXT("SNACK"),FLinearColor(1,.85f,.35f),P.X-22,P.Y);
             }
             if(Session->Progress->SnackMask==(1<<Session->Mission->Snacks.Num())-1)
             {
@@ -76,7 +79,8 @@ bool AMartyHUD::DrawAdventureHUD()
     if(Session->Screen==ECozyScreen::Playing&&Mode->Neighbourhood)
     {
         const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
-        if(Pawn)DrawText(Mode->Neighbourhood->Prompt(Pawn),FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);
+        if(Pawn){const FString LifePrompt=Pawn->Life?Pawn->Life->Prompt():FString();DrawText(LifePrompt.IsEmpty()?Mode->Neighbourhood->Prompt(Pawn):LifePrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
+        DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop toy"),FLinearColor(.8f,.9f,1),28,Height-145);
     }
     if(!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;

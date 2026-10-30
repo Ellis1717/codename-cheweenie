@@ -1,5 +1,6 @@
 #include "MartyCharacter.h"
 #include "MartyGait.h"
+#include "DogLife.h"
 #include "Neighbourhood.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
@@ -39,6 +40,9 @@ AMartyCharacter::AMartyCharacter()
     GetCharacterMovement()->MaxAcceleration = 600;
     GetCharacterMovement()->BrakingDecelerationWalking = 700;
     GetCharacterMovement()->MaxStepHeight = 12;
+    GetCharacterMovement()->JumpZVelocity=440;
+    GetCharacterMovement()->AirControl=.35f;
+    Life=CreateDefaultSubobject<UDogLife>(TEXT("DogNeedsAndCozyActions"));
     Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RetainedMarty"));
     Visual->SetupAttachment(GetRootComponent());
     Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -173,6 +177,12 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::Left,EKeys::Gamepad_DPad_Left,&AMartyCharacter::MenuLeft);
         Button(EKeys::Right,EKeys::Gamepad_DPad_Right,&AMartyCharacter::MenuRight);
         Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&AMartyCharacter::Interact);
+        auto* JumpAction=Action(EInputActionValueType::Boolean);MenuActions.Add(JumpAction);
+        Mapping->MapKey(JumpAction,EKeys::SpaceBar);Mapping->MapKey(JumpAction,EKeys::Gamepad_FaceButton_Top);
+        Enhanced->BindAction(JumpAction,ETriggerEvent::Started,this,&AMartyCharacter::PetJump);
+        Enhanced->BindAction(JumpAction,ETriggerEvent::Completed,this,&AMartyCharacter::StopJumping);
+        Button(EKeys::F,EKeys::Gamepad_RightTrigger,&AMartyCharacter::Dig);
+        Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&AMartyCharacter::DropToy);
     }
     Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Move);
     Enhanced->BindAction(MouseAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Look);
@@ -191,6 +201,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 void AMartyCharacter::Move(const FInputActionValue& Value)
 {
     if (!Controller || !CanPlay()) return;
+    if(Life)Life->StopWatching();
     FVector2D Axis = Value.Get<FVector2D>();
     Axis = Axis.GetClampedToMaxSize(1);
     const FRotator Heading(0, Controller->GetControlRotation().Yaw, 0);
@@ -211,12 +222,15 @@ void AMartyCharacter::LookStick(const FInputActionValue& Value)
     AddControllerYawInput(Axis.X);
     AddControllerPitchInput(Axis.Y);
 }
-void AMartyCharacter::SetSprint(bool Active) { GetCharacterMovement()->MaxWalkSpeed = Active && CanPlay() ? 230 : 100; }
+void AMartyCharacter::SetSprint(bool Active) { if(Life)Life->SprintRequested=Active&&CanPlay();GetCharacterMovement()->MaxWalkSpeed = Active && CanPlay() && (!Life||Life->Energy()>=25) ? 230 : Life&&Life->Energy()<25?70:100; }
 UCozyAdventure* AMartyCharacter::Adventure() const
 {
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>(); return Mode ? Mode->Adventure.Get() : nullptr;
 }
-bool AMartyCharacter::CanPlay() const { const auto* Session=Adventure(); return !Session || Session->AllowsMovement(); }
+bool AMartyCharacter::CanPlay() const { const auto* Session=Adventure(); return (!Session || Session->AllowsMovement())&&(!Life||!Life->Busy()); }
+void AMartyCharacter::PetJump(){if(CanPlay()&&Life&&Life->PayJump())Jump();}
+void AMartyCharacter::Dig(){if(Life)Life->Dig();}
+void AMartyCharacter::DropToy(){if(Life)Life->Drop();}
 void AMartyCharacter::MenuConfirm() { if(auto* Session=Adventure()) Session->Confirm(); }
 void AMartyCharacter::MenuBack() { if(auto* Session=Adventure()) Session->Back(); }
 void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }
@@ -240,6 +254,7 @@ void AMartyCharacter::Recenter()
 }
 void AMartyCharacter::ReturnHome()
 {
+    if(Life)Life->CancelAction();
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
     GetCharacterMovement()->StopMovementImmediately();
     TeleportTo(Home, FRotator::ZeroRotator);

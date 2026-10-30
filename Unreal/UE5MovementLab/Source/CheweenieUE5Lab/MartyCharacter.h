@@ -14,6 +14,7 @@ class UTexture2D;
 class UMartyGait;
 class UPoseableMeshComponent;
 class UCheweenieNeighbourhood;
+class UDogLife;
 struct FInputActionValue;
 
 UCLASS()
@@ -31,6 +32,7 @@ public:
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UPoseableMeshComponent> Skin;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UDogLife> Life;
 private:
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
@@ -47,6 +49,9 @@ private:
     void MenuLeft();
     void MenuRight();
     void Interact();
+    void PetJump();
+    void Dig();
+    void DropToy();
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -76,6 +81,7 @@ private:
     void TickAdventureSmoke(float Delta);
     void TickGaitSmoke(float Delta);
     void TickOutsideSmoke(float Delta);
+    void TickLifeSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

@@ -2,6 +2,7 @@
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "MartyGait.h"
+#include "DogLife.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
@@ -254,6 +255,7 @@ void UCheweenieNeighbourhood::Message(const FString& Text)
 }
 void UCheweenieNeighbourhood::GoOutside(AMartyCharacter* Pawn)
 {
+    if(Pawn->Life)Pawn->Life->CancelAction();
     Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Entrance+FVector(0,-105,0),FRotator::ZeroRotator);Outside=true;
     SetOutdoorLighting(true);
     if(Pawn->Gait)Pawn->Gait->ResetContacts();
