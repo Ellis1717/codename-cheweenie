@@ -1,4 +1,5 @@
 #include "CozyAdventure.h"
+#include "Neighbourhood.h"
 #include "MartyCharacter.h"
 #include "Components/AudioComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -41,7 +42,9 @@ void UCozyAdventure::BeginPlay()
     Super::BeginPlay();
     Enabled = !FParse::Param(FCommandLine::Get(), TEXT("CheweenieSmoke"));
     if (!Enabled) { SetComponentTickEnabled(false); return; }
-    Slot = FParse::Param(FCommandLine::Get(), TEXT("CheweenieAdventureSmoke")) ? TEXT("CheweenieAdventureAcceptance") : TEXT("CheweenieAdventureV1");
+    Slot = FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke")) ? TEXT("CheweenieGaitAcceptance") : FParse::Param(FCommandLine::Get(), TEXT("CheweenieAdventureSmoke")) ? TEXT("CheweenieAdventureAcceptance") : TEXT("CheweenieAdventureV1");
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOutsideSmoke"))){Slot=TEXT("CheweenieOutsideAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke"))) UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && !FParse::Param(FCommandLine::Get(),TEXT("CheweenieResumeCheck")))
         UGameplayStatics::DeleteGameInSlot(Slot,0);
     Mission = NewObject<UCozyMissionDefinition>(this);
@@ -121,6 +124,11 @@ void UCozyAdventure::Confirm()
         else if (Selection == 1) { ReturnScreen = Current; SetScreen(ECozyScreen::Restart); }
         else if (Selection == 2) { ReturnScreen = Current; SetScreen(ECozyScreen::Controls); }
         else if (Selection == 3) { ReturnScreen = Current; SetScreen(ECozyScreen::Settings); }
+        else if (Selection==4)
+        {
+            Start(false);
+            if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood&&Marty())Mode->Neighbourhood->GoOutside(Marty());
+        }
         else if (auto* PC = UGameplayStatics::GetPlayerController(this,0)) PC->ConsoleCommand(TEXT("quit"));
     }
     else if (Current == ECozyScreen::Pause)
@@ -176,7 +184,9 @@ FString UCozyAdventure::Prompt() const
 }
 void UCozyAdventure::Interact()
 {
-    if (!Enabled || Screen != ECozyScreen::Playing || Prompt().IsEmpty()) return;
+    if (!Enabled || Screen != ECozyScreen::Playing) return;
+    if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood&&Marty()&&Mode->Neighbourhood->Interact(Marty()))return;
+    if(Prompt().IsEmpty()) return;
     const FCozyStop& Stop = Mission->Visits[Progress->VisitIndex];
     ++Progress->VisitIndex;
     Message = Stop.Dialogue.IsEmpty() ? TEXT("A cozy visit with ") + Stop.Label : Stop.Dialogue;
@@ -206,7 +216,7 @@ TArray<FString> UCozyAdventure::Menu() const
 {
     switch(Screen)
     {
-    case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Quit")};
+    case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit")};
     case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen")};
     case ECozyScreen::Settings: return {FString::Printf(TEXT("Music: %d%%"),FMath::RoundToInt(Progress->Music*100)),FString::Printf(TEXT("Effects: %d%%"),FMath::RoundToInt(Progress->Effects*100)),TEXT("Back")};
     case ECozyScreen::Restart: return {TEXT("Keep current patrol"),TEXT("Start fresh patrol")};

@@ -1,0 +1,33 @@
+{
+  "author": "Codename .... Cheweenie original generated geometry",
+  "reference": "Assets/Resources/Branding/Cover.png (start-page illustration)",
+  "method": "Blender smooth skin-weighted canine rig; runtime two-bone IK, not motion capture",
+  "bones": [
+    "root",
+    "spine",
+    "head",
+    "tail",
+    "ear_l",
+    "ear_tip_l",
+    "ear_r",
+    "ear_tip_r",
+    "front_l_upper",
+    "front_l_lower",
+    "front_l_hock",
+    "front_l_paw",
+    "front_r_upper",
+    "front_r_lower",
+    "front_r_hock",
+    "front_r_paw",
+    "hind_l_upper",
+    "hind_l_lower",
+    "hind_l_hock",
+    "hind_l_paw",
+    "hind_r_upper",
+    "hind_r_lower",
+    "hind_r_hock",
+    "hind_r_paw"
+  ],
+  "vertices": 41160,
+  "source_script_sha256": "85654b5682c5111a30120ef35d19352ecc4b5884fc42de29830915e5c495bc27"
+}

@@ -1,0 +1,30 @@
+{
+  "method": "Original cover-guided geometry; closed surfaces, skin weights and seeded coat textures; 24 joints",
+  "files": [
+    {
+      "file": "CoatGrain.png",
+      "bytes": 182162,
+      "sha256": "46a776fe3525a68592cb23ebaa4fc95f311ad699e0a1b4a29fe70b5a1b91794d"
+    },
+    {
+      "file": "CoatNormal.png",
+      "bytes": 306435,
+      "sha256": "3b4fec93786a835855e174a0ab2556ecf28f0d7358b45d63dfa803433916b41c"
+    },
+    {
+      "file": "manifest.json",
+      "bytes": 834,
+      "sha256": "708e6b40aff141a28b591a51c4565f178b3f13dc21e01094c998dcd0c345da5c"
+    },
+    {
+      "file": "Marty_CoverRig.blend",
+      "bytes": 1754798,
+      "sha256": "1fc6b6ca10358b5a57afd77ffebe9d5bfe73766602ab5925c5f1440f7f70d20b"
+    },
+    {
+      "file": "Marty_CoverRig.fbx",
+      "bytes": 1895628,
+      "sha256": "1f2671098dd6a08075c36f462a3c0031b6bfb9ae451dc382936b9d03b832029a"
+    }
+  ]
+}

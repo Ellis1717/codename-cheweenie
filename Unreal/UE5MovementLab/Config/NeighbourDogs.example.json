@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "dogs": [
+    {
+      "slot": 0,
+      "name": "Neighbour dog 1",
+      "house": "Blue house"
+    },
+    {
+      "slot": 1,
+      "name": "Neighbour dog 2",
+      "house": "Brick house"
+    },
+    {
+      "slot": 2,
+      "name": "Neighbour dog 3",
+      "house": "House C"
+    },
+    {
+      "slot": 3,
+      "name": "Neighbour dog 4",
+      "house": "House D"
+    },
+    {
+      "slot": 4,
+      "name": "Neighbour dog 5",
+      "house": "House E"
+    },
+    {
+      "slot": 5,
+      "name": "Neighbour dog 6",
+      "house": "House F"
+    },
+    {
+      "slot": 6,
+      "name": "Neighbour dog 7",
+      "house": "House G"
+    },
+    {
+      "slot": 7,
+      "name": "Neighbour dog 8",
+      "house": "House H"
+    }
+  ]
+}

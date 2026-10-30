@@ -1,5 +1,9 @@
 # Editable assumptions and decisions
 
+Unreal exterior 0.5: reuse the retained local OSM street file; do not trace or publish a Google Maps screenshot. The house's red brick, blue garage/door and bay-window features follow the private reference, with inferred dimensions. Eight stationary neighbour-dog/house slots are placeholders until names are supplied. LocalGameData holds private layout and labels outside public assets. E/X-Square uses doors, greets dogs and uses optional tour boards; H returns indoors. Neighbour friendship is saved by stable slot. See UNREAL_NEIGHBOURHOOD.md.
+
+Unreal Marty art: the start-page Cover.png is the owner's explicit visual target. The new cover-guided model uses smooth skin weighting and procedural canine IK, with a short-coat material rather than a strand groom. Ear base/tip movement and leg joints are prioritized for visible motion. The fourth camera is a close inspection view. Cats remain on their existing meshes for this focused Marty milestone. See UNREAL_MARTY_ART.md for editable sources and tuning.
+
 This is the catalogue for **Codename .... Cheweenie**. Routine choices are made without interrupting development. Edit a row or add a note when you want a different choice; changes marked **code/build** need to be applied and rebuilt, while **live** settings can be changed in the game. Inferred details are not presented as confirmed facts.
 
 | ID | Current choice | Basis/status | Where to change |

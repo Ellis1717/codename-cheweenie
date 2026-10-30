@@ -18,4 +18,6 @@ Assets/Art/Marty/Source/Marty_Explorer.glb binary
 docs/screenshots/*.gif binary
 Unreal/**/*.uasset binary
 Unreal/**/*.umap binary
+Unreal/**/*.fbx binary
+Unreal/**/*.blend binary
 Unreal/VisualLab/SourceAssets/*.obj binary

@@ -1,0 +1,23 @@
+{
+  "asset": "/Game/Adventure/Marty/Marty_CoverRig.Marty_CoverRig",
+  "materials": 6,
+  "material_paths": [
+    "/Game/Adventure/Marty/Marty_Coat.Marty_Coat",
+    "/Game/Adventure/Marty/Marty_Cream.Marty_Cream",
+    "/Game/Adventure/Marty/Marty_Nose.Marty_Nose",
+    "/Game/Adventure/Marty/Marty_Pupil.Marty_Pupil",
+    "/Game/Adventure/Marty/Marty_Ears.Marty_Ears",
+    "/Game/Adventure/Marty/Marty_Iris.Marty_Iris"
+  ],
+  "skeletal_usage": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "imported": [
+    "/Game/Adventure/Marty/Marty_CoverRig.Marty_CoverRig"
+  ]
+}

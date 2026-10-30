@@ -6,5 +6,6 @@ DerivedDataCache/
 *.sln
 *.VC.db
 __pycache__/
+*.blend1
 Content/*
 !Content/Adventure/

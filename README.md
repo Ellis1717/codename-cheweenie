@@ -2,6 +2,10 @@
 
 **Active development now targets Unreal Engine 5.8.4.** The Unity release is retained as a playable fallback. Follow the [Unreal development handoff](docs/UNREAL_HANDOFF.md) for the ordered gameplay, character, scenery and packaging milestones.
 
+**Marty graphics and movement, 0.5:** a new cover-guided skin-weighted character has smooth leg joints, grounded paw steps, flexible ear bases/tips, coat grain and wet eye/nose materials. Press V/R3 three times in the patrol for the close camera, then orbit to inspect him. [Art sources, tuning and limits](docs/UNREAL_MARTY_ART.md). Cats retain their previous meshes; further likeness and realism work remains.
+
+**Outside headquarters:** use the blue door with E/X-Square or choose Explore the neighbourhood. Roads, nine house exteriors, eight editable neighbour dogs, a park and school extend the demo. The launcher uses the retained private street layout when present; the public package has a schematic fallback. [Outdoor controls and neighbour names](docs/UNREAL_NEIGHBOURHOOD.md).
+
 **Optional graphics labs — the stable 0.9.0 game is preserved in the original checkout.** Use `LAB_PLAY.cmd` for the separate Unity graphics build and `LAB_BASELINE.cmd` for its baseline mode, with separate saves. `LAB_UE5.cmd` opens a separate Unreal 5.8.4 room preview with the three static pets, Lumen lighting and cozy furnishings (installed UE5 editor required). The original Unreal 4.27 project remains under `Unreal/VisualLab`; the Unity game has not been converted. [UE5 preview instructions](Unreal/UE5VisualLab/README.md) · [Actual changes, tests, captures and remaining realism work](docs/VISUAL_REALISM_LAB.md).
 
 The preserved Unity adventure stars Marty the Chiweenie, Lakitu (Keetz / Keeterman), and Rio (Sis / Little Miss / Miss Priss).
