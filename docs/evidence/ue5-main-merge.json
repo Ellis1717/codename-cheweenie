@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-30",
+  "testedMainCommit": "364a092b12931034298397bfa17ef2a1cec4b77f",
+  "testedTree": "d33cc2ef04ed5d73e2b2a586bb4c8a2d0a5b9ee9",
+  "mergedPRs": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "allBases": "main",
+  "editorAndGameBuild": "Succeeded",
+  "fullCookArchive": "Succeeded",
+  "archiveMatchesBuiltExe": true,
+  "checks": [
+    {
+      "suite": "audio",
+      "passed": 10,
+      "failed": 0
+    },
+    {
+      "suite": "life",
+      "passed": 23,
+      "failed": 0
+    },
+    {
+      "suite": "life-resume",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "suite": "gait",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "suite": "outside",
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "suite": "patrol",
+      "passed": 25,
+      "failed": 0
+    },
+    {
+      "suite": "resume",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "suite": "private-map",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "suite": "legacy-movement",
+      "passed": 16,
+      "failed": 0
+    }
+  ],
+  "totalNativeAssertions": 115,
+  "audioWaveformChecks": 3,
+  "runtimeErrorFatalCategories": 0,
+  "visualQa": "Actual post-merge title and kitchen/HUD captures inspected",
+  "input": "Synthetic keyboard/gamepad and position fixtures; physical devices unverified",
+  "listening": "Bark/music/mute waveform output measured; subjective listening unverified",
+  "unityAndUE4SourceUnchanged": true,
+  "privateDataExcluded": true
+}
