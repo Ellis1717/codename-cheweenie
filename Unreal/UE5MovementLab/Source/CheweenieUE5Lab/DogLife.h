@@ -8,6 +8,7 @@ class UCozyAdventureSave;
 class AStaticMeshActor;
 class UMaterialInstanceDynamic;
 class ACameraActor;
+enum class ECozyFeature:uint8;
 
 UENUM(BlueprintType)
 enum class EDogActivity:uint8 { Idle, Digging, Eating, WatchingTV, CouchHop, Lying, Rolling, Shaking };
@@ -67,6 +68,7 @@ private:
     UCozyAdventure* Session() const;
     UCozyAdventureSave* Data() const;
     bool Playing() const;
+    bool Allows(ECozyFeature Id) const;
     int32 NearPatch() const;
     void Tell(const FString& Text,const FString& Sound=TEXT("Menu"));
     void Save();

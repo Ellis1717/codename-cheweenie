@@ -1,5 +1,9 @@
 # Codename .... Cheweenie 🐾
 
+**Navigation 0.8:** north-up maps, separate Marty/camera heading markers, a compass, saved destinations, location finding and street guidance. M / D-pad Up opens the map. Pause → Controls & cameras offers 24 independent navigation, pet, camera and sound switches. [Controls and map guide](docs/UNREAL_NAVIGATION.md).
+
+The final 0.8 package and regressions passed 219 native assertions, three audio waveform checks and a full-HD coat-render check. [Actual results](docs/evidence/ue5-08-build.json). Physical controllers remain unverified; earlier releases and Unity are retained.
+
 **Marty 0.7:** more detailed short-coat geometry and 4K texture maps, visible health/energy bars, backpack storage, lying down/getting up, roll-over and shake-paw tricks, three paces and an optional two-stick body-sway mode. C / B-Circle opens tricks and controls; Tab / View-Touchpad opens the bag. [Controls, art sources and limitations](docs/UNREAL_MARTY_07.md).
 
 The 0.7 native builds/package passed 151 synthetic gameplay assertions plus audio and full-HD coat-render checks. [Actual results and verification limits](docs/evidence/ue5-07-build.json). Physical controllers remain unverified; previous releases and Unity are preserved.

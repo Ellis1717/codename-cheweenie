@@ -1,0 +1,13 @@
+{
+	"engine": "5.8.4-58902052+++UE5+Release-5.8",
+	"scope": "Real mission traversal and native synthetic menu/interaction input; isolated acceptance save slot; physical hardware unverified",
+	"passed": [
+		"Completed mission reloads in another process",
+		"Sound preference reloads in another process",
+		"Reload starts at title without auto-running gameplay",
+		"Continue restores completed free roam",
+		"Fresh patrol requires choosing the explicit restart option",
+		"Confirmed restart clears mission progress and retains preferences"
+	],
+	"failed": []
+}

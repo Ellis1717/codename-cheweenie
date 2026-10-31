@@ -1,4 +1,6 @@
 #include "CozyAdventure.h"
+#include "CozyNavigation.h"
+FString CozyFeatureLabel(ECozyFeature Id);
 #include "Neighbourhood.h"
 #include "DogLife.h"
 #include "MartyCharacter.h"
@@ -51,6 +53,7 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke"))) UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && !FParse::Param(FCommandLine::Get(),TEXT("CheweenieResumeCheck")))
         UGameplayStatics::DeleteGameInSlot(Slot,0);
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieNavigationSmoke"))){Slot=TEXT("CheweenieNavigationAcceptance" );if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieNavigationResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Mission = NewObject<UCozyMissionDefinition>(this);
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
@@ -63,6 +66,7 @@ void UCozyAdventure::BeginPlay()
     {
         Progress->MissionId = Mission->MissionId; Progress->SnackMask = 0; Progress->VisitIndex = 0; Progress->Complete = false;
     }
+    Progress->DisabledFeatures &= (1<<uint8(ECozyFeature::Count))-1;Progress->NavTarget=FMath::Clamp(Progress->NavTarget,0,127);
     Progress->SnackMask &= (1 << Mission->Snacks.Num()) - 1;
     Progress->VisitIndex = FMath::Clamp(Progress->VisitIndex, 0, Mission->Visits.Num());
     Progress->Complete = Progress->VisitIndex == Mission->Visits.Num();
@@ -106,6 +110,7 @@ void UCozyAdventure::Navigate(int32 Direction)
 }
 void UCozyAdventure::Adjust(int32 Direction)
 {
+    if(Screen==ECozyScreen::Features){Confirm();return;}
     if (!Enabled || Screen != ECozyScreen::Settings) return;
     if (Selection == 0) Progress->Music = FMath::Clamp(Progress->Music + Direction * .1f, 0.f, 1.f);
     if (Selection == 1) Progress->Effects = FMath::Clamp(Progress->Effects + Direction * .1f, 0.f, 1.f);
@@ -114,11 +119,12 @@ void UCozyAdventure::Adjust(int32 Direction)
 void UCozyAdventure::Back()
 {
     if (!Enabled) return;
+    if(Screen==ECozyScreen::Features){SetScreen(ECozyScreen::Controls);return;}
     if (Screen == ECozyScreen::Controls || Screen == ECozyScreen::Settings || Screen == ECozyScreen::Restart) SetScreen(ReturnScreen);
-    else if (Screen == ECozyScreen::Pause || Screen == ECozyScreen::Complete || Screen==ECozyScreen::Backpack || Screen==ECozyScreen::Tricks) SetScreen(ECozyScreen::Playing);
+    else if (Screen == ECozyScreen::Pause || Screen == ECozyScreen::Complete || Screen==ECozyScreen::Backpack || Screen==ECozyScreen::Tricks || Screen==ECozyScreen::Map) SetScreen(ECozyScreen::Playing);
     else if(Screen==ECozyScreen::Playing)OpenTricks();
 }
-void UCozyAdventure::OpenBackpack(){if(Screen==ECozyScreen::Backpack){SetScreen(ECozyScreen::Playing);return;}if(Screen==ECozyScreen::Playing&&Marty()&&Marty()->Life&&!Marty()->Life->Busy())SetScreen(ECozyScreen::Backpack);}
+void UCozyAdventure::OpenBackpack(){if(Screen==ECozyScreen::Backpack){SetScreen(ECozyScreen::Playing);return;}if(Feature(ECozyFeature::Backpack)&&Screen==ECozyScreen::Playing&&Marty()&&Marty()->Life&&!Marty()->Life->Busy())SetScreen(ECozyScreen::Backpack);}
 void UCozyAdventure::OpenTricks(){if(Screen==ECozyScreen::Playing&&Marty()&&Marty()->Life&&!Marty()->Life->Busy())SetScreen(ECozyScreen::Tricks);}
 void UCozyAdventure::Confirm()
 {
@@ -126,6 +132,9 @@ void UCozyAdventure::Confirm()
     UpdateMusic();
     if (Screen == ECozyScreen::Playing) return;
     const ECozyScreen Current = Screen;
+    if(Current==ECozyScreen::Map){const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();const int32 Count=M&&M->Navigation?M->Navigation->Landmarks().Num():0;if(Selection<Count){Progress->NavTarget=Selection;Save();if(M&&M->Navigation)M->Navigation->RefreshRoute();}SetScreen(ECozyScreen::Playing);return;}
+    if(Current==ECozyScreen::Controls){if(Selection==0)Back();else if(Selection<=3){FeaturePage=Selection-1;SetScreen(ECozyScreen::Features);}else {const int32 Keep=Selection;SetScreen(ECozyScreen::Playing);if(Marty()&&Marty()->Life)Marty()->Life->ToggleBodyControls();SetScreen(ECozyScreen::Controls);Selection=Keep;}return;}
+    if(Current==ECozyScreen::Features){const auto Group=FeatureGroup();if(Group.IsValidIndex(Selection))ToggleFeature(Group[Selection]);else Back();return;}
     if(Current==ECozyScreen::Backpack||Current==ECozyScreen::Tricks)
     {
         const int32 Choice=Selection;SetScreen(ECozyScreen::Playing);auto* L=Marty()?Marty()->Life.Get():nullptr;if(!L)return;
@@ -233,6 +242,9 @@ TArray<FString> UCozyAdventure::Menu() const
 {
     switch(Screen)
     {
+    case ECozyScreen::Controls:return {TEXT("Back"),TEXT("Navigation & map switches"),TEXT("Pet feature switches"),TEXT("Camera, display & sound switches"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try body sway)")};
+    case ECozyScreen::Features:{TArray<FString> Rows;for(auto Id:FeatureGroup())Rows.Add(CozyFeatureLabel(Id)+(Feature(Id)?TEXT(": ON"):TEXT(": OFF")));Rows.Add(TEXT("Back to controls"));return Rows;}
+    case ECozyScreen::Map:{TArray<FString> Rows;if(const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation){for(const auto& L:M->Navigation->Landmarks())Rows.Add(FString::Printf(TEXT("%d. %s"),Rows.Num()+1,*L.Label));if(Rows.IsValidIndex(Progress->NavTarget))Rows[Progress->NavTarget]=TEXT("[Tracking] ")+Rows[Progress->NavTarget];}Rows.Add(TEXT("Close map"));return Rows;}
     case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit")};
     case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen")};
     case ECozyScreen::Backpack: return {TEXT("Stow the toy in Marty's mouth"),TEXT("Take a toy from the backpack"),TEXT("Close backpack")};
@@ -251,7 +263,9 @@ FString UCozyAdventure::Heading() const
     case ECozyScreen::Pause: return TEXT("Take a cozy break");
     case ECozyScreen::Backpack: return TEXT("Marty's treasure backpack");
     case ECozyScreen::Tricks: return TEXT("Marty's tricks and pace");
-    case ECozyScreen::Controls: return TEXT("Controls & cameras");
+    case ECozyScreen::Controls: return TEXT("Controls & feature switches");
+    case ECozyScreen::Features:return FeaturePage==0?TEXT("Navigation switches"):FeaturePage==1?TEXT("Pet feature switches"):TEXT("Camera, display & sound");
+    case ECozyScreen::Map:return TEXT("Where shall Marty go?");
     case ECozyScreen::Settings: return TEXT("Sound settings");
     case ECozyScreen::Restart: return TEXT("Start over? Current patrol progress will be replaced.");
     case ECozyScreen::Complete: return TEXT("Cheeween Cozy! Patrol complete.");
@@ -302,7 +316,7 @@ void UCozyAdventure::CompleteRoom()
 }
 void UCozyAdventure::PlayCue(const FString& Name)
 {
-    if(Name.IsEmpty()||!Progress||Progress->Effects<=0) return;
+    if(Name.IsEmpty()||!Progress||Progress->Effects<=0||!Feature(ECozyFeature::Effects)) return;
     if(!Sounds.Contains(Name))
         if(auto* Asset=LoadObject<USoundBase>(nullptr,*(TEXT("/Game/Adventure/Audio/")+Name+TEXT(".")+Name))) Sounds.Add(Name,Asset);
     if (USoundBase* Sound=Sounds.FindRef(Name)) if(UGameplayStatics::SpawnSound2D(this,Sound,Progress->Effects)){LastCue=Name;++AudibleCueCount;}
@@ -322,7 +336,7 @@ void UCozyAdventure::UpdateMusic()
             if(MusicPlayer)MusicPlayer->FadeIn(.35f,Progress->Music);
         }
     }
-    if(MusicPlayer) MusicPlayer->SetVolumeMultiplier(Progress->Music);
+    if(MusicPlayer) MusicPlayer->SetVolumeMultiplier(Feature(ECozyFeature::Music)?Progress->Music:0);
     if(MusicPlayer&&Progress->Music>0&&!MusicPlayer->IsPlaying())MusicPlayer->Play();
 }
 bool UCozyAdventure::MusicPlaying() const{return MusicPlayer&&MusicPlayer->IsPlaying();}

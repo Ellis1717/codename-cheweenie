@@ -11,7 +11,10 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map };
+
+UENUM()
+enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Count };
 
 USTRUCT(BlueprintType)
 struct FCozyStop
@@ -60,6 +63,8 @@ public:
     UPROPERTY(SaveGame) TArray<int32> BagItems;
     UPROPERTY(SaveGame) int32 PetPace=0;
     UPROPERTY(SaveGame) bool BodyControls=false;
+    UPROPERTY(SaveGame) int32 DisabledFeatures=0;
+    UPROPERTY(SaveGame) int32 NavTarget=0;
 };
 
 UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))
@@ -83,6 +88,11 @@ public:
     void ActionCue(const FString& Name) { PlayCue(Name); }
     void OpenBackpack();
     void OpenTricks();
+    void OpenMap();
+    bool Feature(ECozyFeature Id) const;
+    void ToggleFeature(ECozyFeature Id);
+    TArray<ECozyFeature> FeatureGroup() const;
+    int32 FeaturePage=0;
     FString Objective() const;
     FString Prompt() const;
     TArray<FString> Menu() const;
