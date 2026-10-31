@@ -87,4 +87,3 @@ The next quality gate is a neutral-lit, in-engine front/side/three-quarter compa
 ## Verification
 
 Reviewed all four initial pet photos, both presentation references and all 19 attached files. Parsed the structured JSON and checked every observation source ID. Verified SHA-256 equality for 19 retained private copies. Runtime source, content, configuration and the Unity fallback have no changes. Engine compilation, gameplay and controller tests were not rerun for this documentation/authoring-data change; no new gameplay results are claimed.
-
