@@ -1,5 +1,9 @@
 # Codename .... Cheweenie 🐾
 
+**LAN Cozy Crew 0.1:** a separate two-player room mode lets each person control Marty, Lakitu or Rio on their own Windows PC. HOST_COOP.cmd hosts; JOIN_COOP.cmd joins an IPv4 address. Shared movement, pet selection, voices and a carry/drop ball use native replication, with local fur posing and lower-rate remote gait updates. [Two-PC setup, controls and scope](docs/UNREAL_COOP.md). Solo missions/outdoor features and saves remain separate; cats retain their static meshes. UNREAL_PLAY.cmd still launches the retained solo release.
+
+The separate LAN package passed **124 packaged checks** (two-process headless/rendered networking plus solo companion play/reload); the solo editor movement regression passed 16. The transfer ZIP's 43 payload hashes were verified. [Actual results and limits](docs/evidence/ue5-coop-build.json), [packaged host view](docs/screenshots/ue5-coop-host.png). Physical controllers, independent PCs and whole-game performance remain unverified.
+
 **Cozy crew 0.9:** Lakitu and Rio can follow, stay, come when called, share head bumps and build saved friendships. K / D-pad Down opens crew commands. Routing reuses a cached street graph and skips unchanged/paused work; the wide camera now frames the group. [Companions, controls and limitations](docs/UNREAL_COMPANIONS.md). Cat limb/fur rigging remains future work; their original meshes and markings are retained.
 
 The final 0.9 package and regressions passed 288 native assertions, three audio waveform checks and a full-HD coat check. [Actual results](docs/evidence/ue5-09-build.json), [crew in game](docs/screenshots/ue5-09-companion-crew.png). Physical controllers and whole-game frame-time performance remain unverified.
