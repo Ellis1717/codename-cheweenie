@@ -16,6 +16,7 @@ class UPoseableMeshComponent;
 class UCheweenieNeighbourhood;
 class UDogLife;
 class UCozyNavigation;
+class UCatCompanions;
 struct FInputActionValue;
 
 UCLASS()
@@ -59,6 +60,8 @@ private:
     void ClearBodyStick();
     void Map();
     void PadUp();
+    void PadDown();
+    void Crew();
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -85,6 +88,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCozyAdventure> Adventure;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCozyNavigation> Navigation;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UCatCompanions> Companions;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
     void TickAdventureSmoke(float Delta);
@@ -94,6 +98,7 @@ private:
     void TickAudioSmoke(float Delta);
     void TickTricksSmoke(float Delta);
     void TickNavigationSmoke(float Delta);
+    void TickCompanionSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

@@ -1,0 +1,181 @@
+{
+  "version": "0.9.0",
+  "date": "2026-10-30",
+  "engine": "5.8.4",
+  "compiler": "MSVC 14.44.35229",
+  "sdk": "10.0.22621.0",
+  "base": "927b3cdd1e7d8994143c9ca9d34929917e397da1",
+  "editorBuild": [
+    "Result: Succeeded",
+    "Total execution time: 16.77 seconds"
+  ],
+  "gameBuild": [
+    "Result: Succeeded",
+    "Total execution time: 112.28 seconds"
+  ],
+  "package": "Native Editor/Game builds and full cook/stage/archive succeeded",
+  "executableHashesMatch": true,
+  "packagedAssertions": 228,
+  "privateCompanionAssertions": 34,
+  "privateNavigationAssertions": 6,
+  "privateMapAssertions": 4,
+  "legacyEditorMovementAssertions": 16,
+  "totalNativeAssertions": 288,
+  "audioWaveformChecks": 3,
+  "coatResolutionColourChecks": 1,
+  "input": "Synthetic keyboard/gamepad with menu, health/item and position fixtures; physical hardware unverified",
+  "renderScope": "Standalone DX12 play; headless persistence, private routing/map and legacy editor-game movement",
+  "visualReview": [
+    "Actual crew in the revised wide camera",
+    "Crew command menu and friendship badge",
+    "Companion feature switch"
+  ],
+  "finalLogErrorFatalCategories": 0,
+  "finalMaterialFallbacks": 0,
+  "limitations": [
+    "Cats retain static meshes and whole-body motion; articulated feline gait and fur are unfinished",
+    "Cat wall/floor sweeps and explicit recall are not full NavMesh pathfinding",
+    "CPU routing samples are not whole-game FPS measurements",
+    "Private sources remain outside Git and public scenery remains schematic",
+    "Physical controller, subjective listening/likeness and frame-time performance unverified"
+  ],
+  "repairedFindings": [
+    "UE5.8 TObjectPtr mesh inference corrected",
+    "Acceleration sampled during its transition rather than after reaching full walking speed; duplicate fixture checks removed",
+    "Wall-blocking and explicit topology invalidation verified",
+    "Wide-camera height reduced to frame all three pets",
+    "Waypoint panel moved above the pets; conflicting interaction hints suppressed",
+    "Live cat mission range increased so visits work at natural follow distance"
+  ],
+  "archivedResourcesUnchanged": true,
+  "sources": [
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab.Target.cs",
+      "sha256": "e9cabcd2b919d823e789022fa87b7ddcc0d85981a48ed8457d7cf7bc646cd2ca"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/AdventureSmoke.cpp",
+      "sha256": "8574097420b274d943fedcfdb09de3cf329f0a419396abd0652764f8847a74d9"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/AudioSmoke.cpp",
+      "sha256": "245569c9aae82d13acfd98a8c5a750c1ef3646cf7066c24cb2bb1a29879a56c0"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CatCompanions.cpp",
+      "sha256": "aa7bf2e8a636b408614f80999643787de8792584cbf4e04e2a3ba1fb58384f23"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CatCompanions.h",
+      "sha256": "1c4347d49d95baf92eb204b6b2560de7d2631a6fd9bbba81f779579d49bb7e04"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CheweenieUE5Lab.Build.cs",
+      "sha256": "512768d3cb1738a18ae7c1f0f4a7a2486f52c0a80cbc8ebe55ac273fd9035187"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CheweenieUE5Lab.cpp",
+      "sha256": "e5a186a347336b69037f73bd7aee2ffe72377228ad4aef16ae5cb3b467b19a35"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CompanionSmoke.cpp",
+      "sha256": "f678929c8a516119fa966ab08e2b97c93b9a58e9216efc0fa679e32e689e9fb9"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.cpp",
+      "sha256": "288745ec2bb48a51aca34ba68cdaa2c14785109f31f725df3c42d356239d0efa"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.h",
+      "sha256": "2c97e3f56ba3511b9b02928aae96b159c851e7498f4daa5dd7d209ce961ab388"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyFeatures.cpp",
+      "sha256": "4f4a9b82a53cf33d7f355d45d915cafe436bc6b7499a0b37f4013d0d71a42af4"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyHUD.cpp",
+      "sha256": "f9dc35b0215e4f6bdfa3b10a21721b4092cb656a5c436c1f82bf46f17b44697a"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyNavigation.cpp",
+      "sha256": "85ad40d7099b6c8095d12ec553820d84f032b7c2be036ec4c8909ce3ea8fe179"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyNavigation.h",
+      "sha256": "d28b581e91e92f0a6fdb8fd034f34c1659236f48bec16916a3f8f6acbc8d9d68"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogBodyControls.cpp",
+      "sha256": "edc3fe9d841a379e94a752d71399fbbd07f5e52a0a65f43721f26d9a1b611591"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogLife.cpp",
+      "sha256": "48a70e4abed3c1194ff9b987fc9f933e34e48f0bb0dfa752b1cec765b64f9891"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogLife.h",
+      "sha256": "66e8d98dac3e947c7de7686942516613081f9d54a97d93f7e49165a9d773a4f5"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogTricks.cpp",
+      "sha256": "16a88c3fa78977a6e603a5e20d303253798d3452fce7f87c9fc24e6d3a75ae8a"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/GaitSmoke.cpp",
+      "sha256": "db2757846c13c8df607214d8fcc55481d0ac9ef972726f38c7d2d53bde4bf89c"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/LifeSmoke.cpp",
+      "sha256": "3ae8573420d888d2216a1bb72c03409c90ab8c6c2dbf03c0e8928f82bb3e56b9"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp",
+      "sha256": "a3c57b91f58dbc02f5d2c5f4fcec41a37e6287f2c89999f65da80eb57d3a6d6b"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.h",
+      "sha256": "1c7ea3138d0f15c78f4eb414f13de2cc7663c2ec406117d2198583f21c5c8970"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyGait.cpp",
+      "sha256": "4038e7513b1bb342cd587bde5b85752aa1a0684783355533496b7f580068c844"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyGait.h",
+      "sha256": "10fb0fa91d8dace3273a502fa91671bdbc2e5f9eb5d4d64ee5fabccf590fe39b"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MovementSmoke.cpp",
+      "sha256": "5b2c270fc85701e079bb33e978d743dbc962191a696c5b46d38ee36849bf4a33"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NavigationHUD.cpp",
+      "sha256": "70b9f5541bab818de517f87271844ecde1e5edbf216b1f964a5a4a188b8e8480"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NavigationSmoke.cpp",
+      "sha256": "3b0208906b4ee7f5e7a0e421e4c3ce9b2be3d15f0e50d254bd96d16a416abe07"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/Neighbourhood.cpp",
+      "sha256": "6f93d9308304149c43931d12a313d6a021c969f5aa38ae99ffbec1a8b60be842"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/Neighbourhood.h",
+      "sha256": "9cd997ef908f314f8d76221b85df342d4e05440e1a1221727665f789dea0478c"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/OutsideSmoke.cpp",
+      "sha256": "0b55574296644e53a387e534966de14939cd4fbc18e11b25573ba80c31503eae"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/TricksSmoke.cpp",
+      "sha256": "f2ab8f0284eb19d2a2b4fc3d1c9542672c29ce9653ff0e654326a62034fd6a39"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5LabEditor.Target.cs",
+      "sha256": "f908e95f5423ce5995df1ab51b7e6a418878d24b70ba54224b783db5b50d02a6"
+    }
+  ]
+}

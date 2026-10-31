@@ -11,10 +11,10 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions };
 
 UENUM()
-enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Count };
+enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, Count };
 
 USTRUCT(BlueprintType)
 struct FCozyStop
@@ -65,6 +65,9 @@ public:
     UPROPERTY(SaveGame) bool BodyControls=false;
     UPROPERTY(SaveGame) int32 DisabledFeatures=0;
     UPROPERTY(SaveGame) int32 NavTarget=0;
+    UPROPERTY(SaveGame) int32 CatFollowMask=0;
+    UPROPERTY(SaveGame) int32 LakituBond=0;
+    UPROPERTY(SaveGame) int32 RioBond=0;
 };
 
 UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))
@@ -89,6 +92,9 @@ public:
     void OpenBackpack();
     void OpenTricks();
     void OpenMap();
+    void OpenCompanions();
+    FVector StopPosition(const FCozyStop& Stop) const;
+    bool StopOutdoors(const FCozyStop& Stop) const;
     bool Feature(ECozyFeature Id) const;
     void ToggleFeature(ECozyFeature Id);
     TArray<ECozyFeature> FeatureGroup() const;

@@ -47,5 +47,5 @@ void AMartyHUD::DrawNavigation(bool Full)
     }
     if(!Full&&S->Feature(ECozyFeature::Compass)){const float Bearing=UCozyNavigation::Bearing(P->GetActorForwardVector());DrawRect(FLinearColor(.025f,.065f,.075f,.94f),W-278,395,250,50);DrawText(FString::Printf(TEXT("Marty: %s %03.0f deg"),*UCozyNavigation::Cardinal(Bearing),Bearing),FLinearColor(1,.85f,.4f),W-266,403);DrawText(TEXT("Gold = body | Blue = camera"),FLinearColor(.6f,.8f,1),W-266,425);}
     if(!Full&&S->Feature(ECozyFeature::Location))DrawText(TEXT("You are at: ")+N->Location(),FLinearColor(.7f,.9f,1),28,193);
-    if(!Full&&S->Feature(ECozyFeature::Waypoint)){DrawRect(FLinearColor(.025f,.065f,.075f,.94f),16,H-240,W-32,48);DrawText(N->Guidance(),FLinearColor(1,.85f,.45f),28,H-229,nullptr,1.1f);}
+    if(!Full&&S->Feature(ECozyFeature::Waypoint)){DrawRect(FLinearColor(.025f,.065f,.075f,.94f),16,220,FMath::Min(W-32,960.f),48);DrawText(N->Guidance(),FLinearColor(1,.85f,.45f),28,231,nullptr,1.1f);}
 }

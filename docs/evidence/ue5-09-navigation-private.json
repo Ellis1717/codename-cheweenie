@@ -1,0 +1,12 @@
+{
+	"scope": "Private local-map route/orientation/arrival fixtures; no private coordinates retained. Physical controller unverified.",
+	"passed": [
+		"Retained local map loads without embedding its coordinates",
+		"Private park route connects to the mapped street network",
+		"Private destination uses the actual park position",
+		"Private school route reaches the actual school approach",
+		"Private outdoor arrival aligns body and view",
+		"Private school arrival and location are detected"
+	],
+	"failed": []
+}
