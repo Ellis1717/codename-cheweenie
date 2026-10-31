@@ -44,7 +44,9 @@
       "id": "R01",
       "kind": "owner_photo",
       "subject": "Rio",
-      "view": "Elevated resting/loaf view; dark face, chest patch and upper body visible"
+      "view": "Elevated resting/loaf view; dark face, chest patch and upper body visible",
+      "identity_status": "Owner-confirmed Rio",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "C01",
@@ -132,35 +134,46 @@
       "kind": "owner_photo",
       "subject": "Rio and Lakitu",
       "view": "Both resting; foreground dark-faced cat",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Rio in foreground; background cat identity remains provisional",
+      "identity_confirmation_date": "2026-10-31",
+      "confirmed_subjects": [
+        {
+          "subject": "Rio",
+          "region": "Foreground cat on chair"
+        }
+      ]
     },
     {
       "id": "A11",
       "kind": "owner_photo",
       "subject": "Rio",
       "view": "Side-resting yawn, white paws/underside",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Rio",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A12",
       "kind": "owner_photo",
       "subject": "Rio",
       "view": "Same loaf view as R01",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Rio",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A13",
       "kind": "owner_photo",
       "subject": "Rio",
       "view": "Side resting, greenish-looking eyes and pink visible toe pads",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Rio",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A14",
       "kind": "owner_photo",
       "subject": "Rio",
       "view": "Costumed standing side, dark tail/white paws",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Rio",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A15",
@@ -432,7 +445,7 @@
         },
         {
           "feature": "additional_paws_tail_and_eyes",
-          "description": "Candidate Rio side/standing views show a black back and long dark tapering tail, white hind socks, white front toes/paws and lighter underside areas. A13 shows pink visible front toe pads and muted greenish-looking irises; exact colour and complete pad pattern remain open.",
+          "description": "Owner-confirmed Rio views A11/A13/A14 show a black back, long dark tail, white hind socks, white front paws and lighter underside areas. A13 shows pink visible front toe pads and muted greenish-looking irises; exact colour and complete pad pattern remain open. A01/A03/A04 offer additional provisional matches.",
           "source_ids": [
             "A01",
             "A03",
@@ -449,14 +462,14 @@
         "Do not introduce a pink nose, white eye surround or forehead stripe without further evidence",
         "Use light response and directional fur detail to reveal the dark coat instead of painting it grey",
         "Do not model permanently tucked legs or a rounded loaf as Rio's standing anatomy",
-        "Use candidate white paws/socks and dark tail as provisional observed evidence; retain uncertainty on boundaries and accessories."
+        "Match white paws/socks and dark tail from owner-confirmed A11/A13/A14; retain uncertainty on exact boundaries and accessories."
       ],
       "unknowns": [
         "Complete white-bib boundary and underside markings",
         "Collar/accessory details",
         "Standing size, leg proportions and size relative to Lakitu",
         "Measured feline motion",
-        "Precise sock boundaries, tail length and calibrated iris hue; candidate photos extend the evidence"
+        "Precise sock boundaries, tail length and calibrated iris hue; owner-confirmed A11/A13/A14 extend the evidence"
       ],
       "inferred_motion_targets": [
         "A feline skeleton and flexible spine with individually planted paws",
@@ -464,7 +477,7 @@
         "Separate ears, tail, eyelids and jaw controls"
       ],
       "motion_targets_are_photo_verified": false,
-      "additional_identity_policy": "A-series identities are provisional visual matches. Preserve source observations if owner corrects identity."
+      "additional_identity_policy": "R01/A12, A11, A13 and A14 are owner-confirmed Rio as of 2026-10-31, as is the foreground cat in A10. A01–A04 and the background cat in A10 remain provisional visual matches."
     }
   ],
   "presentation_targets": {
@@ -527,6 +540,20 @@
       ],
       "supplied_view_count": 5,
       "note": "Owner confirmed the held, curled dorsal, curled side, indoor crouch and outdoor front views as Lakitu. L01/A18 repeat the held view. This does not confirm Rio or the mixed-cat A10 image."
+    },
+    {
+      "date": "2026-10-31",
+      "subject": "Rio",
+      "source_ids": [
+        "A10",
+        "R01",
+        "A11",
+        "A12",
+        "A13",
+        "A14"
+      ],
+      "supplied_view_count": 5,
+      "note": "Owner confirmed Rio in the foreground of A10, resting/loaf R01/A12, open-eyed reclining A13, yawning A11 and costumed standing A14. R01/A12 repeat one view. This does not separately confirm A01–A04 or the background cat in A10."
     }
   ]
 }

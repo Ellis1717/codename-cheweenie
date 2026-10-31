@@ -22,7 +22,7 @@ Raw family photos stay in ignored PrivateReferences. Additional originals stay i
 
 ### Additional attached views
 
-The owner confirmed all five supplied dog views as Marty on 2026-10-31: M01/M02 and A05–A09, including the repeated held/standing views. The owner also confirmed the five Lakitu views: L01 and A15–A19, including the repeated held view. Rio and mixed-cat A10 identities remain provisional visual matches.
+The owner confirmed all five supplied dog views as Marty on 2026-10-31: M01/M02 and A05–A09, including the repeated held/standing views. The owner also confirmed the five Lakitu views: L01 and A15–A19, including the repeated held view. The owner confirmed five Rio views: foreground A10, R01/A12, A11, A13 and A14. A01–A04 and the background cat in A10 remain provisional visual matches.
 
 | ID | Candidate pet | Visible evidence / limitation |
 |---|---|---|
@@ -72,13 +72,15 @@ Left/right here is **viewer-relative**. Anatomical sidedness and possible photo 
 
 ## Rio
 
+The owner confirmed these five supplied views as Rio on 2026-10-31: foreground cat (A10), resting/loaf (R01/A12), open-eyed reclining (A13), yawning (A11) and costumed standing (A14). This confirms the foreground subject only in the mixed-cat photograph and does not separately label A01–A04. Reposted views do not increase the existing source count.
+
 **Identity to preserve:** a predominantly black face/crown/upper muzzle, dark nose, distinct white lower chin/throat/bib and long light whiskers.
 
 The upper body visible in R01 is black with fine fur catching the light. The broad white bib curves beneath the face; its exact upper boundary is partly hidden by the head angle. Upright triangular ears are visible. The eyes are shadowed, so their iris hue and normal opening are unresolved.
 
-The rounded silhouette belongs to a resting/loaf pose with tucked limbs. It does not establish a round standing body, short legs, body size relative to Lakitu or a permanent expression. Candidate A01–A04/A11/A13/A14 reveal white hind socks, white front toes/paws, lighter underside regions and a long dark tapering tail. A13 shows muted greenish-looking irises and some pink toe pads. Exact hue, sock boundaries, full underside/pad pattern and collar details remain open.
+The rounded silhouette belongs to a resting/loaf pose with tucked limbs. It does not establish a round standing body, short legs, body size relative to Lakitu or a permanent expression. Owner-confirmed A11/A13/A14 and provisional A01–A04 reveal white hind socks, white front toes/paws, lighter underside regions and a long dark tapering tail. A13 shows muted greenish-looking irises and some pink toe pads. Exact hue, sock boundaries, full underside/pad pattern and collar details remain open.
 
-**First modelling fixes:** retain the black-face/white-chin distinction from Lakitu. Do not add Lakitu's forehead blaze, white eye surround or pink nose. Reveal black fur through directional detail, highlights and lighting, rather than making the whole coat grey. Use candidate photo evidence for white paws/socks with provisional boundaries; do not infer accessories from the cover alone.
+**First modelling fixes:** retain the black-face/white-chin distinction from Lakitu. Do not add Lakitu's forehead blaze, white eye surround or pink nose. Reveal black fur through directional detail, highlights and lighting, rather than making the whole coat grey. Use owner-confirmed A11/A13/A14 for white paws/socks, retaining uncertainty on exact boundaries; do not infer accessories from the cover alone.
 
 ## Motion and the next art gate
 
