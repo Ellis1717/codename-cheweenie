@@ -15,6 +15,7 @@ class UMartyGait;
 class UPoseableMeshComponent;
 class UCheweenieNeighbourhood;
 class UDogLife;
+class UCozyNavigation;
 struct FInputActionValue;
 
 UCLASS()
@@ -56,6 +57,8 @@ private:
     void Bark();
     void Backpack();
     void ClearBodyStick();
+    void Map();
+    void PadUp();
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -67,6 +70,7 @@ private:
     UPROPERTY() TObjectPtr<UInputAction> RecenterAction;
     UPROPERTY() TObjectPtr<UInputAction> HomeAction;
     UPROPERTY() TArray<TObjectPtr<UInputAction>> MenuActions;
+    int32 LastDetailed=-1;
     FVector Home;
 };
 
@@ -80,6 +84,7 @@ public:
     virtual void Tick(float DeltaSeconds) override;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCozyAdventure> Adventure;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UCozyNavigation> Navigation;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
     void TickAdventureSmoke(float Delta);
@@ -88,6 +93,7 @@ private:
     void TickLifeSmoke(float Delta);
     void TickAudioSmoke(float Delta);
     void TickTricksSmoke(float Delta);
+    void TickNavigationSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;
@@ -107,5 +113,6 @@ public:
     virtual void NotifyHitBoxClick(FName BoxName) override;
 private:
     bool DrawAdventureHUD();
+    void DrawNavigation(bool FullMap);
     UPROPERTY() TObjectPtr<UTexture2D> Cover;
 };

@@ -15,6 +15,7 @@ struct FNeighbourDog
     FLinearColor Coat=FLinearColor(.5f,.25f,.1f);
     bool Met=false;
 };
+struct FCozyStreet { FVector A,B; FString Name; };
 
 // The original room stays independent. Exterior geometry and private maps belong to this component.
 UCLASS(ClassGroup=(Cheweenie),meta=(BlueprintSpawnableComponent))
@@ -36,11 +37,15 @@ public:
     FVector Entrance=FVector(1000000,0,28);
     FVector Park, School;
     TArray<FNeighbourDog> Dogs;
+    const TArray<TPair<FVector,FVector>>& Streets() const { return NavigationEdges; }
+    TArray<TPair<FVector,FString>> StreetLabels;
+    TArray<FCozyStreet> NamedStreets;
 private:
     FVector Origin=FVector(1000000,0,0);
     FVector IndoorDoor=FVector(-425,-200,28);
     TArray<FVector> Tour;
     TArray<TPair<FVector,FVector>> RoadEdges;
+    TArray<TPair<FVector,FVector>> NavigationEdges;
     int32 NextTour=0;
     UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Palette;
     UPROPERTY() TMap<int32,TObjectPtr<UInstancedStaticMeshComponent>> Paths;

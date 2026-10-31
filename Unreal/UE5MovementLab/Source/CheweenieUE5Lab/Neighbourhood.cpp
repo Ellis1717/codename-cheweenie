@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "CozyNavigation.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "MartyGait.h"
@@ -49,6 +50,7 @@ void UCheweenieNeighbourhood::Path(FVector A,FVector B,float Width,int32 Color)
     }
     const FVector D=B-A;Paths[Color]->AddInstance(FTransform(FRotator(0,D.Rotation().Yaw,0),(A+B)*.5f+FVector(0,0,Color==2?3.f:1.5f),FVector(D.Size2D()+12,Width,2)/100),true);
     ++RoadSegments;
+    if(Color==1)NavigationEdges.Add({A,B});
 }
 void UCheweenieNeighbourhood::House(FVector P,int32 Slot,const FString& Label)
 {
@@ -131,7 +133,7 @@ bool UCheweenieNeighbourhood::LoadMap()
     if(File.IsEmpty()||!FFileHelper::LoadFileToString(Json,*File)||Json.Len()>4000000||!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json),Data)||!Data)return false;
     const TArray<TSharedPtr<FJsonValue>> *Roads=nullptr,*Stops=nullptr;
     if(!Data->TryGetArrayField(TEXT("roads"),Roads)||Roads->IsEmpty()||Roads->Num()>512||!Data->TryGetArrayField(TEXT("stops"),Stops))return false;
-    auto Point=[&](const TSharedPtr<FJsonObject>& O,FVector& Out){double X=0,Y=0;if(!O||!O->TryGetNumberField(TEXT("x"),X)||!O->TryGetNumberField(TEXT("z"),Y)||!FMath::IsFinite(X)||!FMath::IsFinite(Y)||FMath::Abs(X)>2500||FMath::Abs(Y)>2500)return false;Out=Origin+FVector(X*100,Y*100,0);return true;};
+    auto Point=[&](const TSharedPtr<FJsonObject>& O,FVector& Out){double X=0,Y=0;if(!O||!O->TryGetNumberField(TEXT("x"),X)||!O->TryGetNumberField(TEXT("z"),Y)||!FMath::IsFinite(X)||!FMath::IsFinite(Y)||FMath::Abs(X)>2500||FMath::Abs(Y)>2500)return false;Out=Origin+FVector(X*100,-Y*100,0);return true;};
     struct FRoad {FString Name;float Width;TArray<FVector> Points;};TArray<FRoad> Validated;FBox Bounds(ForceInit);Bounds+=Origin;int32 Count=0;
     for(const auto& Value:*Roads)
     {
@@ -162,8 +164,9 @@ bool UCheweenieNeighbourhood::LoadMap()
     for(const auto& R:Validated)
     {
         for(int32 I=1;I<R.Points.Num();++I)
-        {Path(R.Points[I-1],R.Points[I],R.Width+240,1);Path(R.Points[I-1],R.Points[I],R.Width,2);RoadEdges.Add({R.Points[I-1],R.Points[I]});}
+        {Path(R.Points[I-1],R.Points[I],R.Width+240,1);Path(R.Points[I-1],R.Points[I],R.Width,2);RoadEdges.Add({R.Points[I-1],R.Points[I]});NamedStreets.Add({R.Points[I-1],R.Points[I],R.Name.Left(60)});}
         if(R.Name!=TEXT("Walking path"))Sign(R.Name.Left(60),R.Points[R.Points.Num()/2]+FVector(0,R.Width/2+120,180),32,180);
+        StreetLabels.Add({R.Points[R.Points.Num()/2],R.Name.Left(60)});
     }
     Path(Entrance,Tour[0],180,1);
     Sign(TEXT("Map data: OpenStreetMap contributors / ODbL\nRetained street layout; schematic houses and game paths"),Entrance+FVector(100,200,170),22,180);
@@ -232,7 +235,7 @@ void UCheweenieNeighbourhood::Build()
     Sign(TEXT("NEXT TOUR STOP\nE / X / Square"),School+FVector(-300,0,100),26,180);
     TActorIterator<ASkyAtmosphere> Atmosphere(GetWorld());if(!Atmosphere)GetWorld()->SpawnActor<ASkyAtmosphere>();
     for(TActorIterator<ADirectionalLight> It(GetWorld());It;++It)
-        if(auto* Sun=It->FindComponentByClass<UDirectionalLightComponent>())OriginalSuns.Add({Sun,Sun->Intensity});
+        if(auto* Sun=It->FindComponentByClass<UDirectionalLightComponent>()){OriginalSuns.Add({Sun,Sun->Intensity});Sun->SetForwardShadingPriority(OriginalSuns.Num()+1);}
     // Soft shadowless sky fill keeps the dog and shady front gardens readable at fixed exposure.
     // It is enabled only outdoors; the retained indoor lighting is restored on return.
     for(float Yaw:{-30.f,150.f})
@@ -256,11 +259,12 @@ void UCheweenieNeighbourhood::Message(const FString& Text)
 void UCheweenieNeighbourhood::GoOutside(AMartyCharacter* Pawn)
 {
     if(Pawn->Life)Pawn->Life->CancelAction();
-    Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Entrance+FVector(0,-105,0),FRotator::ZeroRotator);Outside=true;
+    Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Entrance+FVector(0,-300,0),FRotator(0,-90,0));Outside=true;
     SetOutdoorLighting(true);
     if(Pawn->Gait)Pawn->Gait->ResetContacts();
     if(auto* PC=Cast<APlayerController>(Pawn->GetController())){PC->SetControlRotation(FRotator(-12,-90,0));PC->PlayerCameraManager->StartCameraFade(1,0,.35f,FLinearColor::Black,false);}
     Message(TEXT("Outside! Meet the dogs, explore the park and school. H always returns you home."));
+    if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();
 }
 void UCheweenieNeighbourhood::GoInside(AMartyCharacter* Pawn)
 {
@@ -282,7 +286,9 @@ bool UCheweenieNeighbourhood::Interact(AMartyCharacter* Pawn)
     if(FVector::Dist2D(P,Entrance)<120){GoInside(Pawn);return true;}
     if(FVector::Dist2D(P,Entrance+FVector(160,0,0))<120||FVector::Dist2D(P,Park+FVector(300,0,0))<120||FVector::Dist2D(P,School-FVector(300,0,0))<120)
     {
-        const FVector Destination=Tour[NextTour++%Tour.Num()];Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Destination+FVector(0,0,40),FRotator::ZeroRotator);
+        const FVector Destination=Tour[NextTour++%Tour.Num()];const float Heading=(Tour[NextTour%Tour.Num()]-Destination).Rotation().Yaw;Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Destination+FVector(0,0,40),FRotator(0,Heading,0));
+        if(auto* PC=Cast<APlayerController>(Pawn->GetController()))PC->SetControlRotation(FRotator(-12,Heading,0));
+        if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();
         if(Pawn->Gait)Pawn->Gait->ResetContacts();Message(TEXT("Walking tour stop. Explore here, then press H to head home."));return true;
     }
     for(int32 I=0;I<Dogs.Num();++I)

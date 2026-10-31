@@ -1,0 +1,29 @@
+{
+	"scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+	"passed": [
+		"Three dig patches and compatible default energy initialize",
+		"Low energy makes Marty tired and slows his walk",
+		"Tired Marty cannot hurry",
+		"Rested Marty has a normal mood",
+		"Controller picks up the ball and makes Marty excited",
+		"Timed digging advances hole to depth 1",
+		"Timed digging advances hole to depth 2",
+		"Timed digging advances hole to depth 3",
+		"Digging consumes energy",
+		"Interact buries the carried ball in the open hole",
+		"Controller digging recovers buried treasure",
+		"Recovered ball can be picked up again",
+		"Dropping releases the toy without burying or duplicating it",
+		"Dropped toy can be picked up and buried again",
+		"Eating kitchen food restores energy and excitement",
+		"Food cooldown prevents instant repeated meals",
+		"Space performs a real physics jump",
+		"Jumping spends energy",
+		"Assisted controller hop lands on the real sofa collider",
+		"Watching original TV on the couch restores energy",
+		"Pause freezes pet energy and action timers",
+		"Walking away stops TV rest",
+		"Another item can be carried while the first stays buried"
+	],
+	"failed": []
+}

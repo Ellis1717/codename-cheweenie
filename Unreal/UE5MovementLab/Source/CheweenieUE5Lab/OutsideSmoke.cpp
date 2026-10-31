@@ -59,7 +59,7 @@ void AMartyPlayMode::TickOutsideSmoke(float Delta)
     case 3:
         if(SmokeTime>.7)
         {
-            Key(EKeys::E,false);SmokeCheck(N->Outside&&FVector::Dist2D(P->GetActorLocation(),N->Entrance)<120,TEXT("Keyboard interaction opens door and transfers Marty outside onto the front walk"));
+            Key(EKeys::E,false);SmokeCheck(N->Outside&&FVector::Dist2D(P->GetActorLocation(),N->Entrance)<320,TEXT("Keyboard interaction opens door and transfers Marty outside onto the front walk with camera clearance"));
             SmokeCheck(P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Outside arrival lands on collision ground"));
             SmokeCheck(Adventure->Progress->SnackMask==1,TEXT("Door transition preserves the indoor mission"));
             Shot(TEXT("OutsideArrival.png"));SmokePosition=P->GetActorLocation();Key(EKeys::W,true);Next();
@@ -108,11 +108,12 @@ void AMartyPlayMode::TickOutsideSmoke(float Delta)
     case 13:
         if(SmokeTime>.4){Adventure->Interact();Next();}break;
     case 14:
-        if(SmokeTime>.5){Key(EKeys::Gamepad_FaceButton_Left,true);Next();}break;
+        if(SmokeTime>.2&&!SmokeMoving){Key(EKeys::S,true);SmokeMoving=true;}
+        if(FVector::Dist2D(P->GetActorLocation(),N->Entrance)<105||SmokeTime>4){Key(EKeys::S,false);SmokeMoving=false;Key(EKeys::Gamepad_FaceButton_Left,true);Next();}break;
     case 15:
         if(SmokeTime>.4)
         {
-            Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(!N->Outside,TEXT("Controller opens the exterior home door to return inside"));
+            Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(!N->Outside,TEXT("Controller opens the exterior home door after walking back to the entrance"));
             auto Report=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(auto& S:In)Out.Add(MakeShared<FJsonValueString>(S));return Out;};
             Report->SetStringField(TEXT("scope"),TEXT("Actual door and walking input; teleported fixtures for dog/landmark selection; schematic map only; physical devices unverified"));
             Report->SetArrayField(TEXT("passed"),Strings(SmokePassed));Report->SetArrayField(TEXT("failed"),Strings(SmokeFailed));FString Json;FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Json));

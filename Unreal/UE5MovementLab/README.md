@@ -1,4 +1,6 @@
-# Codename .... Cheweenie — Cozy Patrol 0.7
+# Codename .... Cheweenie — Cozy Patrol 0.8
+
+Navigation 0.8 adds north-up maps, body/camera direction markers, a compass, current location and saved destination guidance. Pause → Controls & cameras offers 24 independent feature switches. [Map, controls and tuning](../../docs/UNREAL_NAVIGATION.md).
 
 Marty 0.7 adds a separate detailed-coat variant, health/backpack HUD, dog tricks and spring-driven alternative body controls. [New controls and source guide](../../docs/UNREAL_MARTY_07.md).
 
@@ -14,7 +16,7 @@ See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md) and [Marty's cove
 
 ## Play
 
-UNREAL_PLAY.cmd prefers the validated 0.7.0 package, then 0.6.1 and 0.6.0, then validated 0.5.0, then preserved 0.4.0, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
+UNREAL_PLAY.cmd prefers validated 0.8.0, then preserved 0.7.0/0.6.1/0.6.0/0.5.0/0.4.0 packages, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 |---|---|---|
@@ -25,6 +27,7 @@ UNREAL_PLAY.cmd prefers the validated 0.7.0 package, then 0.6.1 and 0.6.0, then 
 | Bark | B | LB / L1 |
 | Tricks / pace / alternate controls | C | B / Circle |
 | Backpack | Tab | View / Touchpad |
+| Map / choose destination | M | D-pad Up |
 | Dig / drop toy | F / Q | RT-R2 / LT-L2 |
 | Camera / recenter | V / R | R3 / RB-R1 |
 | Pause | Escape | Menu / Options |
@@ -43,6 +46,7 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
     .\IMPORT_MARTY.ps1
     .\TEST_GAIT.ps1 -Render
     .\TEST_TRICKS.ps1
+    .\TEST_NAVIGATION.ps1 -Render
     .\TEST_AUDIO.ps1
     .\TEST_LIFE.ps1
     .\TEST_OUTSIDE.ps1
@@ -55,9 +59,11 @@ Scripts accept engine/cache paths. BUILD gathers newly added C++ files and limit
 
 Content/Adventure is versioned: the retained cover and fourteen retained/original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
 
-PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.7.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE requires 131 packaged assertions, fresh action captures, audio-device/waveform evidence and a 1920×1080 tan-coat render check. Use IMPORT_REALCOAT.ps1 for the separate detailed model; IMPORT_MARTY.ps1 remains available for the preserved smooth model.
+PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.8.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE requires 193 packaged assertions, fresh navigation/action captures, audio-device/waveform evidence and a 1920×1080 tan-coat render check. Use IMPORT_REALCOAT.ps1 for the separate detailed model; IMPORT_MARTY.ps1 remains available for the preserved smooth model.
 
 ## Actual verification
+
+Version 0.8, 2026-10-30: final Editor/Game builds, full cook/archive and native staging succeeded. The final Windows package passed **193 assertions**, including 58 navigation/feature checks and four preference-reload checks. Six private-navigation, four private-map walking/recovery and sixteen legacy editor-game movement checks also passed: **219 native assertions total**, plus three audio waveform checks and one 1920×1080 coat-render check. Play phases used rendered DX12; persistence, private audits and legacy movement were headless. The final indoor/area maps, outdoor heading HUD and navigation/scrolled-pet switch pages were visually inspected. Final test logs contain no Error/Fatal categories or material fallbacks. Finalization hashes 43 immutable payload files; the archive executable matches the native build. Synthetic keyboard/gamepad and gameplay/position fixtures were used. Physical controllers, subjective listening and measured performance remain unverified. [Results and repaired findings](../../docs/evidence/ue5-08-build.json), [navigation](../../docs/evidence/ue5-08-navigation.json), [preferences](../../docs/evidence/ue5-08-navigation-resume.json), [package record](../../docs/evidence/ue5-08-package.json), [area map](../../docs/screenshots/ue5-08-area-map.png). The launcher selects validated 0.8 while retaining 0.7 and all archived fallbacks.
 
 Version 0.7, 2026-10-30: native Editor/Game compilation, full cook/archive and final native staging succeeded. The final standalone package passed 131 assertions, four headless private-map checks and sixteen legacy editor-game movement checks: **151 native assertions**, plus three bark/music/mute waveform checks and one full-HD coat colour/resolution check. Play phases used rendered DX12; reload/private-map phases and legacy movement were headless. Final packaged logs contain no Error/Fatal categories or material fallbacks. The 1920×1080 portrait and five trick/backpack/body-control captures were visually inspected. Finalization hashed 43 immutable payload files; the archived Game executable matches the native build. Synthetic input and gameplay fixtures were used; physical controllers, subjective listening/likeness and measured performance remain unverified. Marty remains stylized, with skin-weighted polygon fur and spring poses rather than a Groom or ragdoll. [Results and repaired failures](../../docs/evidence/ue5-07-build.json), [package record](../../docs/evidence/ue5-07-package.json), [portrait](../../docs/screenshots/ue5-07-portrait.png), [controls and tuning](../../docs/UNREAL_MARTY_07.md). Prior releases and Unity remain intact.
 

@@ -1,0 +1,10 @@
+{
+	"scope": "Real map; synthetic keyboard/gamepad with feature, destination and position fixtures. Physical controller unverified. No private coordinates retained.",
+	"passed": [
+		"Disabled navigation and pet choices reload",
+		"Enabled choices remain enabled",
+		"Destination and possessions survive preference reload",
+		"Preferences do not resume transient actions"
+	],
+	"failed": []
+}
