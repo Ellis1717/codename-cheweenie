@@ -14,6 +14,8 @@ Native Editor/Game builds and full cook/archive passed. The final World package 
 
 The separate LAN package passed **124 packaged checks** (two-process headless/rendered networking plus solo companion play/reload); the solo editor movement regression passed 16. The transfer ZIP's 43 payload hashes were verified. [Actual results and limits](docs/evidence/ue5-coop-build.json), [packaged host view](docs/screenshots/ue5-coop-host.png). Physical controllers, independent PCs and whole-game performance remain unverified.
 
+[Photo-derived character likeness brief](docs/PET_REFERENCE_BRIEF.md): observed features, marking maps and unknowns for Marty, Lakitu, Rio and Ratchet, prepared for the next realism/rigging pass. The current game models are unchanged by this reference extraction.
+
 **Cozy crew 0.9:** Lakitu and Rio can follow, stay, come when called, share head bumps and build saved friendships. K / D-pad Down opens crew commands. Routing reuses a cached street graph and skips unchanged/paused work; the wide camera now frames the group. [Companions, controls and limitations](docs/UNREAL_COMPANIONS.md). Cat limb/fur rigging remains future work; their original meshes and markings are retained.
 
 The final 0.9 package and regressions passed 288 native assertions, three audio waveform checks and a full-HD coat check. [Actual results](docs/evidence/ue5-09-build.json), [crew in game](docs/screenshots/ue5-09-companion-crew.png). Physical controllers and whole-game frame-time performance remain unverified.
