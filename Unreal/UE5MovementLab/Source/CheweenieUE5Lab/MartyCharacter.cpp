@@ -88,7 +88,7 @@ void AMartyCharacter::BeginPlay()
     {
         Skin->SetVisibility(false);Visual->SetVisibility(true);Gait->SetComponentTickEnabled(false);
     }
-    TeleportTo(FVector(-200, -200, 60), FRotator(0, 40, 0));
+    if(UsesAdventureHome()) TeleportTo(FVector(-200, -200, 60), FRotator(0, 40, 0));
     Home = GetActorLocation();
     Recenter();
 }
@@ -298,15 +298,20 @@ AMartyPlayMode::AMartyPlayMode()
 void AMartyPlayMode::BeginPlay()
 {
     Super::BeginPlay();
+    PrepareCheweenieRoom(GetWorld());
+}
+
+void PrepareCheweenieRoom(UWorld* World, bool HideAllPets)
+{
     // The comparison map remains unmodified; replace only its duplicate Marty at runtime.
-    for (TActorIterator<AStaticMeshActor> It(GetWorld()); It; ++It)
+    for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
     {
         const UStaticMesh* Mesh = It->GetStaticMeshComponent()->GetStaticMesh();
         if (!Mesh) continue;
         const FString Path = Mesh->GetPathName();
         if (Path == TEXT("/Game/VisualLab/Pets/Marty.Marty")) { It->Destroy(); continue; }
         else if (Path == TEXT("/Game/VisualLab/Pets/Lakitu.Lakitu") || Path == TEXT("/Game/VisualLab/Pets/Rio.Rio"))
-            It->SetActorScale3D(FVector(.32f));
+        { if(HideAllPets){It->Destroy();continue;} It->SetActorScale3D(FVector(.32f)); }
         // A stretched sphere's simple physics shape does not follow its sofa silhouette.
         // Use a conservative box for each upholstered part only in the playable world.
         auto* Component = It->GetStaticMeshComponent();
@@ -325,7 +330,7 @@ void AMartyPlayMode::BeginPlay()
     // Invisible boundaries protect the open photography-room edges.
     for (int32 Index = 0; Index < 4; ++Index)
     {
-        auto* Wall = GetWorld()->SpawnActor<AActor>();
+        auto* Wall = World->SpawnActor<AActor>();
         auto* Box = NewObject<UBoxComponent>(Wall);
         Wall->SetRootComponent(Box);
         Box->SetBoxExtent(Index < 2 ? FVector(10, 510, 180) : FVector(510, 10, 180));

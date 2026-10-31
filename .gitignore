@@ -30,3 +30,6 @@ Assets/Generated.meta
 /Assets/Resources/PrivateNeighbourhood.meta
 /PrivateReferences/
 /LocalGameData/
+
+# Private user photo attachments
+/.codex-attachments/

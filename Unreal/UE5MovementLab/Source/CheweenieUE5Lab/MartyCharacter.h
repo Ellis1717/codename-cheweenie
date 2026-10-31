@@ -30,7 +30,8 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
     void CycleCamera();
-    void ReturnHome();
+    virtual void ReturnHome();
+    virtual bool UsesAdventureHome() const { return true; }
     virtual float TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer) override;
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
@@ -76,6 +77,9 @@ private:
     int32 LastDetailed=-1;
     FVector Home;
 };
+
+// Deterministic collision setup for the retained room, independently on each peer.
+void PrepareCheweenieRoom(UWorld* World, bool HideAllPets = false);
 
 UCLASS()
 class AMartyPlayMode : public AGameModeBase

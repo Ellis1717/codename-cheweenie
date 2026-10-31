@@ -1,0 +1,77 @@
+{
+  "title": "Codename .... Cheweenie",
+  "version": "LAN-0.1.0",
+  "engine": "5.8.4-58902052",
+  "baseCommit": "c4a4028d7f9731e8b76bbdd1ad382e50dbd1c318",
+  "scope": "Independent two-player listen-server room, pet selection, shared toy and voices",
+  "nativeEditorBuild": "passed",
+  "nativeGameBuild": "passed",
+  "fullCookStageArchive": "passed",
+  "packagedHeadless": {
+    "guest": 21,
+    "failed": 0,
+    "host": 24
+  },
+  "packagedRendered": {
+    "guest": 21,
+    "failed": 0,
+    "backend": "DX12 offscreen 1280x720; both peers rendered",
+    "host": 24
+  },
+  "packagedSoloRegression": {
+    "companionReload": 4,
+    "companionPlay": 30,
+    "failed": 0
+  },
+  "packagedAssertionExecutions": 124,
+  "editorSoloMovement": {
+    "failed": 0,
+    "note": "Run before final co-op-only mesh-parent smoothing change; shared solo source unchanged afterward",
+    "passed": 16
+  },
+  "input": "Synthetic keyboard/gamepad injection through Enhanced Input; physical controllers unverified",
+  "network": "Two real processes over loopback UDP, not two independent machines",
+  "runtimeLogErrorFatalCategories": 0,
+  "materialFallbacks": 0,
+  "payloadFiles": 43,
+  "transfer": {
+    "sha256": "16a0eac32d200e2cf03b64346bf17793ffd1c5c557aa16c6b7777a273aedd222",
+    "bytes": 490708596,
+    "payloadHashesVerifiedInZip": 43,
+    "excludesSavedAndPrivateReferences": true,
+    "file": "builds/Codename-Cheweenie-LAN-0.1.0.zip"
+  },
+  "launcher": "Windows PowerShell 5.1 payload check and invalid-address rejection passed",
+  "captures": [
+    "screenshots/ue5-coop-host.png",
+    "screenshots/ue5-coop-guest.png"
+  ],
+  "optimization": [
+    "20 Hz pet replication; 2 Hz minimum",
+    "20 Hz remote Marty gait, owner frame-rate gait",
+    "Visible meshes inherit CharacterMovement smoothing",
+    "No bone/hair transform replication",
+    "Unused needs/cat-gait ticks disabled",
+    "Idle toy tick disabled; held transform derived locally, carrier/drop replicated"
+  ],
+  "repairedFindings": [
+    "Replication macro output-array naming fixed before successful compile",
+    "Acceptance tick guarded until replicated BeginPlay",
+    "Test stages synchronized with a replicated readiness barrier; actions deferred until both peers checked prior state",
+    "Separate test walking lanes prevent a capsule collision from masquerading as a hurry failure",
+    "Visible pet meshes attached beneath CharacterMovement smoothing mesh"
+  ],
+  "unverified": [
+    "Two separate PCs and home network/firewall behavior",
+    "Physical Xbox/PlayStation controller feel",
+    "Subjective audio/listening",
+    "Whole-game frame-time/FPS comparison and WAN latency",
+    "Networking solo quests, outdoor travel, digging, needs, inventory and saves",
+    "Articulated cat limbs/tails/fur"
+  ],
+  "retained": [
+    "Validated solo 0.9 package and UNREAL_PLAY.cmd",
+    "Unity fallback and user photos/resources",
+    "Independent content-only comparison preview"
+  ]
+}
