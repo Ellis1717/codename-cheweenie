@@ -1,4 +1,6 @@
-# Bork or Treat — Halloween special (0.11.0)
+# Bork or Treat — Halloween special (0.11.1)
+
+Version 0.11.1 corrects Marty's lengthwise hot-dog attachment; see the [fit results](evidence/ue5-hotdog-fit-build.json). Reopen the Bork or Treat desktop shortcut for this patch.
 
 An optional solo festival for **Codename .... Cheweenie**. Choose **Halloween special / Bork or Treat** from Title, Pause or Controls. The separate **Play Cheweenie Bork or Treat** desktop launcher opens this menu directly. Select **Start / continue** to go outside.
 
