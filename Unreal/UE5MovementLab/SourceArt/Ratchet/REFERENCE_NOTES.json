@@ -1,0 +1,11 @@
+{
+  "name": "Ratchet",
+  "identity": "Owner-confirmed former family cat; requested as an optional unlockable tribute",
+  "confirmed_source_ids": ["A01", "A02", "A03", "A04"],
+  "confirmation_date": "2026-10-31",
+  "correction": "These sources supersede their earlier provisional Rio matches. Do not use them to author Rio.",
+  "observed": ["Predominantly black fuller coat", "Long bushy dark tail", "White hind socks and smaller white front toe patches", "White chin/chest/underside areas", "Dark face, triangular ears and long pale whiskers"],
+  "inferred_for_first_model": ["Neutral standing anatomy and gameplay scale", "Fine marking boundaries", "Muted iris hue and precise nose colour", "Coat tuft direction on unseen surfaces"],
+  "limitations": ["Static geometry, no feline skeletal animation", "First-pass likeness, not a scan or finished realistic portrait", "Existing generic cat voice, not Ratchet's recorded voice"],
+  "retention": "Original family photos and source hashes remain private; only pet observations and original authored assets are committed"
+}

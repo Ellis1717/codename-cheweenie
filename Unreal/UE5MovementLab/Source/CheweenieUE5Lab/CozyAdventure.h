@@ -67,6 +67,7 @@ public:
     UPROPERTY(SaveGame) int32 NavTarget=0;
     UPROPERTY(SaveGame) int32 CatFollowMask=0;
     UPROPERTY(SaveGame) int32 CostumeMask=0;
+    UPROPERTY(SaveGame) bool RatchetUnlocked=false;
     UPROPERTY(SaveGame) int32 LakituBond=0;
     UPROPERTY(SaveGame) int32 RioBond=0;
 };
@@ -90,6 +91,8 @@ public:
     UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
     void HoldMessage(float Seconds) { MessageTime=Seconds; }
     void ActionCue(const FString& Name) { PlayCue(Name); }
+    void CheckRatchetUnlock();
+    void VisitRatchet();
     void OpenBackpack();
     void OpenTricks();
     void OpenMap();
