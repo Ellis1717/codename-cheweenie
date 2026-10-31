@@ -36,7 +36,9 @@
       "id": "L01",
       "kind": "owner_photo",
       "subject": "Lakitu",
-      "view": "Held, near-frontal view; face, chest, forelegs and part of the body visible"
+      "view": "Held, near-frontal view; face, chest, forelegs and part of the body visible",
+      "identity_status": "Owner-confirmed Lakitu",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "R01",
@@ -165,35 +167,40 @@
       "kind": "owner_photo",
       "subject": "Lakitu",
       "view": "Curled elevated, broad irregular dorsal black patches on white",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Lakitu",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A16",
       "kind": "owner_photo",
       "subject": "Lakitu",
       "view": "Front crouch, asymmetric mask/pink nose",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Lakitu",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A17",
       "kind": "owner_photo",
       "subject": "Lakitu",
       "view": "Curled side, white underside/dark tail",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Lakitu",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A18",
       "kind": "owner_photo",
       "subject": "Lakitu",
       "view": "Same held view as L01",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Lakitu",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A19",
       "kind": "owner_photo",
       "subject": "Lakitu",
       "view": "Front three-quarter crouch, mask/dorsal patch edges",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Lakitu",
+      "identity_confirmation_date": "2026-10-31"
     }
   ],
   "profiles": [
@@ -330,7 +337,7 @@
         },
         {
           "feature": "body_markings",
-          "description": "White chest, visible belly, forelegs and front paws contrast with black crown/ear regions and visible dark side/back patches. The complete dorsal marking layout is not shown. Additional candidate views extend the dorsal evidence.",
+          "description": "White chest, visible belly, forelegs and front paws contrast with black crown/ear regions and visible dark side/back patches. The complete dorsal marking layout is not shown. Owner-confirmed A15–A19 extend the dorsal evidence.",
           "source_ids": [
             "L01"
           ],
@@ -346,7 +353,7 @@
         },
         {
           "feature": "additional_body_views",
-          "description": "Candidate Lakitu views show broad irregular black back/side islands on a mostly white body, white front legs and a dark curled tail. Full tail tip, rear paws and exact patch boundaries remain unresolved.",
+          "description": "Owner-confirmed Lakitu views show broad irregular black back/side islands on a mostly white body, white front legs and a dark curled tail. Full tail tip, rear paws and exact patch boundaries remain unresolved.",
           "source_ids": [
             "A15",
             "A16",
@@ -361,14 +368,15 @@
         "Separate the pink nose and white muzzle/blaze from the dark crown",
         "Keep eyes seated inside shaped eyelids and preserve a feline muzzle rather than a dog-like snout",
         "Keep visible front paws/forelegs white without inventing unseen rear paw markings",
-        "Use the held pose as a marking reference, not a neutral anatomical proportion sheet"
+        "Use the held pose as a marking reference, not a neutral anatomical proportion sheet",
+        "Use the five owner-confirmed views together to match irregular dorsal patch edges, white forelegs and the dark tail; do not infer standing proportions from curled or held poses."
       ],
       "unknowns": [
         "Anatomical left/right assignment if the source was mirrored",
         "Rear paws and their colour boundaries",
         "Standing proportions, size relative to Rio and exact iris hue",
         "Measured feline motion",
-        "Complete marking boundaries and tail tip/length; dark tail seen in candidate A17"
+        "Complete marking boundaries and tail tip/length; dark tail seen in owner-confirmed A17"
       ],
       "inferred_motion_targets": [
         "Feline shoulder/spine flexibility and species-appropriate gait",
@@ -376,7 +384,7 @@
         "Grounded paw placement, turns, crouch, sit and head-bump transitions"
       ],
       "motion_targets_are_photo_verified": false,
-      "additional_identity_policy": "A-series identities are provisional visual matches. Preserve source observations if owner corrects identity."
+      "additional_identity_policy": "L01 and A15–A19 are owner-confirmed Lakitu as of 2026-10-31. Rio and mixed-cat A10 identities are unchanged."
     },
     {
       "id": "rio",
@@ -505,6 +513,20 @@
       ],
       "supplied_view_count": 5,
       "note": "Owner confirmed the held, hot-dog costume, seated garment, standing-seat and toy-carrying views are all Marty. Reposted/resized views are not extra independent photographs. Cat attachment identities are unchanged."
+    },
+    {
+      "date": "2026-10-31",
+      "subject": "Lakitu",
+      "source_ids": [
+        "L01",
+        "A15",
+        "A16",
+        "A17",
+        "A18",
+        "A19"
+      ],
+      "supplied_view_count": 5,
+      "note": "Owner confirmed the held, curled dorsal, curled side, indoor crouch and outdoor front views as Lakitu. L01/A18 repeat the held view. This does not confirm Rio or the mixed-cat A10 image."
     }
   ]
 }

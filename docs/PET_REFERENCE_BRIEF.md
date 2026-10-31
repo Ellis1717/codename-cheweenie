@@ -22,7 +22,7 @@ Raw family photos stay in ignored PrivateReferences. Additional originals stay i
 
 ### Additional attached views
 
-The owner confirmed all five supplied dog views as Marty on 2026-10-31: M01/M02 and A05–A09, including the repeated held/standing views. Cat A-series identities remain provisional visual matches.
+The owner confirmed all five supplied dog views as Marty on 2026-10-31: M01/M02 and A05–A09, including the repeated held/standing views. The owner also confirmed the five Lakitu views: L01 and A15–A19, including the repeated held view. Rio and mixed-cat A10 identities remain provisional visual matches.
 
 | ID | Candidate pet | Visible evidence / limitation |
 |---|---|---|
@@ -58,11 +58,13 @@ The standing view suggests an elongated body and compact limbs, but it is not a 
 
 ## Lakitu
 
+The owner confirmed all five supplied views as Lakitu on 2026-10-31: held (L01/A18), curled dorsal (A15), outdoor front (A16), curled side (A17) and indoor crouch (A19). These confirm identity without adding independent views to the existing reference set.
+
 **Identity to preserve:** the asymmetric black-and-white face, central white blaze, pink nose, white muzzle/chest/front legs, dark crown/ears and long white whiskers.
 
 In the displayed L01 image, the **viewer-right eye sits inside the large black patch** extending onto the cheek. The **viewer-left eye has a largely white surround** beneath the dark crown. The white blaze broadens down the nose bridge into the muzzle. Upright triangular ears have fine light edge hairs. The irises look warm yellow/olive-brown under the photographed lighting; that is a provisional colour observation.
 
-White forelegs, front paws, chest and visible belly contrast with dark side/back areas. Candidate A15–A17/A19 add broad irregular black back/side patches on a mostly white body, and a dark tail curled beside the body. Exact boundaries, rear paws, tail tip and length remain incomplete. A dark collar and metallic hanging tags are visible; exact accessory design is not locked.
+White forelegs, front paws, chest and visible belly contrast with dark side/back areas. Owner-confirmed A15–A17/A19 add broad irregular black back/side patches on a mostly white body, and a dark tail curled beside the body. Exact boundaries, rear paws, tail tip and length remain incomplete. A dark collar and metallic hanging tags are visible; exact accessory design is not locked.
 
 **First modelling fixes:** preserve the face asymmetry with separate marking control on both sides. Keep the pink nose and white muzzle separate from the dark eye patch. Avoid a symmetric tuxedo face or dog-like muzzle. The held pose is a marking reference, not a standing proportion template.
 
