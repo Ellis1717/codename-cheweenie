@@ -1,5 +1,6 @@
 // Real server/client acceptance, opt-in only. Inputs are synthetic, not physical hardware.
 #include "CozyCoop.h"
+#include "HalloweenCostume.h"
 #include "MartyGait.h"
 #include "Components/PoseableMeshComponent.h"
 #include "EngineUtils.h"
@@ -41,11 +42,13 @@ void ACozyCoopController::TickAcceptance(float Delta)
         Check(P->PetId==(Host?0:1),TEXT("Host starts Marty and guest starts Lakitu"));Check(P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Owner lands on actual room floor"));
         Check(P->Skin->GetSkinnedAsset()!=nullptr,TEXT("Retained Marty skeletal asset is available"));
         if(Host){FString Error;GetWorld()->GetAuthGameMode<ACozyCoopMode>()->PreLogin(TEXT(""),TEXT("127.0.0.1"),FUniqueNetIdRepl(),Error);Check(Error.Contains(TEXT("room is full")),TEXT("Server admission rejects an occupied two-player room"));}
+        Check(!P->WearingCostume,TEXT("LAN costume defaults off for this player"));Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,true);
         OwnStart=P->GetActorLocation();OtherStart=Other->GetActorLocation();SetControlRotation(FRotator(-12,0,0));
         // Separate walking lanes prevent one player's capsule blocking the other in this test.
         Next();break;
     case 1:
-        if(StageTime<1)break;
+        Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,false);if(StageTime<1)break;
+        Check(P->WearingCostume&&Other->WearingCostume&&P->Costume->VisiblePieces()>0&&Other->Costume->VisiblePieces()>0,TEXT("Keyboard and gamepad costume choices reach both peers"));
         Key(EKeys::E,true);Next();break;
     case 2:
         Key(EKeys::E,false);if(StageTime<1)break;
@@ -83,14 +86,17 @@ void ACozyCoopController::TickAcceptance(float Delta)
     case 11:
         Key(EKeys::Three,false);if(StageTime<1)break;
         Check((Host?Other:P)->PetId==2,TEXT("Guest keyboard selection becomes Rio on both peers"));
+        Check((Host?Other:P)->Costume->OutfitPet==2&&(Host?Other:P)->Costume->MaterialsReady(),TEXT("Changing to Rio replaces the outfit with her bee costume on both peers"));
         Next();break;
     case 12:
         if(!Host){if(First)Key(EKeys::Gamepad_DPad_Left,true);else if(StageTime>.2f)Key(EKeys::Gamepad_DPad_Left,false);}if(StageTime<1)break;
         Check((Host?Other:P)->PetId==1,TEXT("Guest controller selection returns to Lakitu on both peers"));
         Check(P->VoiceCount==2,TEXT("Server rate limits repeated voice requests"));
-        Check(P->IsActorTickEnabled(),TEXT("Owner motor remains active"));Next();break;
+        Check(P->IsActorTickEnabled(),TEXT("Owner motor remains active"));Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,true);Next();break;
     case 13:
+        Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,false);
         if(StageTime<(FApp::CanEverRender()?20.f:1.f))break;
+        Check(!P->WearingCostume&&(!Other||!Other->WearingCostume)&&P->Costume->VisiblePieces()==0,TEXT("Costumes can be removed again on both network peers"));
         if(FApp::CanEverRender()){FString Out;FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Out);GetHighResScreenshotConfig().FilenameOverride=FPaths::Combine(Out,Host?TEXT("CoopHost.png"):TEXT("CoopGuest.png"));if(GEngine&&GEngine->GameViewport)GEngine->GameViewport->Viewport->TakeHighResScreenShot();}
         Next();break;
     case 14:

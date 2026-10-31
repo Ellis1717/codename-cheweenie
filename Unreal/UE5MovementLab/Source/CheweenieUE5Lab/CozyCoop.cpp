@@ -1,4 +1,5 @@
 #include "CozyCoop.h"
+#include "HalloweenCostume.h"
 #include "MartyGait.h"
 #include "DogLife.h"
 #include "Components/PoseableMeshComponent.h"
@@ -70,7 +71,7 @@ void ACozyCoopPet::BeginPlay()
 }
 void ACozyCoopPet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);DOREPLIFETIME(ACozyCoopPet,PetId);DOREPLIFETIME(ACozyCoopPet,VoiceCount);DOREPLIFETIME(ACozyCoopPet,LastVoicePet);DOREPLIFETIME(ACozyCoopPet,AcceptanceStage);
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);DOREPLIFETIME(ACozyCoopPet,PetId);DOREPLIFETIME(ACozyCoopPet,WearingCostume);DOREPLIFETIME(ACozyCoopPet,VoiceCount);DOREPLIFETIME(ACozyCoopPet,LastVoicePet);DOREPLIFETIME(ACozyCoopPet,AcceptanceStage);
 }
 FString ACozyCoopPet::PetName() const{return PetLabel(PetId);}
 void ACozyCoopPet::ApplyPet()
@@ -79,6 +80,7 @@ void ACozyCoopPet::ApplyPet()
     const bool Dog=PetId==0;
     Skin->SetVisibility(Dog);Gait->SetComponentTickEnabled(Dog&&GetNetMode()!=NM_DedicatedServer);
     if(Static){Static->SetVisibility(PetId>0);if(PetId>0){Static->SetStaticMesh(PetId==1?LakituMesh:RioMesh);Static->SetRelativeScale3D(FVector(.32f));}}
+    Costume->SetOutfit(Dog?static_cast<USceneComponent*>(Skin.Get()):Static,PetId,WearingCostume);
     if(Dog&&Gait->Ready)Gait->ResetContacts();
 }
 bool ACozyCoopPet::PetAvailable(int32 Id) const
@@ -144,6 +146,8 @@ void ACozyCoopPet::PreviousPet(){for(int32 I=1;I<3;++I){const int32 Id=(PetId+3-
 void ACozyCoopPet::Marty(){ServerChoosePet(0);}void ACozyCoopPet::Lakitu(){ServerChoosePet(1);}void ACozyCoopPet::Rio(){ServerChoosePet(2);}
 void ACozyCoopPet::JumpCoop(){Jump();}void ACozyCoopPet::Voice(){ServerVoice();}void ACozyCoopPet::UseToy(){ServerToy(false);}void ACozyCoopPet::DropToy(){ServerToy(true);}
 void ACozyCoopPet::RecenterCoop(){if(Controller)Controller->SetControlRotation(FRotator(-12,GetActorRotation().Yaw,0));}
+void ACozyCoopPet::ToggleCostume(){ServerToggleCostume();}
+void ACozyCoopPet::ServerToggleCostume_Implementation(){WearingCostume=!WearingCostume;ApplyPet();ForceNetUpdate();}
 void ACozyCoopPet::ToggleMenu(){HurryOff();if(auto* PC=Cast<ACozyCoopController>(Controller))PC->MenuOpen=!PC->MenuOpen;}
 void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
 {
@@ -159,6 +163,7 @@ void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
     auto* Hop=Button(EKeys::SpaceBar,EKeys::Gamepad_FaceButton_Top,&ACozyCoopPet::JumpCoop);E->BindAction(Hop,ETriggerEvent::Completed,this,&ACozyCoopPet::StopJumping);
     Button(EKeys::V,EKeys::Gamepad_RightThumbstick,&ACozyCoopPet::CycleCamera);Button(EKeys::R,EKeys::Gamepad_RightShoulder,&ACozyCoopPet::RecenterCoop);
     Button(EKeys::H,EKeys::Gamepad_DPad_Down,&ACozyCoopPet::ReturnHome);Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&ACozyCoopPet::Voice);Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&ACozyCoopPet::UseToy);Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&ACozyCoopPet::DropToy);
+    Button(EKeys::T,EKeys::Gamepad_DPad_Up,&ACozyCoopPet::ToggleCostume);
     Button(EKeys::One,EKeys::Invalid,&ACozyCoopPet::Marty);Button(EKeys::Two,EKeys::Invalid,&ACozyCoopPet::Lakitu);Button(EKeys::Three,EKeys::Invalid,&ACozyCoopPet::Rio);
     Button(EKeys::RightBracket,EKeys::Gamepad_DPad_Right,&ACozyCoopPet::NextPet);Button(EKeys::LeftBracket,EKeys::Gamepad_DPad_Left,&ACozyCoopPet::PreviousPet);Button(EKeys::Escape,EKeys::Gamepad_Special_Right,&ACozyCoopPet::ToggleMenu);
     if(auto* PC=Cast<APlayerController>(Controller))if(auto* S=ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))S->AddMappingContext(CoopMapping,0);
@@ -189,13 +194,14 @@ void ACozyCoopController::Tick(float Delta){Super::Tick(Delta);if(IsLocalControl
 void ACozyCoopHUD::DrawHUD()
 {
     Super::DrawHUD();if(!Canvas)return;auto* PC=Cast<ACozyCoopController>(PlayerOwner);auto* Pet=PC?Cast<ACozyCoopPet>(PC->GetPawn()):nullptr;
-    DrawRect(FLinearColor(.025f,.055f,.07f,.92f),16,16,850,PC&&PC->MenuOpen?300:165);
+    DrawRect(FLinearColor(.025f,.055f,.07f,.92f),16,16,850,PC&&PC->MenuOpen?330:180);
     DrawText(TEXT("Codename .... Cheweenie | LAN Cozy Crew"),FLinearColor(1,.86f,.5f),28,28,nullptr,1.3f);
     DrawText(Pet?FString(TEXT("You: "))+Pet->PetName():TEXT("Joining the crew..."),FLinearColor::White,28,58);
     DrawText(TEXT("WASD / LS: move | mouse / RS: look | Shift / A-Cross: hurry"),FLinearColor::White,28,83);
     DrawText(TEXT("Space / Y-Triangle: jump | B / LB-L1: voice | E / X-Square: carry | Q / LT: drop"),FLinearColor::White,28,105);
     DrawText(TEXT("1 Marty | 2 Lakitu | 3 Rio | D-pad left/right: change pet | V / R3: camera"),FLinearColor::White,28,127);
-    if(PC&&PC->MenuOpen){DrawText(TEXT("Controls open - friends keep playing. Esc / Options: close"),FLinearColor::White,28,165);DrawText(TEXT("H: return home | R / RB-R1: recenter | Alt+F4: leave game"),FLinearColor::White,28,195);DrawText(TEXT("LAN room: shared toy and voices. Solo quests/saves remain separate."),FLinearColor::White,28,225);}
+    DrawText(TEXT("T / D-pad Up: Halloween costume on/off"),FLinearColor::White,28,149);
+    if(PC&&PC->MenuOpen){DrawText(TEXT("Controls open - friends keep playing. Esc / Options: close"),FLinearColor::White,28,195);DrawText(TEXT("H: return home | R / RB-R1: recenter | Alt+F4: leave game"),FLinearColor::White,28,225);DrawText(TEXT("LAN room: shared toy and voices. Solo quests/saves remain separate."),FLinearColor::White,28,255);}
     if(PC&&!PC->Message.IsEmpty())DrawText(PC->Message,FLinearColor(1,.85f,.45f),28,Canvas->SizeY-50);
     for(TActorIterator<ACozyCoopPet> It(GetWorld());It;++It)if(*It!=Pet){const FVector P=Project(It->GetActorLocation()+FVector(0,0,50));if(P.Z>0)DrawText(It->PetName(),FLinearColor(1,.9f,.6f),P.X-20,P.Y);}
 }

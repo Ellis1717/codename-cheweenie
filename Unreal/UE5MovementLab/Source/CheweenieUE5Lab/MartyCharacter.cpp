@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "HalloweenCostume.h"
 #include "WorldRealism.h"
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
@@ -45,6 +46,7 @@ AMartyCharacter::AMartyCharacter()
     GetCharacterMovement()->MaxStepHeight = 12;
     GetCharacterMovement()->JumpZVelocity=440;
     GetCharacterMovement()->AirControl=.35f;
+    Costume=CreateDefaultSubobject<UHalloweenCostume>(TEXT("OptionalHalloweenCostume"));
     Life=CreateDefaultSubobject<UDogLife>(TEXT("DogNeedsAndCozyActions"));
     Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RetainedMarty"));
     Visual->SetupAttachment(GetRootComponent());
@@ -112,6 +114,7 @@ void AMartyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     if(auto* S=Adventure())if(S->Progress){const bool Detailed=S->Feature(ECozyFeature::DetailedCoat)&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"));if(LastDetailed!=int32(Detailed)){LastDetailed=int32(Detailed);if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Detailed?TEXT("/Game/Adventure/MartyRealism/Marty_RealCoat.Marty_RealCoat"):TEXT("/Game/Adventure/Marty/Marty_CoverRig.Marty_CoverRig"))){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
+    if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
     if(GetActorLocation().Z< -600)ReturnHome();
 }
 

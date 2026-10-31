@@ -1,4 +1,5 @@
 #include "CatCompanions.h"
+#include "HalloweenCostume.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
@@ -23,6 +24,7 @@ void UCatCompanions::Initialize()
     auto* D=M->Adventure->Progress.Get();D->CatFollowMask&=3;D->LakituBond=FMath::Clamp(D->LakituBond,0,10);D->RioBond=FMath::Clamp(D->RioBond,0,10);
     for(TActorIterator<AStaticMeshActor> It(GetWorld());It;++It){const UStaticMesh* PetMesh=It->GetStaticMeshComponent()->GetStaticMesh();if(!PetMesh)continue;
         for(int32 I=0;I<2;++I)if(PetMesh->GetPathName()==FString::Printf(TEXT("/Game/VisualLab/Pets/%s.%s"),CatName(I),CatName(I))){auto& C=Cats[I];C.Actor=*It;C.Home=It->GetActorTransform();C.Position=It->GetActorLocation();It->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);It->SetActorEnableCollision(false);}}
+    for(auto& Cat:Cats)if(Cat.Actor.IsValid()&&!Cat.Actor->FindComponentByClass<UHalloweenCostume>()){auto* Outfit=NewObject<UHalloweenCostume>(Cat.Actor.Get());Outfit->RegisterComponent();}
     Ready=Cats[0].Actor.IsValid()&&Cats[1].Actor.IsValid();
 }
 FString UCatCompanions::State(int32 I) const{return !Enabled()?TEXT("OFF"):Cats[I].Happy>0?TEXT("Purring"):Cats[I].Waiting?TEXT("Waiting"):Following(I)?TEXT("Following"):TEXT("Staying");}
@@ -73,7 +75,8 @@ FString UCatCompanions::Prompt() const
 }
 void UCatCompanions::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
-    Super::TickComponent(Delta,Type,Function);Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(!Ready||!Enabled()||!P||M->Adventure->Screen!=ECozyScreen::Playing)return;
+    Super::TickComponent(Delta,Type,Function);Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(Ready&&M&&M->Adventure->Progress)for(int32 I=0;I<2;++I)if(auto* Outfit=Cats[I].Actor->FindComponentByClass<UHalloweenCostume>())Outfit->SetOutfit(Cats[I].Actor->GetStaticMeshComponent(),I+1,(M->Adventure->Progress->CostumeMask&(1<<(I+1)))!=0);
+    if(!Ready||!Enabled()||!P||M->Adventure->Screen!=ECozyScreen::Playing)return;
     const float Dt=FMath::Min(Delta,.05f);
     for(int32 I=0;I<2;++I){auto& C=Cats[I];C.Phase+=Dt;C.PetCooldown=FMath::Max(0.f,C.PetCooldown-Dt);C.Happy=FMath::Max(0.f,C.Happy-Dt);
         FVector Direction=FVector::ZeroVector;float TargetSpeed=0;

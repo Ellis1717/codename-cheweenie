@@ -42,6 +42,8 @@ public:
     virtual void ReturnHome() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out) const override;
     UPROPERTY(ReplicatedUsing=ApplyPet) int32 PetId=-1;
+    UPROPERTY(ReplicatedUsing=ApplyPet) bool WearingCostume=false;
+    UFUNCTION(Server,Reliable) void ServerToggleCostume();
     UPROPERTY(Replicated) int32 VoiceCount=0;
     UPROPERTY(Replicated) int32 LastVoicePet=-1;
     // Opt-in runtime acceptance handshake; dormant at -1 during ordinary play.
@@ -73,6 +75,7 @@ private:
     void DropToy();
     void RecenterCoop();
     void ToggleMenu();
+    void ToggleCostume();
     UPROPERTY() TObjectPtr<UInputMappingContext> CoopMapping;
     UPROPERTY() TArray<TObjectPtr<UInputAction>> CoopActions;
     UPROPERTY() TObjectPtr<UStaticMesh> LakituMesh;
