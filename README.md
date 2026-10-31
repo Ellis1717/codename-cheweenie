@@ -1,5 +1,9 @@
 # Codename .... Cheweenie 🐾
 
+**Cozy crew 0.9:** Lakitu and Rio can follow, stay, come when called, share head bumps and build saved friendships. K / D-pad Down opens crew commands. Routing reuses a cached street graph and skips unchanged/paused work; the wide camera now frames the group. [Companions, controls and limitations](docs/UNREAL_COMPANIONS.md). Cat limb/fur rigging remains future work; their original meshes and markings are retained.
+
+The final 0.9 package and regressions passed 288 native assertions, three audio waveform checks and a full-HD coat check. [Actual results](docs/evidence/ue5-09-build.json), [crew in game](docs/screenshots/ue5-09-companion-crew.png). Physical controllers and whole-game frame-time performance remain unverified.
+
 **Navigation 0.8:** north-up maps, separate Marty/camera heading markers, a compass, saved destinations, location finding and street guidance. M / D-pad Up opens the map. Pause → Controls & cameras offers 24 independent navigation, pet, camera and sound switches. [Controls and map guide](docs/UNREAL_NAVIGATION.md).
 
 The final 0.8 package and regressions passed 219 native assertions, three audio waveform checks and a full-HD coat-render check. [Actual results](docs/evidence/ue5-08-build.json). Physical controllers remain unverified; earlier releases and Unity are retained.

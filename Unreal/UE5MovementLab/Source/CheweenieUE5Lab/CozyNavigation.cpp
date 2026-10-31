@@ -16,9 +16,9 @@ TArray<FCozyLandmark> UCozyNavigation::Landmarks() const
     const auto* M=Cast<AMartyPlayMode>(GetOwner());if(!M||!M->Adventure||!M->Adventure->Progress||!M->Neighbourhood)return {};
     const auto* S=M->Adventure.Get();const auto* N=M->Neighbourhood.Get();FCozyLandmark Objective{TEXT("Current patrol objective"),FVector(-200,-200,28),false};
     if(!S->Progress->Complete){bool Found=false;for(int32 I=0;I<S->Mission->Snacks.Num();++I)if(!(S->Progress->SnackMask&(1<<I))){Objective.Position=S->Mission->Snacks[I].Position;Objective.Label=TEXT("Next golden snack");Found=true;break;}
-        if(!Found&&S->Mission->Visits.IsValidIndex(S->Progress->VisitIndex)){const auto& V=S->Mission->Visits[S->Progress->VisitIndex];Objective.Position=V.Position;Objective.Label=V.Label;}}
+        if(!Found&&S->Mission->Visits.IsValidIndex(S->Progress->VisitIndex)){const auto& V=S->Mission->Visits[S->Progress->VisitIndex];Objective.Position=S->StopPosition(V);Objective.Outdoors=S->StopOutdoors(V);Objective.Label=V.Label;}}
     TArray<FCozyLandmark> Result={Objective,{TEXT("Home / headquarters"),FVector(-200,-200,28),false},{TEXT("Park"),N->Park,true},{TEXT("Glen Dhu school"),N->School,true},{TEXT("Kitchen bowl"),FVector(-180,320,0),false}};
-    for(const auto& V:S->Mission->Visits)Result.Add({V.Label,V.Position,false});
+    for(const auto& V:S->Mission->Visits)Result.Add({V.Label,S->StopPosition(V),S->StopOutdoors(V)});
     for(const auto& D:N->Dogs)Result.Add({D.Name,D.Position,true});return Result;
 }
 FCozyLandmark UCozyNavigation::Goal() const
@@ -45,35 +45,39 @@ FString UCozyNavigation::Guidance() const
     const FString TurnText=FMath::Abs(Turn)<20?TEXT("Ahead"):FMath::Abs(Turn)>150?TEXT("Turn around"):Turn>0?TEXT("Turn right"):TEXT("Turn left");
     return FString::Printf(TEXT("%s | %.0f m direct | %s | %s"),*G.Label,Distance,*TurnText,StreetRoute?TEXT("street guide"):TEXT("bearing only"));
 }
+void UCozyNavigation::BuildNetwork(const TArray<TPair<FVector,FVector>>& Edges)
+{
+    const double Started=FPlatformTime::Seconds();Graph=FCozyStreetGraph();Graph.EdgeCount=Edges.Num();++GraphBuilds;
+    TMap<FIntPoint,int32> Index;
+    auto Node=[&](FVector V){V.Z=0;const FIntPoint Key(FMath::RoundToInt(V.X),FMath::RoundToInt(V.Y));if(const auto* I=Index.Find(Key))return *I;const int32 I=Graph.Nodes.Add(V);Graph.Links.AddDefaulted();Index.Add(Key,I);return I;};
+    for(const auto& E:Edges){const int32 A=Node(E.Key),B=Node(E.Value);const double D=FVector::Dist2D(E.Key,E.Value);Graph.Links[A].Add({B,D});Graph.Links[B].Add({A,D});Graph.Ends.Add(FIntPoint(A,B));}
+    TArray<int32> Component;Component.Init(-1,Graph.Nodes.Num());int32 Largest=-1,LargestCount=0,NextComponent=0;
+    for(int32 I=0;I<Graph.Nodes.Num();++I)if(Component[I]<0){TArray<int32> Pending={I};Component[I]=NextComponent;int32 Count=0;while(!Pending.IsEmpty()){const int32 V=Pending.Pop(EAllowShrinking::No);++Count;for(const auto& L:Graph.Links[V])if(Component[L.Key]<0){Component[L.Key]=NextComponent;Pending.Add(L.Key);}}if(Count>LargestCount){Largest=NextComponent;LargestCount=Count;}++NextComponent;}
+    for(int32 I=0;I<Graph.Ends.Num();++I)if(Component[Graph.Ends[I].X]==Largest)Graph.ConnectedEdges.Add(I);
+    LastGraphMs=(FPlatformTime::Seconds()-Started)*1000;
+}
 void UCozyNavigation::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
-    Super::TickComponent(Delta,Type,Function);const auto* M=Cast<AMartyPlayMode>(GetOwner());if(!M||!M->Adventure||!M->Adventure->Progress)return;
-    RouteTime-=Delta;if(RouteTime<=0){RouteTime=1;RefreshRoute();}
+    Super::TickComponent(Delta,Type,Function);const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;
+    if(!M||!P||!M->Adventure->Progress||M->Adventure->Screen!=ECozyScreen::Playing||!M->Adventure->Feature(ECozyFeature::Route))return;
+    RouteTime-=Delta;if(RouteTime>0)return;RouteTime=1;
+    if((M->Neighbourhood->Outside&&Graph.EdgeCount<0)||M->Neighbourhood->Outside!=LastOutside||FVector::DistSquared2D(P->GetActorLocation(),LastStart)>10000||FVector::DistSquared2D(Goal().Position,LastGoal)>1600)RefreshRoute();
 }
 void UCozyNavigation::RefreshRoute()
 {
-    Route.Empty();StreetRoute=false;const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;
-    if(!M||!P||!M->Adventure->Progress||!M->Adventure->Feature(ECozyFeature::Route))return;
-    const FVector Start=P->GetActorLocation(),End=Goal().Position;Route={Start,End};if(!M->Neighbourhood->Outside)return;
-    const auto& Edges=M->Neighbourhood->Streets();if(Edges.IsEmpty())return;
-    TArray<FVector> Nodes;TArray<TArray<TPair<int32,double>>> Links;TMap<FIntPoint,int32> Index;
-    auto Node=[&](FVector V){V.Z=0;const FIntPoint Key(FMath::RoundToInt(V.X),FMath::RoundToInt(V.Y));if(const auto* I=Index.Find(Key))return *I;const int32 I=Nodes.Add(V);Links.AddDefaulted();Index.Add(Key,I);return I;};
+    const double Started=FPlatformTime::Seconds();Route.Empty();StreetRoute=false;const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;
+    if(!M||!P||!M->Adventure->Progress)return;
+    const FVector Start=P->GetActorLocation(),End=Goal().Position;LastStart=Start;LastGoal=End;LastOutside=M->Neighbourhood->Outside;
+    if(!M->Adventure->Feature(ECozyFeature::Route))return;Route={Start,End};if(!LastOutside)return;
+    const auto& Edges=M->Neighbourhood->Streets();if(Graph.EdgeCount!=Edges.Num())BuildNetwork(Edges);if(Graph.ConnectedEdges.IsEmpty())return;++RouteSearches;
     int32 StartEdge=0,EndEdge=0;double SD=TNumericLimits<double>::Max(),ED=SD;
-    for(int32 I=0;I<Edges.Num();++I){const auto& E=Edges[I];const int32 A=Node(E.Key),B=Node(E.Value);const double D=FVector::Dist2D(E.Key,E.Value);Links[A].Add({B,D});Links[B].Add({A,D});
-        FVector S=Start,T=End;S.Z=T.Z=0;double D1=FMath::PointDistToSegment(S,Nodes[A],Nodes[B]),D2=FMath::PointDistToSegment(T,Nodes[A],Nodes[B]);if(D1<SD){SD=D1;StartEdge=I;}if(D2<ED){ED=D2;EndEdge=I;}}
-    // Route on the largest connected path network. Detached decorative driveways
-    // remain visible on the map but must not trap the search in a two-node island.
-    TArray<int32> Component;Component.Init(-1,Nodes.Num());int32 Largest=-1,LargestCount=0,NextComponent=0;
-    for(int32 I=0;I<Nodes.Num();++I)if(Component[I]<0){TArray<int32> Pending={I};Component[I]=NextComponent;int32 Count=0;while(!Pending.IsEmpty()){const int32 V=Pending.Pop(EAllowShrinking::No);++Count;for(const auto& L:Links[V])if(Component[L.Key]<0){Component[L.Key]=NextComponent;Pending.Add(L.Key);}}if(Count>LargestCount){Largest=NextComponent;LargestCount=Count;}++NextComponent;}
-    SD=ED=TNumericLimits<double>::Max();
-    for(int32 I=0;I<Edges.Num();++I){const auto& E=Edges[I];if(Component[Node(E.Key)]!=Largest)continue;FVector S=Start,T=End;S.Z=T.Z=0;const double D1=FMath::PointDistToSegment(S,E.Key,E.Value),D2=FMath::PointDistToSegment(T,E.Key,E.Value);if(D1<SD){SD=D1;StartEdge=I;}if(D2<ED){ED=D2;EndEdge=I;}}
-    TArray<double> Cost;Cost.Init(TNumericLimits<double>::Max(),Nodes.Num());TArray<int32> Prev;Prev.Init(-1,Nodes.Num());
+    for(int32 I:Graph.ConnectedEdges){const auto Ends=Graph.Ends[I];const FVector A=Graph.Nodes[Ends.X],B=Graph.Nodes[Ends.Y];FVector S=Start,T=End;S.Z=T.Z=0;const double D1=FMath::PointDistToSegment(S,A,B),D2=FMath::PointDistToSegment(T,A,B);if(D1<SD){SD=D1;StartEdge=I;}if(D2<ED){ED=D2;EndEdge=I;}}
+    TArray<double> Cost;Cost.Init(TNumericLimits<double>::Max(),Graph.Nodes.Num());TArray<int32> Prev;Prev.Init(-1,Graph.Nodes.Num());
     using FEntry=std::pair<double,int32>;std::priority_queue<FEntry,std::vector<FEntry>,std::greater<FEntry>> Open;
-    const FVector A=FMath::ClosestPointOnSegment(FVector(Start.X,Start.Y,0),Edges[StartEdge].Key,Edges[StartEdge].Value),B=FMath::ClosestPointOnSegment(FVector(End.X,End.Y,0),Edges[EndEdge].Key,Edges[EndEdge].Value);
-    for(FVector V:{Edges[StartEdge].Key,Edges[StartEdge].Value}){int32 I=Node(V);Cost[I]=FVector::Dist2D(A,V);Open.push({Cost[I],I});}
-    while(!Open.empty()){const auto E=Open.top();Open.pop();if(E.first>Cost[E.second])continue;for(const auto& L:Links[E.second]){const double C=E.first+L.Value;if(C<Cost[L.Key]){Cost[L.Key]=C;Prev[L.Key]=E.second;Open.push({C,L.Key});}}}
-    const int32 X=Node(Edges[EndEdge].Key),Y=Node(Edges[EndEdge].Value);int32 GoalIndex=Cost[X]+FVector::Dist2D(Nodes[X],B)<Cost[Y]+FVector::Dist2D(Nodes[Y],B)?X:Y;
-    if(Cost[GoalIndex]==TNumericLimits<double>::Max())return;
-    TArray<FVector> Reverse;for(int32 I=GoalIndex;I>=0;I=Prev[I])Reverse.Add(Nodes[I]);
-    Route={Start,A};if(StartEdge!=EndEdge)for(int32 I=Reverse.Num()-1;I>=0;--I)Route.Add(Reverse[I]);Route.Add(B);Route.Add(End);StreetRoute=true;
+    const auto S=Graph.Ends[StartEdge],E=Graph.Ends[EndEdge];const FVector A=FMath::ClosestPointOnSegment(FVector(Start.X,Start.Y,0),Graph.Nodes[S.X],Graph.Nodes[S.Y]),B=FMath::ClosestPointOnSegment(FVector(End.X,End.Y,0),Graph.Nodes[E.X],Graph.Nodes[E.Y]);
+    for(int32 I:{S.X,S.Y}){Cost[I]=FVector::Dist2D(A,Graph.Nodes[I]);Open.push({Cost[I],I});}
+    while(!Open.empty()){const auto Entry=Open.top();Open.pop();if(Entry.first>Cost[Entry.second])continue;for(const auto& L:Graph.Links[Entry.second]){const double C=Entry.first+L.Value;if(C<Cost[L.Key]){Cost[L.Key]=C;Prev[L.Key]=Entry.second;Open.push({C,L.Key});}}}
+    int32 GoalIndex=Cost[E.X]+FVector::Dist2D(Graph.Nodes[E.X],B)<Cost[E.Y]+FVector::Dist2D(Graph.Nodes[E.Y],B)?E.X:E.Y;
+    if(Cost[GoalIndex]==TNumericLimits<double>::Max())return;TArray<FVector> Reverse;for(int32 I=GoalIndex;I>=0;I=Prev[I])Reverse.Add(Graph.Nodes[I]);
+    Route={Start,A};if(StartEdge!=EndEdge)for(int32 I=Reverse.Num()-1;I>=0;--I)Route.Add(Reverse[I]);Route.Add(B);Route.Add(End);StreetRoute=true;LastSearchMs=(FPlatformTime::Seconds()-Started)*1000;
 }

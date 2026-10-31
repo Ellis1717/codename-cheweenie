@@ -1,4 +1,6 @@
-# Codename .... Cheweenie — Cozy Patrol 0.8
+# Codename .... Cheweenie — Cozy Crew 0.9
+
+Lakitu and Rio now have independent follow/stay commands, safe recall, greetings, saved friendship and a Best Buddies goal. K / D-pad Down opens the crew menu; Controls has a separate Companion behaviour switch (25 optional switches total). [Companion guide and cached routing](../../docs/UNREAL_COMPANIONS.md). This begins U3 behaviour using retained static meshes; articulated cat gait and fur remain unfinished.
 
 Navigation 0.8 adds north-up maps, body/camera direction markers, a compass, current location and saved destination guidance. Pause → Controls & cameras offers 24 independent feature switches. [Map, controls and tuning](../../docs/UNREAL_NAVIGATION.md).
 
@@ -16,7 +18,7 @@ See [how to play and extend it](../../docs/UNREAL_GAMEPLAY.md) and [Marty's cove
 
 ## Play
 
-UNREAL_PLAY.cmd prefers validated 0.8.0, then preserved 0.7.0/0.6.1/0.6.0/0.5.0/0.4.0 packages, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 three times for the close inspection camera; orbit to see ears and knees from the side.
+UNREAL_PLAY.cmd prefers validated 0.9.0, then preserved 0.8.0/0.7.0/0.6.1/0.6.0/0.5.0/0.4.0 packages, then the installed editor-game. The packaged game does not need Unreal Editor. Keep the entire Windows folder together when copying it to another compatible Windows PC. Runtime Saved data is additional and excluded from package hash records. Press V/R3 once for the wide crew view or three times for close inspection; orbit to see ears and knees from the side.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 |---|---|---|
@@ -28,6 +30,7 @@ UNREAL_PLAY.cmd prefers validated 0.8.0, then preserved 0.7.0/0.6.1/0.6.0/0.5.0/
 | Tricks / pace / alternate controls | C | B / Circle |
 | Backpack | Tab | View / Touchpad |
 | Map / choose destination | M | D-pad Up |
+| Crew commands / cat friendship | K | D-pad Down |
 | Dig / drop toy | F / Q | RT-R2 / LT-L2 |
 | Camera / recenter | V / R | R3 / RB-R1 |
 | Pause | Escape | Menu / Options |
@@ -47,6 +50,7 @@ Unreal 5.8.4 is installed at D:\Epic Games\UE_5.8. The successful build uses MSV
     .\TEST_GAIT.ps1 -Render
     .\TEST_TRICKS.ps1
     .\TEST_NAVIGATION.ps1 -Render
+    .\TEST_COMPANIONS.ps1 -Render
     .\TEST_AUDIO.ps1
     .\TEST_LIFE.ps1
     .\TEST_OUTSIDE.ps1
@@ -59,9 +63,11 @@ Scripts accept engine/cache paths. BUILD gathers newly added C++ files and limit
 
 Content/Adventure is versioned: the retained cover and fourteen retained/original sounds are included. IMPORT_AUDIO preserves existing Unreal asset edits and records source WAV hashes. BUILD fills a missing generated Content/VisualLab copy from the comparison project without overwriting Adventure. Do not delete the entire Content folder to refresh the comparison copy. Native binaries, caches and builds stay ignored. Original comparison assets/mesh exports remain at their original locations.
 
-PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.8.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE requires 193 packaged assertions, fresh navigation/action captures, audio-device/waveform evidence and a 1920×1080 tan-coat render check. Use IMPORT_REALCOAT.ps1 for the separate detailed model; IMPORT_MARTY.ps1 remains available for the preserved smooth model.
+PACKAGE builds, cooks, stages and archives under builds/UnrealAdventure-0.9.0. StageOnly reuses an already built/cooked result; compile the Game target separately before using it for native-only changes. The local distribution excludes debug symbols and includes the standard prerequisite installer. FINALIZE_PACKAGE requires 228 packaged assertions, fresh companion/navigation/action captures, route-cache measurements, audio-device/waveform evidence and a 1920×1080 tan-coat render check. Use IMPORT_REALCOAT.ps1 for the separate detailed model; IMPORT_MARTY.ps1 remains available for the preserved smooth model.
 
 ## Actual verification
+
+Version 0.9, 2026-10-30: Editor/Game builds and full cook/stage/archive succeeded. The final standalone build passed **228 assertions**, including 30 companion and four companion-reload checks. A separate headless private-map companion run passed another 34; private navigation (six), private walking/recovery (four) and legacy editor-game movement (sixteen) bring the native total to **288**, plus three audio waveform checks and one full-HD coat check. Play phases used rendered DX12; reload/private runs and legacy movement were headless. The final crew, command-menu and feature-switch captures were inspected. Final logs contain no Error/Fatal categories or material fallbacks. Finalization hashes 43 immutable payload files; the archived executable matches the compiled Game binary. The private-layout CPU route benchmark built topology once and measured approximately 0.033 ms median / 0.049 ms p95 across 64 warm searches; this is not an FPS benchmark. Keyboard/gamepad input was synthetic with explicit fixtures; physical controllers, subjective quality and whole-game frame times remain unverified. [Build evidence](../../docs/evidence/ue5-09-build.json), [companion checks](../../docs/evidence/ue5-09-companions.json), [private route timings](../../docs/evidence/ue5-09-routing-performance-private.json), [package hashes](../../docs/evidence/ue5-09-package.json), [actual crew capture](../../docs/screenshots/ue5-09-companion-crew.png). Cats still use retained static meshes; full feline skeletal animation is unfinished. Unity, comparison projects and previous releases are preserved.
 
 Version 0.8, 2026-10-30: final Editor/Game builds, full cook/archive and native staging succeeded. The final Windows package passed **193 assertions**, including 58 navigation/feature checks and four preference-reload checks. Six private-navigation, four private-map walking/recovery and sixteen legacy editor-game movement checks also passed: **219 native assertions total**, plus three audio waveform checks and one 1920×1080 coat-render check. Play phases used rendered DX12; persistence, private audits and legacy movement were headless. The final indoor/area maps, outdoor heading HUD and navigation/scrolled-pet switch pages were visually inspected. Final test logs contain no Error/Fatal categories or material fallbacks. Finalization hashes 43 immutable payload files; the archive executable matches the native build. Synthetic keyboard/gamepad and gameplay/position fixtures were used. Physical controllers, subjective listening and measured performance remain unverified. [Results and repaired findings](../../docs/evidence/ue5-08-build.json), [navigation](../../docs/evidence/ue5-08-navigation.json), [preferences](../../docs/evidence/ue5-08-navigation-resume.json), [package record](../../docs/evidence/ue5-08-package.json), [area map](../../docs/screenshots/ue5-08-area-map.png). The launcher selects validated 0.8 while retaining 0.7 and all archived fallbacks.
 

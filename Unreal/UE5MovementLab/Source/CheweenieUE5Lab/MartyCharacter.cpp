@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "CatCompanions.h"
 #include "CozyNavigation.h"
 #include "MartyGait.h"
 #include "DogLife.h"
@@ -179,7 +180,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::Escape,EKeys::Gamepad_Special_Right,&AMartyCharacter::MenuPause);
         Button(EKeys::Up,EKeys::Invalid,&AMartyCharacter::MenuUp);
         Button(EKeys::Invalid,EKeys::Gamepad_DPad_Up,&AMartyCharacter::PadUp);
-        Button(EKeys::Down,EKeys::Gamepad_DPad_Down,&AMartyCharacter::MenuDown);
+        Button(EKeys::Down,EKeys::Invalid,&AMartyCharacter::MenuDown);Button(EKeys::Invalid,EKeys::Gamepad_DPad_Down,&AMartyCharacter::PadDown);Button(EKeys::K,EKeys::Invalid,&AMartyCharacter::Crew);
         Button(EKeys::Left,EKeys::Gamepad_DPad_Left,&AMartyCharacter::MenuLeft);
         Button(EKeys::Right,EKeys::Gamepad_DPad_Right,&AMartyCharacter::MenuRight);
         Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&AMartyCharacter::Interact);
@@ -254,6 +255,8 @@ void AMartyCharacter::MenuBack() { if(auto* Session=Adventure()) Session->Back()
 void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }
 void AMartyCharacter::MenuUp() { if(auto* Session=Adventure())Session->Navigate(-1); }
 void AMartyCharacter::PadUp(){if(auto* S=Adventure()){if(S->Screen==ECozyScreen::Playing)S->OpenMap();else S->Navigate(-1);}}
+void AMartyCharacter::Crew(){if(auto* S=Adventure())S->OpenCompanions();}
+void AMartyCharacter::PadDown(){if(auto* S=Adventure()){if(S->Screen==ECozyScreen::Playing)S->OpenCompanions();else S->Navigate(1);}}
 void AMartyCharacter::MenuDown() { if(auto* Session=Adventure()) Session->Navigate(1); }
 void AMartyCharacter::MenuLeft() { if(auto* Session=Adventure()) Session->Adjust(-1); }
 void AMartyCharacter::MenuRight() { if(auto* Session=Adventure()) Session->Adjust(1); }
@@ -263,7 +266,7 @@ void AMartyCharacter::CycleCamera()
     if (!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))) return;
     CameraPreset = (CameraPreset + 1) % 4;
     const float Distances[] = {220, 330, 140, 120};
-    const float Heights[] = {35, 90, 0, 0};
+    const float Heights[] = {35, 0, 0, 0};
     Boom->TargetArmLength = Distances[CameraPreset];
     Boom->SocketOffset.Z = Heights[CameraPreset];
 }
@@ -277,6 +280,7 @@ void AMartyCharacter::ReturnHome()
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
     GetCharacterMovement()->StopMovementImmediately();
     TeleportTo(Home, FRotator::ZeroRotator);
+    if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->OnPlayerTravel(false);
     Recenter();
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();
 }
@@ -285,6 +289,7 @@ AMartyPlayMode::AMartyPlayMode()
 {
     PrimaryActorTick.bCanEverTick = true;
     Adventure=CreateDefaultSubobject<UCozyAdventure>(TEXT("AdventureSession"));
+    Companions=CreateDefaultSubobject<UCatCompanions>(TEXT("CatCompanions"));
     Navigation=CreateDefaultSubobject<UCozyNavigation>(TEXT("Navigation"));
     Neighbourhood=CreateDefaultSubobject<UCheweenieNeighbourhood>(TEXT("Neighbourhood"));
     DefaultPawnClass = AMartyCharacter::StaticClass();

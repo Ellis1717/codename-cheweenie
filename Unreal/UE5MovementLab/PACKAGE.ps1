@@ -1,6 +1,6 @@
 param([string]$EngineRoot='D:\Epic Games\UE_5.8',[string]$CacheRoot='D:\CheweenieValidation\UE5Cache',[string]$OutputRoot,[switch]$StageOnly)
 $ErrorActionPreference='Stop'
-if(-not $OutputRoot){$OutputRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\builds\UnrealAdventure-0.8.0'))}
+if(-not $OutputRoot){$OutputRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\builds\UnrealAdventure-0.9.0'))}
 $OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
 $validationMarker=Join-Path $OutputRoot 'validated.json'
 if(Test-Path -LiteralPath $validationMarker){Remove-Item -LiteralPath $validationMarker}

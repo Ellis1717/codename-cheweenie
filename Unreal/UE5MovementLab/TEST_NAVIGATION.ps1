@@ -15,7 +15,7 @@ foreach($phase in $phases){
     if($process.ExitCode){throw ('Navigation process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($MapFile){'navigation-private.json'}elseif($phase -eq 'resume'){'navigation-resume.json'}else{'navigation-smoke.json'})
     if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Navigation report missing/stale'}
-    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($MapFile){6}elseif($phase -eq 'resume'){4}else{58}
+    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($MapFile){6}elseif($phase -eq 'resume'){4}else{59}
     if($result.failed.Count -or $result.passed.Count -lt $minimum){throw ('Navigation checks failed: '+$phase)}
     if($Render -and $phase -eq 'play'){foreach($name in @('NavigationIndoor.png','NavigationSwitches.png','NavigationOutside.png','NavigationArea.png','NavigationPetSwitches.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
     $phase+': '+$result.passed.Count+' passes'

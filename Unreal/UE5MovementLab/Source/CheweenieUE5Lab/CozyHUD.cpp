@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "CatCompanions.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
 #include "DogLife.h"
@@ -26,10 +27,10 @@ bool AMartyHUD::DrawAdventureHUD()
         const float X=Title?32.f:Map?Width-484:FMath::Max(12.f,(Width-680)*.5f), Y=FMath::Max(12.f,(Height-480)*.5f);
         DrawRect(FLinearColor(.035f,.09f,.12f,.96f),X,Y,PanelWidth,480);
         DrawText(Session->Heading(),FLinearColor(1,.83f,.48f),X+24,Y+24,nullptr,1.65f);
-        DrawText(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol"),FLinearColor::White,X+24,Y+62);
+        DrawText(Session->Screen==ECozyScreen::Companions&&Mode->Companions?Mode->Companions->Status():TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol"),FLinearColor::White,X+24,Y+62);
         if(Session->Screen == ECozyScreen::Controls)
         {
-            const TArray<FString> Lines={TEXT("Move: WASD / LS | Look: mouse / RS | Hurry: Shift / A-Cross"),TEXT("Interact: E / X-Square | Jump: Space / Y-Triangle | Bark: B / LB"),TEXT("Dig: F / RT | Drop: Q / LT | Camera: V / R3 | Recenter: R / RB"),TEXT("Map: M / D-pad Up | Tricks: C / B-Circle | Bag: Tab / View"),TEXT("Pause: Esc / Options | Home: H | Menus: arrows / D-pad, A / B")};
+            const TArray<FString> Lines={TEXT("Move: WASD / LS | Look: mouse / RS | Hurry: Shift / A-Cross"),TEXT("Interact: E / X-Square | Jump: Space / Y-Triangle | Bark: B / LB"),TEXT("Dig: F / RT | Drop: Q / LT | Camera: V / R3 | Recenter: R / RB"),TEXT("Map: M / D-pad Up | Tricks: C / B-Circle | Bag: Tab / View"),TEXT("Crew: K / D-pad Down | Pause: Esc / Options | Home: H")};
             for(int32 I=0;I<Lines.Num();++I) DrawText(Lines[I],FLinearColor::White,X+24,Y+95+I*18);
         }
         const auto Items=Session->Menu();
@@ -89,7 +90,7 @@ bool AMartyHUD::DrawAdventureHUD()
             }
             if(Session->Progress->SnackMask==(1<<Session->Mission->Snacks.Num())-1)
             {
-                const auto& Stop=Session->Mission->Visits[Session->Progress->VisitIndex]; const FVector P=Project(Stop.Position+FVector(0,0,70));
+                const auto& Stop=Session->Mission->Visits[Session->Progress->VisitIndex]; const FVector P=Project(Session->StopPosition(Stop)+FVector(0,0,70));
                 DrawText(Stop.Label,FLinearColor(.6f,1,1),FMath::Clamp(float(P.X),20.f,Width-180),FMath::Clamp(float(P.Y),120.f,Height-100),nullptr,1.3f);
             }
         }
@@ -98,9 +99,9 @@ bool AMartyHUD::DrawAdventureHUD()
     {
         DrawNavigation(false);
         const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
-        if(Pawn){const FString LifePrompt=Pawn->Life?Pawn->Life->Prompt():FString();DrawText(LifePrompt.IsEmpty()?Mode->Neighbourhood->Prompt(Pawn):LifePrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
+        if(Pawn){const FString LifePrompt=Pawn->Life?Pawn->Life->Prompt():FString();const FString CatPrompt=Mode->Companions?Mode->Companions->Prompt():FString();const FString AreaPrompt=Mode->Neighbourhood->Prompt(Pawn);DrawText(!Session->Prompt().IsEmpty()?FString():!LifePrompt.IsEmpty()?LifePrompt:AreaPrompt.StartsWith(TEXT("E /"))?AreaPrompt:!CatPrompt.IsEmpty()?CatPrompt:AreaPrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
         if(Session->Feature(ECozyFeature::Hints)){DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / LB: bark"),FLinearColor(.8f,.9f,1),28,Height-145);
-        DrawText(TEXT("M / D-pad Up: map | C / B-Circle: tricks | Tab / View: backpack"),FLinearColor(.8f,.9f,1),28,Height-170);}
+        DrawText(TEXT("Map: M / D-pad Up | Crew: K / D-pad Down | C: tricks | Tab: backpack"),FLinearColor(.8f,.9f,1),28,Height-170);}
     }
     if(!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;

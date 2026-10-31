@@ -1,0 +1,18 @@
+{
+  "mergedPRs": [
+    25,
+    26
+  ],
+  "pr25Merge": "304bdae633d0815c00ce7af40b2cb5c9c597ab07",
+  "pr26Merge": "927b3cdd1e7d8994143c9ca9d34929917e397da1",
+  "gameTreeMatchesValidated08Head": "73eb8e6e2e982f9a79472ce6946bf36b4c09855a",
+  "postMergeEditorBuild": "Succeeded, 14.54 seconds",
+  "postMergeRenderedNavigation": 58,
+  "postMergeNavigationReload": 4,
+  "postMergeHeadlessPatrol": 25,
+  "postMergePatrolReload": 6,
+  "totalPostMergeAssertions": 93,
+  "physicalController": "Unverified",
+  "originalMainSynchronized": true,
+  "ownerMaterialsAndEarlierReleasesPreserved": true
+}

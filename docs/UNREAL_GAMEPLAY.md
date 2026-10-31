@@ -1,5 +1,7 @@
 # Codename .... Cheweenie — Cozy Patrol
 
+Version 0.9 adds [Lakitu and Rio's crew commands and friendship](UNREAL_COMPANIONS.md), a clearer wide camera and cached street routing. K / D-pad Down opens the crew. Original cat art remains; this is a behaviour increment rather than a finished feline rig.
+
 Version 0.8 adds [maps, location/direction finding and saved feature controls](UNREAL_NAVIGATION.md). M / D-pad Up opens destinations; Pause → Controls & cameras offers 24 switches. Version 0.7 adds [health, backpack, tricks and alternative body controls](UNREAL_MARTY_07.md). Optional features default on and can be changed without resetting the patrol.
 
 Version 0.6.1 adds B / LB-L1 barking, action effects and location music; see [the audio guide](UNREAL_AUDIO.md).

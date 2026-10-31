@@ -1,0 +1,9 @@
+{
+	"scope": "64 synchronous CPU route refresh samples; this is not a frame-rate benchmark. No coordinates exported.",
+	"samples": 64,
+	"privateMapLoaded": false,
+	"graphBuilds": 1,
+	"graphBuildMs": 0.013500000932253897,
+	"medianRouteMs": 0.0048000001697801054,
+	"p95RouteMs": 0.0064999985625036061
+}

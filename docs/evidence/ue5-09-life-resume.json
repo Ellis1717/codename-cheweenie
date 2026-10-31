@@ -1,0 +1,11 @@
+{
+	"scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+	"passed": [
+		"Energy reloads in a second process",
+		"Carried pebble and buried ball reload without duplication",
+		"Dug hole and TV state persist",
+		"Transient actions do not resume on the title screen",
+		"Continue keeps the carried item at home"
+	],
+	"failed": []
+}

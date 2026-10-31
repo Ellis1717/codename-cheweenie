@@ -1,0 +1,11 @@
+{
+	"scope": "Real map; synthetic keyboard/controller with menu, position and mission/bond fixtures. Retained static cat meshes; no articulated limb animation. Physical devices unverified.",
+	"privateMapLoaded": true,
+	"passed": [
+		"Independent follow/stay choices reload",
+		"Friendship and crew badge survive a second process",
+		"Reload resets transient cat travel and locomotion safely",
+		"Companion feature switch persists independently of bonds"
+	],
+	"failed": []
+}

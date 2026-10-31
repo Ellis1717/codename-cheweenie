@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "CatCompanions.h"
 #include "CozyNavigation.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
@@ -261,6 +262,7 @@ void UCheweenieNeighbourhood::GoOutside(AMartyCharacter* Pawn)
     if(Pawn->Life)Pawn->Life->CancelAction();
     Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Entrance+FVector(0,-300,0),FRotator(0,-90,0));Outside=true;
     SetOutdoorLighting(true);
+    if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->OnPlayerTravel(true);
     if(Pawn->Gait)Pawn->Gait->ResetContacts();
     if(auto* PC=Cast<APlayerController>(Pawn->GetController())){PC->SetControlRotation(FRotator(-12,-90,0));PC->PlayerCameraManager->StartCameraFade(1,0,.35f,FLinearColor::Black,false);}
     Message(TEXT("Outside! Meet the dogs, explore the park and school. H always returns you home."));
@@ -289,6 +291,7 @@ bool UCheweenieNeighbourhood::Interact(AMartyCharacter* Pawn)
         const FVector Destination=Tour[NextTour++%Tour.Num()];const float Heading=(Tour[NextTour%Tour.Num()]-Destination).Rotation().Yaw;Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Destination+FVector(0,0,40),FRotator(0,Heading,0));
         if(auto* PC=Cast<APlayerController>(Pawn->GetController()))PC->SetControlRotation(FRotator(-12,Heading,0));
         if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();
+        if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->OnPlayerTravel(true);
         if(Pawn->Gait)Pawn->Gait->ResetContacts();Message(TEXT("Walking tour stop. Explore here, then press H to head home."));return true;
     }
     for(int32 I=0;I<Dogs.Num();++I)
