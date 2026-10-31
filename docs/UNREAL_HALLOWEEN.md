@@ -6,6 +6,8 @@ Codename .... Cheweenie adds three independent cosmetic outfits to the active Un
 - Lakitu: pumpkin saddle with leaf/stem and a friendly face. This is an original proposed outfit, not a photographed accessory.
 - Rio: yellow/black bumblebee jacket with pale wings, based on the owner's costume photograph.
 
+**Hot-dog fit, 0.11.1:** the buns, sausage and mustard run from Marty's shoulders toward his rump. The attachment removes the imported spine bone's reference orientation before following the animated torso, rather than using bone axes as garment axes. The saddle is centered between shoulders and hips; the head, paws and tail remain exposed. The same component is used by solo and LAN Marty, and works with both detailed and smooth coat meshes. It remains a rigid padded overlay, without cloth simulation.
+
 All outfits default **off**. Open **Pause or Title → Controls & cameras → Halloween costumes (optional)**. Choose a pet with arrow keys/D-pad and press Enter/A-Cross to toggle; Escape/B-Circle returns to Controls. Each solo choice is saved separately; a new patrol preserves these preferences. Existing saves get the default off mask without a version reset.
 
 In the separate LAN room, **T / D-pad Up** toggles your current pet's outfit. The choice replicates to the other player and follows pet selection, swapping to the matching costume. LAN outfit choices last for that connection and do not change solo saves.

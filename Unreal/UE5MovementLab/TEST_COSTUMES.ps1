@@ -14,8 +14,8 @@ foreach($phase in @('play','resume')){
     if($process.ExitCode){throw ('Costume process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'costumes-resume.json'}else{'costumes-smoke.json'})
     if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Costume report missing/stale'}
-    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){2}else{18}
+    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){2}else{27}
     if($result.failed.Count -or $result.passed.Count -lt $minimum){throw ('Costume checks failed: '+$phase)}
-    if($Render -and !$MapFile -and $phase -eq 'play'){foreach($name in @('HalloweenMenu.png','HalloweenMarty.png','HalloweenLakitu.png','HalloweenRio.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
+    if($Render -and !$MapFile -and $phase -eq 'play'){foreach($name in @('HalloweenMenu.png','HalloweenMarty.png','HalloweenLakitu.png','HalloweenRio.png','HalloweenMartySide.png','HalloweenMartyTop.png','HalloweenMartyLying.png','HalloweenMartyRolling.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
     $phase+': '+$result.passed.Count+' passes'
 }
