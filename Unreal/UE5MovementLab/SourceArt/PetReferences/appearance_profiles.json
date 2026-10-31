@@ -20,13 +20,17 @@
       "id": "M01",
       "kind": "owner_photo",
       "subject": "Marty",
-      "view": "Held, frontal three-quarter view; face, collar, chest and limbs visible"
+      "view": "Held, frontal three-quarter view; face, collar, chest and limbs visible",
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "M02",
       "kind": "owner_photo",
       "subject": "Marty",
-      "view": "Elevated three-quarter view on a seat; standing pose and raised, blurred tail"
+      "view": "Elevated three-quarter view on a seat; standing pose and raised, blurred tail",
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "L01",
@@ -86,35 +90,40 @@
       "kind": "owner_photo",
       "subject": "Marty",
       "view": "Elevated face in costume, obscured torso",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A06",
       "kind": "owner_photo",
       "subject": "Marty",
       "view": "Same standing view as M02",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A07",
       "kind": "owner_photo",
       "subject": "Marty",
       "view": "Same held view as M01",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A08",
       "kind": "owner_photo",
       "subject": "Marty",
       "view": "Seated garment view, ear folds and tan tail",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A09",
       "kind": "owner_photo",
       "subject": "Marty",
       "view": "Toy-carrying turn, motion blur",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Marty",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A10",
@@ -256,7 +265,7 @@
         },
         {
           "feature": "additional_views",
-          "description": "Costumed seated and toy-carrying views support flexible folded ears and a narrow tan tail curved in different poses. Garments hide contours; blur is not measured motion.",
+          "description": "Owner-confirmed seated/garment and toy-carrying views show folded ears with pose-dependent spread and a narrow tan tail curved in different poses. Costume/garment contours hide the torso; blur is not measured motion.",
           "source_ids": [
             "A05",
             "A08",
@@ -270,7 +279,9 @@
         "Keep the coat short; use fine directional hair detail rather than plush or long fluffy fur",
         "Preserve the cream chest and patterned-collar/blue-tag identity cues",
         "Use natural eye proportions and a shaped nose with nostrils, avoiding toy-like globes",
-        "Treat concept-sheet rear anatomy, tail curve and illustrated expressions as provisional"
+        "Treat concept-sheet rear anatomy, tail curve and illustrated expressions as provisional",
+        "Compare the ear-tip height against the jaw in matching poses; retain fold/spread variation rather than a single fixed droop",
+        "Use the five owner-confirmed views together; costume and garment silhouettes must not set body dimensions"
       ],
       "unknowns": [
         "Neutral side-view proportions and real-world dimensions",
@@ -287,7 +298,7 @@
         "Natural transitions into sit, lie, roll, bark and paw shake"
       ],
       "motion_targets_are_photo_verified": false,
-      "additional_identity_policy": "A-series identities are provisional visual matches. Preserve source observations if owner corrects identity."
+      "additional_identity_policy": "M01/M02 and A05–A09 are owner-confirmed Marty as of 2026-10-31. This confirmation does not attribute cat photos."
     },
     {
       "id": "lakitu",
@@ -478,5 +489,22 @@
     "Keep the validated 0.9 game and existing source assets available during replacement work"
   ],
   "distinct_real_photo_file_count": 23,
-  "photo_count_note": "Four retained photo files plus 19 attached files. A06/A07/A12/A18 repeat existing views at different resolution/encoding; file count is not independent-view count."
+  "photo_count_note": "Four retained photo files plus 19 attached files. A06/A07/A12/A18 repeat existing views at different resolution/encoding; file count is not independent-view count.",
+  "owner_confirmations": [
+    {
+      "date": "2026-10-31",
+      "subject": "Marty",
+      "source_ids": [
+        "M01",
+        "M02",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09"
+      ],
+      "supplied_view_count": 5,
+      "note": "Owner confirmed the held, hot-dog costume, seated garment, standing-seat and toy-carrying views are all Marty. Reposted/resized views are not extra independent photographs. Cat attachment identities are unchanged."
+    }
+  ]
 }

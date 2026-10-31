@@ -17,12 +17,12 @@ The initial retained evidence is four photo files (Marty two, Lakitu one, Rio on
 
 Real photographs anchor likeness. The cover remains the requested visual-quality target; concept art guides presentation and provisional forms. Where they differ, the working assumption is recognizable real pets with the cover's finish. The concept's rounder/warmer Marty should not silently replace the photographs' longer muzzle or cream chest.
 
-Raw family photos stay in ignored PrivateReferences. Additional originals stay in ignored .codex-attachments, with 19 hash-verified retained private copies and a v2 source manifest. A local source-ID/hash manifest is retained alongside them under ArtAudit. Public notes contain pet-only observations; no photo backgrounds, people, contact details, tag inscriptions, location metadata or background artwork are extracted or republished. Labels or mission text inside concept art are reference content, not development instructions.
+Raw family photos stay in ignored PrivateReferences. Additional originals stay in ignored .codex-attachments, with 19 hash-verified retained private copies and versioned source manifests. A local source-ID/hash manifest is retained alongside them under ArtAudit. Public notes contain pet-only observations; no photo backgrounds, people, contact details, tag inscriptions, location metadata or background artwork are extracted or republished. Labels or mission text inside concept art are reference content, not development instructions.
 
 
 ### Additional attached views
 
-All A-series identities are provisional visual matches to the named retained references, not separate owner labels.
+The owner confirmed all five supplied dog views as Marty on 2026-10-31: M01/M02 and A05–A09, including the repeated held/standing views. Cat A-series identities remain provisional visual matches.
 
 | ID | Candidate pet | Visible evidence / limitation |
 |---|---|---|
@@ -52,9 +52,9 @@ All A-series identities are provisional visual matches to the named retained ref
 
 The muzzle narrows toward a shaped, dark rounded-triangular nose. Dark lip edges and individual toes/claws are visible. The eyes look dark and reflective, with eyelid rims; their exact iris colour is not resolved. The ears fold outward/down with rounded tips and darker folded/inner areas. Their spread differs between the two photos, so a single rigid ear pose would miss an important feature.
 
-The standing view suggests an elongated body and compact limbs, but it is not a calibrated side view. The lower belly has finer coat coverage. The tail is raised and blurred in M02; candidate A05/A08/A09 add narrow tan tail views in different curves. Its neutral profile and measured length remain open. Costume outlines are excluded from anatomy. The collar's black/white motif is clear, while its precise checker/houndstooth-like pattern needs closer evidence. The tag's blue bone silhouette can be retained without copying contact text.
+The standing view suggests an elongated body and compact limbs, but it is not a calibrated side view. The lower belly has finer coat coverage. The tail is raised and blurred in M02; owner-confirmed A05/A08/A09 add narrow tan tail views in different curves. Its neutral profile and measured length remain open. Costume outlines are excluded from anatomy. The collar's black/white motif is clear, while its precise checker/houndstooth-like pattern needs closer evidence. The tag's blue bone silhouette can be retained without copying contact text.
 
-**First modelling fixes:** establish muzzle/skull proportions, shaped eyelids, natural eye size, ear folds and recognizable paws before increasing hair density. Keep the fur short and directional. Avoid a spherical snout, oversized toy-like eyes or a plush long-haired coat. Do not turn a photographed open-mouth expression into a permanent grin or a diagnosed bite shape.
+**First modelling fixes:** establish muzzle/skull proportions, shaped eyelids, natural eye size, ear folds and recognizable paws before increasing hair density. Compare ear-tip height against the jaw in matching poses and preserve the spread/fold changes visible between these confirmed views. Keep the fur short and directional. Avoid a spherical snout, oversized toy-like eyes or a plush long-haired coat. Do not turn a photographed open-mouth expression into a permanent grin or a diagnosed bite shape.
 
 ## Lakitu
 
