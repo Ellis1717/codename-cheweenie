@@ -17,6 +17,7 @@ class UCheweenieNeighbourhood;
 class UDogLife;
 class UCozyNavigation;
 class UCatCompanions;
+class UHalloweenSpecial;
 class UHalloweenCostume;
 struct FInputActionValue;
 
@@ -94,6 +95,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCozyAdventure> Adventure;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCozyNavigation> Navigation;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenSpecial> Festival;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCatCompanions> Companions;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
@@ -108,6 +110,7 @@ private:
     void TickWorldSmoke(float Delta);
     void TickCostumeSmoke(float Delta);
     void TickRatchetSmoke(float Delta);
+    void TickFestivalSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;
@@ -129,4 +132,5 @@ private:
     bool DrawAdventureHUD();
     void DrawNavigation(bool FullMap);
     UPROPERTY() TObjectPtr<UTexture2D> Cover;
+    UPROPERTY() TObjectPtr<UTexture2D> FestivalCover;
 };

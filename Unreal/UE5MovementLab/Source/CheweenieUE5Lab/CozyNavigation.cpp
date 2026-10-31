@@ -1,4 +1,5 @@
 #include "CozyNavigation.h"
+#include "HalloweenSpecial.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
 #include "MartyCharacter.h"
@@ -17,6 +18,7 @@ TArray<FCozyLandmark> UCozyNavigation::Landmarks() const
     const auto* S=M->Adventure.Get();const auto* N=M->Neighbourhood.Get();FCozyLandmark Objective{TEXT("Current patrol objective"),FVector(-200,-200,28),false};
     if(!S->Progress->Complete){bool Found=false;for(int32 I=0;I<S->Mission->Snacks.Num();++I)if(!(S->Progress->SnackMask&(1<<I))){Objective.Position=S->Mission->Snacks[I].Position;Objective.Label=TEXT("Next golden snack");Found=true;break;}
         if(!Found&&S->Mission->Visits.IsValidIndex(S->Progress->VisitIndex)){const auto& V=S->Mission->Visits[S->Progress->VisitIndex];Objective.Position=S->StopPosition(V);Objective.Outdoors=S->StopOutdoors(V);Objective.Label=V.Label;}}
+    if(M->Festival&&M->Festival->Active())Objective={M->Festival->Objective(),M->Festival->GoalPosition(),M->Festival->NextPorch()>=0||N->Outside};
     TArray<FCozyLandmark> Result={Objective,{TEXT("Home / headquarters"),FVector(-200,-200,28),false},{TEXT("Park"),N->Park,true},{TEXT("Glen Dhu school"),N->School,true},{TEXT("Kitchen bowl"),FVector(-180,320,0),false}};
     for(const auto& V:S->Mission->Visits)Result.Add({V.Label,S->StopPosition(V),S->StopOutdoors(V)});
     for(const auto& D:N->Dogs)Result.Add({D.Name,D.Position,true});return Result;

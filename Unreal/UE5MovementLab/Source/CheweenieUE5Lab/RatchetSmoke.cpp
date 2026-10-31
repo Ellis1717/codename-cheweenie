@@ -41,7 +41,7 @@ void AMartyPlayMode::TickRatchetSmoke(float Delta)
         {
             const bool Returned=FPaths::FileExists(RatchetRoot()/TEXT("ratchet-memory.json"));
             SmokeCheck(D->RatchetUnlocked,TEXT("Completed legacy checkpoint migrates to permanent Ratchet unlock"));
-            SmokeCheck(S->Menu().Last().Contains(TEXT("welcome home")),TEXT("Title advertises the unlocked memory walk"));
+            SmokeCheck(S->Menu().IsValidIndex(6)&&S->Menu()[6].Contains(TEXT("welcome home")),TEXT("Title advertises the unlocked memory walk"));
             if(Returned){SmokeCheck(P->UsesAdventureHome(),TEXT("Controller View returns from Ratchet to the real solo patrol"));const bool Saved=RatchetReport(TEXT("ratchet-return.json"),SmokePassed,SmokeFailed);FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);Next();}
             else{RatchetReport(TEXT("ratchet-resume.json"),SmokePassed,SmokeFailed);S->Selection=6;Key(EKeys::Enter,true);Next();}
         }return;

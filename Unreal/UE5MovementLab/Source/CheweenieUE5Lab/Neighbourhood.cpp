@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "HalloweenSpecial.h"
 #include "WorldRealism.h"
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
@@ -254,8 +255,10 @@ void UCheweenieNeighbourhood::Build()
 }
 void UCheweenieNeighbourhood::SetOutdoorLighting(bool Active)
 {
+    const auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>();
+    const float OutdoorScale=Mode&&Mode->Festival&&Mode->Festival->Active()?1.3f:2.5f;
     for(auto& Fill:OutdoorFill)if(Fill)Fill->SetVisibility(Active);
-    for(auto& Sun:OriginalSuns)if(Sun.Key.IsValid())Sun.Key->SetIntensity(Sun.Value*(Active?2.5f:1.f));
+    for(auto& Sun:OriginalSuns)if(Sun.Key.IsValid())Sun.Key->SetIntensity(Sun.Value*(Active?OutdoorScale:1.f));
 }
 void UCheweenieNeighbourhood::Message(const FString& Text)
 {
