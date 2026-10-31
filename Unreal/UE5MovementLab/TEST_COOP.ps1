@@ -1,4 +1,4 @@
-param([string]$EngineRoot='D:\Epic Games\UE_5.8',[string]$CacheRoot='D:\CheweenieValidation\UE5Cache',[string]$GameExe,[string]$OutputRoot,[switch]$Render,[int]$Port=17777)
+param([string]$EngineRoot='D:\Epic Games\UE_5.8',[string]$CacheRoot='D:\CheweenieValidation\UE5Cache',[string]$GameExe,[string]$OutputRoot,[switch]$Render,[int]$Port=17777,[switch]$Ratchet)
 $ErrorActionPreference='Stop'
 if(!$OutputRoot){$OutputRoot=Join-Path $PSScriptRoot 'Saved\Coop'}
 $OutputRoot=[IO.Path]::GetFullPath($OutputRoot);New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
@@ -12,6 +12,7 @@ try {
         $url=if($role -eq 'host'){'/Game/VisualLab/Comparison?game=/Script/CheweenieUE5Lab.CozyCoopMode?listen'}else{'127.0.0.1:'+$Port}
         $rhi=if($Render){'-dx12 -RenderOffscreen -windowed -ForceRes -ResX=1280 -ResY=720'}else{'-nullrhi'}
         $info.Arguments=$project+$url+' -game '+$rhi+' -port='+$Port+' -CheweenieCoopSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/'+$role+'.log"'
+        if($Ratchet){$info.Arguments+=' -CheweenieRatchetLan'}
         $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
         $processes+= [Diagnostics.Process]::Start($info)
         if($role -eq 'host'){

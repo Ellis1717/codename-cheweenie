@@ -18,6 +18,7 @@
 void ACozyCoopController::TickAcceptance(float Delta)
 {
     if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieCoopSmoke"))||!HasActorBegunPlay())return;
+    const bool Tribute=FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetLan"));
     const bool Host=GetWorld()->GetNetMode()==NM_ListenServer;
     auto* P=Cast<ACozyCoopPet>(GetPawn());ACozyCoopPet* Other=nullptr;ACozyCoopToy* Toy=nullptr;int32 Count=0;
     for(TActorIterator<ACozyCoopPet> It(GetWorld());It;++It){++Count;if(*It!=P)Other=*It;}
@@ -42,6 +43,8 @@ void ACozyCoopController::TickAcceptance(float Delta)
         Check(P->PetId==(Host?0:1),TEXT("Host starts Marty and guest starts Lakitu"));Check(P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Owner lands on actual room floor"));
         Check(P->Skin->GetSkinnedAsset()!=nullptr,TEXT("Retained Marty skeletal asset is available"));
         if(Host){FString Error;GetWorld()->GetAuthGameMode<ACozyCoopMode>()->PreLogin(TEXT(""),TEXT("127.0.0.1"),FUniqueNetIdRepl(),Error);Check(Error.Contains(TEXT("room is full")),TEXT("Server admission rejects an occupied two-player room"));}
+        Check(GetWorld()->GetGameState<ACozyCoopState>()->RatchetUnlocked==Tribute,TEXT("Host unlock availability replicates to both peers"));
+        if(!Tribute){P->ServerChoosePet(3);Check(P->PetId!=3,TEXT("Locked Ratchet selection stays on the current pet"));}
         Check(!P->WearingCostume,TEXT("LAN costume defaults off for this player"));Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,true);
         OwnStart=P->GetActorLocation();OtherStart=Other->GetActorLocation();SetControlRotation(FRotator(-12,0,0));
         // Separate walking lanes prevent one player's capsule blocking the other in this test.
@@ -82,15 +85,15 @@ void ACozyCoopController::TickAcceptance(float Delta)
     case 10:
         Key(EKeys::One,false);if(StageTime<1)break;
         Check(P->PetId==(Host?0:1),TEXT("Occupied or invalid pet selection is rejected by server"));
-        if(!Host)Key(EKeys::Three,true);Next();break;
+        if(!Host)Key(Tribute?EKeys::Four:EKeys::Three,true);Next();break;
     case 11:
-        Key(EKeys::Three,false);if(StageTime<1)break;
-        Check((Host?Other:P)->PetId==2,TEXT("Guest keyboard selection becomes Rio on both peers"));
-        Check((Host?Other:P)->Costume->OutfitPet==2&&(Host?Other:P)->Costume->MaterialsReady(),TEXT("Changing to Rio replaces the outfit with her bee costume on both peers"));
+        Key(Tribute?EKeys::Four:EKeys::Three,false);if(StageTime<1)break;
+        Check((Host?Other:P)->PetId==(Tribute?3:2),TEXT("Guest keyboard selection becomes the requested cat on both peers"));
+        if(Tribute)Check((Host?Other:P)->PetName()==TEXT("Ratchet")&&(Host?Other:P)->Costume->VisiblePieces()==0,TEXT("Unlocked Ratchet identity and uncovered coat reach both peers"));else Check((Host?Other:P)->Costume->OutfitPet==2&&(Host?Other:P)->Costume->MaterialsReady(),TEXT("Changing to Rio replaces the outfit with her bee costume on both peers"));
         Next();break;
     case 12:
         if(!Host){if(First)Key(EKeys::Gamepad_DPad_Left,true);else if(StageTime>.2f)Key(EKeys::Gamepad_DPad_Left,false);}if(StageTime<1)break;
-        Check((Host?Other:P)->PetId==1,TEXT("Guest controller selection returns to Lakitu on both peers"));
+        Check((Host?Other:P)->PetId==(Tribute?2:1),TEXT("Guest controller can cycle away from the selected cat on both peers"));
         Check(P->VoiceCount==2,TEXT("Server rate limits repeated voice requests"));
         Check(P->IsActorTickEnabled(),TEXT("Owner motor remains active"));Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,true);Next();break;
     case 13:

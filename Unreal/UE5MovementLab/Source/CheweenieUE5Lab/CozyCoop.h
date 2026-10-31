@@ -8,13 +8,15 @@
 class UStaticMeshComponent;
 class USoundBase;
 
-// Independent, save-free LAN room. Adventure/companion state stays in the solo mode.
+// Independent LAN/memory room. Reads host character unlocks; quests remain in solo.
 UCLASS()
 class ACozyCoopState : public AGameStateBase
 {
     GENERATED_BODY()
 public:
     virtual void BeginPlay() override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out) const override;
+    UPROPERTY(Replicated) bool RatchetUnlocked=false;
 };
 
 UCLASS()
@@ -69,6 +71,8 @@ private:
     void Marty();
     void Lakitu();
     void Rio();
+    void Ratchet();
+    void ReturnPatrol();
     void JumpCoop();
     void Voice();
     void UseToy();
@@ -80,6 +84,7 @@ private:
     UPROPERTY() TArray<TObjectPtr<UInputAction>> CoopActions;
     UPROPERTY() TObjectPtr<UStaticMesh> LakituMesh;
     UPROPERTY() TObjectPtr<UStaticMesh> RioMesh;
+    UPROPERTY() TObjectPtr<UStaticMesh> RatchetMesh;
     UPROPERTY() TArray<TObjectPtr<USoundBase>> Voices;
     double NextVoice=0;
     int32 PosePolicy=-1;
@@ -112,6 +117,7 @@ public:
     bool MenuOpen=false;
 private:
     void TickAcceptance(float Delta);
+    void TickRatchetAcceptance(float Delta);
     double Started=0;
     int32 Stage=0;
     float StageTime=0;

@@ -1,0 +1,524 @@
+{
+  "version": "0.10.2",
+  "engine": "5.8.4",
+  "scope": "Ratchet unlockable tribute; original static first-pass model and memory/LAN traversal",
+  "builds": {
+    "editor": "passed",
+    "game": "passed",
+    "full_cook_archive": "passed",
+    "final_message_rebuild_stage_archive": "passed"
+  },
+  "packaged_assertions": 220,
+  "suites": {
+    "ratchet": [
+      {
+        "report": "Ratchet/ratchet-unlock.json",
+        "passed": [
+          "Ratchet starts locked on a fresh checkpoint",
+          "Locked controller selection explains the Cozy Patrol requirement without travelling",
+          "Real final patrol interaction permanently unlocks Ratchet",
+          "Unlock presents the gentle welcome-home message",
+          "Earned unlock is written to the isolated checkpoint",
+          "Starting a new patrol preserves the earned character"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Ratchet/ratchet-resume.json",
+        "passed": [
+          "Completed legacy checkpoint migrates to permanent Ratchet unlock",
+          "Title advertises the unlocked memory walk"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Ratchet/ratchet-memory.json",
+        "passed": [
+          "Unlocked menu travels to the real map as playable Ratchet",
+          "Memory room recognises the saved unlock",
+          "Ratchet uses his distinct original fuller-coat mesh",
+          "Ratchet does not inherit visible dog anatomy or dog needs/tricks",
+          "Keyboard walks Ratchet",
+          "Synthetic controller stick walks Ratchet",
+          "Controller jump works for Ratchet",
+          "Ratchet keeps his own coat without an unrelated pet costume",
+          "Memory walk can switch back to Marty",
+          "Controller pet cycling reaches unlocked Ratchet",
+          "Synthetic stick release keeps Ratchet still for the portrait",
+          "Ratchet mesh is actually rendered in the portrait camera"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Ratchet/ratchet-return.json",
+        "passed": [
+          "Completed legacy checkpoint migrates to permanent Ratchet unlock",
+          "Title advertises the unlocked memory walk",
+          "Controller View returns from Ratchet to the real solo patrol"
+        ],
+        "failed": []
+      }
+    ],
+    "locked_lan": [
+      {
+        "report": "Coop/coop-host.json",
+        "passed": [
+          "Two separately possessed replicated pets exist",
+          "Players receive unique pets",
+          "Owner has correct network role",
+          "Host starts Marty and guest starts Lakitu",
+          "Owner lands on actual room floor",
+          "Retained Marty skeletal asset is available",
+          "Server admission rejects an occupied two-player room",
+          "Host unlock availability replicates to both peers",
+          "Locked Ratchet selection stays on the current pet",
+          "LAN costume defaults off for this player",
+          "Keyboard and gamepad costume choices reach both peers",
+          "Nearby guest picks up shared toy; distant host cannot steal it",
+          "Guest drop is synchronized to both peers",
+          "Keyboard movement works on network owner",
+          "Remote movement reached this peer",
+          "Remote hurry speed reached this peer",
+          "Synthetic stick release stops owner",
+          "Synthetic right stick orbits owning camera",
+          "Controller camera binding works in co-op",
+          "Keyboard jump enters replicated falling movement",
+          "Both pet voice events replicate",
+          "Occupied or invalid pet selection is rejected by server",
+          "Guest keyboard selection becomes the requested cat on both peers",
+          "Changing to Rio replaces the outfit with her bee costume on both peers",
+          "Guest controller can cycle away from the selected cat on both peers",
+          "Server rate limits repeated voice requests",
+          "Owner motor remains active",
+          "Costumes can be removed again on both network peers",
+          "Guest disconnect removes the remote pawn",
+          "Disconnected pet becomes available again"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Coop/coop-guest.json",
+        "passed": [
+          "Two separately possessed replicated pets exist",
+          "Players receive unique pets",
+          "Owner has correct network role",
+          "Host starts Marty and guest starts Lakitu",
+          "Owner lands on actual room floor",
+          "Retained Marty skeletal asset is available",
+          "Host unlock availability replicates to both peers",
+          "Locked Ratchet selection stays on the current pet",
+          "LAN costume defaults off for this player",
+          "Keyboard and gamepad costume choices reach both peers",
+          "Nearby guest picks up shared toy; distant host cannot steal it",
+          "Guest drop is synchronized to both peers",
+          "Keyboard movement works on network owner",
+          "Remote movement reached this peer",
+          "Remote hurry speed reached this peer",
+          "Synthetic stick release stops owner",
+          "Synthetic right stick orbits owning camera",
+          "Controller camera binding works in co-op",
+          "Keyboard jump enters replicated falling movement",
+          "Both pet voice events replicate",
+          "Occupied or invalid pet selection is rejected by server",
+          "Guest keyboard selection becomes the requested cat on both peers",
+          "Changing to Rio replaces the outfit with her bee costume on both peers",
+          "Guest controller can cycle away from the selected cat on both peers",
+          "Server rate limits repeated voice requests",
+          "Owner motor remains active",
+          "Costumes can be removed again on both network peers"
+        ],
+        "failed": []
+      }
+    ],
+    "unlocked_lan": [
+      {
+        "report": "UnlockedCoop/coop-host.json",
+        "passed": [
+          "Two separately possessed replicated pets exist",
+          "Players receive unique pets",
+          "Owner has correct network role",
+          "Host starts Marty and guest starts Lakitu",
+          "Owner lands on actual room floor",
+          "Retained Marty skeletal asset is available",
+          "Server admission rejects an occupied two-player room",
+          "Host unlock availability replicates to both peers",
+          "LAN costume defaults off for this player",
+          "Keyboard and gamepad costume choices reach both peers",
+          "Nearby guest picks up shared toy; distant host cannot steal it",
+          "Guest drop is synchronized to both peers",
+          "Keyboard movement works on network owner",
+          "Remote movement reached this peer",
+          "Remote hurry speed reached this peer",
+          "Synthetic stick release stops owner",
+          "Synthetic right stick orbits owning camera",
+          "Controller camera binding works in co-op",
+          "Keyboard jump enters replicated falling movement",
+          "Both pet voice events replicate",
+          "Occupied or invalid pet selection is rejected by server",
+          "Guest keyboard selection becomes the requested cat on both peers",
+          "Unlocked Ratchet identity and uncovered coat reach both peers",
+          "Guest controller can cycle away from the selected cat on both peers",
+          "Server rate limits repeated voice requests",
+          "Owner motor remains active",
+          "Costumes can be removed again on both network peers",
+          "Guest disconnect removes the remote pawn",
+          "Disconnected pet becomes available again"
+        ],
+        "failed": []
+      },
+      {
+        "report": "UnlockedCoop/coop-guest.json",
+        "passed": [
+          "Two separately possessed replicated pets exist",
+          "Players receive unique pets",
+          "Owner has correct network role",
+          "Host starts Marty and guest starts Lakitu",
+          "Owner lands on actual room floor",
+          "Retained Marty skeletal asset is available",
+          "Host unlock availability replicates to both peers",
+          "LAN costume defaults off for this player",
+          "Keyboard and gamepad costume choices reach both peers",
+          "Nearby guest picks up shared toy; distant host cannot steal it",
+          "Guest drop is synchronized to both peers",
+          "Keyboard movement works on network owner",
+          "Remote movement reached this peer",
+          "Remote hurry speed reached this peer",
+          "Synthetic stick release stops owner",
+          "Synthetic right stick orbits owning camera",
+          "Controller camera binding works in co-op",
+          "Keyboard jump enters replicated falling movement",
+          "Both pet voice events replicate",
+          "Occupied or invalid pet selection is rejected by server",
+          "Guest keyboard selection becomes the requested cat on both peers",
+          "Unlocked Ratchet identity and uncovered coat reach both peers",
+          "Guest controller can cycle away from the selected cat on both peers",
+          "Server rate limits repeated voice requests",
+          "Owner motor remains active",
+          "Costumes can be removed again on both network peers"
+        ],
+        "failed": []
+      }
+    ],
+    "costumes": [
+      {
+        "report": "Costumes/costumes-smoke.json",
+        "passed": [
+          "New saves default to costumes off",
+          "All three pets start without costume geometry",
+          "Keyboard opens the three-pet wardrobe from Controls",
+          "Controller confirm enables Marty's hot-dog outfit independently",
+          "Controller D-pad selects Lakitu's outfit",
+          "Keyboard confirm enables Lakitu's pumpkin outfit",
+          "Rio's bee outfit can be enabled alongside both friends",
+          "Pet 0 outfit never blocks traversal or navigation",
+          "Pet 0 original costume materials and shapes loaded",
+          "Pet 1 outfit never blocks traversal or navigation",
+          "Pet 1 original costume materials and shapes loaded",
+          "Pet 2 outfit never blocks traversal or navigation",
+          "Pet 2 original costume materials and shapes loaded",
+          "Controller Back returns wardrobe to Controls",
+          "Marty still walks with costume enabled",
+          "Costume stays available through outdoor door travel",
+          "Lakitu outfit turns off without removing Marty or Rio outfits",
+          "Costumes are independent of companion behaviour setting"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Costumes/costumes-resume.json",
+        "passed": [
+          "Independent Marty/Rio on and Lakitu off choices survive a second process",
+          "Reload applies only the saved costume choices"
+        ],
+        "failed": []
+      }
+    ],
+    "companions": [
+      {
+        "report": "Companions/companions-smoke.json",
+        "passed": [
+          "Retained Lakitu and Rio meshes are found in the real map",
+          "Cats default to staying without changing patrol progress",
+          "Keyboard K opens crew commands",
+          "Crew confirm enables only Lakitu following",
+          "Lakitu accelerates smoothly instead of snapping to full speed",
+          "Following moves the actual Lakitu actor",
+          "Follow speed is bounded while Marty walks",
+          "Controller D-pad Down opens the crew menu",
+          "The same menu can ask Lakitu to stay",
+          "Stay stops the cat without position drift",
+          "Call both places cats at separate nearby floor positions",
+          "Real interact input gives Lakitu a head bump and friendship",
+          "Head-bump cooldown prevents repeated bond farming",
+          "Rio has independent friendship and reaction state",
+          "Following cats accompany Marty through the real exterior door",
+          "Patrol interaction reaches a following cat at its natural distance",
+          "Moving cats do not mutate authored mission data assets",
+          "Pause freezes cat movement and reactions",
+          "Disabling companions restores home without erasing choices or bonds",
+          "Home recovery brings following cats safely indoors",
+          "A staying cat remains indoors when the other follows outside",
+          "Map tracks the cat's live position and area",
+          "Repeated route searches reuse the compiled street graph",
+          "Cached routing preserves the park destination",
+          "Stationary player and destination avoid redundant route searches",
+          "Paused menus do not run periodic routing work",
+          "Explicit topology invalidation rebuilds a valid route",
+          "Send home resets both cats to their retained home spots",
+          "Cat sweeps prevent following through the room wall",
+          "Keyboard Down still walks instead of opening companions"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Companions/companions-resume.json",
+        "passed": [
+          "Independent follow/stay choices reload",
+          "Friendship and crew badge survive a second process",
+          "Reload resets transient cat travel and locomotion safely",
+          "Companion feature switch persists independently of bonds"
+        ],
+        "failed": []
+      }
+    ],
+    "adventure": [
+      {
+        "report": "Adventure/adventure-smoke.json",
+        "passed": [
+          "Branded title is the initial screen",
+          "Fourteen retained/original music and effect assets load",
+          "Title menu blocks gameplay movement",
+          "Enter starts the patrol",
+          "Menu/Options opens pause",
+          "Pause freezes player movement",
+          "D-pad navigates menu options",
+          "A/Cross opens settings and selecting a volume row keeps them open",
+          "D-pad adjusts and saves music preference",
+          "B/Circle returns to the parent menu",
+          "Escape resumes the patrol",
+          "Walking to first snack collects it",
+          "Standing on a collected snack grants no duplicate",
+          "Second snack advances patrol",
+          "All snacks unlock the companion visits",
+          "Interaction outside the destination cannot advance progress",
+          "Keyboard interaction completes Lakitu visit",
+          "X/Square completes Rio visit but still requires the fort",
+          "Cheeween Cozy completes the mission",
+          "Blanket Boss family cameo appears",
+          "Completion menu blocks movement",
+          "Victory can continue into free roam",
+          "New patrol requires confirmation and defaults to Keep",
+          "Cancel restart preserves completed progress",
+          "Mission checkpoints are written to the isolated save slot"
+        ],
+        "failed": []
+      },
+      {
+        "report": "Adventure/adventure-resume.json",
+        "passed": [
+          "Completed mission reloads in another process",
+          "Sound preference reloads in another process",
+          "Reload starts at title without auto-running gameplay",
+          "Continue restores completed free roam",
+          "Fresh patrol requires choosing the explicit restart option",
+          "Confirmed restart clears mission progress and retains preferences"
+        ],
+        "failed": []
+      }
+    ]
+  },
+  "visual_review": [
+    "Final packaged Ratchet portrait: visibility, grounded placement, reduced/inset eyes, white markings and silhouette",
+    "Rendered unlocked-LAN host/guest captures reviewed",
+    "Final package retains costume captures and gameplay"
+  ],
+  "repaired_findings": [
+    "Corrected StaticMaterial API lookup during import",
+    "Cleared synthetic analog input throughout portrait stages; added stillness and recently-rendered checks",
+    "Reduced protruding eyes, blended black anatomical forms and corrected visible bib placement"
+  ],
+  "limitations": [
+    "Static cat mesh; feline limb/spine/tail animation remains unimplemented",
+    "Standing proportions, iris hue and exact marking boundaries are inferred; likeness remains a first pass",
+    "Existing generic cat cue rather than a recording of Ratchet",
+    "Physical controllers, two independent PCs and broad interactive performance remain unverified"
+  ],
+  "reference_correction": "A01–A04 are owner-confirmed Ratchet, replacing provisional Rio matches. Current confirmed reference brief/profiles retained in this branch and PR #28. Raw family photos/private source hashes remain outside Git.",
+  "runtime_error_fatal_material_fallback_matches": 0,
+  "payload_file_count": 43,
+  "payload_sha256": [
+    {
+      "path": "CheweenieUE5Lab.exe",
+      "sha256": "9D6BCC7619AD4648EA25BC5B6A57A1C2F19F5BFCA756B73B846A758113603C7E"
+    },
+    {
+      "path": "Manifest_NonUFSFiles_Win64.txt",
+      "sha256": "6F8B2AC8682F415FA3BBDAFB0B0E0268C5F420BA867DD6483D6B4668321ED596"
+    },
+    {
+      "path": "Manifest_UFSFiles_Win64.txt",
+      "sha256": "C20AC3B148EF08AF1F5C7261701CC3504B0CE4F28F4208BBB7ACD40D37AA9991"
+    },
+    {
+      "path": "NOTICES.txt",
+      "sha256": "BA49AE5586F817B36A2772269F71F899CB1F54B5F2720FAD951319EDD5E140B8"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/CheweenieUE5Lab.exe",
+      "sha256": "8EAA89529C74B789D9523AD8AF50E13B536231C5B4AB13CA6377C8910F662F09"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbb12.dll",
+      "sha256": "C489B6BD4DD2BE18D4F8778E3F86CAA7672EC8A206C9A54228B3BB60E2923F76"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbbmalloc.dll",
+      "sha256": "ACA208101BBA1E440E6FAE6580EEDD45508EC405C9674063BAF7CA23D29316BD"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/D3D12Core.dll",
+      "sha256": "F0CBDBA3043BC30E2A17DFD7D6C05E61C9C4098EB1D5EE8CCD2AB3F4696E8E20"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll",
+      "sha256": "180A630861DC88D26DB517DA787009EDF75E4C83309B819814B84B86F8DB36C1"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/DML/x64/DirectML.dll",
+      "sha256": "4E357E48C3FB00E5AC868F2B33BA5576873C013349E2CC1D7A9BE0071253AC62"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.pak",
+      "sha256": "47B326F2E70893B7F238010B8CFD8F20D40D574F10F6453276599D8AB25E692C"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.ucas",
+      "sha256": "94FAC9C11C0329AEBE95580F109D7F2FC2DFBAA3E96DF855F905D0A1887BBBC2"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.utoc",
+      "sha256": "C6A5E4298EFF646E6D46106E7949D2C68CF8B9E210164C0DA5DA00C69C1E94B5"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/global.ucas",
+      "sha256": "E688DC530D56A9AF90750ED9B9B435A6026EDE400BBA1C678FB03D96B1499923"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/global.utoc",
+      "sha256": "0C089153A060A7A5E0763886C1D48E5FC5E0B675176A42C3AA93F90B55A4B9B8"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/DbgHelp/dbghelp.dll",
+      "sha256": "441A7CCEE2F854352366E783FCB79FE895D09AD4C577689319E1A664F296C4A3"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/MsQuic/v220/win64/msquic.dll",
+      "sha256": "27C231D80310EA9005A6B0C17054F28887272723477E7292A7F9D63B6D1579EE"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/NVIDIA/NVaftermath/Win64/GFSDK_Aftermath_Lib.x64.dll",
+      "sha256": "CE49BE4194706417CCDC57833AEC478FAA1E08646157688C879FE616D43ABD65"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Ogg/Win64/VS2015/libogg_64.dll",
+      "sha256": "C719A5F165E4AFE29E92A7EEE9762C2E9F301A177885AB1AB8D2C7F57D4A86BF"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbis_64.dll",
+      "sha256": "B8A3E31A6C2D401809BAE7AA0FD29F49C2114EECCFBA4DC5C7AC8EDDBD4B7A98"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbisfile_64.dll",
+      "sha256": "6D0E4395BC4D0EF501C3F7F7B4E63FA0CF2AB2CA80328560B7CB10E6D5A171CF"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.dll",
+      "sha256": "583DB3D1ACD76363F0F67D9DA414DD147CA9FFAB4A47824027351B063FE66AEA"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.json",
+      "sha256": "9E55221C225DCE4B5448BAC7DADB7E39FD216F51354DDE02E58F950F4A0DD80B"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.dll",
+      "sha256": "8E080A40AC452C4B249B9060E2F4C208AF9159AFBA9E75E91D1C55D85E387D04"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.json",
+      "sha256": "578BDE354874789671DEE1A96468C965619C9F3BA16CFA65F850E81A80674087"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.dll",
+      "sha256": "780C4BCAE69A50E38181EDFD20A58780FA02539F4FF302C8C4A0E2899EE7A0CB"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.json",
+      "sha256": "71D4E243A2AF74874F4F61378BDFE3753CB01CE5EB9B98400D83612BF882A815"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.dll",
+      "sha256": "9682F7F508855980B9C31147493C962D43A0798C4596870CD7C5DEE009859EA2"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.json",
+      "sha256": "6095C28691757E083A8C1BEF3C69CA76A8B5017E21ACAF55D1BC7E82221A0FBE"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.dll",
+      "sha256": "7026DA236CECADD40B6A1723D0881349D9471592D98CABD60994F99DC2DB3E53"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.json",
+      "sha256": "18ECAFC9A65E1B7AF8CD0E36DC936026CDB3AED333C4EA5A7C17D6D9465CFAF4"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.dll",
+      "sha256": "485EB9B7F0320BD1AF3AF03DBE3A052D6F5E9CDA14496BBE1A062D626D501EAE"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.json",
+      "sha256": "A1E980A24BE9A16A826B00C27D61B85EE0E2E17226DC9C4E8EEC031879E5F26A"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.dll",
+      "sha256": "27FC6A4CA52244F18337A652DB638865ABD679F6E1D129BF4770FD3E6C4F1A60"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.json",
+      "sha256": "5C464B84457776D92A674DE506F7B7A489294583A7D7609F78FCC52BC4406D09"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Windows/WinPixEventRuntime/x64/WinPixEventRuntime.dll",
+      "sha256": "F5F6F69210CC958B92285FF444E2EF48F5C46B4D6470B07960739DBCB6554B54"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Windows/XAudio2_9/x64/xaudio2_9redist.dll",
+      "sha256": "E6AE545B31A5453F1B1002D434CC802A6088CF05C5FAA414D7EBE00264161506"
+    },
+    {
+      "path": "Engine/Config/StagedBuild_CheweenieUE5Lab.ini",
+      "sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5"
+    },
+    {
+      "path": "Engine/Content/Renderer/TessellationTable.bin",
+      "sha256": "EDC4F3B628A139C5E185BBAECA661C95C1F427368D3B92892C5CFF36C56DD941"
+    },
+    {
+      "path": "Engine/Content/Slate/Cursor/invisible.cur",
+      "sha256": "FEF3980FA567E9C45D5D8DCAA432A2C1A3F3BB17FE67D7AB198164F56C142AA1"
+    },
+    {
+      "path": "Engine/Extras/Redist/en-us/vc_redist.arm64.exe",
+      "sha256": "EBC1B8DC6731B2C7E791DD619ABA19D5554B9E678364F3C2A35F125BAAFC0F54"
+    },
+    {
+      "path": "Engine/Extras/Redist/en-us/vc_redist.x64.exe",
+      "sha256": "6FFDEEFF6AAE9F5DCD52217571B2C2A47DE367AF8AA3DB953542BF25C4C29A0D"
+    },
+    {
+      "path": "Engine/Plugins/NNE/NNERuntimeORT/Binaries/ThirdParty/Onnxruntime/Win64/onnxruntime.dll",
+      "sha256": "EACC4D935137D67AB0CC1B896472D1DE551DFC6545ED9AD74AB842400272E036"
+    }
+  ],
+  "retained": "Earlier Halloween/World/LAN/solo/Unity packages and original pets remain intact. Private local map/labels and default checkpoint are copied locally only when absent; originals remain."
+}
