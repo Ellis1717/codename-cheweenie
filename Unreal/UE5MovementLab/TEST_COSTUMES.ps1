@@ -19,4 +19,3 @@ foreach($phase in @('play','resume')){
     if($Render -and !$MapFile -and $phase -eq 'play'){foreach($name in @('HalloweenMenu.png','HalloweenMarty.png','HalloweenLakitu.png','HalloweenRio.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
     $phase+': '+$result.passed.Count+' passes'
 }
-
