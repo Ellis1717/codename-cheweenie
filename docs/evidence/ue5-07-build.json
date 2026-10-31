@@ -1,0 +1,49 @@
+{
+  "version": "0.7.0",
+  "date": "2026-10-30",
+  "engine": "5.8.4",
+  "compiler": "MSVC 14.44.35229",
+  "sdk": "10.0.22621.0",
+  "editorBuild": "Succeeded: 19.51 seconds",
+  "gameBuild": "Succeeded: 27.72 seconds",
+  "package": "Full cook/archive succeeded; final native-only update rebuilt Game then StageOnly archived successfully",
+  "executableHashesMatch": true,
+  "packagedAssertions": 131,
+  "privateMapAssertions": 4,
+  "legacyEditorMovementAssertions": 16,
+  "totalNativeAssertions": 151,
+  "audioWaveformChecks": 3,
+  "coatResolutionColourChecks": 1,
+  "renderScope": "Standalone DX12 play phases; reload and private-map phases headless. Legacy movement: editor-game headless.",
+  "input": "Synthetic keyboard/gamepad events with health/item/position/menu fixtures; physical controller unverified",
+  "visualReview": [
+    "1920x1080 actual Marty portrait",
+    "Lying down",
+    "Roll over",
+    "Shake paw",
+    "Backpack menu",
+    "Body-sway HUD and pose"
+  ],
+  "finalLogErrorFatalCategories": 0,
+  "finalMaterialFallbacks": 0,
+  "limitations": [
+    "Stylized inferred likeness, not photorealism or a scan",
+    "Skin-weighted polygon fur, not a strand Groom",
+    "Body sway is a bounded spring pose over CharacterMovement, not a ragdoll",
+    "Physical controllers, subjective listening and measured performance unverified"
+  ],
+  "repairedFailures": [
+    "Dense initial fur import exhausted memory; reduced geometry while retaining 4K maps",
+    "Material pin connections and FBX UV V convention repaired after render review",
+    "Inventory fixture separated confirm presses into distinct frames",
+    "Analog hurry fixture waits for acceleration rather than sampling during transition",
+    "Rest pose lowered torso and action camera added after visual review"
+  ],
+  "archivePreserved": [
+    "Unity",
+    "UE4 experiment",
+    "Content-only UE5 preview",
+    "Original Marty smooth and static assets",
+    "Previous standalone releases"
+  ]
+}

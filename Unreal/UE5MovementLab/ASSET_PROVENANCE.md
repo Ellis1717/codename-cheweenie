@@ -7,3 +7,5 @@
 - Source hashes and asset paths are recorded in docs/evidence/ue5-adventure-assets.json. IMPORT_AUDIO.ps1 and Scripts/import_adventure_audio.py reproduce missing imports without overwriting existing Unreal edits.
 - Gameplay retains the comparison meshes/materials and original exports. New scene dressing uses engine primitives and project materials. Raw private photos, personal map data and home images were not copied.
 - Keep future assets under Content/Adventure and retain original sources plus appropriate license/provenance. Generated comparison copies, caches, saves and builds are excluded from Git.
+
+- Content/Adventure/MartyRealism is the separate 0.7 variant. SourceArt/MartyRealism retains its original Blender/FBX, 4K maps and manifest; Scripts/build_marty_realcoat.py and import_marty_realcoat.py retain the pipeline. Geometry, UV palette and micro-ribbon fur are generated from project code with photo-informed artistic parameters; private photos/backgrounds/tag numbers are not embedded. The original smooth model, Explorer sources and independent previews remain unchanged.

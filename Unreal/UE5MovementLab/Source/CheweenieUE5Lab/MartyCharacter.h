@@ -29,6 +29,7 @@ public:
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
     void CycleCamera();
     void ReturnHome();
+    virtual float TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer) override;
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UPoseableMeshComponent> Skin;
@@ -53,6 +54,8 @@ private:
     void Dig();
     void DropToy();
     void Bark();
+    void Backpack();
+    void ClearBodyStick();
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -84,6 +87,7 @@ private:
     void TickOutsideSmoke(float Delta);
     void TickLifeSmoke(float Delta);
     void TickAudioSmoke(float Delta);
+    void TickTricksSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

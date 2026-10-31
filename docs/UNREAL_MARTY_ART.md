@@ -1,5 +1,7 @@
 # Marty: cover-guided skin and canine movement
 
+Version 0.7 adds a separate short-coat variant with 4K maps, fine skinned fur, whiskers, checker collar and photo-informed colour/proportion changes. It also extends poses for lying, rolling, paw shaking and body sway. [0.7 source and controls](UNREAL_MARTY_07.md). The prior 0.5 sources described below remain retained.
+
 The start-page cover at Assets/Resources/Branding/Cover.png is the owner's selected visual target. The new Marty variant is original geometry authored with Blender: continuous torso/neck/head, tapered muzzle, amber eyes with wet highlights, a dark nose, floppy ears, short golden coat grain and rounded paws. The original Explorer OBJ/GLB, Unity characters and static Unreal comparison pets are preserved. This is a step toward the cover's realism; the illustration is not an exact render of this mesh. Lakitu and Rio retain their earlier static meshes in this milestone.
 
 ## Inspect in the actual game

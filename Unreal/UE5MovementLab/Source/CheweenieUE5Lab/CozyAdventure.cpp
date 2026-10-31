@@ -47,6 +47,7 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOutsideSmoke"))){Slot=TEXT("CheweenieOutsideAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeSmoke"))){Slot=TEXT("CheweenieLifeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAudioSmoke"))){Slot=TEXT("CheweenieAudioAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTricksSmoke"))){Slot=TEXT("CheweenieTricksAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieTricksResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke"))) UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && !FParse::Param(FCommandLine::Get(),TEXT("CheweenieResumeCheck")))
         UGameplayStatics::DeleteGameInSlot(Slot,0);
@@ -114,14 +115,23 @@ void UCozyAdventure::Back()
 {
     if (!Enabled) return;
     if (Screen == ECozyScreen::Controls || Screen == ECozyScreen::Settings || Screen == ECozyScreen::Restart) SetScreen(ReturnScreen);
-    else if (Screen == ECozyScreen::Pause || Screen == ECozyScreen::Complete) SetScreen(ECozyScreen::Playing);
+    else if (Screen == ECozyScreen::Pause || Screen == ECozyScreen::Complete || Screen==ECozyScreen::Backpack || Screen==ECozyScreen::Tricks) SetScreen(ECozyScreen::Playing);
+    else if(Screen==ECozyScreen::Playing)OpenTricks();
 }
+void UCozyAdventure::OpenBackpack(){if(Screen==ECozyScreen::Backpack){SetScreen(ECozyScreen::Playing);return;}if(Screen==ECozyScreen::Playing&&Marty()&&Marty()->Life&&!Marty()->Life->Busy())SetScreen(ECozyScreen::Backpack);}
+void UCozyAdventure::OpenTricks(){if(Screen==ECozyScreen::Playing&&Marty()&&Marty()->Life&&!Marty()->Life->Busy())SetScreen(ECozyScreen::Tricks);}
 void UCozyAdventure::Confirm()
 {
     if (!Enabled || !Progress) return;
     UpdateMusic();
     if (Screen == ECozyScreen::Playing) return;
     const ECozyScreen Current = Screen;
+    if(Current==ECozyScreen::Backpack||Current==ECozyScreen::Tricks)
+    {
+        const int32 Choice=Selection;SetScreen(ECozyScreen::Playing);auto* L=Marty()?Marty()->Life.Get():nullptr;if(!L)return;
+        if(Current==ECozyScreen::Backpack){if(Choice==0)L->Stow();else if(Choice==1)L->Retrieve();}
+        else {if(Choice==0)L->LieDown();else if(Choice==1)L->RollOver();else if(Choice==2)L->ShakePaw();else if(Choice==3)L->Bark();else if(Choice==4)L->CyclePace();else if(Choice==5)L->ToggleBodyControls();}return;
+    }
     if (Current == ECozyScreen::Title)
     {
         if (Selection == 0) Start(false);
@@ -190,6 +200,7 @@ void UCozyAdventure::Interact()
 {
     if (!Enabled || Screen != ECozyScreen::Playing) return;
     if(Marty()&&Marty()->Life&&Marty()->Life->Busy())return;
+    if(Marty()&&Marty()->Life&&Marty()->Life->Activity==EDogActivity::Lying){Marty()->Life->StandUp();return;}
     if(Prompt().IsEmpty()&&Marty()&&Marty()->Life&&Marty()->Life->Interact())return;
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood&&Marty()&&Mode->Neighbourhood->Interact(Marty()))return;
     if(Prompt().IsEmpty()) return;
@@ -224,6 +235,8 @@ TArray<FString> UCozyAdventure::Menu() const
     {
     case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit")};
     case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen")};
+    case ECozyScreen::Backpack: return {TEXT("Stow the toy in Marty's mouth"),TEXT("Take a toy from the backpack"),TEXT("Close backpack")};
+    case ECozyScreen::Tricks: return {TEXT("Lie down / get up"),TEXT("Roll over"),TEXT("Shake a paw"),TEXT("Bork!"),TEXT("Change pace: walk / jog / run"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try two-stick body sway)"),TEXT("Back to exploring")};
     case ECozyScreen::Settings: return {FString::Printf(TEXT("Music: %d%%"),FMath::RoundToInt(Progress->Music*100)),FString::Printf(TEXT("Effects: %d%%"),FMath::RoundToInt(Progress->Effects*100)),TEXT("Back")};
     case ECozyScreen::Restart: return {TEXT("Keep current patrol"),TEXT("Start fresh patrol")};
     case ECozyScreen::Complete: return {TEXT("Keep exploring"),TEXT("Play another patrol")};
@@ -236,6 +249,8 @@ FString UCozyAdventure::Heading() const
     {
     case ECozyScreen::Title: return TEXT("Codename .... Cheweenie");
     case ECozyScreen::Pause: return TEXT("Take a cozy break");
+    case ECozyScreen::Backpack: return TEXT("Marty's treasure backpack");
+    case ECozyScreen::Tricks: return TEXT("Marty's tricks and pace");
     case ECozyScreen::Controls: return TEXT("Controls & cameras");
     case ECozyScreen::Settings: return TEXT("Sound settings");
     case ECozyScreen::Restart: return TEXT("Start over? Current patrol progress will be replaced.");

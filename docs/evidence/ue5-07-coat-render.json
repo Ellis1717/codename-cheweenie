@@ -1,0 +1,13 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "probeX": 1014,
+  "probeY": 578,
+  "meanRGB": [
+    197.64000000000004,
+    150.23999999999998,
+    82.91999999999999
+  ],
+  "tanCoatVisible": true,
+  "scope": "Actual rendered pixels at projected torso; likeness still requires visual review"
+}

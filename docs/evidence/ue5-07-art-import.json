@@ -1,0 +1,43 @@
+{
+  "asset": "/Game/Adventure/MartyRealism/Marty_RealCoat.Marty_RealCoat",
+  "materials": 10,
+  "material_paths": [
+    "/Game/Adventure/MartyRealism/Marty_Coat.Marty_Coat",
+    "/Game/Adventure/MartyRealism/Marty_Cream.Marty_Cream",
+    "/Game/Adventure/MartyRealism/Marty_Nose.Marty_Nose",
+    "/Game/Adventure/MartyRealism/Marty_Pupil.Marty_Pupil",
+    "/Game/Adventure/MartyRealism/Marty_Ears.Marty_Ears",
+    "/Game/Adventure/MartyRealism/Marty_Iris.Marty_Iris",
+    "/Game/Adventure/MartyRealism/Marty_TagBlue.Marty_TagBlue",
+    "/Game/Adventure/MartyRealism/Marty_CollarBlack.Marty_CollarBlack",
+    "/Game/Adventure/MartyRealism/Marty_CollarWhite.Marty_CollarWhite",
+    "/Game/Adventure/MartyRealism/Marty_FineFur.Marty_FineFur"
+  ],
+  "skeletal_usage": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "imported": [
+    "/Game/Adventure/MartyRealism/Marty_RealCoat.Marty_RealCoat"
+  ],
+  "texture_resolution": {
+    "CoatGrain": [
+      4096,
+      4096
+    ],
+    "CoatNormal": [
+      4096,
+      4096
+    ]
+  },
+  "fur_material_shading": "<MaterialShadingModel.MSM_HAIR: 7>",
+  "vertex_color_policy": "Explicit Replace through the legacy FBX factory"
+}

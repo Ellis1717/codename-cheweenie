@@ -5,7 +5,7 @@ $OutputRoot=[IO.Path]::GetFullPath($OutputRoot);New-Item -ItemType Directory -Pa
 foreach($phase in @('play','resume')){
     $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=if($GameExe){[IO.Path]::GetFullPath($GameExe)}else{Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor.exe'}
     $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
-    $rhi=if($Render -and $phase -eq 'play'){'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
+    $rhi=if($Render -and $phase -eq 'play'){'-dx12 -RenderOffscreen -ForceRes -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
     $resume=if($phase -eq 'resume'){' -CheweenieLifeResume'}else{''}
     $info.Arguments=$project+$rhi+' -CheweenieLifeSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Life-'+$phase+'.log"'
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot

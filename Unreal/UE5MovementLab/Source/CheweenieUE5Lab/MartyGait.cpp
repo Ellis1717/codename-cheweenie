@@ -76,28 +76,36 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     if(!Playing)return; // Pause/menu cannot keep walking or advance animation time.
     Time+=Delta;Travel+=Distance;
     SmoothedSpeed=FMath::FInterpTo(SmoothedSpeed,Pawn->GetVelocity().Size2D(),Delta,12);
-    Trot=FMath::FInterpTo(Trot,SmoothedSpeed>65?1.f:0.f,Delta,4);
-    const float Stride=FMath::Lerp(WalkStride,TrotStride,Trot);
+    Trot=FMath::FInterpTo(Trot,SmoothedSpeed>120?1.f:0.f,Delta,4);
+    const float Run=FMath::Clamp((SmoothedSpeed-165)/60,0.f,1.f);
+    const float Stride=FMath::Lerp(FMath::Lerp(WalkStride,TrotStride,Trot),56.f,Run);
     const bool Air=Pawn->GetCharacterMovement()->IsFalling();
     const bool Digging=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Digging;
     const bool Eating=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Eating;
     const bool Watching=Pawn->Life&&Pawn->Life->Activity==EDogActivity::WatchingTV;
+    const bool Lying=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Lying;
+    const bool Rolling=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Rolling;
+    const bool Shaking=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Shaking;
     const bool Tired=Pawn->Life&&Pawn->Life->Energy()<25;
     const bool Excited=Pawn->Life&&Pawn->Life->Mood()==TEXT("Excited");
     Cycle=FMath::Fmod(Cycle+(Air?0:Distance)/FMath::Max(Stride,1.f),1.f);
     const float Moving=FMath::Clamp(SmoothedSpeed/25.f,0.f,1.f);
-    const float Bob=FMath::Sin(Cycle*UE_TWO_PI*2)*.45f*Moving+FMath::Sin(Time*2.1f)*.16f*(1-Moving)-(Watching?5.f:Eating?6.f:Tired?1.f:0.f);
-    FTransform Spine=Rest[TEXT("spine")];Spine.AddToTranslation(FVector(0,0,Bob));Skin->SetBoneTransformByName(TEXT("spine"),Spine,EBoneSpaces::ComponentSpace);
-    FTransform Head=Rest[TEXT("head")];Head.AddToTranslation(FVector(0,0,Bob));
-    Head.SetRotation(FQuat(FVector(0,1,0),FMath::Sin(Cycle*UE_TWO_PI*2)*.025f*Moving+(Eating?.65f:Digging?.35f:Tired?.09f:0))*Head.GetRotation());
+    RestLowering=FMath::FInterpTo(RestLowering,Lying?18.f:Rolling?9.f:Shaking?5.f:Watching?5.f:Eating?6.f:Tired?1.f:0.f,Delta,8);
+    const float Bob=FMath::Sin(Cycle*UE_TWO_PI*2)*(.45f+Run*.5f)*Moving+FMath::Sin(Time*2.1f)*.16f*(1-Moving)-RestLowering;
+    Skin->SetBoneTransformByName(TEXT("root"),Rest[TEXT("root")],EBoneSpaces::ComponentSpace);
+    const FQuat Lean=Pawn->Life&&!Rolling&&!Shaking?FQuat(FVector(1,0,0),FMath::DegreesToRadians(Pawn->Life->BodyRoll))*FQuat(FVector(0,1,0),FMath::DegreesToRadians(Pawn->Life->BodyPitch)):FQuat::Identity;
+    auto LeanPoint=[&](FVector Point){const FVector Pivot(0,0,24);return Pivot+Lean.RotateVector(Point-Pivot);};
+    FTransform Spine=Rest[TEXT("spine")];Spine.SetLocation(LeanPoint(Spine.GetLocation()+FVector(0,0,Bob)));Spine.SetRotation(Lean*Spine.GetRotation());Skin->SetBoneTransformByName(TEXT("spine"),Spine,EBoneSpaces::ComponentSpace);
+    FTransform Head=Rest[TEXT("head")];Head.SetLocation(LeanPoint(Head.GetLocation()+FVector(0,0,Bob)));
+    Head.SetRotation(Lean*FQuat(FVector(0,1,0),FMath::Sin(Cycle*UE_TWO_PI*2)*.025f*Moving+(Eating?.65f:Digging?.35f:Tired?.09f:0))*Head.GetRotation());
     Skin->SetBoneTransformByName(TEXT("head"),Head,EBoneSpaces::ComponentSpace);
     for(const FName Name:{FName(TEXT("ear_l")),FName(TEXT("ear_r")),FName(TEXT("ear_tip_l")),FName(TEXT("ear_tip_r")),FName(TEXT("tail"))})
     {
-        FTransform Part=Rest[Name];Part.AddToTranslation(FVector(0,0,Bob));
+        FTransform Part=Rest[Name];Part.SetLocation(LeanPoint(Part.GetLocation()+FVector(0,0,Bob)));
         const bool Tail=Name==TEXT("tail"),Tip=Name==TEXT("ear_tip_l")||Name==TEXT("ear_tip_r");
         const float Side=Name==TEXT("ear_l")||Name==TEXT("ear_tip_l")?-1.f:1.f;
         const float Flap=Tail?FMath::Sin(Time*(Excited?5.f:3.f))*(Excited?.18f:.10f):FMath::Sin(Cycle*UE_TWO_PI*2+(Tip?.7f:0))*Side*(Tip?.27f:.15f)*Moving;
-        Part.SetRotation(FQuat(Tail?FVector::UpVector:FVector(1,0,0),Flap)*Part.GetRotation());
+        Part.SetRotation(Lean*FQuat(Tail?FVector::UpVector:FVector(1,0,0),Flap)*Part.GetRotation());
         if(Tip)
         {
             const FName Parent=Side<0?TEXT("ear_l"):TEXT("ear_r");
@@ -106,12 +114,12 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
         }
         Skin->SetBoneTransformByName(Name,Part,EBoneSpaces::ComponentSpace);
     }
-    const float WalkPhases[]={0,.5f,.75f,.25f};const float TrotPhases[]={0,.5f,.5f,0};
+    const float WalkPhases[]={0,.5f,.75f,.25f};const float TrotPhases[]={0,.5f,.5f,0};const float RunPhases[]={0,.14f,.58f,.72f};
     const FTransform World=Skin->GetComponentTransform();PlantedPaws=0;MaxJointBend=0;
     for(int32 I=0;I<Legs.Num();++I)
     {
-        auto& Leg=Legs[I];const float Phase=FMath::Fmod(Cycle+FMath::Lerp(WalkPhases[I],TrotPhases[I],Trot),1.f);
-        const float Stance=FMath::Lerp(.70f,.52f,Trot);const bool Plant=Phase<Stance || Moving<.05f;
+        auto& Leg=Legs[I];const float Phase=FMath::Fmod(Cycle+FMath::Lerp(FMath::Lerp(WalkPhases[I],TrotPhases[I],Trot),RunPhases[I],Run),1.f);
+        const float Stance=FMath::Lerp(FMath::Lerp(.70f,.52f,Trot),.40f,Run);const bool Plant=Phase<Stance || Moving<.05f;
         FVector RestWorld=World.TransformPosition(Leg.Toe);
         FVector Target=Ground(RestWorld+Pawn->GetVelocity().GetClampedToMaxSize(100)*.09f);
         if(Air||(Digging&&I<2))
@@ -131,8 +139,11 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
             const float T=(Phase-Stance)/(1-Stance);const float Smooth=T*T*(3-2*T);
             Leg.Contact=FMath::Lerp(Leg.LiftOff,Target,Smooth)+FVector(0,0,FMath::Sin(T*UE_PI)*PawLift*Moving);
         }
-        const FVector Toe=World.InverseTransformPosition(Leg.Contact);
-        FVector Hip=Leg.Hip+FVector(0,0,Bob);
+        FVector Toe=World.InverseTransformPosition(Leg.Contact);
+        if(!Rolling&&!Shaking)Toe.X+=(I<2?12:3)*FMath::Clamp((RestLowering-9)/9,0.f,1.f);
+        if(Rolling){Toe=Leg.Toe+FVector(I<2?-3:3,0,12);Leg.Planted=false;}
+        if(Shaking&&I==0){const float T=Pawn->Life->ActionProgress();const float Lift=FMath::Clamp(T/.18f,0.f,1.f)*FMath::Clamp((1-T)/.18f,0.f,1.f);Toe=Leg.Toe+FVector(9+FMath::Sin(Time*8)*1.5f,0,15)*Lift;Leg.Planted=false;}
+        FVector Hip=LeanPoint(Leg.Hip+FVector(0,0,Bob));
         FVector Ankle=Toe+(Leg.Ankle-Leg.Toe);
         const float Upper=(Leg.Knee-Leg.Hip).Size(),Lower=(Leg.Ankle-Leg.Knee).Size();
         // Clamp extension before solving; unreachable contacts cannot invert the knee.
@@ -143,5 +154,13 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
         const float Bend=FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(FVector::DotProduct((Knee-Hip).GetSafeNormal(),(Ankle-Knee).GetSafeNormal()),-1.f,1.f)));
         MaxJointBend=FMath::Max(MaxJointBend,Bend);
     }
+    if(Rolling)
+    {
+        const float T=Pawn->Life->ActionProgress();const float Smooth=T*T*(3-2*T);
+        const FQuat Roll(FVector(1,0,0),-Smooth*UE_TWO_PI);const FVector Pivot(0,0,15);
+        TArray<FTransform> Pose;for(int32 I=0;I<Skin->GetNumBones();++I)Pose.Add(Skin->GetBoneTransformByName(Skin->GetBoneName(I),EBoneSpaces::ComponentSpace));
+        for(int32 I=0;I<Pose.Num();++I){FTransform B=Pose[I];B.SetLocation(Pivot+Roll.RotateVector(B.GetLocation()-Pivot));B.SetRotation(Roll*B.GetRotation());Skin->SetBoneTransformByName(Skin->GetBoneName(I),B,EBoneSpaces::ComponentSpace);}
+    }
+    if(Rolling)PlantedPaws=0;else if(Shaking)PlantedPaws=FMath::Max(0,PlantedPaws-1);
     Skin->RefreshBoneTransforms();
 }

@@ -57,6 +57,8 @@ AMartyCharacter::AMartyCharacter()
     Skin->VisibilityBasedAnimTickOption=EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> Rig(TEXT("/Game/Adventure/Marty/Marty_CoverRig.Marty_CoverRig"));
     if(Rig.Succeeded()) {Skin->SetSkinnedAssetAndUpdate(Rig.Object);Visual->SetVisibility(false);}
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> FineCoat(TEXT("/Game/Adventure/MartyRealism/Marty_RealCoat.Marty_RealCoat"));
+    if(FineCoat.Succeeded()&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty")))Skin->SetSkinnedAssetAndUpdate(FineCoat.Object);
     Gait=CreateDefaultSubobject<UMartyGait>(TEXT("GroundedCanineGait"));
     Boom = CreateDefaultSubobject<USpringArmComponent>(TEXT("FollowingCamera"));
     Boom->SetupAttachment(GetRootComponent());
@@ -171,6 +173,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         };
         Button(EKeys::Enter,EKeys::Gamepad_FaceButton_Bottom,&AMartyCharacter::MenuConfirm);
         Button(EKeys::BackSpace,EKeys::Gamepad_FaceButton_Right,&AMartyCharacter::MenuBack);
+        Mapping->MapKey(MenuActions.Last(),EKeys::C);
         Button(EKeys::Escape,EKeys::Gamepad_Special_Right,&AMartyCharacter::MenuPause);
         Button(EKeys::Up,EKeys::Gamepad_DPad_Up,&AMartyCharacter::MenuUp);
         Button(EKeys::Down,EKeys::Gamepad_DPad_Down,&AMartyCharacter::MenuDown);
@@ -184,10 +187,13 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::F,EKeys::Gamepad_RightTrigger,&AMartyCharacter::Dig);
         Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&AMartyCharacter::DropToy);
         Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&AMartyCharacter::Bark);
+        Button(EKeys::Tab,EKeys::Gamepad_Special_Left,&AMartyCharacter::Backpack);
     }
     Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Move);
     Enhanced->BindAction(MouseAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Look);
     Enhanced->BindAction(StickAction, ETriggerEvent::Triggered, this, &AMartyCharacter::LookStick);
+    Enhanced->BindAction(StickAction,ETriggerEvent::Completed,this,&AMartyCharacter::ClearBodyStick);
+    Enhanced->BindAction(StickAction,ETriggerEvent::Canceled,this,&AMartyCharacter::ClearBodyStick);
     Enhanced->BindAction(SprintAction, ETriggerEvent::Started, this, &AMartyCharacter::SetSprint, true);
     Enhanced->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMartyCharacter::SetSprint, false);
     Enhanced->BindAction(SprintAction, ETriggerEvent::Canceled, this, &AMartyCharacter::SetSprint, false);
@@ -202,10 +208,10 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 void AMartyCharacter::Move(const FInputActionValue& Value)
 {
     if (!Controller || !CanPlay()) return;
-    if(Life)Life->StopWatching();
+    if(Life){Life->StopWatching();Life->StandUp();}
     FVector2D Axis = Value.Get<FVector2D>();
     Axis = Axis.GetClampedToMaxSize(1);
-    const FRotator Heading(0, Controller->GetControlRotation().Yaw, 0);
+    const FRotator Heading(0,Life&&Life->UsesBodyControls()?GetActorRotation().Yaw:Controller->GetControlRotation().Yaw,0);
     AddMovementInput(Heading.Vector(), Axis.Y);
     AddMovementInput(FRotationMatrix(Heading).GetUnitAxis(EAxis::Y), Axis.X);
 }
@@ -219,11 +225,12 @@ void AMartyCharacter::Look(const FInputActionValue& Value)
 void AMartyCharacter::LookStick(const FInputActionValue& Value)
 {
     if (!CanPlay()) return;
+    if(Life&&Life->UsesBodyControls()){Life->SetBodyStick(Value.Get<FVector2D>());return;}
     const FVector2D Axis = Value.Get<FVector2D>() * (80.f * GetWorld()->GetDeltaSeconds());
     AddControllerYawInput(Axis.X);
     AddControllerPitchInput(Axis.Y);
 }
-void AMartyCharacter::SetSprint(bool Active) { if(Life)Life->SprintRequested=Active&&CanPlay();GetCharacterMovement()->MaxWalkSpeed = Active && CanPlay() && (!Life||Life->Energy()>=25) ? 230 : Life&&Life->Energy()<25?70:100; }
+void AMartyCharacter::SetSprint(bool Active) { if(Life)Life->SprintRequested=Active&&CanPlay();GetCharacterMovement()->MaxWalkSpeed=Life?Life->WalkSpeed():Active&&CanPlay()?230:100; }
 UCozyAdventure* AMartyCharacter::Adventure() const
 {
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>(); return Mode ? Mode->Adventure.Get() : nullptr;
@@ -233,6 +240,9 @@ void AMartyCharacter::PetJump(){if(CanPlay()&&Life&&Life->PayJump())Jump();}
 void AMartyCharacter::Dig(){if(Life)Life->Dig();}
 void AMartyCharacter::DropToy(){if(Life)Life->Drop();}
 void AMartyCharacter::Bark(){if(Life)Life->Bark();}
+void AMartyCharacter::Backpack(){if(auto* S=Adventure())S->OpenBackpack();}
+void AMartyCharacter::ClearBodyStick(){if(Life)Life->ClearBodyStick();}
+float AMartyCharacter::TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer){const float Applied=Super::TakeDamage(Amount,Event,EventInstigator,Causer);if(Life&&Applied>0)Life->AdjustHealth(-Applied);return Applied;}
 void AMartyCharacter::MenuConfirm() { if(auto* Session=Adventure()) Session->Confirm(); }
 void AMartyCharacter::MenuBack() { if(auto* Session=Adventure()) Session->Back(); }
 void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }

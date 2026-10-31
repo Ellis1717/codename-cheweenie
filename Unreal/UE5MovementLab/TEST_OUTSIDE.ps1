@@ -5,7 +5,7 @@ $OutputRoot=[IO.Path]::GetFullPath($OutputRoot);New-Item -ItemType Directory -Pa
 $info=[Diagnostics.ProcessStartInfo]::new()
 $info.FileName=if($GameExe){[IO.Path]::GetFullPath($GameExe)}else{Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor.exe'}
 $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
-$rhi=if($Render){'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
+$rhi=if($Render){'-dx12 -RenderOffscreen -ForceRes -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
 $info.Arguments=$project+$rhi+' -CheweenieOutsideSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Outside.log"'
 if($MapFile){if($Render){throw 'Private map audit is headless; no private-layout screenshots are exported'};$info.Arguments+=' -CheweenieOutsideMapAudit -CheweenieNeighbourhood="'+[IO.Path]::GetFullPath($MapFile)+'"'}
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot

@@ -33,6 +33,7 @@ public:
     void ResetContacts();
     FVector MouthWorld() const;
 private:
+    float RestLowering=0;
     TArray<FMartyLeg> Legs;
     TMap<FName,FTransform> Rest;
     FVector LastPosition;
