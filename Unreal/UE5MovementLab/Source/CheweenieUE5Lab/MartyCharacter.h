@@ -17,6 +17,7 @@ class UCheweenieNeighbourhood;
 class UDogLife;
 class UCozyNavigation;
 class UCatCompanions;
+class UHalloweenCostume;
 struct FInputActionValue;
 
 UCLASS()
@@ -30,9 +31,11 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
     void CycleCamera();
-    void ReturnHome();
+    virtual void ReturnHome();
+    virtual bool UsesAdventureHome() const { return true; }
     virtual float TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer) override;
     int32 CameraPreset = 0;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenCostume> Costume;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UPoseableMeshComponent> Skin;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UDogLife> Life;
@@ -77,6 +80,9 @@ private:
     FVector Home;
 };
 
+// Deterministic collision setup for the retained room, independently on each peer.
+void PrepareCheweenieRoom(UWorld* World, bool HideAllPets = false);
+
 UCLASS()
 class AMartyPlayMode : public AGameModeBase
 {
@@ -99,6 +105,9 @@ private:
     void TickTricksSmoke(float Delta);
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
+    void TickWorldSmoke(float Delta);
+    void TickCostumeSmoke(float Delta);
+    void TickRatchetSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

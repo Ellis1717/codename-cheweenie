@@ -1,4 +1,6 @@
 #include "MartyCharacter.h"
+#include "HalloweenCostume.h"
+#include "WorldRealism.h"
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
 #include "MartyGait.h"
@@ -44,6 +46,7 @@ AMartyCharacter::AMartyCharacter()
     GetCharacterMovement()->MaxStepHeight = 12;
     GetCharacterMovement()->JumpZVelocity=440;
     GetCharacterMovement()->AirControl=.35f;
+    Costume=CreateDefaultSubobject<UHalloweenCostume>(TEXT("OptionalHalloweenCostume"));
     Life=CreateDefaultSubobject<UDogLife>(TEXT("DogNeedsAndCozyActions"));
     Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RetainedMarty"));
     Visual->SetupAttachment(GetRootComponent());
@@ -88,7 +91,7 @@ void AMartyCharacter::BeginPlay()
     {
         Skin->SetVisibility(false);Visual->SetVisibility(true);Gait->SetComponentTickEnabled(false);
     }
-    TeleportTo(FVector(-200, -200, 60), FRotator(0, 40, 0));
+    if(UsesAdventureHome()) TeleportTo(FVector(-200, -200, 60), FRotator(0, 40, 0));
     Home = GetActorLocation();
     Recenter();
 }
@@ -111,6 +114,7 @@ void AMartyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     if(auto* S=Adventure())if(S->Progress){const bool Detailed=S->Feature(ECozyFeature::DetailedCoat)&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"));if(LastDetailed!=int32(Detailed)){LastDetailed=int32(Detailed);if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Detailed?TEXT("/Game/Adventure/MartyRealism/Marty_RealCoat.Marty_RealCoat"):TEXT("/Game/Adventure/Marty/Marty_CoverRig.Marty_CoverRig"))){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
+    if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
     if(GetActorLocation().Z< -600)ReturnHome();
 }
 
@@ -298,15 +302,20 @@ AMartyPlayMode::AMartyPlayMode()
 void AMartyPlayMode::BeginPlay()
 {
     Super::BeginPlay();
+    PrepareCheweenieRoom(GetWorld());
+}
+
+void PrepareCheweenieRoom(UWorld* World, bool HideAllPets)
+{
     // The comparison map remains unmodified; replace only its duplicate Marty at runtime.
-    for (TActorIterator<AStaticMeshActor> It(GetWorld()); It; ++It)
+    for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
     {
         const UStaticMesh* Mesh = It->GetStaticMeshComponent()->GetStaticMesh();
         if (!Mesh) continue;
         const FString Path = Mesh->GetPathName();
         if (Path == TEXT("/Game/VisualLab/Pets/Marty.Marty")) { It->Destroy(); continue; }
         else if (Path == TEXT("/Game/VisualLab/Pets/Lakitu.Lakitu") || Path == TEXT("/Game/VisualLab/Pets/Rio.Rio"))
-            It->SetActorScale3D(FVector(.32f));
+        { if(HideAllPets){It->Destroy();continue;} It->SetActorScale3D(FVector(.32f)); }
         // A stretched sphere's simple physics shape does not follow its sofa silhouette.
         // Use a conservative box for each upholstered part only in the playable world.
         auto* Component = It->GetStaticMeshComponent();
@@ -325,7 +334,7 @@ void AMartyPlayMode::BeginPlay()
     // Invisible boundaries protect the open photography-room edges.
     for (int32 Index = 0; Index < 4; ++Index)
     {
-        auto* Wall = GetWorld()->SpawnActor<AActor>();
+        auto* Wall = World->SpawnActor<AActor>();
         auto* Box = NewObject<UBoxComponent>(Wall);
         Wall->SetRootComponent(Box);
         Box->SetBoxExtent(Index < 2 ? FVector(10, 510, 180) : FVector(510, 10, 180));
@@ -334,6 +343,7 @@ void AMartyPlayMode::BeginPlay()
         Wall->SetActorLocation(Index < 2 ? FVector(Index == 0 ? -490 : 490, 0, 150)
                                         : FVector(0, Index == 2 ? -490 : 490, 150));
     }
+    UpgradeCheweenieRoom(World);
 }
 
 void AMartyHUD::DrawHUD()

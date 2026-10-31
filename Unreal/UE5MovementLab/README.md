@@ -1,4 +1,12 @@
-# Codename .... Cheweenie — Cozy Crew 0.9
+# Codename .... Cheweenie — World 0.10
+
+World 0.10 adds original environment art on the actual room/neighbourhood while retaining the solo 0.9 and LAN 0.1 packages. Twelve meshes, 21 base materials/eight world variants and 51 PBR maps provide a furnished room, panelled kitchen, cloth fort, brick/slate facades, connected foliage and batched grass/window trim. [World guide](../../docs/UNREAL_WORLD_REALISM.md), [editable source scene and generators](SourceArt/WorldRealism/README.md). New visuals disable collision separately from the retained tested colliders. Pets and building footprints remain stylized/schematic.
+
+Final native Editor/Game compilation and cook/archive passed. Packaged world (14), headless/rendered co-op (45 each), companion play/reload (34), patrol/reload (31) and cozy actions/reload (28) passed: **197 public packaged assertion executions**, plus four private-map and 16 editor movement checks. Four actual full-HD captures were inspected/readability checked; final Error/Fatal/material fallback counts were zero, and all 43 payload hashes matched in the transfer ZIP. [Evidence](../../docs/evidence/ue5-world-build.json). Physical controllers, independent PCs and broad interactive performance remain unverified.
+
+LAN Cozy Crew 0.1 adds an independent two-player room mode: one Windows PC hosts, a second joins by IPv4, and each selects an unclaimed Marty/Lakitu/Rio. Shared movement, voices and a carry/drop ball are replicated; private references, solo saves/quests and the existing launcher remain separate. [Setup, controls, build and verification](../../docs/UNREAL_COOP.md). Marty keeps his procedural rig; cat limb animation remains unfinished.
+
+Native Editor/Game compilation, full cook/archive and 124 packaged assertions passed (45 headless network, 45 rendered network, 34 solo companion play/reload). The solo editor movement regression passed 16. Both packaged captures were inspected, final runtime logs had no Error/Fatal categories or material fallbacks, and the transfer ZIP verified all 43 payload hashes. [Evidence](../../docs/evidence/ue5-coop-build.json). Inputs were synthetic; separate physical PCs, controllers and whole-game performance are unverified.
 
 Lakitu and Rio now have independent follow/stay commands, safe recall, greetings, saved friendship and a Best Buddies goal. K / D-pad Down opens the crew menu; Controls has a separate Companion behaviour switch (25 optional switches total). [Companion guide and cached routing](../../docs/UNREAL_COMPANIONS.md). This begins U3 behaviour using retained static meshes; articulated cat gait and fur remain unfinished.
 

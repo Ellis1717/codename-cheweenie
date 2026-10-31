@@ -56,6 +56,9 @@ void UCozyAdventure::BeginPlay()
         UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieNavigationSmoke"))){Slot=TEXT("CheweenieNavigationAcceptance" );if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieNavigationResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCompanionSmoke"))){Slot=TEXT("CheweenieCompanionAcceptance" );if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieCompanionResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieWorldSmoke"))){Slot=TEXT("CheweenieWorldAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCostumeSmoke"))){Slot=TEXT("CheweenieCostumeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieCostumeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))){Slot=TEXT("CheweenieRatchetAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Mission = NewObject<UCozyMissionDefinition>(this);
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
@@ -69,6 +72,7 @@ void UCozyAdventure::BeginPlay()
         Progress->MissionId = Mission->MissionId; Progress->SnackMask = 0; Progress->VisitIndex = 0; Progress->Complete = false;
     }
     Progress->DisabledFeatures &= (1<<uint8(ECozyFeature::Count))-1;Progress->NavTarget=FMath::Clamp(Progress->NavTarget,0,127);
+    Progress->CostumeMask &= 7;
     Progress->SnackMask &= (1 << Mission->Snacks.Num()) - 1;
     Progress->VisitIndex = FMath::Clamp(Progress->VisitIndex, 0, Mission->Visits.Num());
     Progress->Complete = Progress->VisitIndex == Mission->Visits.Num();
@@ -80,6 +84,7 @@ void UCozyAdventure::BeginPlay()
         const FString Path = TEXT("/Game/Adventure/Audio/") + Name + TEXT(".") + Name;
         if (auto* Sound = LoadObject<USoundBase>(nullptr, *Path)) Sounds.Add(Name, Sound);
     }
+    CheckRatchetUnlock();
     BuildFort(); CompleteRoom(); RebuildMarkers(); UpdateMusic(); SetScreen(ECozyScreen::Title);
 }
 
@@ -112,7 +117,7 @@ void UCozyAdventure::Navigate(int32 Direction)
 }
 void UCozyAdventure::Adjust(int32 Direction)
 {
-    if(Screen==ECozyScreen::Features){Confirm();return;}
+    if(Screen==ECozyScreen::Features||Screen==ECozyScreen::Wardrobe){Confirm();return;}
     if (!Enabled || Screen != ECozyScreen::Settings) return;
     if (Selection == 0) Progress->Music = FMath::Clamp(Progress->Music + Direction * .1f, 0.f, 1.f);
     if (Selection == 1) Progress->Effects = FMath::Clamp(Progress->Effects + Direction * .1f, 0.f, 1.f);
@@ -121,7 +126,7 @@ void UCozyAdventure::Adjust(int32 Direction)
 void UCozyAdventure::Back()
 {
     if (!Enabled) return;
-    if(Screen==ECozyScreen::Features){SetScreen(ECozyScreen::Controls);return;}
+    if(Screen==ECozyScreen::Features||Screen==ECozyScreen::Wardrobe){SetScreen(ECozyScreen::Controls);return;}
     if (Screen == ECozyScreen::Controls || Screen == ECozyScreen::Settings || Screen == ECozyScreen::Restart) SetScreen(ReturnScreen);
     else if (Screen == ECozyScreen::Pause || Screen == ECozyScreen::Complete || Screen==ECozyScreen::Backpack || Screen==ECozyScreen::Tricks || Screen==ECozyScreen::Map || Screen==ECozyScreen::Companions) SetScreen(ECozyScreen::Playing);
     else if(Screen==ECozyScreen::Playing)OpenTricks();
@@ -136,7 +141,8 @@ void UCozyAdventure::Confirm()
     const ECozyScreen Current = Screen;
     if(Current==ECozyScreen::Companions){const int32 Choice=Selection;SetScreen(ECozyScreen::Playing);if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions){auto* C=M->Companions.Get();if(Choice<2)C->ToggleFollow(Choice);else if(Choice==2)C->CallBoth();else if(Choice==3)C->SendHome();else if(Choice==4)C->Pet(0);else if(Choice==5)C->Pet(1);}return;}
     if(Current==ECozyScreen::Map){const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();const int32 Count=M&&M->Navigation?M->Navigation->Landmarks().Num():0;if(Selection<Count){Progress->NavTarget=Selection;Save();if(M&&M->Navigation)M->Navigation->RefreshRoute();}SetScreen(ECozyScreen::Playing);return;}
-    if(Current==ECozyScreen::Controls){if(Selection==0)Back();else if(Selection<=3){FeaturePage=Selection-1;SetScreen(ECozyScreen::Features);}else {const int32 Keep=Selection;SetScreen(ECozyScreen::Playing);if(Marty()&&Marty()->Life)Marty()->Life->ToggleBodyControls();SetScreen(ECozyScreen::Controls);Selection=Keep;}return;}
+    if(Current==ECozyScreen::Wardrobe){if(Selection<3){Progress->CostumeMask^=1<<Selection;Save();PlayCue(TEXT("Menu"));}else Back();return;}
+    if(Current==ECozyScreen::Controls){if(Selection==0)Back();else if(Selection==5)SetScreen(ECozyScreen::Wardrobe);else if(Selection<=3){FeaturePage=Selection-1;SetScreen(ECozyScreen::Features);}else {const int32 Keep=Selection;SetScreen(ECozyScreen::Playing);if(Marty()&&Marty()->Life)Marty()->Life->ToggleBodyControls();SetScreen(ECozyScreen::Controls);Selection=Keep;}return;}
     if(Current==ECozyScreen::Features){const auto Group=FeatureGroup();if(Group.IsValidIndex(Selection))ToggleFeature(Group[Selection]);else Back();return;}
     if(Current==ECozyScreen::Backpack||Current==ECozyScreen::Tricks)
     {
@@ -144,6 +150,7 @@ void UCozyAdventure::Confirm()
         if(Current==ECozyScreen::Backpack){if(Choice==0)L->Stow();else if(Choice==1)L->Retrieve();}
         else {if(Choice==0)L->LieDown();else if(Choice==1)L->RollOver();else if(Choice==2)L->ShakePaw();else if(Choice==3)L->Bark();else if(Choice==4)L->CyclePace();else if(Choice==5)L->ToggleBodyControls();}return;
     }
+    if((Current==ECozyScreen::Title||Current==ECozyScreen::Pause)&&Selection==6){VisitRatchet();return;}
     if (Current == ECozyScreen::Title)
     {
         if (Selection == 0) Start(false);
@@ -227,7 +234,7 @@ void UCozyAdventure::Interact()
         Progress->Complete = true; SetScreen(ECozyScreen::Complete);
         MessageTime = 10;
     }
-    Save(); RebuildMarkers();
+    CheckRatchetUnlock();Save(); RebuildMarkers();
 }
 void UCozyAdventure::TickComponent(float Delta, ELevelTick TickType, FActorComponentTickFunction* ThisTick)
 {
@@ -247,11 +254,12 @@ TArray<FString> UCozyAdventure::Menu() const
     switch(Screen)
     {
     case ECozyScreen::Companions:{const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();if(!M||!M->Companions)return {TEXT("Close")};const auto* C=M->Companions.Get();return {TEXT("Lakitu: ")+C->State(0)+(C->Following(0)?TEXT(" - ask to stay"):TEXT(" - follow Marty")),TEXT("Rio: ")+C->State(1)+(C->Following(1)?TEXT(" - ask to stay"):TEXT(" - follow Marty")),TEXT("Call both cats here"),TEXT("Send both cats home"),TEXT("Head bump with Lakitu"),TEXT("Head bump with Rio"),TEXT("Close")};}
-    case ECozyScreen::Controls:return {TEXT("Back"),TEXT("Navigation & map switches"),TEXT("Pet feature switches"),TEXT("Camera, display & sound switches"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try body sway)")};
+    case ECozyScreen::Controls:return {TEXT("Back"),TEXT("Navigation & map switches"),TEXT("Pet feature switches"),TEXT("Camera, display & sound switches"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try body sway)"),TEXT("Halloween costumes (optional)")};
+    case ECozyScreen::Wardrobe:{TArray<FString> Rows;const TCHAR* Names[]={TEXT("Marty: hot dog"),TEXT("Lakitu: pumpkin"),TEXT("Rio: bumblebee")};for(int32 I=0;I<3;++I)Rows.Add(FString(Names[I])+((Progress->CostumeMask&(1<<I))?TEXT(": ON"):TEXT(": OFF")));Rows.Add(TEXT("Back to controls"));return Rows;}
     case ECozyScreen::Features:{TArray<FString> Rows;for(auto Id:FeatureGroup())Rows.Add(CozyFeatureLabel(Id)+(Feature(Id)?TEXT(": ON"):TEXT(": OFF")));Rows.Add(TEXT("Back to controls"));return Rows;}
     case ECozyScreen::Map:{TArray<FString> Rows;if(const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation){for(const auto& L:M->Navigation->Landmarks())Rows.Add(FString::Printf(TEXT("%d. %s"),Rows.Num()+1,*L.Label));if(Rows.IsValidIndex(Progress->NavTarget))Rows[Progress->NavTarget]=TEXT("[Tracking] ")+Rows[Progress->NavTarget];}Rows.Add(TEXT("Close map"));return Rows;}
-    case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit")};
-    case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen"),TEXT("Cat companions")};
+    case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock")};
+    case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen"),TEXT("Cat companions"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock")};
     case ECozyScreen::Backpack: return {TEXT("Stow the toy in Marty's mouth"),TEXT("Take a toy from the backpack"),TEXT("Close backpack")};
     case ECozyScreen::Tricks: return {TEXT("Lie down / get up"),TEXT("Roll over"),TEXT("Shake a paw"),TEXT("Bork!"),TEXT("Change pace: walk / jog / run"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try two-stick body sway)"),TEXT("Back to exploring")};
     case ECozyScreen::Settings: return {FString::Printf(TEXT("Music: %d%%"),FMath::RoundToInt(Progress->Music*100)),FString::Printf(TEXT("Effects: %d%%"),FMath::RoundToInt(Progress->Effects*100)),TEXT("Back")};
@@ -270,6 +278,7 @@ FString UCozyAdventure::Heading() const
     case ECozyScreen::Tricks: return TEXT("Marty's tricks and pace");
     case ECozyScreen::Companions:return TEXT("Lakitu & Rio - the cozy crew" );
     case ECozyScreen::Controls: return TEXT("Controls & feature switches");
+    case ECozyScreen::Wardrobe: return TEXT("Halloween dress-up - each pet is optional");
     case ECozyScreen::Features:return FeaturePage==0?TEXT("Navigation switches"):FeaturePage==1?TEXT("Pet feature switches"):TEXT("Camera, display & sound");
     case ECozyScreen::Map:return TEXT("Where shall Marty go?");
     case ECozyScreen::Settings: return TEXT("Sound settings");
@@ -294,12 +303,16 @@ void UCozyAdventure::RebuildMarkers()
 void UCozyAdventure::BuildFort()
 {
     FVector Center=Mission->Visits.Last().Position; Center.Z=1;
+    if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLegacyWorld")))
+        if(auto* Blanket=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/Adventure/Scenery/Meshes/FortBlanket.FortBlanket")))
+        {auto* Fort=GetWorld()->SpawnActor<AStaticMeshActor>(Center,FRotator::ZeroRotator);Fort->Tags.Add(TEXT("BlanketFortSurface"));Fort->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);Fort->GetStaticMeshComponent()->SetStaticMesh(Blanket);Fort->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);Fort->SetActorScale3D(FVector(1,-1,1));return;}
     auto* Mesh=LoadObject<UStaticMesh>(nullptr,TEXT("/Engine/BasicShapes/Cube.Cube"));
     auto* Mat=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/VisualLab/UE5Materials/WovenBlue.WovenBlue"));
     for(int32 I=0;I<3;++I)
     {
         const FVector Offset= I==0 ? FVector(0,0,60) : FVector(0,I==1?-62:62,30);
         auto* Part=GetWorld()->SpawnActor<AStaticMeshActor>(Center+Offset,FRotator::ZeroRotator);
+        Part->Tags.Add(TEXT("BlanketFortSurface"));
         Part->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
         Part->GetStaticMeshComponent()->SetStaticMesh(Mesh); Part->GetStaticMeshComponent()->SetMaterial(0,Mat);
         Part->SetActorScale3D(I==0 ? FVector(1.7,1.5,.04) : FVector(1.7,.035,.6));

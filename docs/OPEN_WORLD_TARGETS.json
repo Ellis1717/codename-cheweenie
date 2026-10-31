@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "project": "Codename .... Cheweenie",
+  "status": "proposed_design",
+  "purpose": "Editable planning targets; not runtime configuration or achieved test results",
+  "concept": "Operation Everybody Get Comfortable",
+  "design_document": "OPEN_WORLD_DESIGN.md",
+  "release_targets": {
+    "districts": 5,
+    "campaign_missions": 6,
+    "optional_favours": 14,
+    "activity_patterns_minimum": 5,
+    "players_initial": 2,
+    "players_stretch": 3,
+    "slice_envelope_metres": [150, 150],
+    "release_envelope_ceiling_metres": [400, 400],
+    "main_route_metres_range": [350, 450],
+    "primary_route_activity_spacing_metres_range": [20, 40],
+    "quick_favour_minutes_range": [2, 5],
+    "outing_minutes_range": [10, 20]
+  },
+  "quality_targets": {
+    "start_menu_selections_max": 3,
+    "first_interaction_seconds_max": 120,
+    "first_favour_minutes_max": 5,
+    "fresh_start_sessions": 5,
+    "fresh_start_sessions_passing_minimum": 4,
+    "contested_item_trials": 100,
+    "duplicated_or_lost_items_allowed": 0,
+    "network_emulation_round_trip_ms": 80,
+    "network_emulation_packet_loss_percent": 1,
+    "same_joke_repeat_cooldown_seconds": 600,
+    "spoken_comedy_gap_seconds_minimum": 15,
+    "reference_hardware": "To be recorded in OW-00; performance claims require hardware qualification",
+    "primary_performance": {"resolution": [1920, 1080], "preset": "Medium", "fps_target": 60, "warm_route_minutes": 10, "p95_frame_ms_max": 20, "p99_frame_ms_max": 33.3, "gameplay_hitch_ms_max": 100},
+    "fallback_performance": {"resolution": [1280, 720], "fps_target": 30},
+    "animation_test_surfaces": 5,
+    "paw_penetration_cm_target_max": 2,
+    "planted_foot_drift_cm_target_max_over_one_second": 3,
+    "save_reload_cycles": 3,
+    "forced_shutdown_recovery_trials": 1
+  },
+  "gates": [
+    {"id": "OW-00", "title": "Qualify the baseline", "status": "planned", "depends_on": [], "acceptance": ["Record reference PC hardware and settings", "Reproduce packaged build and retained rollback", "Capture traversal/frame-time baseline", "Separate synthetic input from physical controller evidence"]},
+    {"id": "OW-01", "title": "Believable playable crew", "status": "planned", "depends_on": ["OW-00"], "acceptance": ["Review reference likeness for Marty, Lakitu and Rio", "Finish cat articulation and required movement/rest clips", "Preserve Marty ear secondary motion", "Pass existing gameplay and control regressions"]},
+    {"id": "OW-02", "title": "Connected home-yard-park slice", "status": "planned", "depends_on": ["OW-01"], "acceptance": ["Three favours and six discoveries", "Two route loops and reliable recovery", "Complete solo/controller walkthrough", "Persist slice completion across reload"]},
+    {"id": "OW-03", "title": "Outdoor two-player slice", "status": "planned", "depends_on": ["OW-02"], "acceptance": ["All three two-pet pairings complete shared favour", "Verify two separate PCs with role swap", "Pass contested item ownership trials", "Pass district travel and disconnect/rejoin", "Preserve guest solo data"]},
+    {"id": "OW-04", "title": "Campaign neighbourhood", "status": "planned", "depends_on": ["OW-03"], "acceptance": ["Five districts, six campaign missions, 14 optional favours", "At least five activity patterns", "No mandatory unreachable or missing-third-player steps", "Pass navigation, persistence and family play review"]},
+    {"id": "OW-05", "title": "Polish and distribute", "status": "planned", "depends_on": ["OW-04"], "acceptance": ["Meet hardware-qualified performance/scalability targets", "Pass physical keyboard/Xbox/PlayStation walkthroughs", "Pass captions/audio-off and comedy pacing review", "Verify second-PC packaged launch and transfer privacy", "Publish current actual test evidence"]}
+  ],
+  "scope_rules": [
+    "Solo and any two-pet pairing can complete the critical path",
+    "Host owns shared world/checkpoints; guest solo progress stays independent",
+    "Optional private local layout stays outside public assets and transfer archives",
+    "Character comedy roles are proposed fictional personalities",
+    "Dialogue and situations are original",
+    "No planned gate is complete without actual acceptance evidence"
+  ]
+}

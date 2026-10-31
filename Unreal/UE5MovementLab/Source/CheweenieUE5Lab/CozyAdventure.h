@@ -11,7 +11,7 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe };
 
 UENUM()
 enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, Count };
@@ -66,6 +66,8 @@ public:
     UPROPERTY(SaveGame) int32 DisabledFeatures=0;
     UPROPERTY(SaveGame) int32 NavTarget=0;
     UPROPERTY(SaveGame) int32 CatFollowMask=0;
+    UPROPERTY(SaveGame) int32 CostumeMask=0;
+    UPROPERTY(SaveGame) bool RatchetUnlocked=false;
     UPROPERTY(SaveGame) int32 LakituBond=0;
     UPROPERTY(SaveGame) int32 RioBond=0;
 };
@@ -89,6 +91,8 @@ public:
     UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
     void HoldMessage(float Seconds) { MessageTime=Seconds; }
     void ActionCue(const FString& Name) { PlayCue(Name); }
+    void CheckRatchetUnlock();
+    void VisitRatchet();
     void OpenBackpack();
     void OpenTricks();
     void OpenMap();
