@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "WorldRealism.h"
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
 #include "MartyCharacter.h"
@@ -107,8 +108,8 @@ void UCheweenieNeighbourhood::Home()
     }
     for(int32 Side:{-1,1})
     {
-        auto* R=Shape(TEXT("Garage gable roof"),P+FVector(-550+Side*195,25,390),FVector(470,750,30),5,false);R->SetActorRotation(FRotator(Side*25,0,0));
-        R=Shape(TEXT("Main pitched roof"),P+FVector(200+Side*165,435,650),FVector(420,890,30),5,false);R->SetActorRotation(FRotator(Side*20,0,0));
+        auto* R=Shape(TEXT("Garage gable roof"),P+FVector(-550+Side*195,25,390),FVector(470,750,30),5,false);R->SetActorRotation(FRotator(-Side*25,0,0));
+        R=Shape(TEXT("Main pitched roof"),P+FVector(200+Side*165,435,650),FVector(420,890,30),5,false);R->SetActorRotation(FRotator(-Side*20,0,0));
     }
     Path(P+FVector(0,-50,0),P+FVector(0,-650,0),150,1);
     Sign(TEXT("Marty's headquarters"),P+FVector(0,-100,290),27,-90);
@@ -178,7 +179,9 @@ void UCheweenieNeighbourhood::Build()
     const FLinearColor Colors[]={FLinearColor(.16f,.34f,.12f),FLinearColor(.62f,.59f,.48f),FLinearColor(.11f,.13f,.15f),FLinearColor(.52f,.28f,.16f),FLinearColor(.30f,.43f,.54f),FLinearColor(.10f,.075f,.055f),FLinearColor(.12f,.25f,.34f),FLinearColor(.45f,.65f,.72f)};
     auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/World/NeighbourhoodSurface.NeighbourhoodSurface"));
     if(!Base)Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-    for(auto C:Colors){auto* M=UMaterialInstanceDynamic::Create(Base,this);M->SetVectorParameterValue(TEXT("Color"),C);Palette.Add(M);}
+    const TCHAR* Surfaces[]={TEXT("Grass"),TEXT("Concrete"),TEXT("Asphalt")};
+    for(int32 I=0;I<UE_ARRAY_COUNT(Colors);++I){auto* Surface=I<3&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLegacyWorld"))?LoadObject<UMaterialInterface>(nullptr,*FString::Printf(TEXT("/Game/Adventure/Scenery/Materials/%s_World.%s_World"),Surfaces[I],Surfaces[I])):nullptr;
+        auto* M=UMaterialInstanceDynamic::Create(Surface?Surface:Base,this);if(!Surface)M->SetVectorParameterValue(TEXT("Color"),Colors[I]);Palette.Add(M);}
     Shape(TEXT("Headquarters exit door"),FVector(-466,-200,110),FVector(12,115,220),6,false);
     Sign(TEXT("OUTSIDE\nE / X / Square"),FVector(-452,-200,225),24,0);
     PrivateMapLoaded=LoadMap();
@@ -247,6 +250,7 @@ void UCheweenieNeighbourhood::Build()
         Fill->SetLightColor(FLinearColor(.82f,.90f,1.f));Fill->SetVisibility(false);Fill->RegisterComponent();
         Actor->SetActorLocationAndRotation(Origin+FVector(0,0,1000),FRotator(-55,Yaw,0));OutdoorFill.Add(Fill);
     }
+    UpgradeCheweenieNeighbourhood(GetWorld(),Park);
 }
 void UCheweenieNeighbourhood::SetOutdoorLighting(bool Active)
 {

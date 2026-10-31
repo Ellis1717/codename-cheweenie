@@ -1,0 +1,351 @@
+{
+  "author": "Codename .... Cheweenie original procedural environment art",
+  "units": "centimetres",
+  "materials": {
+    "Oak": {
+      "color": [
+        0.68,
+        0.56,
+        0.42
+      ],
+      "roughness": 0.52,
+      "kind": "wood",
+      "tile_cm": 180,
+      "maps": true
+    },
+    "Plaster": {
+      "color": [
+        0.82,
+        0.8,
+        0.75
+      ],
+      "roughness": 0.89,
+      "kind": "plaster",
+      "tile_cm": 140,
+      "maps": true
+    },
+    "SofaLinen": {
+      "color": [
+        0.36,
+        0.43,
+        0.4
+      ],
+      "roughness": 0.91,
+      "kind": "fabric",
+      "tile_cm": 35,
+      "maps": true
+    },
+    "RugWool": {
+      "color": [
+        0.3,
+        0.41,
+        0.49
+      ],
+      "roughness": 0.96,
+      "kind": "fabric",
+      "tile_cm": 45,
+      "maps": true
+    },
+    "OchreLinen": {
+      "color": [
+        0.69,
+        0.49,
+        0.26
+      ],
+      "roughness": 0.9,
+      "kind": "fabric",
+      "tile_cm": 35,
+      "maps": true
+    },
+    "IvoryLinen": {
+      "color": [
+        0.78,
+        0.75,
+        0.66
+      ],
+      "roughness": 0.93,
+      "kind": "fabric",
+      "tile_cm": 35,
+      "maps": true
+    },
+    "Brick": {
+      "color": [
+        0.52,
+        0.28,
+        0.2
+      ],
+      "roughness": 0.86,
+      "kind": "brick",
+      "tile_cm": 192,
+      "maps": true
+    },
+    "Concrete": {
+      "color": [
+        0.56,
+        0.55,
+        0.5
+      ],
+      "roughness": 0.87,
+      "kind": "stone",
+      "tile_cm": 200,
+      "maps": true
+    },
+    "Asphalt": {
+      "color": [
+        0.16,
+        0.17,
+        0.18
+      ],
+      "roughness": 0.94,
+      "kind": "stone",
+      "tile_cm": 300,
+      "maps": true
+    },
+    "Grass": {
+      "color": [
+        0.27,
+        0.36,
+        0.14
+      ],
+      "roughness": 0.95,
+      "kind": "grass",
+      "tile_cm": 200,
+      "maps": true
+    },
+    "RoofSlate": {
+      "color": [
+        0.21,
+        0.23,
+        0.25
+      ],
+      "roughness": 0.81,
+      "kind": "roof",
+      "tile_cm": 200,
+      "maps": true
+    },
+    "Bark": {
+      "color": [
+        0.3,
+        0.23,
+        0.15
+      ],
+      "roughness": 0.95,
+      "kind": "wood",
+      "tile_cm": 100,
+      "maps": true
+    },
+    "Leaf": {
+      "color": [
+        0.18,
+        0.29,
+        0.075
+      ],
+      "roughness": 0.75,
+      "kind": "leaf",
+      "tile_cm": 40,
+      "maps": true
+    },
+    "Paint": {
+      "color": [
+        0.8,
+        0.78,
+        0.72
+      ],
+      "roughness": 0.56,
+      "kind": "plaster",
+      "tile_cm": 150,
+      "maps": true
+    },
+    "BluePaint": {
+      "color": [
+        0.13,
+        0.25,
+        0.34
+      ],
+      "roughness": 0.48,
+      "kind": "plaster",
+      "tile_cm": 150,
+      "maps": true
+    },
+    "Ceramic": {
+      "color": [
+        0.63,
+        0.65,
+        0.58
+      ],
+      "roughness": 0.25,
+      "kind": "stone",
+      "tile_cm": 100,
+      "maps": true
+    },
+    "Brass": {
+      "color": [
+        0.56,
+        0.37,
+        0.13
+      ],
+      "roughness": 0.29,
+      "kind": "metal",
+      "tile_cm": 100,
+      "maps": false
+    },
+    "DarkMetal": {
+      "color": [
+        0.055,
+        0.065,
+        0.07
+      ],
+      "roughness": 0.43,
+      "kind": "metal",
+      "tile_cm": 100,
+      "maps": false
+    },
+    "BookPaper": {
+      "color": [
+        0.7,
+        0.66,
+        0.55
+      ],
+      "roughness": 0.86,
+      "kind": "plaster",
+      "tile_cm": 100,
+      "maps": true
+    },
+    "WindowGlass": {
+      "color": [
+        0.16,
+        0.23,
+        0.28
+      ],
+      "roughness": 0.12,
+      "kind": "glass",
+      "tile_cm": 100,
+      "maps": false
+    },
+    "Steel": {
+      "color": [
+        0.62,
+        0.66,
+        0.7
+      ],
+      "roughness": 0.24,
+      "kind": "metal",
+      "tile_cm": 100,
+      "maps": false
+    }
+  },
+  "meshes": {
+    "RoomShell": {
+      "vertices": 1256,
+      "triangles": 2456,
+      "materials": [
+        "Oak",
+        "Plaster"
+      ]
+    },
+    "RoomFloor": {
+      "vertices": 31680,
+      "triangles": 62040,
+      "materials": [
+        "Oak"
+      ]
+    },
+    "RoomDetails": {
+      "vertices": 7068,
+      "triangles": 13776,
+      "materials": [
+        "Paint",
+        "Oak",
+        "BluePaint",
+        "Brass",
+        "IvoryLinen",
+        "OchreLinen",
+        "DarkMetal",
+        "Leaf"
+      ]
+    },
+    "RoomSoft": {
+      "vertices": 6156,
+      "triangles": 8948,
+      "materials": [
+        "IvoryLinen",
+        "OchreLinen",
+        "RugWool"
+      ]
+    },
+    "RoomSofa": {
+      "vertices": 2112,
+      "triangles": 4100,
+      "materials": [
+        "SofaLinen",
+        "Oak"
+      ]
+    },
+    "RoomPlants": {
+      "vertices": 4668,
+      "triangles": 8968,
+      "materials": [
+        "Ceramic",
+        "Bark",
+        "Leaf"
+      ]
+    },
+    "LeafTree": {
+      "vertices": 89788,
+      "triangles": 86332,
+      "materials": [
+        "Bark",
+        "Leaf"
+      ]
+    },
+    "ParkBench": {
+      "vertices": 1056,
+      "triangles": 2068,
+      "materials": [
+        "Oak",
+        "DarkMetal"
+      ]
+    },
+    "GrassClump": {
+      "vertices": 432,
+      "triangles": 576,
+      "materials": [
+        "Grass"
+      ]
+    },
+    "FortBlanket": {
+      "vertices": 4358,
+      "triangles": 8248,
+      "materials": [
+        "RugWool",
+        "Oak"
+      ]
+    },
+    "RoofGable": {
+      "vertices": 6,
+      "triangles": 8,
+      "materials": [
+        "Brick"
+      ]
+    },
+    "RoomKitchen": {
+      "vertices": 5338,
+      "triangles": 10564,
+      "materials": [
+        "Paint",
+        "Oak",
+        "BluePaint",
+        "Brass",
+        "DarkMetal",
+        "Steel"
+      ]
+    }
+  },
+  "photographs_used": false,
+  "third_party_assets": false,
+  "generator_sha256": "72b26e5be2332e247bee0f8c94ca7117d5df19b2027a5d4882c2af3dd1d8deb0",
+  "fort_generator_sha256": "b98dd0c870715c68731c27325942fe4f022baa7714db3a142d140cd5cbc9a717",
+  "outdoor_generator_sha256": "bbee729d8b8c224e6bb920463fac1f0a25d67ca39ee5d6f48cc9679b59bd2d41",
+  "surface_generator_sha256": "6d16aa8c61477b573b7d4673ef1a8aae4d805b526e30318d364303a6dab4cca5",
+  "kitchen_generator_sha256": "c33a936457ef900d0bb7d2f78f77e91d0e536c6dceb608dc95ce3f72d905517b"
+}

@@ -12,6 +12,8 @@
 #include "Engine/StaticMeshActor.h"
 #include "Engine/StaticMesh.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 
 UDogLife::UDogLife(){PrimaryComponentTick.bCanEverTick=true;}
 AMartyCharacter* UDogLife::Pawn() const{return Cast<AMartyCharacter>(GetOwner());}
@@ -60,7 +62,10 @@ AStaticMeshActor* UDogLife::Prop(FString Name,FVector P,FVector Size,int32 Color
 {
     auto* A=GetWorld()->SpawnActor<AStaticMeshActor>(P,FRotator::ZeroRotator);auto* C=A->GetStaticMeshComponent();C->SetMobility(EComponentMobility::Movable);
     C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,Shape));A->SetActorScale3D(Size/100);C->SetMaterial(0,Materials[Color]);
-    C->SetCollisionEnabled(Solid?ECollisionEnabled::QueryAndPhysics:ECollisionEnabled::NoCollision);if(Solid)C->SetCollisionProfileName(TEXT("BlockAll"));A->Tags.Add(FName(Name));return A;
+    C->SetCollisionEnabled(Solid?ECollisionEnabled::QueryAndPhysics:ECollisionEnabled::NoCollision);if(Solid)C->SetCollisionProfileName(TEXT("BlockAll"));A->Tags.Add(FName(Name));
+    if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLegacyWorld"))&&(Name==TEXT("Kitchen counter")||Name==TEXT("Kitchen fridge")||Name==TEXT("TV screen")))
+        if(LoadObject<UStaticMesh>(nullptr,TEXT("/Game/Adventure/Scenery/Meshes/RoomKitchen.RoomKitchen"))){C->SetVisibility(false);C->SetCastShadow(false);C->SetAffectDistanceFieldLighting(false);}
+    return A;
 }
 void UDogLife::Label(FString Text,FVector P,float Yaw)
 {
