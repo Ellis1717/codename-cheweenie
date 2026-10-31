@@ -1,0 +1,92 @@
+{
+  "project": "Codename .... Cheweenie",
+  "version": "World-0.10.0",
+  "engine": "5.8.4-58902052",
+  "baseCommit": "a1ad34e7652de9fae53242df359ff8d69014cee2",
+  "nativeEditorBuild": "passed",
+  "nativeGameBuild": "passed",
+  "fullCookStageArchive": "passed",
+  "packagedChecks": {
+    "failed": 0,
+    "world": 14,
+    "soloCompanionPlayReload": 34,
+    "lifeActionsReload": 28,
+    "privateMap": 4,
+    "adventurePatrolReload": 31,
+    "publicTotal": 197,
+    "headlessCoop": 45,
+    "renderedCoop": 45
+  },
+  "editorMovement": {
+    "passed": 16,
+    "failed": 0
+  },
+  "input": "Synthetic keyboard/gamepad; physical hardware unverified",
+  "network": "Two real loopback processes; two independent PCs/home LAN unverified",
+  "art": {
+    "originalMeshes": 12,
+    "sourceSceneRetained": true,
+    "baseMaterialFamilies": 21,
+    "otherMapSize": 1024,
+    "worldMaterialVariants": 8,
+    "privatePhotosOrPaidAssetsUsed": false,
+    "oakSize": 2048,
+    "fiveGeneratorHashesVerified": true,
+    "originalPbrMaps": 51
+  },
+  "captures": {
+    "files": [
+      "screenshots/ue5-world-room.png",
+      "screenshots/ue5-world-dogview.png",
+      "screenshots/ue5-world-home.png",
+      "screenshots/ue5-world-park.png"
+    ],
+    "fullHdReadabilityChecked": 4,
+    "presentation": "Room, home and park use scripted cameras/HUD hidden in the actual game world; dog view uses player camera/HUD"
+  },
+  "limitedFrameDiagnostic": {
+    "p95Ms": 12.500297278165817,
+    "scope": "Offscreen full-HD room/player camera intervals during concurrent headless acceptance; not GPU timings, before/after comparison or interactive FPS benchmark",
+    "medianMs": 10.81399992108345,
+    "samples": 742
+  },
+  "runtimeErrorFatalCategories": 0,
+  "materialFallbacks": 0,
+  "payloadFiles": 43,
+  "transfer": {
+    "sha256": "82d6b13ccfb539df87f494b3f29d060cbe8499dbb6017e59a0f7ff304cffaa9d",
+    "privateAndRuntimeFoldersExcluded": true,
+    "bytes": 530955756,
+    "file": "builds/Codename-Cheweenie-World-0.10.0.zip",
+    "payloadHashesVerifiedInZip": 43
+  },
+  "launcher": "Windows PowerShell 5.1 validated World/LAN payload gates and rejected invalid join address",
+  "ownerLocalData": "Private map/dog labels copied only locally when missing; existing solo 0.9 checkpoint copied only if destination absent; originals retained and excluded from transfer archive",
+  "repairedFindings": [
+    "Explicit C++ static-mesh pointer type required for UE TObjectPtr return",
+    "CustomInput fields assigned through editor properties instead of unsupported constructor keywords",
+    "Missing-asset lookups guarded before imports",
+    "FBX Y conversion corrected on visual actors",
+    "New decorative collision explicitly disabled at both actor and component level",
+    "Grounded acceptance checked before test respawn",
+    "Closed-room lighting retuned using explicit candela units",
+    "HQ roof slopes corrected and gable infill added; neighbour roof roll convention preserved",
+    "Disconnected leaf clusters replaced with connected twigs/thin leaves",
+    "Unused Blender material recreated on reload",
+    "Texture hashes trigger reimports; plaster patterns/normal strength softened",
+    "Kitchen render blocks replaced while preserving original solid blockers"
+  ],
+  "retained": [
+    "Solo 0.9 and LAN 0.1 packages and launchers",
+    "Original pet assets, coat sources and private photos",
+    "Unity fallback and independent comparison previews"
+  ],
+  "unverified": [
+    "Physical keyboard/gamepad feel and controllers",
+    "Two independent PCs/Wi-Fi/firewall setup",
+    "Subjective audio",
+    "Whole-game and interactive frame-time performance",
+    "Photorealistic/rigged cat art and wind-simulated vegetation",
+    "Surveyed house/neighbourhood geometry or shared outdoor/solo progression in LAN"
+  ]
+}

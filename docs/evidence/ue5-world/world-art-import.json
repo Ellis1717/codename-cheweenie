@@ -1,0 +1,389 @@
+{
+  "materials": [
+    "Oak",
+    "Plaster",
+    "SofaLinen",
+    "RugWool",
+    "OchreLinen",
+    "IvoryLinen",
+    "Brick",
+    "Concrete",
+    "Asphalt",
+    "Grass",
+    "RoofSlate",
+    "Bark",
+    "Leaf",
+    "Paint",
+    "BluePaint",
+    "Ceramic",
+    "Brass",
+    "DarkMetal",
+    "BookPaper",
+    "WindowGlass",
+    "Steel"
+  ],
+  "textures": {
+    "Oak_Base": [
+      2048,
+      2048
+    ],
+    "Oak_Normal": [
+      2048,
+      2048
+    ],
+    "Oak_Rough": [
+      2048,
+      2048
+    ],
+    "Plaster_Base": [
+      1024,
+      1024
+    ],
+    "Plaster_Normal": [
+      1024,
+      1024
+    ],
+    "Plaster_Rough": [
+      1024,
+      1024
+    ],
+    "SofaLinen_Base": [
+      1024,
+      1024
+    ],
+    "SofaLinen_Normal": [
+      1024,
+      1024
+    ],
+    "SofaLinen_Rough": [
+      1024,
+      1024
+    ],
+    "RugWool_Base": [
+      1024,
+      1024
+    ],
+    "RugWool_Normal": [
+      1024,
+      1024
+    ],
+    "RugWool_Rough": [
+      1024,
+      1024
+    ],
+    "OchreLinen_Base": [
+      1024,
+      1024
+    ],
+    "OchreLinen_Normal": [
+      1024,
+      1024
+    ],
+    "OchreLinen_Rough": [
+      1024,
+      1024
+    ],
+    "IvoryLinen_Base": [
+      1024,
+      1024
+    ],
+    "IvoryLinen_Normal": [
+      1024,
+      1024
+    ],
+    "IvoryLinen_Rough": [
+      1024,
+      1024
+    ],
+    "Brick_Base": [
+      1024,
+      1024
+    ],
+    "Brick_Normal": [
+      1024,
+      1024
+    ],
+    "Brick_Rough": [
+      1024,
+      1024
+    ],
+    "Concrete_Base": [
+      1024,
+      1024
+    ],
+    "Concrete_Normal": [
+      1024,
+      1024
+    ],
+    "Concrete_Rough": [
+      1024,
+      1024
+    ],
+    "Asphalt_Base": [
+      1024,
+      1024
+    ],
+    "Asphalt_Normal": [
+      1024,
+      1024
+    ],
+    "Asphalt_Rough": [
+      1024,
+      1024
+    ],
+    "Grass_Base": [
+      1024,
+      1024
+    ],
+    "Grass_Normal": [
+      1024,
+      1024
+    ],
+    "Grass_Rough": [
+      1024,
+      1024
+    ],
+    "RoofSlate_Base": [
+      1024,
+      1024
+    ],
+    "RoofSlate_Normal": [
+      1024,
+      1024
+    ],
+    "RoofSlate_Rough": [
+      1024,
+      1024
+    ],
+    "Bark_Base": [
+      1024,
+      1024
+    ],
+    "Bark_Normal": [
+      1024,
+      1024
+    ],
+    "Bark_Rough": [
+      1024,
+      1024
+    ],
+    "Leaf_Base": [
+      1024,
+      1024
+    ],
+    "Leaf_Normal": [
+      1024,
+      1024
+    ],
+    "Leaf_Rough": [
+      1024,
+      1024
+    ],
+    "Paint_Base": [
+      1024,
+      1024
+    ],
+    "Paint_Normal": [
+      1024,
+      1024
+    ],
+    "Paint_Rough": [
+      1024,
+      1024
+    ],
+    "BluePaint_Base": [
+      1024,
+      1024
+    ],
+    "BluePaint_Normal": [
+      1024,
+      1024
+    ],
+    "BluePaint_Rough": [
+      1024,
+      1024
+    ],
+    "Ceramic_Base": [
+      1024,
+      1024
+    ],
+    "Ceramic_Normal": [
+      1024,
+      1024
+    ],
+    "Ceramic_Rough": [
+      1024,
+      1024
+    ],
+    "BookPaper_Base": [
+      1024,
+      1024
+    ],
+    "BookPaper_Normal": [
+      1024,
+      1024
+    ],
+    "BookPaper_Rough": [
+      1024,
+      1024
+    ]
+  },
+  "meshes": {
+    "RoomShell": {
+      "origin": [
+        0.0,
+        0.0,
+        178.0
+      ],
+      "extent": [
+        510.0000305175781,
+        510.0000305175781,
+        197.0
+      ],
+      "slots": 2
+    },
+    "RoomFloor": {
+      "origin": [
+        0.0,
+        0.0,
+        0.25
+      ],
+      "extent": [
+        499.9200134277344,
+        495.9250183105469,
+        0.75
+      ],
+      "slots": 1
+    },
+    "RoomDetails": {
+      "origin": [
+        0.0,
+        0.0,
+        178.25
+      ],
+      "extent": [
+        487.5000305175781,
+        498.0000305175781,
+        178.25
+      ],
+      "slots": 8
+    },
+    "RoomSoft": {
+      "origin": [
+        67.83330535888672,
+        -0.1133575439453125,
+        163.75
+      ],
+      "extent": [
+        319.83325958251953,
+        488.8686065673828,
+        162.25
+      ],
+      "slots": 3
+    },
+    "RoomSofa": {
+      "origin": [
+        340.00000762939453,
+        14.999977111816406,
+        78.68636322021484
+      ],
+      "extent": [
+        95.0000228881836,
+        234.00000762939453,
+        77.68636322021484
+      ],
+      "slots": 2
+    },
+    "RoomPlants": {
+      "origin": [
+        297.843017578125,
+        -314.1732635498047,
+        121.55294799804688
+      ],
+      "extent": [
+        40.792327880859375,
+        37.59797668457031,
+        50.052947998046875
+      ],
+      "slots": 3
+    },
+    "LeafTree": {
+      "origin": [
+        6.995033264160156,
+        -9.783920288085938,
+        332.94121009111404
+      ],
+      "extent": [
+        257.4762191772461,
+        243.59515380859375,
+        333.46687096357346
+      ],
+      "slots": 2
+    },
+    "ParkBench": {
+      "origin": [
+        0.0,
+        -2.25,
+        51.5
+      ],
+      "extent": [
+        90.0,
+        25.2500057220459,
+        51.5
+      ],
+      "slots": 2
+    },
+    "GrassClump": {
+      "origin": [
+        -0.2778801918029785,
+        -1.1073064804077148,
+        12.242660094052553
+      ],
+      "extent": [
+        12.486097812652588,
+        13.63059139251709,
+        12.321066331118345
+      ],
+      "slots": 1
+    },
+    "FortBlanket": {
+      "origin": [
+        0.0,
+        0.0,
+        33.29999923706055
+      ],
+      "extent": [
+        89.00000762939453,
+        75.00000762939453,
+        33.29999923706055
+      ],
+      "slots": 2
+    },
+    "RoofGable": {
+      "origin": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "extent": [
+        0.5000000596046448,
+        0.5000000596046448,
+        0.5
+      ],
+      "slots": 1
+    },
+    "RoomKitchen": {
+      "origin": [
+        -264.0000343322754,
+        -219.9999647140503,
+        121.25
+      ],
+      "extent": [
+        198.99999618530273,
+        240.00000476837158,
+        121.25
+      ],
+      "slots": 6
+    }
+  }
+}

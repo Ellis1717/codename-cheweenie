@@ -103,6 +103,7 @@ private:
     void TickTricksSmoke(float Delta);
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
+    void TickWorldSmoke(float Delta);
     int32 SmokeStage = 0;
     double SmokeTime = 0;
     float SmokeYaw = 0;

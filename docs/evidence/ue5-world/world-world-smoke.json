@@ -1,0 +1,24 @@
+{
+	"passed": [
+		"Marty remains grounded on the retained room floor",
+		"Seven detailed room mesh batches are present",
+		"Detailed room surfaces retain existing collision via visual-only overlays",
+		"FBX handedness correction aligns sofa with tested gameplay coordinates",
+		"Original leafy park trees and bench replace primitive silhouettes",
+		"Oak uses a 2K colour-managed base map",
+		"Fabric normal map uses linear normal data",
+		"Brick roughness map uses linear data",
+		"Keyboard movement traverses the detailed room",
+		"Headquarters door travel still reaches the neighbourhood",
+		"Grass batch has no collision or actor tick",
+		"Park grass is drawn in one 640-instance batch",
+		"Return-home recovery restores the detailed indoor room",
+		"Synthetic controller camera switching remains available"
+	],
+	"failed": [],
+	"input": "Synthetic keyboard/gamepad; physical hardware unverified",
+	"frame_scope": "Offscreen DX12 frame intervals on this machine; not GPU timings, a baseline comparison or a playable-frame-rate benchmark",
+	"frame_samples": 742,
+	"median_frame_ms": 10.81399992108345,
+	"p95_frame_ms": 12.500297278165817
+}

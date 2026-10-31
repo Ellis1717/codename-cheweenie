@@ -56,6 +56,7 @@ void UCozyAdventure::BeginPlay()
         UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieNavigationSmoke"))){Slot=TEXT("CheweenieNavigationAcceptance" );if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieNavigationResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCompanionSmoke"))){Slot=TEXT("CheweenieCompanionAcceptance" );if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieCompanionResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieWorldSmoke"))){Slot=TEXT("CheweenieWorldAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Mission = NewObject<UCozyMissionDefinition>(this);
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
@@ -294,12 +295,16 @@ void UCozyAdventure::RebuildMarkers()
 void UCozyAdventure::BuildFort()
 {
     FVector Center=Mission->Visits.Last().Position; Center.Z=1;
+    if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLegacyWorld")))
+        if(auto* Blanket=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/Adventure/Scenery/Meshes/FortBlanket.FortBlanket")))
+        {auto* Fort=GetWorld()->SpawnActor<AStaticMeshActor>(Center,FRotator::ZeroRotator);Fort->Tags.Add(TEXT("BlanketFortSurface"));Fort->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);Fort->GetStaticMeshComponent()->SetStaticMesh(Blanket);Fort->GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);Fort->SetActorScale3D(FVector(1,-1,1));return;}
     auto* Mesh=LoadObject<UStaticMesh>(nullptr,TEXT("/Engine/BasicShapes/Cube.Cube"));
     auto* Mat=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/VisualLab/UE5Materials/WovenBlue.WovenBlue"));
     for(int32 I=0;I<3;++I)
     {
         const FVector Offset= I==0 ? FVector(0,0,60) : FVector(0,I==1?-62:62,30);
         auto* Part=GetWorld()->SpawnActor<AStaticMeshActor>(Center+Offset,FRotator::ZeroRotator);
+        Part->Tags.Add(TEXT("BlanketFortSurface"));
         Part->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
         Part->GetStaticMeshComponent()->SetStaticMesh(Mesh); Part->GetStaticMeshComponent()->SetMaterial(0,Mat);
         Part->SetActorScale3D(I==0 ? FVector(1.7,1.5,.04) : FVector(1.7,.035,.6));

@@ -1,0 +1,31 @@
+{
+	"passed": [
+		"Two separately possessed replicated pets exist",
+		"Players receive unique pets",
+		"Owner has correct network role",
+		"Host starts Marty and guest starts Lakitu",
+		"Owner lands on actual room floor",
+		"Retained Marty skeletal asset is available",
+		"Server admission rejects an occupied two-player room",
+		"Nearby guest picks up shared toy; distant host cannot steal it",
+		"Guest drop is synchronized to both peers",
+		"Keyboard movement works on network owner",
+		"Remote movement reached this peer",
+		"Remote hurry speed reached this peer",
+		"Synthetic stick release stops owner",
+		"Synthetic right stick orbits owning camera",
+		"Controller camera binding works in co-op",
+		"Keyboard jump enters replicated falling movement",
+		"Both pet voice events replicate",
+		"Occupied or invalid pet selection is rejected by server",
+		"Guest keyboard selection becomes Rio on both peers",
+		"Guest controller selection returns to Lakitu on both peers",
+		"Server rate limits repeated voice requests",
+		"Owner motor remains active",
+		"Guest disconnect removes the remote pawn",
+		"Disconnected pet becomes available again"
+	],
+	"failed": [],
+	"role": "listen-server",
+	"input": "Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"
+}

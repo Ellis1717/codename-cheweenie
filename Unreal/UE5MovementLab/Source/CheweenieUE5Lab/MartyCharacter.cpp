@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "WorldRealism.h"
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
 #include "MartyGait.h"
@@ -339,6 +340,7 @@ void PrepareCheweenieRoom(UWorld* World, bool HideAllPets)
         Wall->SetActorLocation(Index < 2 ? FVector(Index == 0 ? -490 : 490, 0, 150)
                                         : FVector(0, Index == 2 ? -490 : 490, 150));
     }
+    UpgradeCheweenieRoom(World);
 }
 
 void AMartyHUD::DrawHUD()
