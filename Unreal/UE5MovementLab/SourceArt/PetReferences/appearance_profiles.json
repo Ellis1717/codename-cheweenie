@@ -1,0 +1,482 @@
+{
+  "schema_version": 1,
+  "purpose": "Photo-derived authoring reference; not runtime configuration or a reconstructed 3D model",
+  "project_title": "Codename .... Cheweenie",
+  "source_policy": {
+    "raw_photos": "Retained locally outside Git; private source-ID mapping and hashes accompany the original references",
+    "excluded": [
+      "People and household backgrounds",
+      "Contact details and tag inscriptions",
+      "Location metadata",
+      "Third-party artwork visible in backgrounds"
+    ],
+    "orientation": "Left/right marking descriptions refer to the displayed image; anatomical sidedness and possible mirroring are unconfirmed",
+    "colour": "Descriptive, lighting-dependent colours; no calibrated RGB measurements",
+    "authority": "Photos establish observed likeness. Cover and concept art guide finish and presentation; unseen anatomy remains inferred.",
+    "motion": "Still photos cannot validate gait timing, joint limits, ear dynamics or tail motion"
+  },
+  "sources": [
+    {
+      "id": "M01",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Held, frontal three-quarter view; face, collar, chest and limbs visible"
+    },
+    {
+      "id": "M02",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Elevated three-quarter view on a seat; standing pose and raised, blurred tail"
+    },
+    {
+      "id": "L01",
+      "kind": "owner_photo",
+      "subject": "Lakitu",
+      "view": "Held, near-frontal view; face, chest, forelegs and part of the body visible"
+    },
+    {
+      "id": "R01",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Elevated resting/loaf view; dark face, chest patch and upper body visible"
+    },
+    {
+      "id": "C01",
+      "kind": "concept_art",
+      "subject": "Marty",
+      "view": "Illustrated turnarounds and action poses; not measured anatomy or gameplay footage"
+    },
+    {
+      "id": "B01",
+      "kind": "cover_art",
+      "subject": "Marty, Lakitu and Rio",
+      "path": "Assets/Resources/Branding/Cover.png",
+      "view": "Cozy portrait; selected finish, lighting and expression reference"
+    },
+    {
+      "id": "A01",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Reclining side, white socks/front toe patches and dark tail",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A02",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Dim head profile, white chin",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A03",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Reclining full side, paws and curled dark tail",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A04",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Stretched resting, leg markings",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A05",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Elevated face in costume, obscured torso",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A06",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Same standing view as M02",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A07",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Same held view as M01",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A08",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Seated garment view, ear folds and tan tail",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A09",
+      "kind": "owner_photo",
+      "subject": "Marty",
+      "view": "Toy-carrying turn, motion blur",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A10",
+      "kind": "owner_photo",
+      "subject": "Rio and Lakitu",
+      "view": "Both resting; foreground dark-faced cat",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A11",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Side-resting yawn, white paws/underside",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A12",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Same loaf view as R01",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A13",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Side resting, greenish-looking eyes and pink visible toe pads",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A14",
+      "kind": "owner_photo",
+      "subject": "Rio",
+      "view": "Costumed standing side, dark tail/white paws",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A15",
+      "kind": "owner_photo",
+      "subject": "Lakitu",
+      "view": "Curled elevated, broad irregular dorsal black patches on white",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A16",
+      "kind": "owner_photo",
+      "subject": "Lakitu",
+      "view": "Front crouch, asymmetric mask/pink nose",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A17",
+      "kind": "owner_photo",
+      "subject": "Lakitu",
+      "view": "Curled side, white underside/dark tail",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A18",
+      "kind": "owner_photo",
+      "subject": "Lakitu",
+      "view": "Same held view as L01",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    },
+    {
+      "id": "A19",
+      "kind": "owner_photo",
+      "subject": "Lakitu",
+      "view": "Front three-quarter crouch, mask/dorsal patch edges",
+      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "marty",
+      "name": "Marty",
+      "observed": [
+        {
+          "feature": "coat",
+          "description": "Very short, close-lying warm tan/fawn coat with darker brown ear areas and a lighter cream under-jaw/chest/underside. Lower belly has visibly finer coverage.",
+          "source_ids": [
+            "M01",
+            "M02"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "face",
+          "description": "A distinctly projecting, tapered muzzle with a rounded-triangular dark nose and dark lip edge. Facial forms narrow toward the nose rather than ending in a spherical snout.",
+          "source_ids": [
+            "M01",
+            "M02"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "eyes",
+          "description": "Dark-looking, reflective eyes with visible eyelid rims. Exact iris hue is unresolved; pupil size and highlights depend on the photographs' lighting.",
+          "source_ids": [
+            "M01",
+            "M02"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "ears",
+          "description": "Soft triangular ears fold outward/down from their bases, with rounded tips and darker inner/folded areas. The two photographed poses have different ear spreads.",
+          "source_ids": [
+            "M01",
+            "M02"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "body_and_paws",
+          "description": "Compact limbs, tapered lower legs, rounded individual toes and dark claws are visible. The standing view suggests an elongated body relative to leg length, but exact ratios are foreshortened.",
+          "source_ids": [
+            "M01",
+            "M02"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "accessories",
+          "description": "Black-and-white patterned collar, dark buckle and a blue bone-shaped tag. The precise checker/houndstooth-like motif needs a closer reference; contact text must not be reproduced.",
+          "source_ids": [
+            "M01",
+            "M02"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "tail",
+          "description": "A raised, narrow tail is visible with blur in one photograph; its neutral carriage and exact profile cannot be fixed from that view.",
+          "source_ids": [
+            "M02"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "additional_views",
+          "description": "Costumed seated and toy-carrying views support flexible folded ears and a narrow tan tail curved in different poses. Garments hide contours; blur is not measured motion.",
+          "source_ids": [
+            "A05",
+            "A08",
+            "A09"
+          ],
+          "confidence": "medium"
+        }
+      ],
+      "authoring_priorities": [
+        "Match muzzle taper, ear folds, skull-to-muzzle transition and eyelids before adding more fur detail",
+        "Keep the coat short; use fine directional hair detail rather than plush or long fluffy fur",
+        "Preserve the cream chest and patterned-collar/blue-tag identity cues",
+        "Use natural eye proportions and a shaped nose with nostrils, avoiding toy-like globes",
+        "Treat concept-sheet rear anatomy, tail curve and illustrated expressions as provisional"
+      ],
+      "unknowns": [
+        "Neutral side-view proportions and real-world dimensions",
+        "Complete back/underside marking boundaries",
+        "Exact iris colour and calibrated coat colour",
+        "Neutral tail shape/length",
+        "Natural jaw/bite at rest",
+        "Measured gait and ear-flop dynamics"
+      ],
+      "inferred_motion_targets": [
+        "Separate walk, trot/run, turns and stops",
+        "Paw contact and visible weight transfer",
+        "Flexible ear bases/tips and a separately animated tail",
+        "Natural transitions into sit, lie, roll, bark and paw shake"
+      ],
+      "motion_targets_are_photo_verified": false,
+      "additional_identity_policy": "A-series identities are provisional visual matches. Preserve source observations if owner corrects identity."
+    },
+    {
+      "id": "lakitu",
+      "name": "Lakitu",
+      "observed": [
+        {
+          "feature": "face_mask",
+          "description": "Strongly asymmetric black-and-white face. In the displayed reference, the viewer-right eye lies within a large black patch reaching onto the cheek; the viewer-left eye has a predominantly white surround below the dark crown.",
+          "source_ids": [
+            "L01"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "blaze_and_muzzle",
+          "description": "A white central blaze broadens down the nose bridge into white muzzle pads and cheeks. The small triangular nose is pink, with a dark mouth line and long white whiskers.",
+          "source_ids": [
+            "L01"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "eyes_and_ears",
+          "description": "Large-looking eyes in this held pose, with warm yellow/olive-brown-looking irises and dark pupils. Upright triangular ears have fine light edge hairs; exact iris hue is lighting-dependent.",
+          "source_ids": [
+            "L01"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "body_markings",
+          "description": "White chest, visible belly, forelegs and front paws contrast with black crown/ear regions and visible dark side/back patches. The complete dorsal marking layout is not shown. Additional candidate views extend the dorsal evidence.",
+          "source_ids": [
+            "L01"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "coat_and_accessories",
+          "description": "Fine, close fur with soft edges; a dark collar and metallic hanging tags are visible. Exact tag shapes and collar motif are not locked.",
+          "source_ids": [
+            "L01"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "additional_body_views",
+          "description": "Candidate Lakitu views show broad irregular black back/side islands on a mostly white body, white front legs and a dark curled tail. Full tail tip, rear paws and exact patch boundaries remain unresolved.",
+          "source_ids": [
+            "A15",
+            "A16",
+            "A17",
+            "A19"
+          ],
+          "confidence": "medium"
+        }
+      ],
+      "authoring_priorities": [
+        "Preserve the asymmetric eye mask; do not mirror its coat texture or give both eye surrounds the same colour",
+        "Separate the pink nose and white muzzle/blaze from the dark crown",
+        "Keep eyes seated inside shaped eyelids and preserve a feline muzzle rather than a dog-like snout",
+        "Keep visible front paws/forelegs white without inventing unseen rear paw markings",
+        "Use the held pose as a marking reference, not a neutral anatomical proportion sheet"
+      ],
+      "unknowns": [
+        "Anatomical left/right assignment if the source was mirrored",
+        "Rear paws and their colour boundaries",
+        "Standing proportions, size relative to Rio and exact iris hue",
+        "Measured feline motion",
+        "Complete marking boundaries and tail tip/length; dark tail seen in candidate A17"
+      ],
+      "inferred_motion_targets": [
+        "Feline shoulder/spine flexibility and species-appropriate gait",
+        "Separate tail, ears, eyelids and jaw controls",
+        "Grounded paw placement, turns, crouch, sit and head-bump transitions"
+      ],
+      "motion_targets_are_photo_verified": false,
+      "additional_identity_policy": "A-series identities are provisional visual matches. Preserve source observations if owner corrects identity."
+    },
+    {
+      "id": "rio",
+      "name": "Rio",
+      "observed": [
+        {
+          "feature": "face_mask",
+          "description": "Predominantly black crown, face and upper muzzle with a dark nose. A distinct white lower chin/throat/chest patch provides the main facial contrast; no Lakitu-like white forehead blaze is visible.",
+          "source_ids": [
+            "R01"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "chest_boundary",
+          "description": "A broad white bib curves beneath the dark face. The head angle hides part of its upper boundary, so its exact outline needs another view.",
+          "source_ids": [
+            "R01"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "coat",
+          "description": "The visible upper body is black with fine fur texture and light catching on individual hairs. Shaded areas should retain surface detail rather than becoming a flat black shape.",
+          "source_ids": [
+            "R01"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "ears_and_whiskers",
+          "description": "Upright triangular ears and long light/white whiskers are visible against the dark face.",
+          "source_ids": [
+            "R01"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "pose_and_eyes",
+          "description": "A rounded resting/loaf silhouette with tucked legs; the face and eyes are dark and partly shaded. This pose does not establish standing body proportions, permanent eye shape or iris colour.",
+          "source_ids": [
+            "R01"
+          ],
+          "confidence": "medium"
+        },
+        {
+          "feature": "additional_paws_tail_and_eyes",
+          "description": "Candidate Rio side/standing views show a black back and long dark tapering tail, white hind socks, white front toes/paws and lighter underside areas. A13 shows pink visible front toe pads and muted greenish-looking irises; exact colour and complete pad pattern remain open.",
+          "source_ids": [
+            "A01",
+            "A03",
+            "A04",
+            "A11",
+            "A13",
+            "A14"
+          ],
+          "confidence": "medium"
+        }
+      ],
+      "authoring_priorities": [
+        "Keep the face predominantly black and preserve the white chin/bib distinction from Lakitu",
+        "Do not introduce a pink nose, white eye surround or forehead stripe without further evidence",
+        "Use light response and directional fur detail to reveal the dark coat instead of painting it grey",
+        "Do not model permanently tucked legs or a rounded loaf as Rio's standing anatomy",
+        "Use candidate white paws/socks and dark tail as provisional observed evidence; retain uncertainty on boundaries and accessories."
+      ],
+      "unknowns": [
+        "Complete white-bib boundary and underside markings",
+        "Collar/accessory details",
+        "Standing size, leg proportions and size relative to Lakitu",
+        "Measured feline motion",
+        "Precise sock boundaries, tail length and calibrated iris hue; candidate photos extend the evidence"
+      ],
+      "inferred_motion_targets": [
+        "A feline skeleton and flexible spine with individually planted paws",
+        "Transitions between standing, walking, crouching and a tucked resting pose",
+        "Separate ears, tail, eyelids and jaw controls"
+      ],
+      "motion_targets_are_photo_verified": false,
+      "additional_identity_policy": "A-series identities are provisional visual matches. Preserve source observations if owner corrects identity."
+    }
+  ],
+  "presentation_targets": {
+    "source_ids": [
+      "B01",
+      "C01"
+    ],
+    "role": "Owner-selected rendering/finish references; not substitutes for observed pet anatomy",
+    "targets": [
+      "Fine readable short fur",
+      "Natural eye highlights and shaped eyelids",
+      "Soft contact shadows and coherent material response",
+      "Warm cozy lighting with blue woven blanket accents",
+      "Recognizable individual pets in actual gameplay footage"
+    ],
+    "cautions": [
+      "Do not bake the cover's orange lighting into base coat colours",
+      "Do not treat illustrated turnarounds as measured geometry",
+      "Do not infer unseen markings or motion from concept poses",
+      "Do not reproduce background artwork or private tag text"
+    ]
+  },
+  "acceptance_gate": [
+    "Compare neutral-lit front, side and three-quarter in-engine views against source IDs",
+    "Check Lakitu's asymmetric mask in the same displayed orientation before assigning anatomical sides",
+    "Check Rio's black-face/white-chin identity separately from Lakitu",
+    "Review Marty muzzle/eye/ear proportions before increasing hair density",
+    "Label unobserved geometry as inferred until reviewed",
+    "Review real walk/turn/stop and ear/tail motion separately; still-photo likeness is not motion validation",
+    "Keep the validated 0.9 game and existing source assets available during replacement work"
+  ],
+  "distinct_real_photo_file_count": 23,
+  "photo_count_note": "Four retained photo files plus 19 attached files. A06/A07/A12/A18 repeat existing views at different resolution/encoding; file count is not independent-view count."
+}
