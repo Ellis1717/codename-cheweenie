@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "HalloweenSpecial.h"
 #include "HalloweenCostume.h"
 #include "WorldRealism.h"
 #include "CatCompanions.h"
@@ -296,6 +297,7 @@ AMartyPlayMode::AMartyPlayMode()
     Companions=CreateDefaultSubobject<UCatCompanions>(TEXT("CatCompanions"));
     Navigation=CreateDefaultSubobject<UCozyNavigation>(TEXT("Navigation"));
     Neighbourhood=CreateDefaultSubobject<UCheweenieNeighbourhood>(TEXT("Neighbourhood"));
+    Festival=CreateDefaultSubobject<UHalloweenSpecial>(TEXT("OptionalHalloweenSpecial"));
     DefaultPawnClass = AMartyCharacter::StaticClass();
     HUDClass = AMartyHUD::StaticClass();
 }
