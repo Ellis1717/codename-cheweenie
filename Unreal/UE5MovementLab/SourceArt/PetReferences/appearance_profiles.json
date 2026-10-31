@@ -64,30 +64,34 @@
     {
       "id": "A01",
       "kind": "owner_photo",
-      "subject": "Rio",
+      "subject": "Ratchet",
       "view": "Reclining side, white socks/front toe patches and dark tail",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Ratchet; corrects earlier provisional Rio attribution",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A02",
       "kind": "owner_photo",
-      "subject": "Rio",
+      "subject": "Ratchet",
       "view": "Dim head profile, white chin",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Ratchet; corrects earlier provisional Rio attribution",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A03",
       "kind": "owner_photo",
-      "subject": "Rio",
+      "subject": "Ratchet",
       "view": "Reclining full side, paws and curled dark tail",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Ratchet; corrects earlier provisional Rio attribution",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A04",
       "kind": "owner_photo",
-      "subject": "Rio",
+      "subject": "Ratchet",
       "view": "Stretched resting, leg markings",
-      "identity_status": "Provisional visual match to named retained references; not separately labelled by owner"
+      "identity_status": "Owner-confirmed Ratchet; corrects earlier provisional Rio attribution",
+      "identity_confirmation_date": "2026-10-31"
     },
     {
       "id": "A05",
@@ -445,11 +449,8 @@
         },
         {
           "feature": "additional_paws_tail_and_eyes",
-          "description": "Owner-confirmed Rio views A11/A13/A14 show a black back, long dark tail, white hind socks, white front paws and lighter underside areas. A13 shows pink visible front toe pads and muted greenish-looking irises; exact colour and complete pad pattern remain open. A01/A03/A04 offer additional provisional matches.",
+          "description": "Owner-confirmed Rio views A11/A13/A14 show a black back, long dark tail, white hind socks, white front paws and lighter underside areas. A13 shows pink visible front toe pads and muted greenish-looking irises; exact colour and complete pad pattern remain open.",
           "source_ids": [
-            "A01",
-            "A03",
-            "A04",
             "A11",
             "A13",
             "A14"
@@ -477,7 +478,53 @@
         "Separate ears, tail, eyelids and jaw controls"
       ],
       "motion_targets_are_photo_verified": false,
-      "additional_identity_policy": "R01/A12, A11, A13 and A14 are owner-confirmed Rio as of 2026-10-31, as is the foreground cat in A10. A01–A04 and the background cat in A10 remain provisional visual matches."
+      "additional_identity_policy": "R01/A12, A11, A13 and A14 are owner-confirmed Rio, as is the foreground cat in A10. A01–A04 are Ratchet, confirmed by the owner; do not use them for Rio."
+    },
+    {
+      "id": "ratchet",
+      "name": "Ratchet",
+      "owner_context": "A much-loved former family cat; owner requested an unlockable character in his memory.",
+      "observed": [
+        {
+          "feature": "coat_and_tail",
+          "description": "Predominantly black coat with a fuller, textured silhouette and a long bushy dark tail. Side lighting reveals brownish highlights; exact calibrated coat colour is unresolved.",
+          "source_ids": [
+            "A01",
+            "A02",
+            "A03",
+            "A04"
+          ],
+          "confidence": "high"
+        },
+        {
+          "feature": "markings",
+          "description": "Dark face and ears, long pale whiskers, visible white chin/chest/underside regions, white hind socks and smaller white front toe/paw patches. Exact face/bib boundaries are partly obscured.",
+          "source_ids": [
+            "A01",
+            "A02",
+            "A03",
+            "A04"
+          ],
+          "confidence": "medium"
+        }
+      ],
+      "authoring_priorities": [
+        "Create a distinct fuller-coated cat and bushy tail rather than recolouring Rio",
+        "Preserve white hind socks, small front toe markings and the dark face",
+        "Keep the tribute warm and optional; avoid inventing real-life personality, dates or supernatural beliefs"
+      ],
+      "unknowns": [
+        "Clear front-on facial markings and exact iris/nose hue",
+        "Neutral standing proportions, weight and size relative to the other pets",
+        "Complete paw-pad pattern and underside markings",
+        "Measured gait and tail motion"
+      ],
+      "inferred_motion_targets": [
+        "Feline walk/turn/crouch with flexible tail",
+        "Comfortable resting and greeting transitions"
+      ],
+      "motion_targets_are_photo_verified": false,
+      "additional_identity_policy": "A01–A04 are owner-confirmed Ratchet. These correct prior provisional Rio matches."
     }
   ],
   "presentation_targets": {
@@ -554,6 +601,18 @@
       ],
       "supplied_view_count": 5,
       "note": "Owner confirmed Rio in the foreground of A10, resting/loaf R01/A12, open-eyed reclining A13, yawning A11 and costumed standing A14. R01/A12 repeat one view. This does not separately confirm A01–A04 or the background cat in A10."
+    },
+    {
+      "date": "2026-10-31",
+      "subject": "Ratchet",
+      "source_ids": [
+        "A01",
+        "A02",
+        "A03",
+        "A04"
+      ],
+      "supplied_view_count": 4,
+      "note": "All four resupplied photos are Ratchet. Corrects provisional Rio labels on A01–A04; no additional independent source views counted."
     }
   ]
 }
