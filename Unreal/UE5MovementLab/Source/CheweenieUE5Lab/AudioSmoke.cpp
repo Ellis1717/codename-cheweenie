@@ -38,9 +38,9 @@ void AMartyPlayMode::TickAudioSmoke(float Delta)
     case 5:
         if(SmokeTime>1.4){Key(EKeys::Gamepad_LeftShoulder,true);Next();}break;
     case 6:
-        if(SmokeTime>.1){Key(EKeys::Gamepad_LeftShoulder,false);SmokeCheck(L->BarkCount==2&&S->LastCue==TEXT("Bark"),TEXT("Controller LB triggers the same bark cue"));Next();}break;
+        if(SmokeTime>.1){Key(EKeys::Gamepad_LeftShoulder,false);Next();}break;
     case 7:
-        if(SmokeTime>1){Stop(TEXT("Barks"));D->Music=.3f;D->Effects=0;Neighbourhood->GoOutside(P);S->UpdateMusic();Next();}break;
+        if(SmokeTime>1){SmokeCheck(L->BarkCount==2&&S->LastCue==TEXT("Bark"),TEXT("Controller LB tap-release triggers the same bark cue"));Stop(TEXT("Barks"));D->Music=.3f;D->Effects=0;Neighbourhood->GoOutside(P);S->UpdateMusic();Next();}break;
     case 8:
         if(SmokeTime>.6){SmokeCheck(S->MusicTrack==TEXT("Backyard")&&S->MusicPlaying(),TEXT("Outdoor travel selects looping backyard music"));Record();Next();}break;
     case 9:

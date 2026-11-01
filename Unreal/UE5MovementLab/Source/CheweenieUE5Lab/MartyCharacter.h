@@ -35,6 +35,7 @@ public:
     virtual void ReturnHome();
     virtual bool UsesAdventureHome() const { return true; }
     virtual float TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer) override;
+    bool TrickModifierVisible() const;
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenCostume> Costume;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
@@ -66,6 +67,15 @@ private:
     void PadUp();
     void PadDown();
     void Crew();
+    bool TrickModifierDown() const;
+    bool TryTrickShortcut(int32 Trick);
+    void BeginTrickModifier();
+    void EndTrickModifier();
+    void CancelTrickModifier();
+    void UpdateTrickModifier();
+    void ShortcutLie();void ShortcutRoll();void ShortcutShake();void ShortcutBark();
+    bool ModifierActive=false,ModifierUsed=false,ModifierBlocked=false,ModifierBarkTap=false;
+    double ModifierStartedAt=0;
     UPROPERTY() TObjectPtr<USpringArmComponent> Boom;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> Visual;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;
@@ -106,6 +116,7 @@ private:
     void TickLifeSmoke(float Delta);
     void TickAudioSmoke(float Delta);
     void TickTricksSmoke(float Delta);
+    void TickTrickModifierSmoke(float Delta);
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
     void TickWorldSmoke(float Delta);

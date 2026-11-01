@@ -53,7 +53,7 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOutsideSmoke"))){Slot=TEXT("CheweenieOutsideAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeSmoke"))){Slot=TEXT("CheweenieLifeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAudioSmoke"))){Slot=TEXT("CheweenieAudioAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
-    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTricksSmoke"))){Slot=TEXT("CheweenieTricksAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieTricksResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTricksSmoke"))&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieTrickModifierSmoke"))){Slot=TEXT("CheweenieTricksAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieTricksResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke"))) UGameplayStatics::DeleteGameInSlot(Slot,0);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFurDetailSmoke"))){Slot=TEXT("CheweenieFurDetailAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieFurDetailMedium"))&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieFurDetailLow")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && !FParse::Param(FCommandLine::Get(),TEXT("CheweenieResumeCheck")))
@@ -65,6 +65,7 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))){Slot=TEXT("CheweenieRatchetAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalSmoke"))){Slot=TEXT("CheweenieFestivalAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))Slot=CozyHubProfileSlot();
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTrickModifierSmoke"))){Slot=TEXT("CheweenieTrickModifierAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Mission = NewObject<UCozyMissionDefinition>(this);
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())

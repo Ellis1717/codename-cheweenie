@@ -116,6 +116,7 @@ void AMartyCharacter::PossessedBy(AController* NewController)
 void AMartyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    UpdateTrickModifier();
     if(auto* Hub=GetGameInstance()->GetSubsystem<UCozyModeHub>()){const int32 Detail=FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"))?0:Hub->FurDetail();if(LastFurDetail!=Detail){LastFurDetail=Detail;const TCHAR* Coats[]={TEXT("/Game/Adventure/MartyPhotoSmooth/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat")};if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Coats[Detail])){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
     if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
     if(GetActorLocation().Z< -600)ReturnHome();
@@ -197,7 +198,14 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Enhanced->BindAction(JumpAction,ETriggerEvent::Completed,this,&AMartyCharacter::StopJumping);
         Button(EKeys::F,EKeys::Gamepad_RightTrigger,&AMartyCharacter::Dig);
         Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&AMartyCharacter::DropToy);
-        Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&AMartyCharacter::Bark);
+        Button(EKeys::B,EKeys::Invalid,&AMartyCharacter::Bark);
+        auto* Modifier=Action(EInputActionValueType::Boolean);MenuActions.Add(Modifier);
+        Mapping->MapKey(Modifier,EKeys::Gamepad_LeftShoulder);Mapping->MapKey(Modifier,EKeys::LeftControl);
+        Enhanced->BindAction(Modifier,ETriggerEvent::Started,this,&AMartyCharacter::BeginTrickModifier);
+        Enhanced->BindAction(Modifier,ETriggerEvent::Completed,this,&AMartyCharacter::EndTrickModifier);
+        Enhanced->BindAction(Modifier,ETriggerEvent::Canceled,this,&AMartyCharacter::CancelTrickModifier);
+        Button(EKeys::One,EKeys::Invalid,&AMartyCharacter::ShortcutLie);Button(EKeys::Two,EKeys::Invalid,&AMartyCharacter::ShortcutRoll);
+        Button(EKeys::Three,EKeys::Invalid,&AMartyCharacter::ShortcutShake);Button(EKeys::Four,EKeys::Invalid,&AMartyCharacter::ShortcutBark);
         Button(EKeys::Tab,EKeys::Gamepad_Special_Left,&AMartyCharacter::Backpack);
         Button(EKeys::M,EKeys::Invalid,&AMartyCharacter::Map);
     }
@@ -243,13 +251,13 @@ void AMartyCharacter::LookStick(const FInputActionValue& Value)
     AddControllerYawInput(Axis.X);
     AddControllerPitchInput(Axis.Y);
 }
-void AMartyCharacter::SetSprint(bool Active) { if(Life)Life->SprintRequested=Active&&CanPlay();GetCharacterMovement()->MaxWalkSpeed=Life?Life->WalkSpeed():Active&&CanPlay()?230:100; }
+void AMartyCharacter::SetSprint(bool Active) { Active=Active&&!TrickModifierDown(); if(Life)Life->SprintRequested=Active&&CanPlay();GetCharacterMovement()->MaxWalkSpeed=Life?Life->WalkSpeed():Active&&CanPlay()?230:100; }
 UCozyAdventure* AMartyCharacter::Adventure() const
 {
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>(); return Mode ? Mode->Adventure.Get() : nullptr;
 }
 bool AMartyCharacter::CanPlay() const { const auto* Session=Adventure(); return (!Session || Session->AllowsMovement())&&(!Life||!Life->Busy()); }
-void AMartyCharacter::PetJump(){if(CanPlay()&&Life&&Life->PayJump())Jump();}
+void AMartyCharacter::PetJump(){if(TryTrickShortcut(3))return;if(CanPlay()&&Life&&Life->PayJump())Jump();}
 void AMartyCharacter::Dig(){if(Life)Life->Dig();}
 void AMartyCharacter::DropToy(){if(Life)Life->Drop();}
 void AMartyCharacter::Bark(){if(Life)Life->Bark();}
@@ -257,8 +265,8 @@ void AMartyCharacter::Map(){if(auto* S=Adventure())S->OpenMap();}
 void AMartyCharacter::Backpack(){if(auto* S=Adventure())S->OpenBackpack();}
 void AMartyCharacter::ClearBodyStick(){if(Life)Life->ClearBodyStick();}
 float AMartyCharacter::TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer){const float Applied=Super::TakeDamage(Amount,Event,EventInstigator,Causer);if(Life&&Applied>0)Life->AdjustHealth(-Applied);return Applied;}
-void AMartyCharacter::MenuConfirm() { if(auto* Session=Adventure()) Session->Confirm(); }
-void AMartyCharacter::MenuBack() { if(auto* Session=Adventure()) Session->Back(); }
+void AMartyCharacter::MenuConfirm() { if(TryTrickShortcut(0))return;if(auto* Session=Adventure()) Session->Confirm(); }
+void AMartyCharacter::MenuBack() { if(TryTrickShortcut(1))return;if(auto* Session=Adventure()) Session->Back(); }
 void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }
 void AMartyCharacter::MenuUp() { if(auto* Session=Adventure())Session->Navigate(-1); }
 void AMartyCharacter::PadUp(){if(auto* S=Adventure()){if(S->Screen==ECozyScreen::Playing)S->OpenMap();else S->Navigate(-1);}}
@@ -267,7 +275,7 @@ void AMartyCharacter::PadDown(){if(auto* S=Adventure()){if(S->Screen==ECozyScree
 void AMartyCharacter::MenuDown() { if(auto* Session=Adventure()) Session->Navigate(1); }
 void AMartyCharacter::MenuLeft() { if(auto* Session=Adventure()) Session->Adjust(-1); }
 void AMartyCharacter::MenuRight() { if(auto* Session=Adventure()) Session->Adjust(1); }
-void AMartyCharacter::Interact() { if(auto* Session=Adventure()) Session->Interact(); }
+void AMartyCharacter::Interact() { if(TryTrickShortcut(2))return;if(auto* Session=Adventure()) Session->Interact(); }
 void AMartyCharacter::CycleCamera()
 {
     if (!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))) return;
