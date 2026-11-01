@@ -1,0 +1,36 @@
+{
+  "pr": 41,
+  "url": "https://github.com/Ellis1717/codename-cheweenie/pull/41",
+  "merge": "7095786539ad94c7b401e26643ba96bd83c2ecf8",
+  "validatedPrHead": "e3d72463a0898a7779bda1d5b3684ade1d8be6ff",
+  "mergedTreeEqualsValidatedPrHead": true,
+  "nativeTreeEqualsCompiledSource": "1426ed014068e42c09318ce3def839f188cba788",
+  "originalCheckoutSynced": true,
+  "originalEditorModule": "Tested DLL/PDB/module manifest copied after backing up the previous module; original checkout was not separately compiled",
+  "moduleHashes": [
+    {
+      "sha256": "ADF2EC185A037C099B108CC372CABFD77C2C588A33C8DC2FE41D01CE24E1EC2C",
+      "matches": true,
+      "file": "UnrealEditor-CheweenieUE5Lab.dll"
+    },
+    {
+      "sha256": "957676319C15CC15365D52C77BA495FC632266592BE600EE3B8124976DDC265F",
+      "matches": true,
+      "file": "UnrealEditor-CheweenieUE5Lab.pdb"
+    },
+    {
+      "sha256": "13676821A0EB29E7B4DF521A8DB231F8382C57E330978908EA877D5A568B8926",
+      "matches": true,
+      "file": "UnrealEditor.modules"
+    }
+  ],
+  "additionalOriginalCheckoutAssertions": 32,
+  "failures": 0,
+  "runtimeErrorMatches": 0,
+  "payloadHashesRechecked": 43,
+  "ownerMaterialHashesPreserved": 2,
+  "openPullRequests": 0,
+  "releaseAssertionsRemain": 635,
+  "physicalControllerVerified": false,
+  "timestampUtc": "2026-11-01T22:27:21.0377759Z"
+}
