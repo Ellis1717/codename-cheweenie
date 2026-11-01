@@ -61,7 +61,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         {
             SmokeCheck(Gait&&Gait->Ready&&Skin&&Skin->GetSkinnedAsset(),TEXT("Skin-weighted Marty and 24 anatomical joints load"));
             SmokeCheck(Skin->GetSkinnedAsset()->GetName()==TEXT("Marty_RealCoat"),TEXT("Detailed short-coat model loads as the playable character"));
-            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoReference")),TEXT("Connected ear-tail skin is the active detailed model"));
+            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyVisibleStrands")),TEXT("Connected ear-tail skin is the active detailed model"));
             SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear, ear-tip and tail roots match their reference offsets on animated parents"));
             SmokeCheck(FMath::IsNearlyEqual(ReferenceBone(Skin,TEXT("spine")).GetLocation().Z,19.8f,.05f)&&FMath::IsNearlyEqual(ReferenceBone(Skin,TEXT("ear_l")).GetLocation().Z,35.6f,.05f)&&FVector::Dist(ReferenceBone(Skin,TEXT("ear_l")).GetLocation(),ReferenceBone(Skin,TEXT("ear_tip_l")).GetLocation())<6.5f,TEXT("Photo-guided lower stance and shorter ear reference rig load independently"));
             bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur")&&M->GetPathName().Contains(TEXT("MartySoftCoat/DirectionalFibres"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth))FineFur=true;
@@ -150,7 +150,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 21:
         if(SmokeTime<.4f)break;Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
     case 22:
-        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoReference"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyVisibleStrands"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
     case 23:
         if(SmokeTime<.4f)break;Shot(TEXT("MartyEarRootIdle.png"));Next();break;
     case 24:
@@ -159,6 +159,10 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 25:
         if(SmokeTime<1)break;Shot(TEXT("MartyLikenessOverview.png"));Next();break;
     case 26:
+        {const FVector Focus=Skin->GetBoneLocationByName(TEXT("spine"),EBoneSpaces::WorldSpace)+Skin->GetComponentTransform().TransformVectorNoScale(FVector(8,0,8));auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+Skin->GetComponentTransform().TransformVectorNoScale(FVector(130,-190,75)),FRotator::ZeroRotator);Camera->SetActorRotation((Focus-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=50;PC->SetViewTarget(Camera);}Next();break;
+    case 27:
+        if(SmokeTime<1)break;Shot(TEXT("MartyVisibleStrandsGameplay.png"));Next();break;
+    case 28:
         if(SmokeTime>2)
         {
             auto Report=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(auto& S:In)Out.Add(MakeShared<FJsonValueString>(S));return Out;};
