@@ -1,4 +1,6 @@
-# Bork or Treat — Halloween special (0.11.4)
+# Bork or Treat — Halloween special
+
+The independent **Play Cheweenie Hair Preview** package 0.11.6 includes this festival plus denser Marty hairs and saved Low/Medium/High fur settings under Controls → Camera, graphics & sound. The existing Bork or Treat shortcut retains 0.11.5 for comparison. [Fur controls and results](UNREAL_MARTY_VISIBLE_STRANDS.md), [actual menu](screenshots/ue5-marty-hair-detail-menu.png).
 
 Version 0.11.4 brings Marty closer to his reference photos, with a new separate reference rig and outward-facing fur. Reopen the Bork or Treat shortcut with Detailed coat enabled. [Likeness guide](UNREAL_MARTY_LIKENESS.md), [actual results](evidence/ue5-marty-likeness-build.json), [current costume](screenshots/ue5-marty-likeness-costume.png). Earlier patch notes below are historical.
 
