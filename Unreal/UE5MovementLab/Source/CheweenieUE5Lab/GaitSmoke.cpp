@@ -145,7 +145,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 18:
         if(SmokeTime<2)break;SmokeCheck(Pawn->Life->Activity==EDogActivity::Idle&&MartyRootsPinned(Pawn),TEXT("Root attachments recover after rolling"));Pawn->ReturnHome();Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
     case 19:
-        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnected/"))&&MartyRootsPinned(Pawn),TEXT("Smooth coat also uses connected skin and pinned roots"));Close(TEXT("tail"),FVector(-45,-65,20));Next();break;
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoSmooth/"))&&MartyRootsPinned(Pawn),TEXT("Smooth coat also uses connected skin and pinned roots"));Close(TEXT("tail"),FVector(-45,-65,20));Next();break;
     case 20:
         if(SmokeTime<.4f)break;Shot(TEXT("MartyTailRootSmooth.png"));Next();break;
     case 21:

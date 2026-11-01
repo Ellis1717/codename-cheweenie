@@ -43,3 +43,8 @@ report = {'ready': True, 'materials': updated, 'bands_uv': [[180,720],[46,156],[
           'scope': 'Material import only; rendered appearance and gameplay require runtime checks'}
 (ROOT/'Saved'/'marty-gameplay-fur-import.json').write_text(json.dumps(report, indent=2))
 print('MARTY_GAMEPLAY_FUR_READY')
+
+# Keep the optional higher-density model on the same immutable material revision.
+link_script=pathlib.Path(__file__).with_name('link_marty_strand_materials.py')
+if link_script.exists() and LIB.does_asset_exist('/Game/Adventure/MartyVisibleStrands/Marty_RealCoat'):
+    exec(compile(link_script.read_text(),str(link_script),'exec'),globals())

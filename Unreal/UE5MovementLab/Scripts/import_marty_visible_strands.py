@@ -33,8 +33,10 @@ for i,slot in enumerate(slots):
     elif name=='Marty_Iris':slot.material_interface=face_material(name,(.028,.018,.010),.24,.5)
     slots[i]=slot
 pet.set_editor_property('materials',slots);assert LIB.save_loaded_asset(pet,only_if_is_dirty=False)
+material_script=pathlib.Path(__file__).with_name('link_marty_strand_materials.py')
+exec(compile(material_script.read_text(),str(material_script),'exec'),globals())
 report={'ready':True,'asset':pet.get_path_name(),'skeleton':pet.get_editor_property('skeleton').get_path_name(),
-        'materials':[s.material_interface.get_path_name() for s in slots],'source_topology':reports[0]['source_topology'],
+        'materials':[s.material_interface.get_path_name() for s in pet.get_editor_property('materials')],'shader_revision':link_report['shader_revision'],'source_topology':reports[0]['source_topology'],
         'fur_strands':64000,'reference_policy':'Photo-informed inferred proportions, no scan or measured anatomy claim',
         'private_photos_embedded':False,'earlier_assets_preserved':True}
 with open(os.path.join(ROOT,'Saved','marty-visible-strands-import.json'),'w') as f:json.dump(report,f,indent=2)

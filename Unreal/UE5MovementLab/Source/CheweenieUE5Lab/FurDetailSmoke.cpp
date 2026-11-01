@@ -54,13 +54,13 @@ void AMartyPlayMode::TickFurDetailSmoke(float Delta)
             else
             {
                 SmokeCheck(S->FurDetail()==0&&D->FurDetailPreference==1,TEXT("Low setting reloads while remembering the preferred enabled coat"));
-                SmokeCheck(Model(TEXT("MartyConnected/")),TEXT("Low reload selects the actual smooth coat"));
+                SmokeCheck(Model(TEXT("MartyPhotoSmooth/")),TEXT("Low reload selects the actual smooth coat"));
             }
             S->ToggleFeature(ECozyFeature::DetailedCoat);Next();
         }
         else if(SmokeStage==1&&SmokeTime>.3)
         {
-            if(Medium)SmokeCheck(S->FurDetail()==0&&D->FurDetailPreference==1&&Model(TEXT("MartyConnected/")),TEXT("Legacy coat-off switch retains Medium and saves Low"));
+            if(Medium)SmokeCheck(S->FurDetail()==0&&D->FurDetailPreference==1&&Model(TEXT("MartyPhotoSmooth/")),TEXT("Legacy coat-off switch retains Medium and saves Low"));
             else
             {
                 SmokeCheck(S->FurDetail()==1&&Model(TEXT("MartyPhotoReference/")),TEXT("Legacy coat-on switch restores Medium with a valid rig"));
@@ -114,7 +114,7 @@ void AMartyPlayMode::TickFurDetailSmoke(float Delta)
         if(SmokeTime<.1)break;Key(EKeys::Right,true);SmokeStage=7;SmokeTime=0;break;
     case 7:
         if(SmokeTime<.3)break;Key(EKeys::Right,false);
-        SmokeCheck(S->FurDetail()==0&&Model(TEXT("MartyConnected/")),TEXT("Keyboard Right wraps High to the smooth Low model"));
+        SmokeCheck(S->FurDetail()==0&&Model(TEXT("MartyPhotoSmooth/")),TEXT("Keyboard Right wraps High to the smooth Low model"));
         Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
     case 8:
         if(SmokeTime<.3)break;Key(EKeys::Gamepad_FaceButton_Bottom,false);
