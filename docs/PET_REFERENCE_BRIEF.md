@@ -1,5 +1,7 @@
 # Pet likeness brief — Codename .... Cheweenie
 
+Implementation update: Marty’s [0.11.4 likeness pass](UNREAL_MARTY_LIKENESS.md) applies these observations as inferred 3D authoring choices. The observations and confidence notes below remain the reference; the model does not establish measured anatomy.
+
 This extracts high-level appearance details from the owner's retained pictures for the next character-art pass. It is an authoring reference, not a newly generated model, a scan or an animation test. [Structured profiles](../Unreal/UE5MovementLab/SourceArt/PetReferences/appearance_profiles.json) retain the observations, confidence, source IDs and unknowns.
 
 ## Evidence and reference priority
