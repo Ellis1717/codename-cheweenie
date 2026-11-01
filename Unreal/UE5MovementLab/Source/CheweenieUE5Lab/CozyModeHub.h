@@ -1,0 +1,66 @@
+#pragma once
+#include "CoreMinimal.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "Tickable.h"
+#include "Engine/EngineBaseTypes.h"
+#include "CozyModeHub.generated.h"
+
+class UCozyAdventure;
+class UNetDriver;
+enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave };
+struct FCozyArchiveChoice { FString Id, Label; };
+FString CozyHubProfileSlot();
+
+// One menu survives map travel; presentation preferences remain local to this PC.
+UCLASS()
+class UCozyModeHub : public UGameInstanceSubsystem, public FTickableGameObject
+{
+    GENERATED_BODY()
+public:
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Deinitialize() override;
+    virtual UWorld* GetWorld() const override;
+    virtual void Tick(float Delta) override;
+    virtual bool IsTickable() const override { return !IsTemplate()&&GetWorld()!=nullptr; }
+    virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UCozyModeHub,STATGROUP_Tickables); }
+    virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
+    void Open();
+    void Back();
+    void Navigate(int32 Direction);
+    void Adjust(int32 Direction);
+    void Confirm();
+    TArray<FString> Rows() const;
+    FString Heading() const;
+    FString Hint() const;
+    int32 FurDetail();
+    void AdjustFur(int32 Direction);
+    void SoloReady(UCozyAdventure* Session);
+    void RoomReady();
+    bool CanAdjust(int32 Row) const;
+    void Request(const FString& Mode);
+    void TravelSolo(const FString& Action=TEXT("hub"));
+    bool RatchetAvailable() const;
+    FString Address() const;
+    void SaveNetworkPreferences();
+    ECozyHubPage Page=ECozyHubPage::Modes;
+    int32 Selection=0, Port=7777;
+    int32 Octets[4]={192,168,1,20};
+    FString Status;
+    TArray<FCozyArchiveChoice> Archives;
+private:
+    UCozyAdventure* Session() const;
+    void NewPage(ECozyHubPage Next);
+    void Execute(const FString& Mode);
+    void LoadArchives();
+    TArray<FString> HostAddresses() const;
+    void NetworkFailed(UWorld* World,UNetDriver* Driver,ENetworkFailure::Type Type,const FString& Error);
+    FString PendingAction, PendingLeave;
+    bool Returning=false,ReturnQueued=false,Connecting=false,Hosting=false;
+    int32 CachedFur=2;
+    bool FurLoaded=false;
+    // Acceptance state is dormant outside explicit test arguments.
+    void TickAcceptance(float Delta);
+    int32 TestStage=0;
+    double TestTime=0,TestTotal=0;
+    TArray<FString> TestPassed,TestFailed;
+};

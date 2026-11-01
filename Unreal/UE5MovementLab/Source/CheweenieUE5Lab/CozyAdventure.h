@@ -11,7 +11,7 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes };
 
 UENUM()
 enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, Count };
@@ -98,6 +98,9 @@ public:
     void HoldMessage(float Seconds) { MessageTime=Seconds; }
     void ActionCue(const FString& Name) { PlayCue(Name); }
     void OpenHalloween();
+    void OpenModes();
+    void CloseModes();
+    void OpenControlsFromModes();
     void ConfirmHalloween();
     TArray<FString> HalloweenMenu() const;
     ECozyScreen HalloweenReturn=ECozyScreen::Title;
@@ -144,6 +147,7 @@ private:
     UPROPERTY() TMap<FString,TObjectPtr<USoundBase>> Sounds;
     UPROPERTY() TObjectPtr<UAudioComponent> MusicPlayer;
     ECozyScreen ReturnScreen = ECozyScreen::Title;
+    ECozyScreen ModesReturn = ECozyScreen::Title;
     float MessageTime = 0;
     float PulseTime = 0;
 };

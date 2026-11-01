@@ -2,6 +2,8 @@
 #include "HalloweenSpecial.h"
 #include "CatCompanions.h"
 #include "CozyAdventure.h"
+#include "CozyModeHub.h"
+#include "Engine/GameInstance.h"
 #include "Neighbourhood.h"
 #include "DogLife.h"
 #include "Engine/Canvas.h"
@@ -14,26 +16,27 @@ bool AMartyHUD::DrawAdventureHUD()
     auto* Session=Mode ? Mode->Adventure.Get() : nullptr;
     if (!Session || !Session->Enabled || !Session->Progress) return false;
     const float Width=Canvas->SizeX, Height=Canvas->SizeY;
+    auto* Hub=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>();const bool Modes=Session->Screen==ECozyScreen::Modes;
     const bool HalloweenPage=Session->Screen==ECozyScreen::Halloween;
     const bool Seasonal=HalloweenPage||Session->Progress->HalloweenActive;
     const bool SeasonalArt=HalloweenPage||(Session->Screen==ECozyScreen::Title&&Seasonal);
     if(Session->Screen != ECozyScreen::Playing)
     {
         const bool Title=Session->Screen==ECozyScreen::Title;
-        if(Title||HalloweenPage)
+        if(Title||HalloweenPage||Modes)
         {
             if(!Cover) Cover=LoadObject<UTexture2D>(nullptr,TEXT("/Game/Adventure/Art/Cover.Cover"));
             if(SeasonalArt&&!FestivalCover)FestivalCover=LoadObject<UTexture2D>(nullptr,TEXT("/Game/Adventure/HalloweenSpecial/HalloweenCover.HalloweenCover"));
             auto* Art=SeasonalArt&&FestivalCover?FestivalCover.Get():Cover.Get();
             if(Art)DrawTexture(Art,0,0,Width,Height,0,0,1,1);
         }
-        DrawRect(FLinearColor(.015f,.03f,.045f,(Title||HalloweenPage)?.12f:.64f),0,0,Width,Height);
+        DrawRect(FLinearColor(.015f,.03f,.045f,(Title||HalloweenPage||Modes)?.12f:.64f),0,0,Width,Height);
         const bool Map=Session->Screen==ECozyScreen::Map;
         const float PanelWidth=SeasonalArt?FMath::Min(560.f,Width*.44f):Title?500.f:Map?460.f:680.f;
         const float X=SeasonalArt?24.f:Title?32.f:Map?Width-484:FMath::Max(12.f,(Width-680)*.5f), Y=FMath::Max(12.f,(Height-480)*.5f);
         DrawRect(Seasonal?FLinearColor(.055f,.018f,.085f,.94f):FLinearColor(.035f,.09f,.12f,.96f),X,Y,PanelWidth,480);
         DrawText(Session->Heading(),FLinearColor(1,.83f,.48f),X+24,Y+24,nullptr,1.65f);
-        DrawText(SeasonalArt?FString(TEXT("BORK OR TREAT / HALLOWEEN SPECIAL")):Session->Screen==ECozyScreen::Companions&&Mode->Companions?Mode->Companions->Status():FString(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol")),FLinearColor::White,X+24,Y+62);
+        DrawText(SeasonalArt?FString(TEXT("BORK OR TREAT / HALLOWEEN SPECIAL")):Session->Screen==ECozyScreen::Companions&&Mode->Companions?Mode->Companions->Status():Modes?FString(TEXT("One adventure | Play, settings, multiplayer & older versions")):FString(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol")),FLinearColor::White,X+24,Y+62);
         if(HalloweenPage)DrawText(FString::Printf(TEXT("PAW-PASS %d / 8 | %s"),Mode->Festival?Mode->Festival->StampCount():0,Session->Progress->HalloweenBadge?TEXT("PUMPKIN PAL EARNED"):TEXT("8 PORCHES / 1 COZY FINALE")),FLinearColor(1,.72f,.35f),X+24,Y+90,nullptr,.9f);
         if(Session->Screen == ECozyScreen::Controls)
         {
@@ -56,7 +59,7 @@ bool AMartyHUD::DrawAdventureHUD()
             DrawRect(I==Session->Selection ? (Seasonal?FLinearColor(.40f,.16f,.055f,1):FLinearColor(.20f,.38f,.42f,1)) : (Seasonal?FLinearColor(.11f,.045f,.15f,1):FLinearColor(.065f,.14f,.18f,1)),X+18,Row,PanelWidth-36,38);
             DrawText((I==Session->Selection ? FString(TEXT(">  ")) : FString(TEXT("   ")))+Items[I],FLinearColor::White,X+28,Row+10,nullptr,1.15f);
             AddHitBox(FVector2D(X+18,Row),FVector2D(PanelWidth-36,38),FName(*FString::Printf(TEXT("CozyRow_%d"),I)),true);
-            if((Session->Screen==ECozyScreen::Settings && I<2)||(Session->Screen==ECozyScreen::Features && Session->FeatureGroup().IsValidIndex(I) && Session->FeatureGroup()[I]==ECozyFeature::DetailedCoat))
+            if((Modes&&Hub->CanAdjust(I))||(Session->Screen==ECozyScreen::Settings && I<2)||(Session->Screen==ECozyScreen::Features && Session->FeatureGroup().IsValidIndex(I) && Session->FeatureGroup()[I]==ECozyFeature::DetailedCoat))
             {
                 AddHitBox(FVector2D(X+550,Row),FVector2D(50,38),FName(*FString::Printf(TEXT("CozyMinus_%d"),I)),true,10);
                 AddHitBox(FVector2D(X+605,Row),FVector2D(50,38),FName(*FString::Printf(TEXT("CozyPlus_%d"),I)),true,10);
@@ -64,8 +67,9 @@ bool AMartyHUD::DrawAdventureHUD()
             }
         }
         DrawText(Session->Screen==ECozyScreen::Features?FString(TEXT("Arrows / D-pad: choose & adjust | Enter / A-Cross: next | B-Circle: back")):FString::Printf(TEXT("%d / %d | D-pad choose | A select | B back"),Session->Selection+1,Items.Num()),FLinearColor(.75f,.85f,.86f),X+24,Y+435);
+        if(Modes)DrawText(Hub->Hint(),FLinearColor(1,.88f,.65f),20,Height-48,nullptr,.95f);
         if(Map)DrawNavigation(true);
-        if(Title||HalloweenPage) DrawText(TEXT("Illustration. Gameplay uses stylized 3D pets."),FLinearColor(.85f,.9f,.9f),Width-410,Height-28);
+        if(Title||HalloweenPage||Modes) DrawText(TEXT("Illustration. Gameplay uses stylized 3D pets."),FLinearColor(.85f,.9f,.9f),Width-410,Height-28);
     }
     else
     {
@@ -115,7 +119,7 @@ bool AMartyHUD::DrawAdventureHUD()
         DrawText(FString::Printf(TEXT("BORK OR TREAT / PAW-PASS %d of 8%s"),Mode->Festival->StampCount(),Session->Progress->HalloweenBadge?TEXT(" / PUMPKIN PAL"):TEXT("")),FLinearColor(1,.75f,.35f),28,Height-235);
         for(int32 I=0;I<8;++I)DrawRect((Session->Progress->HalloweenStampMask&(1<<I))?FLinearColor(1,.58f,.15f):FLinearColor(.20f,.10f,.27f),28+I*58,Height-214,48,9);
     }
-    if(!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
+    if(!Modes&&!Session->Message.IsEmpty()) { DrawRect(FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); DrawText(Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;
 }
 

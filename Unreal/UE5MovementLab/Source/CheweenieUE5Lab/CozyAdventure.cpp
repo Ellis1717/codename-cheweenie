@@ -1,4 +1,6 @@
 #include "CozyAdventure.h"
+#include "CozyModeHub.h"
+#include "Engine/GameInstance.h"
 #include "HalloweenSpecial.h"
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
@@ -62,6 +64,7 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCostumeSmoke"))){Slot=TEXT("CheweenieCostumeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieCostumeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))){Slot=TEXT("CheweenieRatchetAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalSmoke"))){Slot=TEXT("CheweenieFestivalAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))Slot=CozyHubProfileSlot();
     Mission = NewObject<UCozyMissionDefinition>(this);
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
@@ -93,6 +96,7 @@ void UCozyAdventure::BeginPlay()
     CheckRatchetUnlock();
     BuildFort(); CompleteRoom(); RebuildMarkers(); UpdateMusic(); SetScreen(ECozyScreen::Title);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHalloweenSpecial")))OpenHalloween();
+    if(auto* Hub=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>())Hub->SoloReady(this);
 }
 
 AMartyCharacter* UCozyAdventure::Marty() const { return Cast<AMartyCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)); }
@@ -118,12 +122,14 @@ void UCozyAdventure::Pause()
 void UCozyAdventure::Navigate(int32 Direction)
 {
     if (!Enabled || Screen == ECozyScreen::Playing) return;
+    if(Screen==ECozyScreen::Modes){auto* H=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>();H->Selection=Selection;H->Navigate(Direction);Selection=H->Selection;return;}
     const int32 Count = Menu().Num();
     if (Count) Selection = (Selection + Direction + Count) % Count;
     PlayCue(TEXT("Menu"));
 }
 void UCozyAdventure::Adjust(int32 Direction)
 {
+    if(Screen==ECozyScreen::Modes){auto* H=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>();H->Selection=Selection;H->Adjust(Direction);Selection=H->Selection;return;}
     if(Screen==ECozyScreen::Features){const auto Group=FeatureGroup();if(Group.IsValidIndex(Selection)&&Group[Selection]==ECozyFeature::DetailedCoat){AdjustFurDetail(Direction);return;}Confirm();return;}
     if(Screen==ECozyScreen::Wardrobe){Confirm();return;}
     if (!Enabled || Screen != ECozyScreen::Settings) return;
@@ -134,6 +140,7 @@ void UCozyAdventure::Adjust(int32 Direction)
 void UCozyAdventure::Back()
 {
     if (!Enabled) return;
+    if(Screen==ECozyScreen::Modes){auto* H=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>();H->Back();Selection=H->Selection;return;}
     if(Screen==ECozyScreen::Halloween){SetScreen(HalloweenReturn);return;}
     if(Screen==ECozyScreen::Wardrobe){SetScreen(WardrobeReturn);return;}
     if(Screen==ECozyScreen::Features){SetScreen(ECozyScreen::Controls);return;}
@@ -149,12 +156,14 @@ void UCozyAdventure::Confirm()
     UpdateMusic();
     if (Screen == ECozyScreen::Playing) return;
     const ECozyScreen Current = Screen;
+    if(Current==ECozyScreen::Modes){auto* H=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>();H->Selection=Selection;H->Confirm();Selection=H->Selection;return;}
+    if((Current==ECozyScreen::Title||Current==ECozyScreen::Pause)&&Selection==8){OpenModes();return;}
     if(Current==ECozyScreen::Companions){const int32 Choice=Selection;SetScreen(ECozyScreen::Playing);if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions){auto* C=M->Companions.Get();if(Choice<2)C->ToggleFollow(Choice);else if(Choice==2)C->CallBoth();else if(Choice==3)C->SendHome();else if(Choice==4)C->Pet(0);else if(Choice==5)C->Pet(1);}return;}
     if(Current==ECozyScreen::Map){const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();const int32 Count=M&&M->Navigation?M->Navigation->Landmarks().Num():0;if(Selection<Count){Progress->NavTarget=Selection;Save();if(M&&M->Navigation)M->Navigation->RefreshRoute();}SetScreen(ECozyScreen::Playing);return;}
     if(Current==ECozyScreen::Wardrobe){if(Selection<3){Progress->CostumeMask^=1<<Selection;Save();PlayCue(TEXT("Menu"));}else Back();return;}
     if(Current==ECozyScreen::Halloween){ConfirmHalloween();return;}
     if((Current==ECozyScreen::Title||Current==ECozyScreen::Pause)&&Selection==7){OpenHalloween();return;}
-    if(Current==ECozyScreen::Controls){if(Selection==0)Back();else if(Selection==6)OpenHalloween();else if(Selection==5){WardrobeReturn=ECozyScreen::Controls;SetScreen(ECozyScreen::Wardrobe);}else if(Selection<=3){FeaturePage=Selection-1;SetScreen(ECozyScreen::Features);}else {const int32 Keep=Selection;SetScreen(ECozyScreen::Playing);if(Marty()&&Marty()->Life)Marty()->Life->ToggleBodyControls();SetScreen(ECozyScreen::Controls);Selection=Keep;}return;}
+    if(Current==ECozyScreen::Controls){if(Selection==7){OpenModes();return;}if(Selection==0)Back();else if(Selection==6)OpenHalloween();else if(Selection==5){WardrobeReturn=ECozyScreen::Controls;SetScreen(ECozyScreen::Wardrobe);}else if(Selection<=3){FeaturePage=Selection-1;SetScreen(ECozyScreen::Features);}else {const int32 Keep=Selection;SetScreen(ECozyScreen::Playing);if(Marty()&&Marty()->Life)Marty()->Life->ToggleBodyControls();SetScreen(ECozyScreen::Controls);Selection=Keep;}return;}
     if(Current==ECozyScreen::Features){const auto Group=FeatureGroup();if(Group.IsValidIndex(Selection)){if(Group[Selection]==ECozyFeature::DetailedCoat)AdjustFurDetail(1);else ToggleFeature(Group[Selection]);}else Back();return;}
     if(Current==ECozyScreen::Backpack||Current==ECozyScreen::Tricks)
     {
@@ -269,14 +278,15 @@ TArray<FString> UCozyAdventure::Menu() const
 {
     switch(Screen)
     {
+    case ECozyScreen::Modes:return GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->Rows();
     case ECozyScreen::Companions:{const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();if(!M||!M->Companions)return {TEXT("Close")};const auto* C=M->Companions.Get();return {TEXT("Lakitu: ")+C->State(0)+(C->Following(0)?TEXT(" - ask to stay"):TEXT(" - follow Marty")),TEXT("Rio: ")+C->State(1)+(C->Following(1)?TEXT(" - ask to stay"):TEXT(" - follow Marty")),TEXT("Call both cats here"),TEXT("Send both cats home"),TEXT("Head bump with Lakitu"),TEXT("Head bump with Rio"),TEXT("Close")};}
-    case ECozyScreen::Controls:return {TEXT("Back"),TEXT("Navigation & map switches"),TEXT("Pet feature switches"),TEXT("Camera, graphics & sound"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try body sway)"),TEXT("Halloween costumes (optional)"),TEXT("Halloween special / Bork or Treat")};
+    case ECozyScreen::Controls:return {TEXT("Back"),TEXT("Navigation & map switches"),TEXT("Pet feature switches"),TEXT("Camera, graphics & sound"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try body sway)"),TEXT("Halloween costumes (optional)"),TEXT("Halloween activities / Bork or Treat"),TEXT("Game & versions")};
     case ECozyScreen::Halloween:return HalloweenMenu();
     case ECozyScreen::Wardrobe:{TArray<FString> Rows;const TCHAR* Names[]={TEXT("Marty: hot dog"),TEXT("Lakitu: pumpkin"),TEXT("Rio: bumblebee")};for(int32 I=0;I<3;++I)Rows.Add(FString(Names[I])+((Progress->CostumeMask&(1<<I))?TEXT(": ON"):TEXT(": OFF")));Rows.Add(WardrobeReturn==ECozyScreen::Halloween?TEXT("Back to Halloween special"):TEXT("Back to controls"));return Rows;}
     case ECozyScreen::Features:{TArray<FString> Rows;for(auto Id:FeatureGroup()){if(Id==ECozyFeature::DetailedCoat){const TCHAR* Levels[]={TEXT("LOW (smooth)"),TEXT("MEDIUM (short hair)"),TEXT("HIGH (more hair)")};Rows.Add(FString(TEXT("Fur detail: "))+Levels[FurDetail()]);}else Rows.Add(CozyFeatureLabel(Id)+(Feature(Id)?TEXT(": ON"):TEXT(": OFF")));}Rows.Add(TEXT("Back to controls"));return Rows;}
     case ECozyScreen::Map:{TArray<FString> Rows;if(const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation){for(const auto& L:M->Navigation->Landmarks())Rows.Add(FString::Printf(TEXT("%d. %s"),Rows.Num()+1,*L.Label));if(Rows.IsValidIndex(Progress->NavTarget))Rows[Progress->NavTarget]=TEXT("[Tracking] ")+Rows[Progress->NavTarget];}Rows.Add(TEXT("Close map"));return Rows;}
-    case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock"),TEXT("Halloween special / Bork or Treat")};
-    case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen"),TEXT("Cat companions"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock"),TEXT("Halloween special / Bork or Treat")};
+    case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock"),TEXT("Halloween activities / Bork or Treat"),TEXT("Game & versions")};
+    case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen"),TEXT("Cat companions"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock"),TEXT("Halloween activities / Bork or Treat"),TEXT("Game & versions")};
     case ECozyScreen::Backpack: return {TEXT("Stow the toy in Marty's mouth"),TEXT("Take a toy from the backpack"),TEXT("Close backpack")};
     case ECozyScreen::Tricks: return {TEXT("Lie down / get up"),TEXT("Roll over"),TEXT("Shake a paw"),TEXT("Bork!"),TEXT("Change pace: walk / jog / run"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try two-stick body sway)"),TEXT("Back to exploring")};
     case ECozyScreen::Settings: return {FString::Printf(TEXT("Music: %d%%"),FMath::RoundToInt(Progress->Music*100)),FString::Printf(TEXT("Effects: %d%%"),FMath::RoundToInt(Progress->Effects*100)),TEXT("Back")};
@@ -289,6 +299,7 @@ FString UCozyAdventure::Heading() const
 {
     switch(Screen)
     {
+    case ECozyScreen::Modes:return GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->Heading();
     case ECozyScreen::Halloween:return TEXT("Codename .... Cheweenie");
     case ECozyScreen::Title: return TEXT("Codename .... Cheweenie");
     case ECozyScreen::Pause: return TEXT("Take a cozy break");
