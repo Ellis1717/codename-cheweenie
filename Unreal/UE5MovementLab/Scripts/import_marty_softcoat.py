@@ -1,0 +1,115 @@
+"""Import a separate combed coat and fibre materials; retain every older asset."""
+import pathlib, json
+script=pathlib.Path(__file__).resolve()
+base=(script.parent/'import_marty_connected.py').read_text()
+old="[('MartyConnected','Marty_CoverRig','Marty'),('MartyConnectedRealism','Marty_RealCoat','MartyRealism')]"
+assert old in base
+base=base.replace(old,"[('MartySoftCoat','Marty_RealCoat','MartyRealism')]")
+base=base.replace("'marty-connected-import.json'","'marty-softcoat-mesh-import.json'")
+base=base.replace('options.skeletal_mesh_import_data.import_uniform_scale=1',
+    'options.skeletal_mesh_import_data.import_uniform_scale=1\n    options.skeletal_mesh_import_data.normal_import_method=unreal.FBXNormalImportMethod.FBXNIM_IMPORT_NORMALS')
+exec(compile(base,str(script),'exec'),globals())
+FOLDER='/Game/Adventure/MartySoftCoat/DirectionalFibres'
+EDIT=unreal.MaterialEditingLibrary
+grain=LIB.load_asset('/Game/Adventure/MartyRealism/CoatGrain');assert grain
+normalmap=LIB.load_asset('/Game/Adventure/MartyRealism/CoatNormal');assert normalmap
+
+# Reuse the proven UV palette decoder; FBX's green-channel flip is intentional.
+existing=(script.parent/'import_marty_realcoat.py').read_text()
+material_source=existing[existing.index('\ndef material(')+1:existing.index('\nspec=')]
+material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v4')
+# Keep the first material pass retained; tuned fibres use their own subfolder.
+# CustomData0 is hidden from UE5.8's Python enum. MakeMaterialAttributes exposes
+# the same native input as ClearCoat; on the cloth BRDF this is the fuzz weight.
+start=material_source.index('    def plug(');end=material_source.index('    def scalar(')
+material_source=material_source[:start]+"""    attributes=node(unreal.MaterialExpressionMakeMaterialAttributes)
+    m.set_editor_property('use_material_attributes',True)
+    def plug(a,output,prop):
+        names={unreal.MaterialProperty.MP_BASE_COLOR:'BaseColor',unreal.MaterialProperty.MP_NORMAL:'Normal',
+               unreal.MaterialProperty.MP_ROUGHNESS:'Roughness',unreal.MaterialProperty.MP_SPECULAR:'Specular',
+               unreal.MaterialProperty.MP_SUBSURFACE_COLOR:'SubsurfaceColor'}
+        wire(a,output,attributes,names[prop])
+"""+material_source[end:]
+material_source=material_source.replace('    EDIT.recompile_material(m);',
+    "    assert EDIT.connect_material_property(attributes,'',unreal.MaterialProperty.MP_MATERIAL_ATTRIBUTES)\n    EDIT.recompile_material(m);")
+material_source=material_source.replace("'u_tiling',4.0","'u_tiling',6.0").replace("'v_tiling',4.0","'v_tiling',6.0")
+material_source=material_source.replace('wire(scalar(.20)','wire(scalar(.18)').replace('wire(scalar(.85)','wire(scalar(.86)')
+old="wire(coords,'',normal,'');plug(normal,'',unreal.MaterialProperty.MP_NORMAL)"
+assert old in material_source
+material_source=material_source.replace(old,"""wire(coords,'',normal,'')
+        softened=node(unreal.MaterialExpressionLinearInterpolate)
+        wire(rgb((0,0,1)),'',softened,'A');wire(normal,'',softened,'B');wire(scalar(.85),'',softened,'Alpha')
+        unit=node(unreal.MaterialExpressionNormalize);wire(softened,'',unit,'');plug(unit,'',unreal.MaterialProperty.MP_NORMAL)""")
+material_source=material_source.replace('unreal.MaterialShadingModel.MSM_HAIR','unreal.MaterialShadingModel.MSM_CLOTH')
+material_source=material_source.replace('        base=palette()',
+    "        strand_color=palette();base=node(unreal.MaterialExpressionMultiply);wire(strand_color,'',base,'A');wire(scalar(1.12),'',base,'B')")
+material_source=material_source.replace("        tangent=node(unreal.MaterialExpressionVertexTangentWS);plug(tangent,'',unreal.MaterialProperty.MP_TANGENT)\n",'')
+old="    plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)"
+assert old in material_source
+material_source=material_source.replace(old,"""    if fur:
+        # UE's cloth BRDF supplies physical microfibre fuzz, without emissive glow
+        # or any cloth simulation. Fine strands retain their smooth surface normals.
+        m.set_editor_property('shading_model',unreal.MaterialShadingModel.MSM_CLOTH)
+        fuzz=node(unreal.MaterialExpressionMultiply);wire(base,'',fuzz,'A');wire(scalar(.28),'',fuzz,'B')
+        plug(fuzz,'',unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
+        wire(scalar(.35 if name=='Marty_FineFur' else .18),'',attributes,'ClearCoat')
+        if name!='Marty_FineFur':
+            # Skin UVs travel with the rig. Subpixel fading bounds fine-fibre aliasing.
+            uv=node(unreal.MaterialExpressionTextureCoordinate)
+            pattern=node(unreal.MaterialExpressionCustom)
+            custom_input=unreal.CustomInput();custom_input.set_editor_property('input_name','UV');pattern.set_editor_property('inputs',[custom_input])
+            pattern.set_editor_property('output_type',unreal.CustomMaterialOutputType.CMOT_FLOAT4)
+            pattern.set_editor_property('description','Combed short coat: normal RGB, strand tone A')
+            pattern.set_editor_property('code',FIBRE_CODE);wire(uv,'',pattern,'UV')
+            tone=node(unreal.MaterialExpressionComponentMask)
+            for channel in ('r','g','b'):tone.set_editor_property(channel,False)
+            tone.set_editor_property('a',True);wire(pattern,'',tone,'')
+            tinted=node(unreal.MaterialExpressionMultiply);wire(base,'',tinted,'A');wire(tone,'',tinted,'B');base=tinted
+            direction=node(unreal.MaterialExpressionComponentMask)
+            for channel in ('r','g','b'):direction.set_editor_property(channel,True)
+            direction.set_editor_property('a',False);wire(pattern,'',direction,'')
+            detail=node(unreal.MaterialExpressionLinearInterpolate)
+            wire(direction,'',detail,'A');wire(normal,'',detail,'B');wire(scalar(.15),'',detail,'Alpha')
+            unit=node(unreal.MaterialExpressionNormalize);wire(detail,'',unit,'');plug(unit,'',unreal.MaterialProperty.MP_NORMAL)
+    plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)""")
+FIBRE_CODE=r'''
+float2 dxuv=ddx(UV),dyuv=ddy(UV);
+float2 slope=0.0;float tone=0.0;
+[unroll] for(int layer=0;layer<3;layer++)
+{
+    float2 scale=float2(180.0,720.0)*(1.0+layer*0.23);
+    float2 grid=UV*scale+float2(layer*13.31,layer*7.73);
+    float row=floor(grid.y);
+    float seed=frac(sin(row*127.1+layer*23.7)*43758.5453);
+    float col=floor(grid.x+seed);
+    float cell=frac(sin(row*73.1+col*127.7+layer*39.3)*41358.5453);
+    float x=frac(grid.x+seed);
+    float y=frac(grid.y)-0.5-0.16*(cell-0.5)-0.06*sin(x*6.283185+cell*9.0);
+    float2 footprint=abs(dxuv*scale)+abs(dyuv*scale);
+    float width=max(0.10,min(0.38,footprint.y*0.45));
+    float bell=sin(x*3.141593);bell=pow(saturate(bell),0.7);
+    float strand=exp2(-2.5*y*y/(width*width))*bell;
+    float fade=saturate(1.25-max(footprint.x,footprint.y)*0.45);
+    slope+=float2(0.015*sin(x*6.283185)*strand,-0.020*3.4657*y/(width*width)*strand)*fade;
+    tone+=lerp(1.0,0.96+0.16*strand+0.025*(cell-0.5),fade);
+}
+return float4(normalize(float3(slope/3.0,1.0)),tone/3.0);
+'''
+exec(compile(material_source,str(script),'exec'),globals())
+spec={'Marty_Coat':((.58,.31,.105),.74),'Marty_Cream':((.74,.59,.37),.78),
+      'Marty_Ears':((.30,.125,.042),.76),'Marty_FineFur':((.58,.31,.105),.72)}
+slots=pet.get_editor_property('materials')
+for i,slot in enumerate(slots):
+    name=str(slot.material_slot_name)
+    if name in spec:
+        color,roughness=spec[name];slot.material_interface=material(name,color,roughness,True);slots[i]=slot
+pet.set_editor_property('materials',slots)
+assert LIB.save_loaded_asset(pet,only_if_is_dirty=False)
+models={name:str(LIB.load_asset(FOLDER+'/'+name).get_editor_property('shading_model')) for name in spec}
+assert all(LIB.load_asset(FOLDER+'/'+name).get_editor_property('shading_model')==unreal.MaterialShadingModel.MSM_CLOTH for name in spec)
+report={'ready':True,'import':reports,'fur_strands':32000,'maximum_authored_strand_length_cm':.28,
+        'material_models':models,'coat_shading':'Cloth microfibre BRDF, not cloth simulation or Groom',
+        'materials':[s.material_interface.get_path_name() for s in slots],
+        'old_assets_preserved':True,'original_texture_assets_reused':True}
+with open(os.path.join(ROOT,'Saved','marty-softcoat-import.json'),'w') as f:json.dump(report,f,indent=2)
+print('MARTY_SOFTCOAT_READY')

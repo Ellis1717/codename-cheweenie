@@ -61,10 +61,10 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         {
             SmokeCheck(Gait&&Gait->Ready&&Skin&&Skin->GetSkinnedAsset(),TEXT("Skin-weighted Marty and 24 anatomical joints load"));
             SmokeCheck(Skin->GetSkinnedAsset()->GetName()==TEXT("Marty_RealCoat"),TEXT("Detailed short-coat model loads as the playable character"));
-            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnectedRealism")),TEXT("Connected ear-tail skin is the active detailed model"));
+            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartySoftCoat")),TEXT("Connected ear-tail skin is the active detailed model"));
             SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear, ear-tip and tail roots match their reference offsets on animated parents"));
-            bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur"))FineFur=true;
-            SmokeCheck(FineFur,TEXT("Skin-weighted fine fur material remains assigned in the real game"));
+            bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur")&&M->GetPathName().Contains(TEXT("MartySoftCoat/DirectionalFibres"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth))FineFur=true;
+            SmokeCheck(FineFur,TEXT("Combed fine fur uses the new microfibre material in the real game"));
             SmokeCheck(Bone(TEXT("front_l_upper")).X>Bone(TEXT("hind_l_upper")).X+20,TEXT("Imported centimetre rig faces positive X"));
             const FVector Knee=UMartyGait::SolveKnee(FVector(0,0,20),FVector(0,0,2),12,11,-1);
             SmokeCheck(FMath::IsNearlyEqual(Knee.Size2D(),FMath::Abs(Knee.X),.01)&&Knee.X<0&&FMath::IsNearlyEqual((Knee-FVector(0,0,20)).Size(),12.f,.01),TEXT("Two-bone foreleg IK bends elbow backward at fixed bone length"));
@@ -149,7 +149,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 21:
         if(SmokeTime<.4f)break;Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
     case 22:
-        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnectedRealism"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartySoftCoat"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
     case 23:
         if(SmokeTime<.4f)break;Shot(TEXT("MartyEarRootIdle.png"));Next();break;
     case 24:
