@@ -36,7 +36,7 @@ for i, slot in enumerate(slots):
 assert len(updated) == 4
 pet.set_editor_property('materials', slots)
 assert LIB.save_loaded_asset(pet, only_if_is_dirty=False)
-report = {'ready': True, 'materials': updated, 'bands_uv': [[180,720],[46,156],[14,48]],
+report = {'ready': True, 'materials': updated, 'bands_uv': [[180,720],[46,156],[10,28]],
           'shader_revision': revision,
           'filter': 'Each band smoothly fades over 0.35–1.15 UV cells per pixel',
           'mesh_reimported': False, 'earlier_materials_preserved': True,
