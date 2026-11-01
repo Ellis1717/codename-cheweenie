@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-01",
+  "merged_main_commit": "8f925c336322d95e2725510d50c129eab4cb9476",
+  "merged_prs": [
+    35,
+    36,
+    37
+  ],
+  "merged_tree": "c8025efa2be8e76919624d347ab0d7b45f894510",
+  "validated_premerge_commit": "c1301cf6f7ac3363818021c90314ec2a0e347011",
+  "validated_premerge_tree": "c8025efa2be8e76919624d347ab0d7b45f894510",
+  "tracked_files_identical": true,
+  "local_main_synchronized": true,
+  "postmerge_native_editor_builds": {
+    "graphics_worktree": "passed, up to date",
+    "original_local_checkout": "passed, 39 actions"
+  },
+  "postmerge_local_real_map_movement": {
+    "engine": "5.8.4-58902052+++UE5+Release-5.8",
+    "scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+    "passed": [
+      "Spawn lands on room floor",
+      "W keyboard binding moves Marty",
+      "Keyboard release stops Marty",
+      "V switches camera distance",
+      "H returns Marty home",
+      "Synthetic left stick preserves analog walking",
+      "Stick release stops Marty",
+      "A/Cross enables hurry",
+      "R3 switches camera distance",
+      "A/Cross release restores walking",
+      "Menu/Options returns Marty home",
+      "Right stick orbits camera",
+      "Right stick up looks upward",
+      "RB/R1 recenters camera",
+      "Room boundaries block sustained movement without falling",
+      "Sofa blocks actual character movement"
+    ],
+    "failed": []
+  },
+  "postmerge_movement_error_fatal_material_fallback_vsm_matches": 0,
+  "retained_standalone_validation": {
+    "reason": "Merged tracked tree exactly equals the validated PR head; no runtime or art changed during merge.",
+    "packaged_assertions": 419,
+    "editor_movement_assertions": 16,
+    "total_assertions": 435,
+    "evidence": "docs/evidence/ue5-marty-likeness-build.json",
+    "version": "0.11.4",
+    "recooked_after_merge": false,
+    "payload_hashes_rechecked": 43
+  },
+  "extra_test_attempts": [
+    "A preliminary local gait run before compilation was stopped; it is excluded from acceptance.",
+    "The redundant graphics-worktree movement rerun timed out during startup after waiting behind the original-checkout compile; it is excluded.",
+    "The optional original-checkout rendered gait rerun was stopped before gameplay while ValidatePlatforms waited behind an unrelated GameplayFurWorktree build. That other build was left untouched; no new rendered assertion passes are claimed."
+  ],
+  "retained_owner_materials": [
+    {
+      "sha256": "034156DBC24C7DCFC97757275FE49014058087EFBF293B9E4B0AF44798E6FBC3",
+      "untracked_owner_file": true,
+      "path": "Assets/Art/Marty/Source/Materials/Marty_Explorer-defaultMat.mat"
+    },
+    {
+      "sha256": "D5B292CDDCA8316E99FBACD53312723492E073CDFF797882E4992A1092A8C0FC",
+      "untracked_owner_file": true,
+      "path": "Assets/Art/Marty/Source/Materials/Marty_Explorer-defaultMat.mat.meta"
+    }
+  ],
+  "launcher": {
+    "version": "0.11.4",
+    "detailed_coat_required_for_new_model": true,
+    "target_verified": true,
+    "shortcut": "Play Cheweenie Bork or Treat"
+  },
+  "unverified": [
+    "New postmerge rendered gait run",
+    "Physical Xbox/PlayStation hardware",
+    "Separate-machine networking",
+    "Owner likeness approval",
+    "Broad performance benchmarks"
+  ]
+}
