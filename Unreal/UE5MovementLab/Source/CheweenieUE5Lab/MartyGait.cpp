@@ -101,17 +101,17 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     Skin->SetBoneTransformByName(TEXT("head"),Head,EBoneSpaces::ComponentSpace);
     for(const FName Name:{FName(TEXT("ear_l")),FName(TEXT("ear_r")),FName(TEXT("ear_tip_l")),FName(TEXT("ear_tip_r")),FName(TEXT("tail"))})
     {
-        FTransform Part=Rest[Name];Part.SetLocation(LeanPoint(Part.GetLocation()+FVector(0,0,Bob)));
         const bool Tail=Name==TEXT("tail"),Tip=Name==TEXT("ear_tip_l")||Name==TEXT("ear_tip_r");
         const float Side=Name==TEXT("ear_l")||Name==TEXT("ear_tip_l")?-1.f:1.f;
         const float Flap=Tail?FMath::Sin(Time*(Excited?5.f:3.f))*(Excited?.18f:.10f):FMath::Sin(Cycle*UE_TWO_PI*2+(Tip?.7f:0))*Side*(Tip?.27f:.15f)*Moving;
-        Part.SetRotation(Lean*FQuat(Tail?FVector::UpVector:FVector(1,0,0),Flap)*Part.GetRotation());
-        if(Tip)
-        {
-            const FName Parent=Side<0?TEXT("ear_l"):TEXT("ear_r");
-            const FTransform Base=Skin->GetBoneTransformByName(Parent,EBoneSpaces::ComponentSpace);
-            Part.SetLocation(Base.TransformPosition(Rest[Parent].InverseTransformPosition(Rest[Name].GetLocation())));
-        }
+        const FName Parent=Tail?TEXT("spine"):Tip?(Side<0?TEXT("ear_l"):TEXT("ear_r")):TEXT("head");
+        const FTransform ParentPose=Skin->GetBoneTransformByName(Parent,EBoneSpaces::ComponentSpace);
+        FTransform Part=Rest[Name].GetRelativeTransform(Rest[Parent])*ParentPose;
+        // Inherit head/torso motion before adding secondary flop/wag. Keeping
+        // component-space rest positions here made ear roots drift during nods.
+        const FQuat ParentDelta=ParentPose.GetRotation()*Rest[Parent].GetRotation().Inverse();
+        const FVector Axis=ParentDelta.RotateVector(Tail?FVector::UpVector:FVector::ForwardVector);
+        Part.SetRotation(FQuat(Axis,Flap)*Part.GetRotation());
         Skin->SetBoneTransformByName(Name,Part,EBoneSpaces::ComponentSpace);
     }
     const float WalkPhases[]={0,.5f,.75f,.25f};const float TrotPhases[]={0,.5f,.5f,0};const float RunPhases[]={0,.14f,.58f,.72f};

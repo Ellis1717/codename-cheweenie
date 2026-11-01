@@ -5,6 +5,7 @@
 #include "Components/PoseableMeshComponent.h"
 #include "Materials/MaterialInterface.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/SkinnedAsset.h"
 
 UHalloweenCostume::UHalloweenCostume()
 {
@@ -107,9 +108,20 @@ void UHalloweenCostume::TickComponent(float Delta, ELevelTick Type, FActorCompon
     if (!Wearing || !IsValid(Target)) return;
     if (auto* Skin=Cast<UPoseableMeshComponent>(Target.Get()))
     {
-        // Follow the animated torso, including lying down, rolling and body sway.
+        // The outfit is authored along the model's +X (hips to shoulders), not
+        // the imported spine bone's local axes. Remove its reference orientation
+        // before following animation, so the hot dog cannot turn sideways.
+        const auto* Asset=Skin->GetSkinnedAsset();if(!Asset)return;
+        const auto& Skeleton=Asset->GetRefSkeleton();
+        const int32 Index=Skeleton.FindBoneIndex(TEXT("spine"));if(Index==INDEX_NONE)return;
+        FTransform Bind=Skeleton.GetRefBonePose()[Index];
+        for(int32 Parent=Skeleton.GetParentIndex(Index);Parent!=INDEX_NONE;Parent=Skeleton.GetParentIndex(Parent))
+            Bind=Bind*Skeleton.GetRefBonePose()[Parent];
+        const FTransform Saddle(FQuat::Identity,Bind.GetLocation()+FVector(5,0,4));
         const FTransform Spine=Skin->GetBoneTransformByName(TEXT("spine"),EBoneSpaces::WorldSpace);
-        Anchor->SetWorldTransform(FTransform(Spine.GetRotation(),Spine.TransformPosition(FVector(1,0,4)),FVector::OneVector));
+        FTransform Follow=Saddle.GetRelativeTransform(Bind)*Spine;
+        Follow.SetScale3D(FVector::OneVector);
+        Anchor->SetWorldTransform(Follow);
     }
     else
     {
