@@ -1,0 +1,442 @@
+{
+  "release": "Unified-0.12.1",
+  "validatedNativeSource": "1426ed014068e42c09318ce3def839f188cba788",
+  "engine": "5.8.4",
+  "editorCompiled": true,
+  "gameCompiled": true,
+  "nativeStagingPassed": true,
+  "cookedContent": "Unchanged assets reused from fully cooked validated 0.12.0; this milestone did not run a new full cook",
+  "mainPackageAssertions": 565,
+  "privateMapAssertions": 4,
+  "currentArchiveReturnAssertions": 2,
+  "previousCoreMovementAssertions": 16,
+  "editorModifierAssertions": 32,
+  "editorMovementAssertions": 16,
+  "releaseAssertionExecutions": 635.0,
+  "audioWaveforms": {
+    "Barks": {
+      "seconds": 2.7306666666666666,
+      "rms": 0.015736051622559446,
+      "peak": 0.15045166015625
+    },
+    "Music": {
+      "seconds": 2.005333333333333,
+      "rms": 0.008533752620369907,
+      "peak": 0.0347900390625
+    },
+    "Muted": {
+      "seconds": 1.024,
+      "rms": 0.0,
+      "peak": 0.0
+    }
+  },
+  "runtimeErrorFatalMaterialFallbackVsmMatches": 0,
+  "physicalControllerVerified": false,
+  "separateMachinesVerified": false,
+  "inputScope": "Synthetic keyboard/gamepad events in the real map with isolated save/position fixtures; actual rendered rig poses and movement/camera while held",
+  "guide": "Nonmodal corner panel; normal controls remain available after release",
+  "bindings": {
+    "quickTapBark": "L1/LB release within 0.3 seconds, without a used chord",
+    "modifier": "L1 / LB",
+    "lieStand": "Cross / A",
+    "keyboard": "Left Ctrl + 1/2/3/4",
+    "shake": "Square / X",
+    "bark": "Triangle / Y",
+    "roll": "Circle / B"
+  },
+  "payloadHashes": [
+    {
+      "sha256": "9D6BCC7619AD4648EA25BC5B6A57A1C2F19F5BFCA756B73B846A758113603C7E",
+      "path": "CheweenieUE5Lab.exe"
+    },
+    {
+      "sha256": "28975621E96A8CD55F3DFEBEE3EDA7E3F9CED7A159CCE44B5C1D771E03223E68",
+      "path": "Manifest_NonUFSFiles_Win64.txt"
+    },
+    {
+      "sha256": "813D1555A6AF0CD2076FA79DBC85645E37DFDBD05AF8C9F7BDC7659349BAC62F",
+      "path": "Manifest_UFSFiles_Win64.txt"
+    },
+    {
+      "sha256": "BA49AE5586F817B36A2772269F71F899CB1F54B5F2720FAD951319EDD5E140B8",
+      "path": "NOTICES.txt"
+    },
+    {
+      "sha256": "34729049010A18B237E7B4C8CAB74332FAE6F14C5590B328B07ECD860633A7A6",
+      "path": "CheweenieUE5Lab/Binaries/Win64/CheweenieUE5Lab.exe"
+    },
+    {
+      "sha256": "C489B6BD4DD2BE18D4F8778E3F86CAA7672EC8A206C9A54228B3BB60E2923F76",
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbb12.dll"
+    },
+    {
+      "sha256": "ACA208101BBA1E440E6FAE6580EEDD45508EC405C9674063BAF7CA23D29316BD",
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbbmalloc.dll"
+    },
+    {
+      "sha256": "F0CBDBA3043BC30E2A17DFD7D6C05E61C9C4098EB1D5EE8CCD2AB3F4696E8E20",
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/D3D12Core.dll"
+    },
+    {
+      "sha256": "180A630861DC88D26DB517DA787009EDF75E4C83309B819814B84B86F8DB36C1",
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll"
+    },
+    {
+      "sha256": "4E357E48C3FB00E5AC868F2B33BA5576873C013349E2CC1D7A9BE0071253AC62",
+      "path": "CheweenieUE5Lab/Binaries/Win64/DML/x64/DirectML.dll"
+    },
+    {
+      "sha256": "6ECC0AD670EAECACA27BFBA9674B0E8CA959F477693B8C2691B8E91DA36D4A90",
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.pak"
+    },
+    {
+      "sha256": "24F3F9EEFB362E018346BD171B8BE0CA9AC845286CB200AFDACD3A938CA9329F",
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.ucas"
+    },
+    {
+      "sha256": "CDCAF36F4EA472B274286254B4DC70F162D9AEDCDB2000D4BD6412E00F6A227C",
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.utoc"
+    },
+    {
+      "sha256": "2D925641B44634502839EC8392B5065C54462571C561BEF5C9BC58424234EF75",
+      "path": "CheweenieUE5Lab/Content/Paks/global.ucas"
+    },
+    {
+      "sha256": "51872A83E81A36242310B44CBCD22D7999F0EC8C734940A03D09DAC4922EC7F6",
+      "path": "CheweenieUE5Lab/Content/Paks/global.utoc"
+    },
+    {
+      "sha256": "441A7CCEE2F854352366E783FCB79FE895D09AD4C577689319E1A664F296C4A3",
+      "path": "Engine/Binaries/ThirdParty/DbgHelp/dbghelp.dll"
+    },
+    {
+      "sha256": "27C231D80310EA9005A6B0C17054F28887272723477E7292A7F9D63B6D1579EE",
+      "path": "Engine/Binaries/ThirdParty/MsQuic/v220/win64/msquic.dll"
+    },
+    {
+      "sha256": "CE49BE4194706417CCDC57833AEC478FAA1E08646157688C879FE616D43ABD65",
+      "path": "Engine/Binaries/ThirdParty/NVIDIA/NVaftermath/Win64/GFSDK_Aftermath_Lib.x64.dll"
+    },
+    {
+      "sha256": "C719A5F165E4AFE29E92A7EEE9762C2E9F301A177885AB1AB8D2C7F57D4A86BF",
+      "path": "Engine/Binaries/ThirdParty/Ogg/Win64/VS2015/libogg_64.dll"
+    },
+    {
+      "sha256": "B8A3E31A6C2D401809BAE7AA0FD29F49C2114EECCFBA4DC5C7AC8EDDBD4B7A98",
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbis_64.dll"
+    },
+    {
+      "sha256": "6D0E4395BC4D0EF501C3F7F7B4E63FA0CF2AB2CA80328560B7CB10E6D5A171CF",
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbisfile_64.dll"
+    },
+    {
+      "sha256": "583DB3D1ACD76363F0F67D9DA414DD147CA9FFAB4A47824027351B063FE66AEA",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.dll"
+    },
+    {
+      "sha256": "9E55221C225DCE4B5448BAC7DADB7E39FD216F51354DDE02E58F950F4A0DD80B",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.json"
+    },
+    {
+      "sha256": "8E080A40AC452C4B249B9060E2F4C208AF9159AFBA9E75E91D1C55D85E387D04",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.dll"
+    },
+    {
+      "sha256": "578BDE354874789671DEE1A96468C965619C9F3BA16CFA65F850E81A80674087",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.json"
+    },
+    {
+      "sha256": "780C4BCAE69A50E38181EDFD20A58780FA02539F4FF302C8C4A0E2899EE7A0CB",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.dll"
+    },
+    {
+      "sha256": "71D4E243A2AF74874F4F61378BDFE3753CB01CE5EB9B98400D83612BF882A815",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.json"
+    },
+    {
+      "sha256": "9682F7F508855980B9C31147493C962D43A0798C4596870CD7C5DEE009859EA2",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.dll"
+    },
+    {
+      "sha256": "6095C28691757E083A8C1BEF3C69CA76A8B5017E21ACAF55D1BC7E82221A0FBE",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.json"
+    },
+    {
+      "sha256": "7026DA236CECADD40B6A1723D0881349D9471592D98CABD60994F99DC2DB3E53",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.dll"
+    },
+    {
+      "sha256": "18ECAFC9A65E1B7AF8CD0E36DC936026CDB3AED333C4EA5A7C17D6D9465CFAF4",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.json"
+    },
+    {
+      "sha256": "485EB9B7F0320BD1AF3AF03DBE3A052D6F5E9CDA14496BBE1A062D626D501EAE",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.dll"
+    },
+    {
+      "sha256": "A1E980A24BE9A16A826B00C27D61B85EE0E2E17226DC9C4E8EEC031879E5F26A",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.json"
+    },
+    {
+      "sha256": "27FC6A4CA52244F18337A652DB638865ABD679F6E1D129BF4770FD3E6C4F1A60",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.dll"
+    },
+    {
+      "sha256": "5C464B84457776D92A674DE506F7B7A489294583A7D7609F78FCC52BC4406D09",
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.json"
+    },
+    {
+      "sha256": "F5F6F69210CC958B92285FF444E2EF48F5C46B4D6470B07960739DBCB6554B54",
+      "path": "Engine/Binaries/ThirdParty/Windows/WinPixEventRuntime/x64/WinPixEventRuntime.dll"
+    },
+    {
+      "sha256": "E6AE545B31A5453F1B1002D434CC802A6088CF05C5FAA414D7EBE00264161506",
+      "path": "Engine/Binaries/ThirdParty/Windows/XAudio2_9/x64/xaudio2_9redist.dll"
+    },
+    {
+      "sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5",
+      "path": "Engine/Config/StagedBuild_CheweenieUE5Lab.ini"
+    },
+    {
+      "sha256": "EDC4F3B628A139C5E185BBAECA661C95C1F427368D3B92892C5CFF36C56DD941",
+      "path": "Engine/Content/Renderer/TessellationTable.bin"
+    },
+    {
+      "sha256": "FEF3980FA567E9C45D5D8DCAA432A2C1A3F3BB17FE67D7AB198164F56C142AA1",
+      "path": "Engine/Content/Slate/Cursor/invisible.cur"
+    },
+    {
+      "sha256": "EBC1B8DC6731B2C7E791DD619ABA19D5554B9E678364F3C2A35F125BAAFC0F54",
+      "path": "Engine/Extras/Redist/en-us/vc_redist.arm64.exe"
+    },
+    {
+      "sha256": "6FFDEEFF6AAE9F5DCD52217571B2C2A47DE367AF8AA3DB953542BF25C4C29A0D",
+      "path": "Engine/Extras/Redist/en-us/vc_redist.x64.exe"
+    },
+    {
+      "sha256": "EACC4D935137D67AB0CC1B896472D1DE551DFC6545ED9AD74AB842400272E036",
+      "path": "Engine/Plugins/NNE/NNERuntimeORT/Binaries/ThirdParty/Onnxruntime/Win64/onnxruntime.dll"
+    }
+  ],
+  "archive": {
+    "newArchivePayloadHashesVerified": 43,
+    "actualRoundTrip": "0.12.1 -> 0.12.0 -> 0.12.1 under Windows PowerShell 5",
+    "previousIdentitiesRetained": 33,
+    "priorArchiveIntegrity": "The previous 33 identities retain the manifests validated in the 0.12.0 release; they were not all re-run as games this milestone",
+    "indexRestoredTo34": true,
+    "newArchive": "Core 0.12.0",
+    "builds": 34
+  },
+  "resources": {
+    "bothPrivateFilesMatchSource": true,
+    "previousCorePreserved": true,
+    "checkpointMatchesSource": true,
+    "unitySourcesUntouched": true
+  },
+  "reviewedNewCaptures": [
+    "Modifier/TrickModifierGuide.png",
+    "Modifier/TrickModifierLie.png",
+    "Modifier/TrickModifierRoll.png",
+    "Modifier/TrickModifierShake.png"
+  ],
+  "tanPixelProbe": {
+    "width": 1280,
+    "height": 720,
+    "probeX": 676,
+    "probeY": 418,
+    "meanRGB": [
+      138.32,
+      106.32000000000002,
+      68.11999999999999
+    ],
+    "tanCoatVisible": true,
+    "scope": "Actual rendered pixels at projected torso; likeness still requires visual review"
+  },
+  "primaryShortcut": "Play Cheweenie -> UnrealCore-0.12.1/PLAY_GAME.ps1; previous shortcut copied into private LocalGameData",
+  "initialFindings": [
+    "The first compile caught a missing Kismet include in the new acceptance source; it was corrected before final builds.",
+    "The first headless test passed 29/30 but incorrectly expected an audio-device cue while -nosound was active. The fixture now checks the executed bark; a separate real AudioMixer acceptance verifies bark/music/mute. Final 32-check headless and rendered modifier runs passed."
+  ],
+  "limitations": [
+    "Physical controllers, separate PCs, foreground desktop interaction and broad performance remain unverified.",
+    "Direct tricks apply to core-adventure Marty. The existing LAN/memory room retains its voice and jump controls; replicated cat tricks are not added."
+  ],
+  "reports": [
+    {
+      "report": "Adventure/adventure-resume.json",
+      "passed": 6,
+      "failed": []
+    },
+    {
+      "report": "Adventure/adventure-smoke.json",
+      "passed": 25,
+      "failed": []
+    },
+    {
+      "report": "Archive/archive-movement.json",
+      "passed": 16,
+      "failed": []
+    },
+    {
+      "report": "Archive/hub-archive-return.json",
+      "passed": 2,
+      "failed": []
+    },
+    {
+      "report": "Audio/audio-smoke.json",
+      "passed": 10,
+      "failed": []
+    },
+    {
+      "report": "Companions/companions-resume.json",
+      "passed": 4,
+      "failed": []
+    },
+    {
+      "report": "Companions/companions-smoke.json",
+      "passed": 30,
+      "failed": []
+    },
+    {
+      "report": "Coop/coop-guest.json",
+      "passed": 29,
+      "failed": []
+    },
+    {
+      "report": "Coop/coop-host.json",
+      "passed": 32,
+      "failed": []
+    },
+    {
+      "report": "Costumes/costumes-resume.json",
+      "passed": 2,
+      "failed": []
+    },
+    {
+      "report": "Costumes/costumes-smoke.json",
+      "passed": 29,
+      "failed": []
+    },
+    {
+      "report": "Festival/festival-resume.json",
+      "passed": 6,
+      "failed": []
+    },
+    {
+      "report": "Festival/festival-smoke.json",
+      "passed": 40,
+      "failed": []
+    },
+    {
+      "report": "FurDetail/fur-detail-low.json",
+      "passed": 4,
+      "failed": []
+    },
+    {
+      "report": "FurDetail/fur-detail-medium.json",
+      "passed": 4,
+      "failed": []
+    },
+    {
+      "report": "FurDetail/fur-detail.json",
+      "passed": 15,
+      "failed": []
+    },
+    {
+      "report": "Gait/marty-gait.json",
+      "passed": 30,
+      "failed": []
+    },
+    {
+      "report": "Hub/hub-smoke.json",
+      "passed": 29,
+      "failed": []
+    },
+    {
+      "report": "HubLan/hub-guest.json",
+      "passed": 9,
+      "failed": []
+    },
+    {
+      "report": "HubLan/hub-host.json",
+      "passed": 8,
+      "failed": []
+    },
+    {
+      "report": "Life/life-resume.json",
+      "passed": 5,
+      "failed": []
+    },
+    {
+      "report": "Life/life-smoke.json",
+      "passed": 23,
+      "failed": []
+    },
+    {
+      "report": "Modifier/trick-modifier.json",
+      "passed": 32,
+      "failed": []
+    },
+    {
+      "report": "Navigation/navigation-resume.json",
+      "passed": 4,
+      "failed": []
+    },
+    {
+      "report": "Navigation/navigation-smoke.json",
+      "passed": 59,
+      "failed": []
+    },
+    {
+      "report": "PrivateMap/outside-map-audit.json",
+      "passed": 4,
+      "failed": []
+    },
+    {
+      "report": "Ratchet/ratchet-memory.json",
+      "passed": 12,
+      "failed": []
+    },
+    {
+      "report": "Ratchet/ratchet-resume.json",
+      "passed": 2,
+      "failed": []
+    },
+    {
+      "report": "Ratchet/ratchet-return.json",
+      "passed": 3,
+      "failed": []
+    },
+    {
+      "report": "Ratchet/ratchet-unlock.json",
+      "passed": 6,
+      "failed": []
+    },
+    {
+      "report": "Tricks/tricks-resume.json",
+      "passed": 5,
+      "failed": []
+    },
+    {
+      "report": "Tricks/tricks-smoke.json",
+      "passed": 29,
+      "failed": []
+    },
+    {
+      "report": "UnlockedCoop/coop-guest.json",
+      "passed": 28,
+      "failed": []
+    },
+    {
+      "report": "UnlockedCoop/coop-host.json",
+      "passed": 31,
+      "failed": []
+    },
+    {
+      "report": "World/world-smoke.json",
+      "passed": 14,
+      "failed": []
+    }
+  ],
+  "timestampUtc": "2026-11-01T22:20:42.3318270Z"
+}

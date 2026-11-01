@@ -19,6 +19,7 @@
 
 void AMartyPlayMode::TickTricksSmoke(float Delta)
 {
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTrickModifierSmoke"))){TickTrickModifierSmoke(Delta);return;}
     SmokeTime+=Delta;auto* PC=GetWorld()->GetFirstPlayerController();auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
     if(!P||!P->Life||!Adventure||!Adventure->Progress)return;auto* L=P->Life.Get();auto* D=Adventure->Progress.Get();
     FString Root=FPaths::ProjectSavedDir();FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Root);
