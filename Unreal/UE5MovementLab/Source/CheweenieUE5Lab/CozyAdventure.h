@@ -64,6 +64,8 @@ public:
     UPROPERTY(SaveGame) int32 PetPace=0;
     UPROPERTY(SaveGame) bool BodyControls=false;
     UPROPERTY(SaveGame) int32 DisabledFeatures=0;
+    // The existing disabled-coat bit selects Low; retain the last enabled choice.
+    UPROPERTY(SaveGame) int32 FurDetailPreference=2;
     UPROPERTY(SaveGame) int32 NavTarget=0;
     UPROPERTY(SaveGame) int32 CatFollowMask=0;
     UPROPERTY(SaveGame) int32 CostumeMask=0;
@@ -110,6 +112,8 @@ public:
     bool StopOutdoors(const FCozyStop& Stop) const;
     bool Feature(ECozyFeature Id) const;
     void ToggleFeature(ECozyFeature Id);
+    int32 FurDetail() const;
+    void AdjustFurDetail(int32 Direction);
     TArray<ECozyFeature> FeatureGroup() const;
     int32 FeaturePage=0;
     FString Objective() const;

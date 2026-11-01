@@ -114,7 +114,7 @@ void AMartyCharacter::PossessedBy(AController* NewController)
 void AMartyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if(auto* S=Adventure())if(S->Progress){const bool Detailed=S->Feature(ECozyFeature::DetailedCoat)&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"));if(LastDetailed!=int32(Detailed)){LastDetailed=int32(Detailed);if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Detailed?TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat"):TEXT("/Game/Adventure/MartyConnected/Marty_CoverRig.Marty_CoverRig"))){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
+    if(auto* S=Adventure())if(S->Progress){const int32 Detail=FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"))?0:S->FurDetail();if(LastFurDetail!=Detail){LastFurDetail=Detail;const TCHAR* Coats[]={TEXT("/Game/Adventure/MartyConnected/Marty_CoverRig.Marty_CoverRig"),TEXT("/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat")};if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Coats[Detail])){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
     if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
     if(GetActorLocation().Z< -600)ReturnHome();
 }

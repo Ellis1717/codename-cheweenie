@@ -56,14 +56,14 @@ bool AMartyHUD::DrawAdventureHUD()
             DrawRect(I==Session->Selection ? (Seasonal?FLinearColor(.40f,.16f,.055f,1):FLinearColor(.20f,.38f,.42f,1)) : (Seasonal?FLinearColor(.11f,.045f,.15f,1):FLinearColor(.065f,.14f,.18f,1)),X+18,Row,PanelWidth-36,38);
             DrawText((I==Session->Selection ? FString(TEXT(">  ")) : FString(TEXT("   ")))+Items[I],FLinearColor::White,X+28,Row+10,nullptr,1.15f);
             AddHitBox(FVector2D(X+18,Row),FVector2D(PanelWidth-36,38),FName(*FString::Printf(TEXT("CozyRow_%d"),I)),true);
-            if(Session->Screen==ECozyScreen::Settings && I<2)
+            if((Session->Screen==ECozyScreen::Settings && I<2)||(Session->Screen==ECozyScreen::Features && Session->FeatureGroup().IsValidIndex(I) && Session->FeatureGroup()[I]==ECozyFeature::DetailedCoat))
             {
                 AddHitBox(FVector2D(X+550,Row),FVector2D(50,38),FName(*FString::Printf(TEXT("CozyMinus_%d"),I)),true,10);
                 AddHitBox(FVector2D(X+605,Row),FVector2D(50,38),FName(*FString::Printf(TEXT("CozyPlus_%d"),I)),true,10);
                 DrawText(TEXT("-       +"),FLinearColor::White,X+565,Row+10);
             }
         }
-        DrawText(FString::Printf(TEXT("%d / %d | D-pad choose | A select | B back"),Session->Selection+1,Items.Num()),FLinearColor(.75f,.85f,.86f),X+24,Y+435);
+        DrawText(Session->Screen==ECozyScreen::Features?FString(TEXT("Arrows / D-pad: choose & adjust | Enter / A-Cross: next | B-Circle: back")):FString::Printf(TEXT("%d / %d | D-pad choose | A select | B back"),Session->Selection+1,Items.Num()),FLinearColor(.75f,.85f,.86f),X+24,Y+435);
         if(Map)DrawNavigation(true);
         if(Title||HalloweenPage) DrawText(TEXT("Illustration. Gameplay uses stylized 3D pets."),FLinearColor(.85f,.9f,.9f),Width-410,Height-28);
     }

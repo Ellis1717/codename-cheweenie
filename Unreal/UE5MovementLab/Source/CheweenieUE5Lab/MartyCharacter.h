@@ -77,7 +77,7 @@ private:
     UPROPERTY() TObjectPtr<UInputAction> RecenterAction;
     UPROPERTY() TObjectPtr<UInputAction> HomeAction;
     UPROPERTY() TArray<TObjectPtr<UInputAction>> MenuActions;
-    int32 LastDetailed=-1;
+    int32 LastFurDetail=-1;
     FVector Home;
 };
 
@@ -101,6 +101,7 @@ private:
     void SmokeCheck(bool Passed, const FString& Name);
     void TickAdventureSmoke(float Delta);
     void TickGaitSmoke(float Delta);
+    void TickFurDetailSmoke(float Delta);
     void TickOutsideSmoke(float Delta);
     void TickLifeSmoke(float Delta);
     void TickAudioSmoke(float Delta);
