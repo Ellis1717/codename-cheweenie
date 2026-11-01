@@ -1,0 +1,11 @@
+{
+  "primary_skin_components": 1,
+  "boundary_edges": 0,
+  "nonmanifold_edges": 0,
+  "removed_subvoxel_tip_vertices": 12,
+  "primary_skin_vertices": 48420,
+  "reference_bones_unchanged": false,
+  "method": "Voxel union of torso/head/ears/tail; nearest-triangle interpolated normalized skin weights",
+  "reference_joint_names_and_hierarchy_unchanged": true,
+  "stance_lowering_cm": 4.2
+}

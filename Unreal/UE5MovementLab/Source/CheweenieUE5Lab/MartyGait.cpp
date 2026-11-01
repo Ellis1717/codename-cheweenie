@@ -11,12 +11,20 @@ void UMartyGait::BeginPlay()
 {
     Super::BeginPlay();
     Skin=GetOwner()->FindComponentByClass<UPoseableMeshComponent>();
-    if(!Skin || !Skin->GetSkinnedAsset()) return;
+    ResetContacts();
+}
+void UMartyGait::RefreshRig()
+{
+    if(!Skin || !Skin->GetSkinnedAsset()){Ready=false;return;}
+    if(BoundRig==Skin->GetSkinnedAsset()&&Ready)return;
+    Ready=false;Rest.Empty();Legs.Empty();
+    const auto& Ref=Skin->GetSkinnedAsset()->GetRefSkeleton();
+    auto Bind=[&](FName Name){int32 I=Ref.FindBoneIndex(Name);FTransform B=Ref.GetRefBonePose()[I];for(int32 P=Ref.GetParentIndex(I);P!=INDEX_NONE;P=Ref.GetParentIndex(P))B=B*Ref.GetRefBonePose()[P];return B;};
     const TCHAR* Required[]={TEXT("root"),TEXT("spine"),TEXT("head"),TEXT("tail"),TEXT("ear_l"),TEXT("ear_r"),TEXT("ear_tip_l"),TEXT("ear_tip_r")};
     for(const auto* Name:Required)
     {
         if(Skin->GetBoneIndex(Name)==INDEX_NONE) return;
-        Rest.Add(Name,Skin->GetBoneTransformByName(Name,EBoneSpaces::ComponentSpace));
+        Rest.Add(Name,Bind(Name));
     }
     for(int32 Index=0;Index<4;++Index)
     {
@@ -27,29 +35,30 @@ void UMartyGait::BeginPlay()
         {
             *Names[J]=FName(Prefix+Suffix[J]);
             if(Skin->GetBoneIndex(*Names[J])==INDEX_NONE) return;
-            Rest.Add(*Names[J],Skin->GetBoneTransformByName(*Names[J],EBoneSpaces::ComponentSpace));
+            Rest.Add(*Names[J],Bind(*Names[J]));
         }
         Leg.Hip=Rest[Leg.Upper].GetLocation();Leg.Knee=Rest[Leg.Lower].GetLocation();
         Leg.Ankle=Rest[Leg.Hock].GetLocation();Leg.Toe=Rest[Leg.Paw].GetLocation();Legs.Add(Leg);
     }
-    Ready=true;ResetContacts();
+    BoundRig=Skin->GetSkinnedAsset();Ready=true;
 }
 void UMartyGait::ResetContacts()
 {
+    RefreshRig();if(!Ready)return;
     LastPosition=GetOwner()->GetActorLocation();
     for(auto& Leg:Legs){Leg.Planted=false;Leg.Contact=Ground(Skin->GetComponentTransform().TransformPosition(Leg.Toe));Leg.LiftOff=Leg.Contact;}
 }
 FVector UMartyGait::MouthWorld() const
 {
     if(!Ready)return GetOwner()->GetActorTransform().TransformPosition(FVector(40,0,5));
-    const FVector Socket=Rest[TEXT("head")].InverseTransformPosition(FVector(40,0,33));
+    const FVector Socket=Rest[TEXT("head")].InverseTransformPosition(FVector(Rest[TEXT("head")].GetLocation().X+25,0,Rest[TEXT("spine")].GetLocation().Z+9));
     return Skin->GetBoneTransformByName(TEXT("head"),EBoneSpaces::WorldSpace).TransformPosition(Socket);
 }
 FVector UMartyGait::Ground(FVector Point) const
 {
     FHitResult Hit; FCollisionQueryParams Params(SCENE_QUERY_STAT(MartyPaw),false,GetOwner());
     if(GetWorld()->LineTraceSingleByChannel(Hit,Point+FVector(0,0,36),Point-FVector(0,0,70),ECC_Visibility,Params))
-        Point.Z=Hit.ImpactPoint.Z+2.4f;
+        Point.Z=Hit.ImpactPoint.Z+2.4f*FMath::Clamp(Rest[TEXT("spine")].GetLocation().Z/24.f,.6f,1.f);
     return Point;
 }
 FVector UMartyGait::SolveKnee(FVector Hip,FVector Foot,float Upper,float Lower,float Direction)
@@ -67,7 +76,7 @@ void UMartyGait::Aim(FName Bone,FVector Origin,FVector RestEnd,FVector End)
 }
 void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
-    Super::TickComponent(Delta,Type,Function);if(!Ready) return;
+    Super::TickComponent(Delta,Type,Function);if(Skin&&Skin->GetSkinnedAsset()!=BoundRig)ResetContacts();if(!Ready) return;
     auto* Pawn=Cast<AMartyCharacter>(GetOwner());if(!Pawn)return;
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>();
     const bool Playing=!Mode || !Mode->Adventure || Mode->Adventure->AllowsMovement();
@@ -78,7 +87,8 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     SmoothedSpeed=FMath::FInterpTo(SmoothedSpeed,Pawn->GetVelocity().Size2D(),Delta,12);
     Trot=FMath::FInterpTo(Trot,SmoothedSpeed>120?1.f:0.f,Delta,4);
     const float Run=FMath::Clamp((SmoothedSpeed-165)/60,0.f,1.f);
-    const float Stride=FMath::Lerp(FMath::Lerp(WalkStride,TrotStride,Trot),56.f,Run);
+    const float StanceScale=FMath::Clamp(Rest[TEXT("spine")].GetLocation().Z/24.f,.6f,1.f);
+    const float Stride=StanceScale*FMath::Lerp(FMath::Lerp(WalkStride,TrotStride,Trot),56.f,Run);
     const bool Air=Pawn->GetCharacterMovement()->IsFalling();
     const bool Digging=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Digging;
     const bool Eating=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Eating;
@@ -90,11 +100,11 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     const bool Excited=Pawn->Life&&Pawn->Life->Mood()==TEXT("Excited");
     Cycle=FMath::Fmod(Cycle+(Air?0:Distance)/FMath::Max(Stride,1.f),1.f);
     const float Moving=FMath::Clamp(SmoothedSpeed/25.f,0.f,1.f);
-    RestLowering=FMath::FInterpTo(RestLowering,Lying?18.f:Rolling?9.f:Shaking?5.f:Watching?5.f:Eating?6.f:Tired?1.f:0.f,Delta,8);
+    RestLowering=FMath::FInterpTo(RestLowering,StanceScale*(Lying?18.f:Rolling?9.f:Shaking?5.f:Watching?5.f:Eating?6.f:Tired?1.f:0.f),Delta,8);
     const float Bob=FMath::Sin(Cycle*UE_TWO_PI*2)*(.45f+Run*.5f)*Moving+FMath::Sin(Time*2.1f)*.16f*(1-Moving)-RestLowering;
     Skin->SetBoneTransformByName(TEXT("root"),Rest[TEXT("root")],EBoneSpaces::ComponentSpace);
     const FQuat Lean=Pawn->Life&&!Rolling&&!Shaking?FQuat(FVector(1,0,0),FMath::DegreesToRadians(Pawn->Life->BodyRoll))*FQuat(FVector(0,1,0),FMath::DegreesToRadians(Pawn->Life->BodyPitch)):FQuat::Identity;
-    auto LeanPoint=[&](FVector Point){const FVector Pivot(0,0,24);return Pivot+Lean.RotateVector(Point-Pivot);};
+    auto LeanPoint=[&](FVector Point){const FVector Pivot(0,0,Rest[TEXT("spine")].GetLocation().Z);return Pivot+Lean.RotateVector(Point-Pivot);};
     FTransform Spine=Rest[TEXT("spine")];Spine.SetLocation(LeanPoint(Spine.GetLocation()+FVector(0,0,Bob)));Spine.SetRotation(Lean*Spine.GetRotation());Skin->SetBoneTransformByName(TEXT("spine"),Spine,EBoneSpaces::ComponentSpace);
     FTransform Head=Rest[TEXT("head")];Head.SetLocation(LeanPoint(Head.GetLocation()+FVector(0,0,Bob)));
     Head.SetRotation(Lean*FQuat(FVector(0,1,0),FMath::Sin(Cycle*UE_TWO_PI*2)*.025f*Moving+(Eating?.65f:Digging?.35f:Tired?.09f:0))*Head.GetRotation());
@@ -137,7 +147,7 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
         {
             if(Leg.Planted){Leg.LiftOff=Leg.Contact;Leg.Planted=false;}
             const float T=(Phase-Stance)/(1-Stance);const float Smooth=T*T*(3-2*T);
-            Leg.Contact=FMath::Lerp(Leg.LiftOff,Target,Smooth)+FVector(0,0,FMath::Sin(T*UE_PI)*PawLift*Moving);
+            Leg.Contact=FMath::Lerp(Leg.LiftOff,Target,Smooth)+FVector(0,0,FMath::Sin(T*UE_PI)*PawLift*Moving*StanceScale);
         }
         FVector Toe=World.InverseTransformPosition(Leg.Contact);
         if(!Rolling&&!Shaking)Toe.X+=(I<2?12:3)*FMath::Clamp((RestLowering-9)/9,0.f,1.f);
@@ -157,7 +167,7 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     if(Rolling)
     {
         const float T=Pawn->Life->ActionProgress();const float Smooth=T*T*(3-2*T);
-        const FQuat Roll(FVector(1,0,0),-Smooth*UE_TWO_PI);const FVector Pivot(0,0,15);
+        const FQuat Roll(FVector(1,0,0),-Smooth*UE_TWO_PI);const FVector Pivot(0,0,15*StanceScale);
         TArray<FTransform> Pose;for(int32 I=0;I<Skin->GetNumBones();++I)Pose.Add(Skin->GetBoneTransformByName(Skin->GetBoneName(I),EBoneSpaces::ComponentSpace));
         for(int32 I=0;I<Pose.Num();++I){FTransform B=Pose[I];B.SetLocation(Pivot+Roll.RotateVector(B.GetLocation()-Pivot));B.SetRotation(Roll*B.GetRotation());Skin->SetBoneTransformByName(Skin->GetBoneName(I),B,EBoneSpaces::ComponentSpace);}
     }
