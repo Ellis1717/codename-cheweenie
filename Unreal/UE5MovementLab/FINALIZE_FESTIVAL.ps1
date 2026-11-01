@@ -19,8 +19,8 @@ foreach($name in @('Gait/MartyEarRootMeal.png','Gait/MartyTailRootSway.png','Gai
     $bitmap=[Drawing.Bitmap]::new($file)
     try{if($bitmap.Width -ne 1280 -or $bitmap.Height -ne 720){throw ('Expected 1280x720 capture: '+$name)}}finally{$bitmap.Dispose()}
 }
-$bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used')
-if($bad.Count){throw 'Final runtime logs contain errors or material fallbacks'}
+$bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used|\[VSM\].*overflow')
+if($bad.Count){throw 'Final runtime logs contain errors, material fallbacks or VSM overflows'}
 $files=@($payload|ForEach-Object {@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
 @{version='Festival-0.11.2';checks=$checks;rendered=$true;physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-festival.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PLAY_FESTIVAL.ps1') -Destination (Join-Path $PackageRoot 'PLAY_FESTIVAL.ps1')
