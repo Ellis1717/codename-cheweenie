@@ -26,4 +26,6 @@ Run `BUILD.ps1`, `TEST_MODE_HUB.ps1` and `TEST_MODE_HUB.ps1 -Lan`; then `PACKAGE
 
 Generate the local catalog with `BUILD_ARCHIVE_INDEX.ps1 -PackageRoot <package> -ArchiveRoots <retained roots>`. For an unattended archive round trip, use a catalog fixture containing a known compatible Unreal release and run `PLAY_GAME.ps1 -PackageRoot <package> -ArchiveAcceptance -TestOutput <directory>`. Test arguments use isolated saves. The historical executable must pass its real 16-check movement suite before the current game reopens and checks its own retained checkpoint and fur setting.
 
-Actual release results and limitations are recorded in README and the linked evidence after verification.
+Final verification passed 527 assertion executions: 489 main package, four private-map, two current return, 16 historical movement and 16 Editor movement checks. Forty-three current payload hashes and all 2,705 catalogued files in 33 archives matched; eight final images were reviewed and final runtime error/material/VSM matches were zero. The primary desktop shortcut is installed, with 13 original shortcuts preserved in Cheweenie shortcuts before 0.12.0. Physical controllers, separate PCs, foreground interaction and broad performance remain unverified. See [actual evidence](evidence/ue5-unified-game-build.json).
+
+To recheck archived payloads without launching their games, run `PLAY_GAME.ps1 -PackageRoot <package> -VerifyArchives -TestOutput <directory>`. This uses the same verifier as an archive launch and records integrity results separately from gameplay acceptance.
