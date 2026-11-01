@@ -9,6 +9,7 @@ $info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
 $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
 while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Marty import timed out'}}
 if($process.ExitCode){throw ('Marty import failed: '+$process.ExitCode)}
+$bad=@(Select-String -LiteralPath (Join-Path $PSScriptRoot 'Saved/ImportMartySoftCoat.log') -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used');if($bad.Count){throw 'Soft-coat import or shader errors; inspect ImportMartySoftCoat.log'}
 $report=Join-Path $PSScriptRoot 'Saved\marty-softcoat-import.json'
 if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Marty import report missing/stale; inspect Saved/ImportMartySoftCoat.log'}
 $result=Get-Content $report -Raw|ConvertFrom-Json

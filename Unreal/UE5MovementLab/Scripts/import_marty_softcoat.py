@@ -9,7 +9,7 @@ base=base.replace("'marty-connected-import.json'","'marty-softcoat-mesh-import.j
 base=base.replace('options.skeletal_mesh_import_data.import_uniform_scale=1',
     'options.skeletal_mesh_import_data.import_uniform_scale=1\n    options.skeletal_mesh_import_data.normal_import_method=unreal.FBXNormalImportMethod.FBXNIM_IMPORT_NORMALS')
 exec(compile(base,str(script),'exec'),globals())
-FOLDER='/Game/Adventure/MartySoftCoat/Fibres'
+FOLDER='/Game/Adventure/MartySoftCoat/DirectionalFibres'
 EDIT=unreal.MaterialEditingLibrary
 grain=LIB.load_asset('/Game/Adventure/MartyRealism/CoatGrain');assert grain
 normalmap=LIB.load_asset('/Game/Adventure/MartyRealism/CoatNormal');assert normalmap
@@ -17,7 +17,7 @@ normalmap=LIB.load_asset('/Game/Adventure/MartyRealism/CoatNormal');assert norma
 # Reuse the proven UV palette decoder; FBX's green-channel flip is intentional.
 existing=(script.parent/'import_marty_realcoat.py').read_text()
 material_source=existing[existing.index('\ndef material(')+1:existing.index('\nspec=')]
-material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v2')
+material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v3')
 # Keep the first material pass retained; tuned fibres use their own subfolder.
 # CustomData0 is hidden from UE5.8's Python enum. MakeMaterialAttributes exposes
 # the same native input as ClearCoat; on the cloth BRDF this is the fuzz weight.
@@ -53,7 +53,42 @@ material_source=material_source.replace(old,"""    if fur:
         fuzz=node(unreal.MaterialExpressionMultiply);wire(base,'',fuzz,'A');wire(scalar(.28),'',fuzz,'B')
         plug(fuzz,'',unreal.MaterialProperty.MP_SUBSURFACE_COLOR)
         wire(scalar(.35 if name=='Marty_FineFur' else .18),'',attributes,'ClearCoat')
+        if name!='Marty_FineFur':
+            # Skin UVs travel with the rig. Subpixel fading bounds fine-fibre aliasing.
+            uv=node(unreal.MaterialExpressionTextureCoordinate)
+            pattern=node(unreal.MaterialExpressionCustom)
+            custom_input=unreal.CustomInput();custom_input.set_editor_property('input_name','UV');pattern.set_editor_property('inputs',[custom_input])
+            pattern.set_editor_property('output_type',unreal.CustomMaterialOutputType.CMOT_FLOAT4)
+            pattern.set_editor_property('description','Combed short coat: normal RGB, strand tone A')
+            pattern.set_editor_property('code',FIBRE_CODE);wire(uv,'',pattern,'UV')
+            tone=node(unreal.MaterialExpressionComponentMask)
+            for channel in ('r','g','b'):tone.set_editor_property(channel,False)
+            tone.set_editor_property('a',True);wire(pattern,'',tone,'')
+            tinted=node(unreal.MaterialExpressionMultiply);wire(base,'',tinted,'A');wire(tone,'',tinted,'B');base=tinted
+            direction=node(unreal.MaterialExpressionComponentMask)
+            for channel in ('r','g','b'):direction.set_editor_property(channel,True)
+            direction.set_editor_property('a',False);wire(pattern,'',direction,'')
+            detail=node(unreal.MaterialExpressionLinearInterpolate)
+            wire(direction,'',detail,'A');wire(normal,'',detail,'B');wire(scalar(.15),'',detail,'Alpha')
+            unit=node(unreal.MaterialExpressionNormalize);wire(detail,'',unit,'');plug(unit,'',unreal.MaterialProperty.MP_NORMAL)
     plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)""")
+FIBRE_CODE=r'''
+float2 grid=UV*float2(260.0,720.0);
+float row=floor(grid.y);
+float seed=frac(sin(row*127.1+17.17)*43758.5453);
+float x=frac(grid.x+seed);
+float y=frac(grid.y)-0.5-0.10*sin(x*6.283185+seed*9.0);
+float width=max(0.17,min(0.42,fwidth(grid.y)*0.55));
+float bell=sin(x*3.141593);bell*=bell;
+float strand=exp2(-2.5*y*y/(width*width))*bell;
+float dy=-3.4657*y/(width*width)*strand;
+float dx=sin(x*6.283185)*strand;
+float variation=frac(sin(floor(grid.x+seed)*39.34+row*17.73)*12414.0);
+float fade=saturate(1.25-max(fwidth(grid.x),fwidth(grid.y))*0.45);
+float3 n=normalize(float3(0.025*dx*fade,0.035*dy*fade,1.0));
+float tone=lerp(1.0,0.93+0.23*strand+0.025*(variation-0.5),fade);
+return float4(n,tone);
+'''
 exec(compile(material_source,str(script),'exec'),globals())
 spec={'Marty_Coat':((.58,.31,.105),.74),'Marty_Cream':((.74,.59,.37),.78),
       'Marty_Ears':((.30,.125,.042),.76),'Marty_FineFur':((.58,.31,.105),.72)}
