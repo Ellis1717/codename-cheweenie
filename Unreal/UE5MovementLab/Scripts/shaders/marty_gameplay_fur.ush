@@ -1,0 +1,36 @@
+// UV-locked short hairs plus broader overlapping locks for gameplay distances.
+// Every band fades as its cells become subpixel; no camera-distance switch.
+float2 dxuv = ddx(UV), dyuv = ddy(UV);
+float2 slope = 0.0;
+float tone = 1.0;
+[unroll] for (int layer = 0; layer < 3; ++layer)
+{
+    float2 scale = layer == 0 ? float2(180.0,720.0) :
+                   layer == 1 ? float2(46.0,156.0) : float2(10.0,28.0);
+    float2 grid = UV * scale + float2(layer*13.31,layer*7.73);
+    float row = floor(grid.y);
+    float seed = frac(sin(row*127.1+layer*23.7)*43758.5453);
+    float col = floor(grid.x+seed);
+    float cell = frac(sin(row*73.1+col*127.7+layer*39.3)*41358.5453);
+    float x = frac(grid.x+seed);
+    float y = frac(grid.y)-0.5-0.65*(cell-0.5)
+              -(cell-0.5)*0.5*(x-0.5)-0.035*sin(x*6.283185+cell*9.0);
+    float2 footprint = abs(dxuv*scale)+abs(dyuv*scale);
+    float coverage = max(footprint.x,footprint.y);
+    float fade = 1.0-smoothstep(0.35,1.15,coverage);
+    // Broader locks carry the coat at small screen sizes, with restrained close-up weight.
+    if (layer == 2) fade *= lerp(0.4,1.0,smoothstep(0.15,0.45,coverage));
+    float width = max(0.10,min(0.28,footprint.y*0.4));
+    // Short tapered marks with random centres, lengths and lean avoid contour rows.
+    float centre = 0.5+0.12*sin(cell*41.7);
+    float halfLength = 0.26+0.12*cell;
+    float taper = pow(saturate(1.0-abs(x-centre)/halfLength),0.6);
+    float strand = exp2(-2.5*y*y/(width*width))*taper;
+    // Remove approximate mean ridge coverage to limit palette changes on fading.
+    float contrast = layer == 0 ? 0.14 : layer == 1 ? 0.18 : 0.22;
+    tone += contrast*(strand-0.08)*fade;
+    float strength = layer == 0 ? 0.018 : layer == 1 ? 0.016 : 0.014;
+    slope += float2(0.2*sin(x*6.283185)*strand,
+                   -3.4657*y/(width*width)*strand)*strength*fade;
+}
+return float4(normalize(float3(slope,1.0)),clamp(tone,0.80,1.32));

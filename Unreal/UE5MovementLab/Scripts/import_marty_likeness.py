@@ -1,5 +1,5 @@
 """Import the photo-guided body with its own reference skeleton and face materials."""
-import pathlib,json
+import pathlib,json,hashlib
 script=pathlib.Path(__file__).resolve()
 base=(script.parent/'import_marty_connected.py').read_text()
 old="[('MartyConnected','Marty_CoverRig','Marty'),('MartyConnectedRealism','Marty_RealCoat','MartyRealism')]"
@@ -28,7 +28,11 @@ slots=pet.get_editor_property('materials')
 for i,slot in enumerate(slots):
     name=str(slot.material_slot_name)
     if name in ('Marty_Coat','Marty_Cream','Marty_Ears','Marty_FineFur'):
-        slot.material_interface=LIB.load_asset('/Game/Adventure/MartySoftCoat/DirectionalFibres/'+name);assert slot.material_interface
+        shader=(script.parent/'shaders'/'marty_gameplay_fur.ush').read_text()
+        revision='gameplay-fur-'+hashlib.sha256(shader.encode()).hexdigest()[:12]
+        path='/Game/Adventure/MartyPhotoReference/GameplayFibres/'+revision+'/'+name
+        if not LIB.does_asset_exist(path):path='/Game/Adventure/MartySoftCoat/DirectionalFibres/'+name
+        slot.material_interface=LIB.load_asset(path);assert slot.material_interface
     elif name=='Marty_Nose':slot.material_interface=face_material(name,(.065,.035,.030),.44,.35)
     elif name=='Marty_Iris':slot.material_interface=face_material(name,(.028,.018,.010),.24,.5)
     slots[i]=slot
