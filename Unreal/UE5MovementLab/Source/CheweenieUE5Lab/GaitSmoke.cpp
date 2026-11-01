@@ -18,6 +18,28 @@
 #include "Misc/CommandLine.h"
 #include "Misc/App.h"
 #include "UnrealClient.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
+
+static FTransform ReferenceBone(UPoseableMeshComponent* Skin,FName Name)
+{
+    const auto& Ref=Skin->GetSkinnedAsset()->GetRefSkeleton();const int32 I=Ref.FindBoneIndex(Name);
+    FTransform Bind=Ref.GetRefBonePose()[I];
+    for(int32 P=Ref.GetParentIndex(I);P!=INDEX_NONE;P=Ref.GetParentIndex(P))Bind=Bind*Ref.GetRefBonePose()[P];
+    return Bind;
+}
+bool MartyRootsPinned(const AMartyCharacter* Pawn)
+{
+    if(!Pawn||!Pawn->Skin||!Pawn->Skin->GetSkinnedAsset())return false;auto* Skin=Pawn->Skin.Get();
+    for(const FName Name:{FName(TEXT("ear_l")),FName(TEXT("ear_r")),FName(TEXT("ear_tip_l")),FName(TEXT("ear_tip_r")),FName(TEXT("tail"))})
+    {
+        const FName Parent=Name==TEXT("tail")?TEXT("spine"):Name==TEXT("ear_tip_l")?TEXT("ear_l"):Name==TEXT("ear_tip_r")?TEXT("ear_r"):TEXT("head");
+        if(Skin->GetBoneIndex(Name)==INDEX_NONE||Skin->GetBoneIndex(Parent)==INDEX_NONE)return false;
+        const FVector Expected=Skin->GetBoneTransformByName(Parent,EBoneSpaces::ComponentSpace).TransformPosition(ReferenceBone(Skin,Parent).InverseTransformPosition(ReferenceBone(Skin,Name).GetLocation()));
+        if(FVector::Dist(Expected,Skin->GetBoneLocationByName(Name,EBoneSpaces::ComponentSpace))>.025f)return false;
+    }
+    return true;
+}
 
 void AMartyPlayMode::TickGaitSmoke(float Delta)
 {
@@ -31,6 +53,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     auto Next=[this](){++SmokeStage;SmokeTime=0;};
     auto Shot=[&](const TCHAR* Name){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/Name,true,false);};
     auto Bone=[&](const TCHAR* Name){return Skin->GetBoneLocationByName(Name,EBoneSpaces::ComponentSpace);};
+    auto Close=[&](FName Name,FVector Offset){const FVector Focus=Skin->GetBoneLocationByName(Name,EBoneSpaces::WorldSpace);auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+Skin->GetComponentTransform().TransformVectorNoScale(Offset),FRotator::ZeroRotator);Camera->SetActorRotation((Focus-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=40;PC->SetViewTarget(Camera);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;};
     switch(SmokeStage)
     {
     case 0:
@@ -38,6 +61,8 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         {
             SmokeCheck(Gait&&Gait->Ready&&Skin&&Skin->GetSkinnedAsset(),TEXT("Skin-weighted Marty and 24 anatomical joints load"));
             SmokeCheck(Skin->GetSkinnedAsset()->GetName()==TEXT("Marty_RealCoat"),TEXT("Detailed short-coat model loads as the playable character"));
+            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnectedRealism")),TEXT("Connected ear-tail skin is the active detailed model"));
+            SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear, ear-tip and tail roots match their reference offsets on animated parents"));
             bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur"))FineFur=true;
             SmokeCheck(FineFur,TEXT("Skin-weighted fine fur material remains assigned in the real game"));
             SmokeCheck(Bone(TEXT("front_l_upper")).X>Bone(TEXT("hind_l_upper")).X+20,TEXT("Imported centimetre rig faces positive X"));
@@ -62,6 +87,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
             SmokeCheck(Gait->Travel>30&&Gait->Cycle!=SmokeYaw,TEXT("Keyboard traversal advances gait by measured travel"));
             SmokeCheck(FVector::Dist(SmokePosition,Bone(TEXT("front_l_lower")))>.5f&&Gait->MaxJointBend>5&&Gait->MaxJointBend<165,TEXT("Skinned elbow and knee actually bend while walking"));
             SmokeCheck(Gait->PlantedPaws>=1&&Gait->PlantedPaws<=4,TEXT("Locomotion retains supporting stance paws"));
+            SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear and tail roots stay pinned while walking"));
             SmokeCheck(!Skin->GetBoneRotationByName(TEXT("ear_tip_l"),EBoneSpaces::ComponentSpace).ContainsNaN()&&Skin->GetBoneIndex(TEXT("ear_tip_l"))!=INDEX_NONE,TEXT("Flexible ear tips are independently skinned and posed"));
             SmokeCheck(FMath::Abs(FRotator::NormalizeAxis(Skin->GetBoneRotationByName(TEXT("ear_tip_l"),EBoneSpaces::ComponentSpace).Roll-SmokePitch))>1,TEXT("Ear tips visibly change angle during actual travel"));
             Shot(TEXT("MartyWalk.png"));Key(EKeys::W,false);SmokeMoving=false;Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();
@@ -73,6 +99,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
             UE_LOG(LogTemp,Display,TEXT("GAIT_HURRY speed=%.2f requested=%d max=%.2f pos=%s"),Pawn->GetVelocity().Size2D(),Pawn->Life->SprintRequested,Pawn->GetCharacterMovement()->MaxWalkSpeed,*Pawn->GetActorLocation().ToString());
             SmokeCheck(Pawn->GetVelocity().Size2D()>130,TEXT("Analog controller hurry drives the trot at higher speed"));
             SmokeCheck(Gait->MaxJointBend>0&&FMath::IsFinite(Gait->MaxJointBend),TEXT("Trotting IK remains finite"));
+            SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear and tail roots stay pinned while trotting"));
             Shot(TEXT("MartyTrot.png"));Axis(EKeys::Gamepad_LeftY,0);Key(EKeys::Gamepad_FaceButton_Bottom,false);Key(EKeys::Gamepad_Special_Right,true);Next();
         }break;
     case 4:
@@ -90,9 +117,42 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         {
             UE_LOG(LogTemp,Display,TEXT("GAIT_IDLE speed=%f planted=%d cycle=%f"),Pawn->GetVelocity().Size2D(),Gait->PlantedPaws,Gait->Cycle);
             SmokeCheck(Gait->Ready&&!Bone(TEXT("front_l_paw")).ContainsNaN()&&Gait->PlantedPaws==4,TEXT("Return-home and stopping recover a stable four-paw idle"));
+            SmokeCheck(MartyRootsPinned(Pawn),TEXT("Home recovery retains attached ear and tail roots"));
             Shot(TEXT("MartyIdle.png"));Next();
         }break;
     case 8:
+        if(SmokeTime<.4f)break;Pawn->TeleportTo(Pawn->Life->Bowl+FVector(0,-70,28),FRotator::ZeroRotator);Pawn->Life->Interact();Next();break;
+    case 9:
+        if(SmokeTime<.5f)break;SmokeCheck(Pawn->Life->Activity==EDogActivity::Eating&&Skin->GetBoneTransformByName(TEXT("head"),EBoneSpaces::ComponentSpace).GetRotation().AngularDistance(ReferenceBone(Skin,TEXT("head")).GetRotation())>.4f&&MartyRootsPinned(Pawn),TEXT("Ear roots follow the visibly tilted head during a kitchen meal"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
+    case 10:
+        if(SmokeTime<.4f)break;Shot(TEXT("MartyEarRootMeal.png"));Next();break;
+    case 11:
+        if(SmokeTime<2)break;Pawn->ReturnHome();Adventure->Progress->BodyControls=true;Pawn->Life->SetBodyStick(FVector2D(.5f,.5f));Next();break;
+    case 12:
+        if(SmokeTime<.7f)break;SmokeCheck((FMath::Abs(Pawn->Life->BodyRoll)>1||FMath::Abs(Pawn->Life->BodyPitch)>1)&&MartyRootsPinned(Pawn),TEXT("Ear and tail roots follow body sway without rest-position drift"));Pawn->Life->ClearBodyStick();Adventure->Progress->BodyControls=false;Close(TEXT("tail"),FVector(-45,-65,20));Next();break;
+    case 13:
+        if(SmokeTime<.4f)break;Shot(TEXT("MartyTailRootSway.png"));Next();break;
+    case 14:
+        if(SmokeTime<.4f)break;Pawn->Life->LieDown();Next();break;
+    case 15:
+        if(SmokeTime<.7f)break;SmokeCheck(Pawn->Life->Activity==EDogActivity::Lying&&MartyRootsPinned(Pawn),TEXT("Root attachments remain pinned when lying down"));Pawn->Life->StandUp();Next();break;
+    case 16:
+        if(SmokeTime<.5f)break;Pawn->Life->RollOver();Next();break;
+    case 17:
+        if(SmokeTime<.8f)break;SmokeCheck(Pawn->Life->Activity==EDogActivity::Rolling&&MartyRootsPinned(Pawn),TEXT("Root attachments remain pinned during a full-body roll"));Next();break;
+    case 18:
+        if(SmokeTime<2)break;SmokeCheck(Pawn->Life->Activity==EDogActivity::Idle&&MartyRootsPinned(Pawn),TEXT("Root attachments recover after rolling"));Pawn->ReturnHome();Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
+    case 19:
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnected/"))&&MartyRootsPinned(Pawn),TEXT("Smooth coat also uses connected skin and pinned roots"));Close(TEXT("tail"),FVector(-45,-65,20));Next();break;
+    case 20:
+        if(SmokeTime<.4f)break;Shot(TEXT("MartyTailRootSmooth.png"));Next();break;
+    case 21:
+        if(SmokeTime<.4f)break;Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
+    case 22:
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnectedRealism"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
+    case 23:
+        if(SmokeTime<.4f)break;Shot(TEXT("MartyEarRootIdle.png"));Next();break;
+    case 24:
         if(SmokeTime>2)
         {
             auto Report=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(auto& S:In)Out.Add(MakeShared<FJsonValueString>(S));return Out;};

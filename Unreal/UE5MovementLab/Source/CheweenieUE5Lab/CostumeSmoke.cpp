@@ -23,6 +23,8 @@
 #include "Misc/CommandLine.h"
 #include "UnrealClient.h"
 
+bool MartyRootsPinned(const AMartyCharacter* Pawn);
+
 // Check visible garment geometry against anatomy, independently of attachment math.
 bool CostumeAlignedWithMarty(const AMartyCharacter* Pawn)
 {
@@ -115,7 +117,7 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
     case 25:
         if(SmokeTime<.4f)break;PC->SetViewTarget(P);P->Life->LieDown();Next();break;
     case 26:
-        if(SmokeTime<1)break;SmokeCheck(P->Life->Activity==EDogActivity::Lying&&CostumeAlignedWithMarty(P),TEXT("Hot dog stays lengthwise and fitted when Marty lies down"));BodyView(false);Next();break;
+        if(SmokeTime<1)break;SmokeCheck(P->Life->Activity==EDogActivity::Lying&&CostumeAlignedWithMarty(P),TEXT("Hot dog stays lengthwise and fitted when Marty lies down"));SmokeCheck(MartyRootsPinned(P),TEXT("Ear and tail roots stay pinned with the costume while lying down"));BodyView(false);Next();break;
     case 27:
         if(SmokeTime<1)break;Shot(TEXT("HalloweenMartyLying.png"));SmokeStage=33;SmokeTime=0;break;
     case 33:
@@ -123,7 +125,7 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
     case 28:
         if(SmokeTime<.4f)break;SmokeCheck(CostumeAlignedWithMarty(P),TEXT("Hot dog returns to its fitted standing pose after getting up"));P->Life->RollOver();BodyView(false);Next();break;
     case 29:
-        if(SmokeTime<.8f)break;SmokeCheck(P->Life->Activity==EDogActivity::Rolling&&CostumeAlignedWithMarty(P),TEXT("Hot dog follows the rolling torso without rotating across its back"));Shot(TEXT("HalloweenMartyRolling.png"));Next();break;
+        if(SmokeTime<.8f)break;SmokeCheck(P->Life->Activity==EDogActivity::Rolling&&CostumeAlignedWithMarty(P),TEXT("Hot dog follows the rolling torso without rotating across its back"));SmokeCheck(MartyRootsPinned(P),TEXT("Ear and tail roots stay pinned with the costume while rolling"));Shot(TEXT("HalloweenMartyRolling.png"));Next();break;
     case 30:
         if(SmokeTime<2)break;SmokeCheck(P->Life->Activity==EDogActivity::Idle&&CostumeAlignedWithMarty(P),TEXT("Hot dog recovers its fit after the roll"));S->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
     case 31:

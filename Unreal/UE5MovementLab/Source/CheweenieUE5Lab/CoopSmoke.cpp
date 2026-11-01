@@ -16,6 +16,7 @@
 #include "UnrealClient.h"
 
 bool CostumeAlignedWithMarty(const AMartyCharacter* Pawn);
+bool MartyRootsPinned(const AMartyCharacter* Pawn);
 
 void ACozyCoopController::TickAcceptance(float Delta)
 {
@@ -54,7 +55,7 @@ void ACozyCoopController::TickAcceptance(float Delta)
     case 1:
         Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,false);if(StageTime<1)break;
         Check(P->WearingCostume&&Other->WearingCostume&&P->Costume->VisiblePieces()>0&&Other->Costume->VisiblePieces()>0,TEXT("Keyboard and gamepad costume choices reach both peers"));
-        Check(CostumeAlignedWithMarty(Host?P:Other),TEXT("Marty's hot dog is lengthwise on both the owner and remote peer"));
+        Check(CostumeAlignedWithMarty(Host?P:Other),TEXT("Marty's hot dog is lengthwise on both the owner and remote peer"));Check(MartyRootsPinned(Host?P:Other),TEXT("Marty ear and tail roots stay pinned on owner and remote peer"));
         Key(EKeys::E,true);Next();break;
     case 2:
         Key(EKeys::E,false);if(StageTime<1)break;
