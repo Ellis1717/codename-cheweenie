@@ -79,6 +79,8 @@ private:
     void DropToy();
     void RecenterCoop();
     void ToggleMenu();
+    void HubConfirm();void HubBack();void HubUp();void HubDown();void HubLeft();void HubRight();
+    bool BlockHurryAfterMenu=false;
     void ToggleCostume();
     UPROPERTY() TObjectPtr<UInputMappingContext> CoopMapping;
     UPROPERTY() TArray<TObjectPtr<UInputAction>> CoopActions;
@@ -115,6 +117,7 @@ public:
     UFUNCTION(Client,Reliable) void Notice(const FString& Text);
     FString Message;
     bool MenuOpen=false;
+    void SetHubMenu(bool Open);
 private:
     void TickAcceptance(float Delta);
     void TickRatchetAcceptance(float Delta);
@@ -132,4 +135,6 @@ class ACozyCoopHUD : public AHUD
     GENERATED_BODY()
 public:
     virtual void DrawHUD() override;
+    virtual void NotifyHitBoxClick(FName Name) override;
+    void DrawHub();
 };

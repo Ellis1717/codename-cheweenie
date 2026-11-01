@@ -1,4 +1,6 @@
 #include "CozyAdventure.h"
+#include "CozyModeHub.h"
+#include "Engine/GameInstance.h"
 #include "CozyNavigation.h"
 #include "CatCompanions.h"
 #include "MartyCharacter.h"
@@ -42,3 +44,7 @@ FString CozyFeatureLabel(ECozyFeature Id)
     static const TCHAR* Labels[]={TEXT("Map display"),TEXT("Compass / player heading"),TEXT("Destination guidance"),TEXT("Street route guide"),TEXT("World objective labels"),TEXT("Current location"),TEXT("Energy / tiredness"),TEXT("Health / damage"),TEXT("Backpack storage"),TEXT("Dog tricks"),TEXT("Jump / sofa hop"),TEXT("Dig / bury / recover"),TEXT("Pick up / carry toys"),TEXT("Kitchen meals"),TEXT("Watch TV"),TEXT("Barking"),TEXT("Jog / run / hurry"),TEXT("Mouse / stick camera orbit"),TEXT("Camera presets"),TEXT("Action camera views"),TEXT("Control hints"),TEXT("Detailed Marty coat"),TEXT("Music"),TEXT("Sound effects")};
     if(Id==ECozyFeature::Companions)return TEXT("Companion behaviour");return Labels[uint8(Id)];
 }
+
+void UCozyAdventure::OpenModes(){if(!Progress)return;if(Screen!=ECozyScreen::Modes)ModesReturn=Screen;GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->Open();SetScreen(ECozyScreen::Modes);}
+void UCozyAdventure::CloseModes(){SetScreen(ModesReturn==ECozyScreen::Playing?ECozyScreen::Playing:ModesReturn==ECozyScreen::Pause?ECozyScreen::Pause:ECozyScreen::Title);}
+void UCozyAdventure::OpenControlsFromModes(){ReturnScreen=ECozyScreen::Modes;SetScreen(ECozyScreen::Controls);}

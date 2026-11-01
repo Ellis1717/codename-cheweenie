@@ -1,4 +1,6 @@
 #include "CozyCoop.h"
+#include "CozyModeHub.h"
+#include "Engine/GameInstance.h"
 #include "CozyAdventure.h"
 #include "HalloweenCostume.h"
 #include "MartyGait.h"
@@ -30,7 +32,7 @@
 static FString PetLabel(int32 Id){return Id==1?TEXT("Lakitu"):Id==2?TEXT("Rio"):Id==0?TEXT("Marty"):Id==3?TEXT("Ratchet"):TEXT("Choosing pet");}
 static void TellPet(ACozyCoopPet* Pet,const FString& Text){if(auto* PC=Cast<ACozyCoopController>(Pet->GetController()))PC->Notice(Text);}
 
-static bool RatchetEarned(const UObject* Context){const FString Slot=(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetLan")))?TEXT("CheweenieRatchetAcceptance"):FParse::Param(FCommandLine::Get(),TEXT("CheweenieCoopSmoke"))?TEXT("CheweenieCoopAcceptance"):TEXT("CheweenieAdventureV1");const auto* Save=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(Slot,0));return Save&&Save->Version==1&&(Save->RatchetUnlocked||Save->Complete);}
+static bool RatchetEarned(const UObject* Context){const FString Slot=(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))?CozyHubProfileSlot():(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetLan")))?TEXT("CheweenieRatchetAcceptance"):FParse::Param(FCommandLine::Get(),TEXT("CheweenieCoopSmoke"))?TEXT("CheweenieCoopAcceptance"):TEXT("CheweenieAdventureV1");const auto* Save=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(Slot,0));return Save&&Save->Version==1&&(Save->RatchetUnlocked||Save->Complete);}
 void ACozyCoopState::BeginPlay(){Super::BeginPlay();if(HasAuthority())RatchetUnlocked=RatchetEarned(this);PrepareCheweenieRoom(GetWorld(),true);}
 void ACozyCoopState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const{Super::GetLifetimeReplicatedProps(OutLifetimeProps);DOREPLIFETIME(ACozyCoopState,RatchetUnlocked);}
 ACozyCoopMode::ACozyCoopMode()
@@ -115,7 +117,7 @@ void ACozyCoopPet::EndPlay(const EEndPlayReason::Type Reason)
     Super::EndPlay(Reason);
 }
 void ACozyCoopPet::ServerHurry_Implementation(bool Active){GetCharacterMovement()->MaxWalkSpeed=Active?230:100;}
-void ACozyCoopPet::ReturnHome(){if(HasAuthority())ServerHome_Implementation();else if(IsLocallyControlled())ServerHome();}
+void ACozyCoopPet::ReturnHome(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(1);return;}if(HasAuthority())ServerHome_Implementation();else if(IsLocallyControlled())ServerHome();}
 void ACozyCoopPet::ServerHome_Implementation()
 {
     ServerToy(true);GetCharacterMovement()->StopMovementImmediately();const int32 Slot=PetId==3?0:FMath::Max(0,PetId);TeleportTo(FVector(-240+Slot*120,-200+Slot*80,60),FRotator::ZeroRotator);ForceNetUpdate();
@@ -144,18 +146,18 @@ void ACozyCoopPet::MoveCoop(const FInputActionValue& V)
 }
 void ACozyCoopPet::MouseCoop(const FInputActionValue& V){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;auto A=V.Get<FVector2D>();AddControllerYawInput(A.X);AddControllerPitchInput(A.Y);}
 void ACozyCoopPet::StickCoop(const FInputActionValue& V){MouseCoop(FInputActionValue(V.Get<FVector2D>()*(80*GetWorld()->GetDeltaSeconds())));}
-void ACozyCoopPet::HurryOn(){GetCharacterMovement()->MaxWalkSpeed=230;ServerHurry(true);}
-void ACozyCoopPet::HurryOff(){GetCharacterMovement()->MaxWalkSpeed=100;ServerHurry(false);}
-void ACozyCoopPet::NextPet(){for(int32 I=1;I<4;++I){const int32 Id=(PetId+I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
-void ACozyCoopPet::PreviousPet(){for(int32 I=1;I<4;++I){const int32 Id=(PetId+4-I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
+void ACozyCoopPet::HurryOn(){if(BlockHurryAfterMenu)return;if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){HubConfirm();return;}GetCharacterMovement()->MaxWalkSpeed=230;ServerHurry(true);}
+void ACozyCoopPet::HurryOff(){BlockHurryAfterMenu=false;GetCharacterMovement()->MaxWalkSpeed=100;ServerHurry(false);}
+void ACozyCoopPet::NextPet(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(1);return;}for(int32 I=1;I<4;++I){const int32 Id=(PetId+I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
+void ACozyCoopPet::PreviousPet(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(-1);return;}for(int32 I=1;I<4;++I){const int32 Id=(PetId+4-I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
 void ACozyCoopPet::Marty(){ServerChoosePet(0);}void ACozyCoopPet::Lakitu(){ServerChoosePet(1);}void ACozyCoopPet::Rio(){ServerChoosePet(2);}
 void ACozyCoopPet::Ratchet(){ServerChoosePet(3);}
 void ACozyCoopPet::ReturnPatrol(){if(GetNetMode()==NM_Standalone)UGameplayStatics::OpenLevel(this,TEXT("/Game/VisualLab/Comparison"),true,TEXT("game=/Script/CheweenieUE5Lab.MartyPlayMode"));}
-void ACozyCoopPet::JumpCoop(){Jump();}void ACozyCoopPet::Voice(){ServerVoice();}void ACozyCoopPet::UseToy(){ServerToy(false);}void ACozyCoopPet::DropToy(){ServerToy(true);}
+void ACozyCoopPet::JumpCoop(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;Jump();}void ACozyCoopPet::Voice(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;ServerVoice();}void ACozyCoopPet::UseToy(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;ServerToy(false);}void ACozyCoopPet::DropToy(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;ServerToy(true);}
 void ACozyCoopPet::RecenterCoop(){if(Controller)Controller->SetControlRotation(FRotator(-12,GetActorRotation().Yaw,0));}
-void ACozyCoopPet::ToggleCostume(){ServerToggleCostume();}
+void ACozyCoopPet::ToggleCostume(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(-1);return;}ServerToggleCostume();}
 void ACozyCoopPet::ServerToggleCostume_Implementation(){if(PetId==3){TellPet(this,TEXT("Ratchet is keeping his own cozy coat today."));return;}WearingCostume=!WearingCostume;ApplyPet();ForceNetUpdate();}
-void ACozyCoopPet::ToggleMenu(){HurryOff();if(auto* PC=Cast<ACozyCoopController>(Controller))PC->MenuOpen=!PC->MenuOpen;}
+void ACozyCoopPet::ToggleMenu(){HurryOff();GetCharacterMovement()->StopMovementImmediately();if(auto* PC=Cast<ACozyCoopController>(Controller))PC->SetHubMenu(!PC->MenuOpen);}
 void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
 {
     // Do not install the solo menu/action bindings on a network pawn.
@@ -170,6 +172,7 @@ void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
     auto* Hop=Button(EKeys::SpaceBar,EKeys::Gamepad_FaceButton_Top,&ACozyCoopPet::JumpCoop);E->BindAction(Hop,ETriggerEvent::Completed,this,&ACozyCoopPet::StopJumping);
     Button(EKeys::V,EKeys::Gamepad_RightThumbstick,&ACozyCoopPet::CycleCamera);Button(EKeys::R,EKeys::Gamepad_RightShoulder,&ACozyCoopPet::RecenterCoop);
     Button(EKeys::H,EKeys::Gamepad_DPad_Down,&ACozyCoopPet::ReturnHome);Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&ACozyCoopPet::Voice);Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&ACozyCoopPet::UseToy);Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&ACozyCoopPet::DropToy);
+    Button(EKeys::Enter,EKeys::Invalid,&ACozyCoopPet::HubConfirm);Button(EKeys::BackSpace,EKeys::Gamepad_FaceButton_Right,&ACozyCoopPet::HubBack);Button(EKeys::Up,EKeys::Invalid,&ACozyCoopPet::HubUp);Button(EKeys::Down,EKeys::Invalid,&ACozyCoopPet::HubDown);Button(EKeys::Left,EKeys::Invalid,&ACozyCoopPet::HubLeft);Button(EKeys::Right,EKeys::Invalid,&ACozyCoopPet::HubRight);
     Button(EKeys::Four,EKeys::Invalid,&ACozyCoopPet::Ratchet);Button(EKeys::F9,EKeys::Gamepad_Special_Left,&ACozyCoopPet::ReturnPatrol);
     Button(EKeys::T,EKeys::Gamepad_DPad_Up,&ACozyCoopPet::ToggleCostume);
     Button(EKeys::One,EKeys::Invalid,&ACozyCoopPet::Marty);Button(EKeys::Two,EKeys::Invalid,&ACozyCoopPet::Lakitu);Button(EKeys::Three,EKeys::Invalid,&ACozyCoopPet::Rio);
@@ -195,14 +198,15 @@ void ACozyCoopToy::Release()
 }
 
 ACozyCoopController::ACozyCoopController(){PrimaryActorTick.bCanEverTick=true;}
-void ACozyCoopController::BeginPlay(){Super::BeginPlay();Started=FPlatformTime::Seconds();if(IsLocalController()){SetInputMode(FInputModeGameOnly());bShowMouseCursor=false;}}
+void ACozyCoopController::BeginPlay(){Super::BeginPlay();Started=FPlatformTime::Seconds();if(IsLocalController()){SetInputMode(FInputModeGameOnly());bShowMouseCursor=false;GetGameInstance()->GetSubsystem<UCozyModeHub>()->RoomReady();}}
 void ACozyCoopController::Notice_Implementation(const FString& Text){Message=Text;}
 void ACozyCoopController::Tick(float Delta){Super::Tick(Delta);if(IsLocalController()){if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke")))TickRatchetAcceptance(Delta);else TickAcceptance(Delta);}}
 
 void ACozyCoopHUD::DrawHUD()
 {
     Super::DrawHUD();if(!Canvas)return;auto* PC=Cast<ACozyCoopController>(PlayerOwner);auto* Pet=PC?Cast<ACozyCoopPet>(PC->GetPawn()):nullptr;
-    DrawRect(FLinearColor(.025f,.055f,.07f,.92f),16,16,850,PC&&PC->MenuOpen?330:180);
+    if(PC&&PC->MenuOpen){DrawHub();return;}
+    DrawRect(FLinearColor(.025f,.055f,.07f,.92f),16,16,850,180);
     DrawText(GetNetMode()==NM_Standalone?TEXT("Codename .... Cheweenie | Ratchet memory walk"):TEXT("Codename .... Cheweenie | LAN Cozy Crew"),FLinearColor(1,.86f,.5f),28,28,nullptr,1.3f);
     DrawText(Pet?FString(TEXT("You: "))+Pet->PetName():TEXT("Joining the crew..."),FLinearColor::White,28,58);
     DrawText(TEXT("WASD / LS: move | mouse / RS: look | Shift / A-Cross: hurry"),FLinearColor::White,28,83);
@@ -213,3 +217,11 @@ void ACozyCoopHUD::DrawHUD()
     if(PC&&!PC->Message.IsEmpty())DrawText(PC->Message,FLinearColor(1,.85f,.45f),28,Canvas->SizeY-50);
     for(TActorIterator<ACozyCoopPet> It(GetWorld());It;++It)if(*It!=Pet){const FVector P=Project(It->GetActorLocation()+FVector(0,0,50));if(P.Z>0)DrawText(It->PetName(),FLinearColor(1,.9f,.6f),P.X-20,P.Y);}
 }
+
+void ACozyCoopPet::HubConfirm(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){BlockHurryAfterMenu=PC->IsInputKeyDown(EKeys::Gamepad_FaceButton_Bottom);GetGameInstance()->GetSubsystem<UCozyModeHub>()->Confirm();}}
+void ACozyCoopPet::HubBack(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Back();}
+void ACozyCoopPet::HubUp(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(-1);}
+void ACozyCoopPet::HubDown(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(1);}
+void ACozyCoopPet::HubLeft(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(-1);}
+void ACozyCoopPet::HubRight(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(1);}
+void ACozyCoopController::SetHubMenu(bool Open){MenuOpen=Open;bShowMouseCursor=Open;bEnableClickEvents=Open;if(Open){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Open();SetInputMode(FInputModeGameAndUI().SetHideCursorDuringCapture(false));}else SetInputMode(FInputModeGameOnly());}
