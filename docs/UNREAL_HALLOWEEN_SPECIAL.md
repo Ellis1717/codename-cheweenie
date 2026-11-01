@@ -1,4 +1,6 @@
-# Bork or Treat — Halloween special (0.11.3)
+# Bork or Treat — Halloween special (0.11.4)
+
+Version 0.11.4 brings Marty closer to his reference photos, with a new separate reference rig and outward-facing fur. Reopen the Bork or Treat shortcut with Detailed coat enabled. [Likeness guide](UNREAL_MARTY_LIKENESS.md), [actual results](evidence/ue5-marty-likeness-build.json), [current costume](screenshots/ue5-marty-likeness-costume.png). Earlier patch notes below are historical.
 
 Version 0.11.3 improves Marty's short fur while retaining the attachment/costume fixes. Reopen the Bork or Treat shortcut with Detailed coat enabled. [Fur guide](UNREAL_MARTY_FUR.md), [actual results](evidence/ue5-marty-fur-build.json), [current costume view](screenshots/ue5-marty-fur-costume.png).
 

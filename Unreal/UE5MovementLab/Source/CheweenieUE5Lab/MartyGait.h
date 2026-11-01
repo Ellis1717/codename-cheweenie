@@ -3,6 +3,7 @@
 #include "Components/ActorComponent.h"
 #include "MartyGait.generated.h"
 class UPoseableMeshComponent;
+class USkinnedAsset;
 
 struct FMartyLeg
 {
@@ -33,6 +34,8 @@ public:
     void ResetContacts();
     FVector MouthWorld() const;
 private:
+    UPROPERTY() TObjectPtr<USkinnedAsset> BoundRig;
+    void RefreshRig();
     float RestLowering=0;
     TArray<FMartyLeg> Legs;
     TMap<FName,FTransform> Rest;
