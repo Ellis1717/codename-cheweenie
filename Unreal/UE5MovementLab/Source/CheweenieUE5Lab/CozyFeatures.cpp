@@ -5,6 +5,19 @@
 #include "DogLife.h"
 
 bool UCozyAdventure::Feature(ECozyFeature Id) const{return !Progress||(Progress->DisabledFeatures&(1<<uint8(Id)))==0;}
+int32 UCozyAdventure::FurDetail() const
+{
+    return !Feature(ECozyFeature::DetailedCoat)?0:Progress?FMath::Clamp(Progress->FurDetailPreference,1,2):2;
+}
+void UCozyAdventure::AdjustFurDetail(int32 Direction)
+{
+    if(!Progress||!Direction)return;
+    const int32 Level=(FurDetail()+(Direction>0?1:2))%3;
+    const int32 Bit=1<<uint8(ECozyFeature::DetailedCoat);
+    if(Level==0)Progress->DisabledFeatures|=Bit;
+    else {Progress->DisabledFeatures&=~Bit;Progress->FurDetailPreference=Level;}
+    Save();PlayCue(TEXT("Menu"));
+}
 TArray<ECozyFeature> UCozyAdventure::FeatureGroup() const
 {
     TArray<ECozyFeature> Result;const int32 First=FeaturePage==0?0:FeaturePage==1?6:17,Last=FeaturePage==0?6:FeaturePage==1?17:24;

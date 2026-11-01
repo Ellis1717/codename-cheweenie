@@ -61,7 +61,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         {
             SmokeCheck(Gait&&Gait->Ready&&Skin&&Skin->GetSkinnedAsset(),TEXT("Skin-weighted Marty and 24 anatomical joints load"));
             SmokeCheck(Skin->GetSkinnedAsset()->GetName()==TEXT("Marty_RealCoat"),TEXT("Detailed short-coat model loads as the playable character"));
-            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoReference")),TEXT("Connected ear-tail skin is the active detailed model"));
+            SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyVisibleStrands")),TEXT("Connected ear-tail skin is the active detailed model"));
             SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear, ear-tip and tail roots match their reference offsets on animated parents"));
             SmokeCheck(FMath::IsNearlyEqual(ReferenceBone(Skin,TEXT("spine")).GetLocation().Z,19.8f,.05f)&&FMath::IsNearlyEqual(ReferenceBone(Skin,TEXT("ear_l")).GetLocation().Z,35.6f,.05f)&&FVector::Dist(ReferenceBone(Skin,TEXT("ear_l")).GetLocation(),ReferenceBone(Skin,TEXT("ear_tip_l")).GetLocation())<6.5f,TEXT("Photo-guided lower stance and shorter ear reference rig load independently"));
             bool FineFur=false;int32 CoatMaterials=0;for(auto* M:Skin->GetMaterials())if(M&&M->GetPathName().Contains(TEXT("MartyPhotoReference/GameplayFibres"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth)){++CoatMaterials;if(M->GetName()==TEXT("Marty_FineFur"))FineFur=true;}
@@ -145,13 +145,13 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 18:
         if(SmokeTime<2)break;SmokeCheck(Pawn->Life->Activity==EDogActivity::Idle&&MartyRootsPinned(Pawn),TEXT("Root attachments recover after rolling"));Pawn->ReturnHome();Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
     case 19:
-        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyConnected/"))&&MartyRootsPinned(Pawn),TEXT("Smooth coat also uses connected skin and pinned roots"));Close(TEXT("tail"),FVector(-45,-65,20));Next();break;
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoSmooth/"))&&MartyRootsPinned(Pawn),TEXT("Smooth coat also uses connected skin and pinned roots"));Close(TEXT("tail"),FVector(-45,-65,20));Next();break;
     case 20:
         if(SmokeTime<.4f)break;Shot(TEXT("MartyTailRootSmooth.png"));Next();break;
     case 21:
         if(SmokeTime<.4f)break;Adventure->ToggleFeature(ECozyFeature::DetailedCoat);Next();break;
     case 22:
-        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoReference"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
+        if(SmokeTime<.4f)break;SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyVisibleStrands"))&&MartyRootsPinned(Pawn),TEXT("Detailed coat switching preserves the connected root rig"));Close(TEXT("ear_l"),FVector(20,-65,18));Next();break;
     case 23:
         if(SmokeTime<.4f)break;Shot(TEXT("MartyEarRootIdle.png"));Next();break;
     case 24:
