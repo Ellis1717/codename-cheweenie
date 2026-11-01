@@ -1,0 +1,30 @@
+// UV-locked short hairs plus broader overlapping locks for gameplay distances.
+// Every band fades before its cells become subpixel; no camera-distance switch.
+float2 dxuv = ddx(UV), dyuv = ddy(UV);
+float2 slope = 0.0;
+float tone = 1.0;
+[unroll] for (int layer = 0; layer < 3; ++layer)
+{
+    float2 scale = layer == 0 ? float2(180.0,720.0) :
+                   layer == 1 ? float2(46.0,156.0) : float2(14.0,48.0);
+    float2 grid = UV * scale + float2(layer*13.31,layer*7.73);
+    float row = floor(grid.y);
+    float seed = frac(sin(row*127.1+layer*23.7)*43758.5453);
+    float col = floor(grid.x+seed);
+    float cell = frac(sin(row*73.1+col*127.7+layer*39.3)*41358.5453);
+    float x = frac(grid.x+seed);
+    float y = frac(grid.y)-0.5-0.12*(cell-0.5)-0.055*sin(x*6.283185+cell*9.0);
+    float2 footprint = abs(dxuv*scale)+abs(dyuv*scale);
+    float coverage = max(footprint.x,footprint.y);
+    float fade = 1.0-smoothstep(0.35,1.15,coverage);
+    float width = max(0.16,min(0.34,footprint.y*0.5));
+    float taper = pow(saturate(sin(x*3.141593)),0.8);
+    float strand = exp2(-2.5*y*y/(width*width))*taper;
+    // Subtract the mean ridge coverage: fading does not change the coat palette.
+    float contrast = layer == 0 ? 0.14 : layer == 1 ? 0.24 : 0.18;
+    tone += contrast*(strand-0.16)*fade;
+    float strength = layer == 0 ? 0.024 : layer == 1 ? 0.038 : 0.028;
+    slope += float2(0.2*sin(x*6.283185)*strand,
+                   -3.4657*y/(width*width)*strand)*strength*fade;
+}
+return float4(normalize(float3(slope,1.0)),clamp(tone,0.80,1.32));

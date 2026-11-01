@@ -64,8 +64,9 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
             SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartyPhotoReference")),TEXT("Connected ear-tail skin is the active detailed model"));
             SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear, ear-tip and tail roots match their reference offsets on animated parents"));
             SmokeCheck(FMath::IsNearlyEqual(ReferenceBone(Skin,TEXT("spine")).GetLocation().Z,19.8f,.05f)&&FMath::IsNearlyEqual(ReferenceBone(Skin,TEXT("ear_l")).GetLocation().Z,35.6f,.05f)&&FVector::Dist(ReferenceBone(Skin,TEXT("ear_l")).GetLocation(),ReferenceBone(Skin,TEXT("ear_tip_l")).GetLocation())<6.5f,TEXT("Photo-guided lower stance and shorter ear reference rig load independently"));
-            bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur")&&M->GetPathName().Contains(TEXT("MartySoftCoat/DirectionalFibres"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth))FineFur=true;
+            bool FineFur=false;int32 CoatMaterials=0;for(auto* M:Skin->GetMaterials())if(M&&M->GetPathName().Contains(TEXT("MartyPhotoReference/GameplayFibres"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth)){++CoatMaterials;if(M->GetName()==TEXT("Marty_FineFur"))FineFur=true;}
             SmokeCheck(FineFur,TEXT("Combed fine fur uses the new microfibre material in the real game"));
+            SmokeCheck(CoatMaterials==4,TEXT("Body, cream, ears and geometric fur load the distance-readable coat materials"));
             SmokeCheck(Bone(TEXT("front_l_upper")).X>Bone(TEXT("hind_l_upper")).X+20,TEXT("Imported centimetre rig faces positive X"));
             const FVector Knee=UMartyGait::SolveKnee(FVector(0,0,20),FVector(0,0,2),12,11,-1);
             SmokeCheck(FMath::IsNearlyEqual(Knee.Size2D(),FMath::Abs(Knee.X),.01)&&Knee.X<0&&FMath::IsNearlyEqual((Knee-FVector(0,0,20)).Size(),12.f,.01),TEXT("Two-bone foreleg IK bends elbow backward at fixed bone length"));
@@ -159,6 +160,15 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 25:
         if(SmokeTime<1)break;Shot(TEXT("MartyLikenessOverview.png"));Next();break;
     case 26:
+        if(SmokeTime<.4f)break;PC->SetViewTarget(Pawn);while(Pawn->CameraPreset!=0)Pawn->CycleCamera();PC->SetControlRotation(FRotator(-12,145,0));Next();break;
+    case 27:
+        if(SmokeTime<2)break;Shot(TEXT("MartyFurGameplay.png"));Next();break;
+    case 28:
+        if(SmokeTime<.4f)break;
+        {const FVector Focus=Skin->GetBoneLocationByName(TEXT("spine"),EBoneSpaces::WorldSpace);auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+Skin->GetComponentTransform().TransformVectorNoScale(FVector(260,-335,160)),FRotator::ZeroRotator);Camera->SetActorRotation((Focus-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=65;PC->SetViewTarget(Camera);}Next();break;
+    case 29:
+        if(SmokeTime<2)break;Shot(TEXT("MartyFurFar.png"));Next();break;
+    case 30:
         if(SmokeTime>2)
         {
             auto Report=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(auto& S:In)Out.Add(MakeShared<FJsonValueString>(S));return Out;};
