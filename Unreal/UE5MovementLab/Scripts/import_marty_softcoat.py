@@ -9,7 +9,7 @@ base=base.replace("'marty-connected-import.json'","'marty-softcoat-mesh-import.j
 base=base.replace('options.skeletal_mesh_import_data.import_uniform_scale=1',
     'options.skeletal_mesh_import_data.import_uniform_scale=1\n    options.skeletal_mesh_import_data.normal_import_method=unreal.FBXNormalImportMethod.FBXNIM_IMPORT_NORMALS')
 exec(compile(base,str(script),'exec'),globals())
-FOLDER='/Game/Adventure/MartySoftCoat'
+FOLDER='/Game/Adventure/MartySoftCoat/Fibres'
 EDIT=unreal.MaterialEditingLibrary
 grain=LIB.load_asset('/Game/Adventure/MartyRealism/CoatGrain');assert grain
 normalmap=LIB.load_asset('/Game/Adventure/MartyRealism/CoatNormal');assert normalmap
@@ -17,7 +17,8 @@ normalmap=LIB.load_asset('/Game/Adventure/MartyRealism/CoatNormal');assert norma
 # Reuse the proven UV palette decoder; FBX's green-channel flip is intentional.
 existing=(script.parent/'import_marty_realcoat.py').read_text()
 material_source=existing[existing.index('\ndef material(')+1:existing.index('\nspec=')]
-material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v1')
+material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v2')
+# Keep the first material pass retained; tuned fibres use their own subfolder.
 # CustomData0 is hidden from UE5.8's Python enum. MakeMaterialAttributes exposes
 # the same native input as ClearCoat; on the cloth BRDF this is the fuzz weight.
 start=material_source.index('    def plug(');end=material_source.index('    def scalar(')
@@ -32,14 +33,16 @@ material_source=material_source[:start]+"""    attributes=node(unreal.MaterialEx
 material_source=material_source.replace('    EDIT.recompile_material(m);',
     "    assert EDIT.connect_material_property(attributes,'',unreal.MaterialProperty.MP_MATERIAL_ATTRIBUTES)\n    EDIT.recompile_material(m);")
 material_source=material_source.replace("'u_tiling',4.0","'u_tiling',6.0").replace("'v_tiling',4.0","'v_tiling',6.0")
-material_source=material_source.replace('wire(scalar(.20)','wire(scalar(.08)').replace('wire(scalar(.85)','wire(scalar(.96)')
+material_source=material_source.replace('wire(scalar(.20)','wire(scalar(.18)').replace('wire(scalar(.85)','wire(scalar(.86)')
 old="wire(coords,'',normal,'');plug(normal,'',unreal.MaterialProperty.MP_NORMAL)"
 assert old in material_source
 material_source=material_source.replace(old,"""wire(coords,'',normal,'')
         softened=node(unreal.MaterialExpressionLinearInterpolate)
-        wire(rgb((0,0,1)),'',softened,'A');wire(normal,'',softened,'B');wire(scalar(.20),'',softened,'Alpha')
+        wire(rgb((0,0,1)),'',softened,'A');wire(normal,'',softened,'B');wire(scalar(.85),'',softened,'Alpha')
         unit=node(unreal.MaterialExpressionNormalize);wire(softened,'',unit,'');plug(unit,'',unreal.MaterialProperty.MP_NORMAL)""")
 material_source=material_source.replace('unreal.MaterialShadingModel.MSM_HAIR','unreal.MaterialShadingModel.MSM_CLOTH')
+material_source=material_source.replace('        base=palette()',
+    "        strand_color=palette();base=node(unreal.MaterialExpressionMultiply);wire(strand_color,'',base,'A');wire(scalar(1.12),'',base,'B')")
 material_source=material_source.replace("        tangent=node(unreal.MaterialExpressionVertexTangentWS);plug(tangent,'',unreal.MaterialProperty.MP_TANGENT)\n",'')
 old="    plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)"
 assert old in material_source

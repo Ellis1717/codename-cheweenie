@@ -63,7 +63,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
             SmokeCheck(Skin->GetSkinnedAsset()->GetName()==TEXT("Marty_RealCoat"),TEXT("Detailed short-coat model loads as the playable character"));
             SmokeCheck(Skin->GetSkinnedAsset()->GetPathName().Contains(TEXT("MartySoftCoat")),TEXT("Connected ear-tail skin is the active detailed model"));
             SmokeCheck(MartyRootsPinned(Pawn),TEXT("Ear, ear-tip and tail roots match their reference offsets on animated parents"));
-            bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur")&&M->GetPathName().Contains(TEXT("MartySoftCoat"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth))FineFur=true;
+            bool FineFur=false;for(auto* M:Skin->GetMaterials())if(M&&M->GetName()==TEXT("Marty_FineFur")&&M->GetPathName().Contains(TEXT("MartySoftCoat/Fibres"))&&M->GetShadingModels().HasShadingModel(MSM_Cloth))FineFur=true;
             SmokeCheck(FineFur,TEXT("Combed fine fur uses the new microfibre material in the real game"));
             SmokeCheck(Bone(TEXT("front_l_upper")).X>Bone(TEXT("hind_l_upper")).X+20,TEXT("Imported centimetre rig faces positive X"));
             const FVector Knee=UMartyGait::SolveKnee(FVector(0,0,20),FVector(0,0,2),12,11,-1);
