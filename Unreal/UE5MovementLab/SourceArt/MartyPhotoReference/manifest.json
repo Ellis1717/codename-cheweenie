@@ -28,8 +28,8 @@
     "hind_r_hock",
     "hind_r_paw"
   ],
-  "vertices": 207486,
-  "source_script_sha256": "ebd210b2af1a2d61d64b93ab35470a1d7703be6df41b7ae259d769de3b56f13e",
+  "vertices": 207678,
+  "source_script_sha256": "e79a47c0b9e71fb8a6e90ad29c50b57623b627bcbb0c5c52b3d212d5efb17abf",
   "fur_hairs": 32000,
   "coat_texture_resolution": 4096,
   "technique": "32000 surface-aligned outward-facing combed ribbons; filtered undercoat shading",

@@ -154,6 +154,11 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
     case 23:
         if(SmokeTime<.4f)break;Shot(TEXT("MartyEarRootIdle.png"));Next();break;
     case 24:
+        if(SmokeTime<.4f)break;
+        {const FVector Focus=Skin->GetBoneLocationByName(TEXT("spine"),EBoneSpaces::WorldSpace)+Skin->GetComponentTransform().TransformVectorNoScale(FVector(8,0,10));auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+Skin->GetComponentTransform().TransformVectorNoScale(FVector(105,-135,55)),FRotator::ZeroRotator);Camera->SetActorRotation((Focus-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=38;PC->SetViewTarget(Camera);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;}Next();break;
+    case 25:
+        if(SmokeTime<1)break;Shot(TEXT("MartyLikenessOverview.png"));Next();break;
+    case 26:
         if(SmokeTime>2)
         {
             auto Report=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(auto& S:In)Out.Add(MakeShared<FJsonValueString>(S));return Out;};

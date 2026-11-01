@@ -13,7 +13,7 @@ foreach($entry in @(@('Gait/marty-gait.json',29),@('World/world-smoke.json',14),
     if($result.failed.Count -or $result.passed.Count -lt $entry[1]){throw ('Failed/incomplete acceptance: '+$entry[0])};$checks+=$result.passed.Count
 }
 Add-Type -AssemblyName System.Drawing
-foreach($name in @('Gait/MartyEarRootMeal.png','Gait/MartyTailRootSway.png','Gait/MartyTailRootSmooth.png','Gait/MartyEarRootIdle.png','Festival/FestivalTitle.png','Festival/FestivalPorch.png','Festival/FestivalFinale.png','Costumes/HalloweenMartySide.png','Costumes/HalloweenMartyTop.png','Costumes/HalloweenMartyLying.png','Costumes/HalloweenMartyRolling.png')){
+foreach($name in @('Gait/MartyLikenessOverview.png','Gait/MartyEarRootMeal.png','Gait/MartyTailRootSway.png','Gait/MartyTailRootSmooth.png','Gait/MartyEarRootIdle.png','Festival/FestivalTitle.png','Festival/FestivalPorch.png','Festival/FestivalFinale.png','Costumes/HalloweenMartySide.png','Costumes/HalloweenMartyTop.png','Costumes/HalloweenMartyLying.png','Costumes/HalloweenMartyRolling.png')){
     $file=Join-Path $TestRoot $name
     if(!(Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).LastWriteTimeUtc -lt $newest){throw ('Missing/stale capture: '+$name)}
     $bitmap=[Drawing.Bitmap]::new($file)
