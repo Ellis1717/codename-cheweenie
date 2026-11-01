@@ -17,7 +17,7 @@ normalmap=LIB.load_asset('/Game/Adventure/MartyRealism/CoatNormal');assert norma
 # Reuse the proven UV palette decoder; FBX's green-channel flip is intentional.
 existing=(script.parent/'import_marty_realcoat.py').read_text()
 material_source=existing[existing.index('\ndef material(')+1:existing.index('\nspec=')]
-material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v3')
+material_source=material_source.replace('uv-rgb-v3','softcoat-fuzz-v4')
 # Keep the first material pass retained; tuned fibres use their own subfolder.
 # CustomData0 is hidden from UE5.8's Python enum. MakeMaterialAttributes exposes
 # the same native input as ClearCoat; on the cloth BRDF this is the fuzz weight.
@@ -73,21 +73,27 @@ material_source=material_source.replace(old,"""    if fur:
             unit=node(unreal.MaterialExpressionNormalize);wire(detail,'',unit,'');plug(unit,'',unreal.MaterialProperty.MP_NORMAL)
     plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)""")
 FIBRE_CODE=r'''
-float2 grid=UV*float2(260.0,720.0);
-float row=floor(grid.y);
-float seed=frac(sin(row*127.1+17.17)*43758.5453);
-float x=frac(grid.x+seed);
-float y=frac(grid.y)-0.5-0.10*sin(x*6.283185+seed*9.0);
-float width=max(0.17,min(0.42,fwidth(grid.y)*0.55));
-float bell=sin(x*3.141593);bell*=bell;
-float strand=exp2(-2.5*y*y/(width*width))*bell;
-float dy=-3.4657*y/(width*width)*strand;
-float dx=sin(x*6.283185)*strand;
-float variation=frac(sin(floor(grid.x+seed)*39.34+row*17.73)*12414.0);
-float fade=saturate(1.25-max(fwidth(grid.x),fwidth(grid.y))*0.45);
-float3 n=normalize(float3(0.025*dx*fade,0.035*dy*fade,1.0));
-float tone=lerp(1.0,0.93+0.23*strand+0.025*(variation-0.5),fade);
-return float4(n,tone);
+float2 dxuv=ddx(UV),dyuv=ddy(UV);
+float2 slope=0.0;float tone=0.0;
+[unroll] for(int layer=0;layer<3;layer++)
+{
+    float2 scale=float2(180.0,720.0)*(1.0+layer*0.23);
+    float2 grid=UV*scale+float2(layer*13.31,layer*7.73);
+    float row=floor(grid.y);
+    float seed=frac(sin(row*127.1+layer*23.7)*43758.5453);
+    float col=floor(grid.x+seed);
+    float cell=frac(sin(row*73.1+col*127.7+layer*39.3)*41358.5453);
+    float x=frac(grid.x+seed);
+    float y=frac(grid.y)-0.5-0.16*(cell-0.5)-0.06*sin(x*6.283185+cell*9.0);
+    float2 footprint=abs(dxuv*scale)+abs(dyuv*scale);
+    float width=max(0.10,min(0.38,footprint.y*0.45));
+    float bell=sin(x*3.141593);bell=pow(saturate(bell),0.7);
+    float strand=exp2(-2.5*y*y/(width*width))*bell;
+    float fade=saturate(1.25-max(footprint.x,footprint.y)*0.45);
+    slope+=float2(0.015*sin(x*6.283185)*strand,-0.020*3.4657*y/(width*width)*strand)*fade;
+    tone+=lerp(1.0,0.96+0.16*strand+0.025*(cell-0.5),fade);
+}
+return float4(normalize(float3(slope/3.0,1.0)),tone/3.0);
 '''
 exec(compile(material_source,str(script),'exec'),globals())
 spec={'Marty_Coat':((.58,.31,.105),.74),'Marty_Cream':((.74,.59,.37),.78),
