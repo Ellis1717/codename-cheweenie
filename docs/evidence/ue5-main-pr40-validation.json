@@ -1,0 +1,36 @@
+{
+  "pr": 40,
+  "prUrl": "https://github.com/Ellis1717/codename-cheweenie/pull/40",
+  "mergedCommit": "262794e54b794f84ed8cb9159d5e10fc8b16b99a",
+  "validatedPrHead": "6c136d9ebdebca5e566251ff80448f22dc2665df",
+  "mergedTreeEqualsValidatedPrHead": true,
+  "nativeTreeEqualsCompiledSource": "5e711d7d2980a636d58f2d42789031a4c4b045e0",
+  "originalCheckoutFastForwarded": true,
+  "originalEditorModule": "Copied tested DLL/PDB/module manifest after backing up the earlier cache; original checkout was not separately recompiled",
+  "moduleHashes": [
+    {
+      "matches": true,
+      "sha256": "0A3D76A85378318ADD47EAA4795D1A2249BFD9D4D959CA385615A037891C9253",
+      "file": "UnrealEditor-CheweenieUE5Lab.dll"
+    },
+    {
+      "matches": true,
+      "sha256": "D034B4892230F9B4F9CAB5C2E7C472F3B000C75728EF8B4AF3F4296C931E206C",
+      "file": "UnrealEditor-CheweenieUE5Lab.pdb"
+    },
+    {
+      "matches": true,
+      "sha256": "13676821A0EB29E7B4DF521A8DB231F8382C57E330978908EA877D5A568B8926",
+      "file": "UnrealEditor.modules"
+    }
+  ],
+  "originalCheckoutAssertions": 29,
+  "originalCheckoutFailures": 0,
+  "originalRuntimeErrorMatches": 0,
+  "postMergePackageHashesMatched": 43,
+  "ownerUntrackedMaterialHashesPreserved": 2,
+  "openPullRequests": 0,
+  "releaseAssertionsUnchanged": 527,
+  "scope": "29 additional original-checkout map/travel/input fixture checks are separate from the 527 release executions. Physical controllers and separate machines remain unverified.",
+  "timestampUtc": "2026-11-01T21:40:28.5152631Z"
+}
