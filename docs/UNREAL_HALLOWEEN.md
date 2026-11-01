@@ -10,6 +10,8 @@ Codename .... Cheweenie adds three independent cosmetic outfits to the active Un
 
 All outfits default **off**. Open **Pause or Title → Controls & cameras → Halloween costumes (optional)**. Choose a pet with arrow keys/D-pad and press Enter/A-Cross to toggle; Escape/B-Circle returns to Controls. Each solo choice is saved separately; a new patrol preserves these preferences. Existing saves get the default off mask without a version reset.
 
+The current 0.11.2 Bork or Treat patch also fixes Marty's underlying ear/tail skin joins and parent animation. The lengthwise outfit is retained and rechecked with both coats, lying/rolling and LAN peers. [Current side view](screenshots/ue5-marty-connected-hotdog-side.png), [attachment guide and actual results](UNREAL_MARTY_ATTACHMENTS.md).
+
 In the separate LAN room, **T / D-pad Up** toggles your current pet's outfit. The choice replicates to the other player and follows pet selection, swapping to the matching costume. LAN outfit choices last for that connection and do not change solo saves.
 
 These are original, padded costume overlays made from built-in engine shapes and eight original matte materials. Faces, paws and tails remain exposed. Marty's outfit follows his animated spine; cat outfits follow the retained static cat meshes. They have no collision, overlaps, navigation effect, stat bonuses, cloth simulation or physics straps. This does not upgrade the underlying pet models or claim photorealistic tailoring. Owner photo identities and likeness notes remain in the separate pet-reference PR.
