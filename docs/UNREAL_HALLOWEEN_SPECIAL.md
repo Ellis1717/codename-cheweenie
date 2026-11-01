@@ -1,4 +1,6 @@
-# Bork or Treat — Halloween special (0.11.2)
+# Bork or Treat — Halloween special (0.11.3)
+
+Version 0.11.3 improves Marty's short fur while retaining the attachment/costume fixes. Reopen the Bork or Treat shortcut with Detailed coat enabled. [Fur guide](UNREAL_MARTY_FUR.md), [actual results](evidence/ue5-marty-fur-build.json), [current costume view](screenshots/ue5-marty-fur-costume.png).
 
 Version 0.11.2 connects Marty's ear/tail skin and follows animated parent joints while retaining the lengthwise hot-dog correction from 0.11.1. See the [attachment results](evidence/ue5-marty-roots-build.json), [current costume view](screenshots/ue5-marty-connected-hotdog-side.png) and [earlier fit results](evidence/ue5-hotdog-fit-build.json). Reopen the Bork or Treat desktop shortcut for this patch.
 
@@ -25,4 +27,4 @@ Porch positions/names/greetings and decoration tuning live in `HalloweenSpecial.
 
 Run `BUILD.ps1`, `IMPORT_FESTIVAL.ps1`, then `PACKAGE.ps1 -OutputRoot <new-folder>` in `Unreal/UE5MovementLab`. Run `TEST_FESTIVAL.ps1 -GameExe <new-folder>/Windows/CheweenieUE5Lab.exe -OutputRoot <reports>/Festival -Render`, the regression checks described by the release finalizer, and `FINALIZE_FESTIVAL.ps1 -PackageRoot <new-folder> -TestRoot <reports>` before launching. Acceptance saves are isolated from the player's checkpoint. Test fixtures position the pawn, set unrelated progress and use synthetic keyboard/controller input; physical device tests are separate.
 
-Current patch results are recorded in `evidence/ue5-marty-roots-build.json`; `evidence/ue5-festival-build.json` retains the initial event validation.
+Current patch results are recorded in `evidence/ue5-marty-fur-build.json`; `evidence/ue5-marty-roots-build.json` retains the attachment validation and `evidence/ue5-festival-build.json` retains the initial event validation.
