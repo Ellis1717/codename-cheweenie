@@ -14,8 +14,8 @@ if($process.ExitCode){throw ('Gait test failed: '+$process.ExitCode)}
 $report=Join-Path $OutputRoot 'marty-gait.json'
 if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Gait report missing/stale'}
 $result=Get-Content $report -Raw|ConvertFrom-Json
-if($result.failed.Count -or $result.passed.Count -lt 29){throw 'Gait assertions failed; inspect Gait.log'}
-if($Render){foreach($name in @('MartyVisibleStrandsGameplay.png','MartyLikenessOverview.png','MartyPortrait.png','MartyWalk.png','MartyTrot.png','MartyIdle.png','MartyEarRootMeal.png','MartyTailRootSway.png','MartyTailRootSmooth.png','MartyEarRootIdle.png')){
+if($result.failed.Count -or $result.passed.Count -lt 30){throw 'Gait assertions failed; inspect Gait.log'}
+if($Render){foreach($name in @('MartyFurGameplay.png','MartyFurFar.png','MartyLikenessOverview.png','MartyPortrait.png','MartyWalk.png','MartyTrot.png','MartyIdle.png','MartyEarRootMeal.png','MartyTailRootSway.png','MartyTailRootSmooth.png','MartyEarRootIdle.png')){
     $capture=Join-Path $OutputRoot $name
     if(!(Test-Path $capture)){throw ('Missing capture '+$name)}
     if((Get-Item $capture).LastWriteTimeUtc -lt $started){throw ('Stale capture '+$name)}
