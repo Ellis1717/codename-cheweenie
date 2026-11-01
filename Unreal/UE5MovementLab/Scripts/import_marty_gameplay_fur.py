@@ -11,17 +11,15 @@ TOOLS = unreal.AssetToolsHelpers.get_asset_tools()
 pet = LIB.load_asset('/Game/Adventure/MartyPhotoReference/Marty_RealCoat')
 assert pet, 'Import the photo-guided model first'
 FIBRE_CODE = (script.parent/'shaders'/'marty_gameplay_fur.ush').read_text()
+revision = 'gameplay-fur-' + hashlib.sha256(FIBRE_CODE.encode()).hexdigest()[:12]
 
 # Reuse the established palette decoder, cloth attributes and normal-map wiring.
 # Execute only the material builder, never the older FBX import or slot assignment.
 source = (script.parent/'import_marty_softcoat.py').read_text()
 builder = source[source.index("FOLDER="):source.index("FIBRE_CODE=r'''")]
-builder = builder.replace('MartySoftCoat/DirectionalFibres', 'MartyPhotoReference/GameplayFibres')
-revision = 'gameplay-fur-' + hashlib.sha256(FIBRE_CODE.encode()).hexdigest()[:12]
+builder = builder.replace('MartySoftCoat/DirectionalFibres', 'MartyPhotoReference/GameplayFibres/'+revision)
 builder = builder.replace('softcoat-fuzz-v4', revision)
 exec(compile(builder, str(script), 'exec'), globals())
-material_source = material_source.replace('    EDIT.set_material_usage(m,',
-    '    EDIT.delete_all_material_expressions(m)\n    EDIT.set_material_usage(m,')
 exec(compile(material_source, str(script), 'exec'), globals())
 
 spec = {'Marty_Coat': ((.58,.31,.105),.74), 'Marty_Cream': ((.74,.59,.37),.78),

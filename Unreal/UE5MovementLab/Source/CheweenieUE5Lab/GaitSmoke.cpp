@@ -165,7 +165,7 @@ void AMartyPlayMode::TickGaitSmoke(float Delta)
         if(SmokeTime<2)break;Shot(TEXT("MartyFurGameplay.png"));Next();break;
     case 28:
         if(SmokeTime<.4f)break;
-        {const FVector Focus=Skin->GetBoneLocationByName(TEXT("spine"),EBoneSpaces::WorldSpace);auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+Skin->GetComponentTransform().TransformVectorNoScale(FVector(260,-335,160)),FRotator::ZeroRotator);Camera->SetActorRotation((Focus-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=65;PC->SetViewTarget(Camera);}Next();break;
+        {const FVector Focus=Skin->GetBoneLocationByName(TEXT("spine"),EBoneSpaces::WorldSpace);auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+Skin->GetComponentTransform().TransformVectorNoScale(FVector(330,-220,160)),FRotator::ZeroRotator);Camera->SetActorRotation((Focus-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=65;PC->SetViewTarget(Camera);}Next();break;
     case 29:
         if(SmokeTime<2)break;Shot(TEXT("MartyFurFar.png"));Next();break;
     case 30:

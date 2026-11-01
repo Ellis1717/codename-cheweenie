@@ -15,7 +15,7 @@ From `Unreal/UE5MovementLab`:
 ./TEST.ps1 -Render
 ```
 
-The importer creates four dedicated materials and changes only the current detailed mesh’s material assignments. Reimporting the likeness model preserves these assignments when the new materials are available. Shader source is retained in `Scripts/shaders/marty_gameplay_fur.ush`. The shader’s content hash controls the material revision, so editing the shader and rerunning the importer rebuilds the graph without accumulating old expressions.
+The importer creates four dedicated materials and changes only the current detailed mesh’s material assignments. Reimporting the likeness model preserves these assignments when the new materials are available. Shader source is retained in `Scripts/shaders/marty_gameplay_fur.ush`. The shader’s content hash selects a separate material revision folder. Editing the shader and rerunning the importer therefore retains earlier graphs and never deletes expressions from a loaded material.
 
 Rendered gait acceptance captures the close portrait, matching full-body overview, normal gameplay camera (`MartyFurGameplay.png`) and a farther 65-degree camera (`MartyFurFar.png`) in the actual game map. It exercises synthetic keyboard and controller movement and checks all four cloth coat materials. Visual review is separate from these assertions; neither constitutes a physical controller or broad performance benchmark.
 
