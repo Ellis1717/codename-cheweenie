@@ -1,0 +1,104 @@
+{
+  "date": "2026-11-01",
+  "merged_prs": [
+    38,
+    39
+  ],
+  "merged_main_commit": "d591019bb212b2ed4471f39a0dd78a80967f7255",
+  "validated_pr_head": "78f75ec787aed1043f48c20f5a8a95db551c1de5",
+  "merged_tree": "130ea40a8872fe873a59c1fd62e366bf05c79c65",
+  "validated_pr_tree": "130ea40a8872fe873a59c1fd62e366bf05c79c65",
+  "tracked_tree_identical": true,
+  "original_local_main_synchronized": true,
+  "local_editor_module": {
+    "source": "Native Editor build compiled and validated in graphics worktree; copied to the original checkout after backing up its earlier cache",
+    "files": [
+      {
+        "sha256": "8D5561840CF4C0BBC4A4D95CD78F98C253348B1BA14807475AC9B5745E7942D8",
+        "name": "UnrealEditor-CheweenieUE5Lab.dll"
+      },
+      {
+        "sha256": "BE699ECFD935936DB208A4689913A0A8C4E0C2AD7F17CDB57D2A9FF8EBC4E6CF",
+        "name": "UnrealEditor-CheweenieUE5Lab.pdb"
+      },
+      {
+        "sha256": "13676821A0EB29E7B4DF521A8DB231F8382C57E330978908EA877D5A568B8926",
+        "name": "UnrealEditor.modules"
+      }
+    ],
+    "sha256_verified": true
+  },
+  "postmerge_local_editor_quality_assertions": 23,
+  "local_reports": [
+    {
+      "failed": [],
+      "report": "fur-detail-low.json",
+      "passed": [
+        "Low setting reloads while remembering the preferred enabled coat",
+        "Low reload selects the actual smooth coat",
+        "Legacy coat-on switch restores Medium with a valid rig",
+        "Quality switches retain existing patrol and sound state"
+      ]
+    },
+    {
+      "failed": [],
+      "report": "fur-detail-medium.json",
+      "passed": [
+        "Medium fur preference reloads in another process",
+        "Reload selects the actual medium coat and valid gait",
+        "Fur reload preserves patrol and sound preferences",
+        "Legacy coat-off switch retains Medium and saves Low"
+      ]
+    },
+    {
+      "failed": [],
+      "report": "fur-detail.json",
+      "passed": [
+        "Fresh saves default to High fur detail",
+        "High detail selects the new raised-hair mesh",
+        "Fur acceptance uses an isolated save slot",
+        "Keyboard starts the real game before adjusting detail",
+        "Keyboard opens Pause for fur controls",
+        "A-Cross opens Controls from Pause",
+        "Graphics controls display the current High fur level",
+        "Keyboard Left lowers High to Medium",
+        "Medium changes the actual mesh live and refreshes gait",
+        "D-pad Right restores High and the raised hairs",
+        "Keyboard Right wraps High to the smooth Low model",
+        "A-Cross cycles Low to Medium without leaving the menu",
+        "Enter cycles Medium to High live",
+        "Changing detail keeps Marty still and preserves patrol and sound state",
+        "The selected Medium quality is written to the save"
+      ]
+    }
+  ],
+  "retained_release": {
+    "evidence": "docs/evidence/ue5-marty-hair-detail-build.json",
+    "editor_movement_assertions": 16,
+    "reason": "Merged tracked tree equals the validated PR head; runtime and art did not change during merge",
+    "recook_after_merge": false,
+    "version": "0.11.6",
+    "packaged_assertions": 443,
+    "total_release_assertions": 459,
+    "payload_hashes_verified": 43
+  },
+  "retained_owner_materials": [
+    {
+      "sha256": "034156DBC24C7DCFC97757275FE49014058087EFBF293B9E4B0AF44798E6FBC3",
+      "retained_untracked": true,
+      "name": "Marty_Explorer-defaultMat.mat"
+    },
+    {
+      "sha256": "D5B292CDDCA8316E99FBACD53312723492E073CDFF797882E4992A1092A8C0FC",
+      "retained_untracked": true,
+      "name": "Marty_Explorer-defaultMat.mat.meta"
+    }
+  ],
+  "launcher": "Play Cheweenie Hair Preview",
+  "unverified": [
+    "Physical Xbox/PlayStation controllers",
+    "Separate-machine networking",
+    "Broad performance benchmarks",
+    "Owner likeness approval"
+  ]
+}
