@@ -1,0 +1,947 @@
+diff --git a/Unreal/UE5MovementLab/Config/DefaultGame.ini b/Unreal/UE5MovementLab/Config/DefaultGame.ini
+index 88384ff..ee66170 100644
+--- a/Unreal/UE5MovementLab/Config/DefaultGame.ini
++++ b/Unreal/UE5MovementLab/Config/DefaultGame.ini
+@@ -1,7 +1,7 @@
+ [/Script/EngineSettings.GeneralProjectSettings]
+ ProjectID=AA248FE44ECC453698931BAC13A123EA
+ ProjectName=Codename .... Cheweenie
+-ProjectVersion=0.12.1
++ProjectVersion=0.13.0
+ 
+ [/Script/UnrealEd.ProjectPackagingSettings]
+ BuildConfiguration=PPBC_Development
+diff --git a/Unreal/UE5MovementLab/FINALIZE_UNIFIED.ps1 b/Unreal/UE5MovementLab/FINALIZE_UNIFIED.ps1
+index 8620584..7973e15 100644
+--- a/Unreal/UE5MovementLab/FINALIZE_UNIFIED.ps1
++++ b/Unreal/UE5MovementLab/FINALIZE_UNIFIED.ps1
+@@ -6,14 +6,14 @@ if(!(Test-Path -LiteralPath (Join-Path $windows 'CheweenieUE5Lab.exe'))){throw '
+ $payload=@(Get-ChildItem -LiteralPath $windows -File -Recurse|Where-Object {$_.FullName -notmatch '[\\/]Saved[\\/]|[\\/]LocalGameData[\\/]' -and $_.Extension -ne '.log'})
+ $newest=($payload|Sort-Object LastWriteTimeUtc -Descending|Select-Object -First 1).LastWriteTimeUtc
+ $checks=0
+-foreach($entry in @(@('Modifier/trick-modifier.json',32),@('Tricks/tricks-smoke.json',29),@('Tricks/tricks-resume.json',5),@('Audio/audio-smoke.json',10),@('Hub/hub-smoke.json',29),@('HubLan/hub-host.json',8),@('HubLan/hub-guest.json',9),@('FurDetail/fur-detail.json',15),@('FurDetail/fur-detail-medium.json',4),@('FurDetail/fur-detail-low.json',4),@('Gait/marty-gait.json',30),@('World/world-smoke.json',14),@('Navigation/navigation-smoke.json',59),@('Navigation/navigation-resume.json',4),@('Life/life-smoke.json',23),@('Life/life-resume.json',5),@('Festival/festival-smoke.json',40),@('Festival/festival-resume.json',6),@('Costumes/costumes-smoke.json',29),@('Costumes/costumes-resume.json',2),@('Coop/coop-host.json',32),@('Coop/coop-guest.json',29),@('Companions/companions-smoke.json',30),@('Companions/companions-resume.json',4),@('Adventure/adventure-smoke.json',25),@('Adventure/adventure-resume.json',6),@('Ratchet/ratchet-unlock.json',6),@('Ratchet/ratchet-resume.json',2),@('Ratchet/ratchet-memory.json',12),@('Ratchet/ratchet-return.json',3),@('UnlockedCoop/coop-host.json',31),@('UnlockedCoop/coop-guest.json',28))){
++foreach($entry in @(@('Home/home-progression.json',34),@('Home/home-resume.json',5),@('Modifier/trick-modifier.json',32),@('Tricks/tricks-smoke.json',29),@('Tricks/tricks-resume.json',5),@('Audio/audio-smoke.json',10),@('Hub/hub-smoke.json',29),@('HubLan/hub-host.json',8),@('HubLan/hub-guest.json',9),@('FurDetail/fur-detail.json',15),@('FurDetail/fur-detail-medium.json',4),@('FurDetail/fur-detail-low.json',4),@('Gait/marty-gait.json',30),@('World/world-smoke.json',14),@('Navigation/navigation-smoke.json',60),@('Navigation/navigation-resume.json',4),@('Life/life-smoke.json',23),@('Life/life-resume.json',5),@('Festival/festival-smoke.json',40),@('Festival/festival-resume.json',6),@('Costumes/costumes-smoke.json',29),@('Costumes/costumes-resume.json',2),@('Coop/coop-host.json',32),@('Coop/coop-guest.json',29),@('Companions/companions-smoke.json',30),@('Companions/companions-resume.json',4),@('Adventure/adventure-smoke.json',25),@('Adventure/adventure-resume.json',6),@('Ratchet/ratchet-unlock.json',6),@('Ratchet/ratchet-resume.json',2),@('Ratchet/ratchet-memory.json',12),@('Ratchet/ratchet-return.json',3),@('UnlockedCoop/coop-host.json',31),@('UnlockedCoop/coop-guest.json',28))){
+     $file=Join-Path $TestRoot $entry[0]
+     if(!(Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).LastWriteTimeUtc -lt $newest){throw ('Missing/stale acceptance report: '+$entry[0])}
+     $result=Get-Content -LiteralPath $file -Raw|ConvertFrom-Json
+     if($result.failed.Count -or $result.passed.Count -lt $entry[1]){throw ('Failed/incomplete acceptance: '+$entry[0])};$checks+=$result.passed.Count
+ }
+ Add-Type -AssemblyName System.Drawing
+-foreach($name in @('Modifier/TrickModifierGuide.png','Modifier/TrickModifierLie.png','Modifier/TrickModifierRoll.png','Modifier/TrickModifierShake.png','Tricks/MartyLying.png','Tricks/MartyRoll.png','Tricks/MartyShake.png','Tricks/MartyBackpack.png','Tricks/MartyBodySway.png','Hub/ModeHub.png','Hub/ModeHubHost.png','Hub/ModeHubArchives.png','FurDetail/FurDetailMenu.png','Gait/MartyFurGameplay.png','Gait/MartyFurFar.png','Gait/MartyLikenessOverview.png','Gait/MartyEarRootMeal.png','Gait/MartyTailRootSway.png','Gait/MartyTailRootSmooth.png','Gait/MartyEarRootIdle.png','Festival/FestivalTitle.png','Festival/FestivalPorch.png','Festival/FestivalFinale.png','Costumes/HalloweenMartySide.png','Costumes/HalloweenMartyTop.png','Costumes/HalloweenMartyLying.png','Costumes/HalloweenMartyRolling.png')){
++foreach($name in @('Home/HomeCatReaction.png','Home/HomeBedRest.png','Home/HomeArmorWorkshop.png','Home/HomeGym.png','Modifier/TrickModifierGuide.png','Modifier/TrickModifierLie.png','Modifier/TrickModifierRoll.png','Modifier/TrickModifierShake.png','Tricks/MartyLying.png','Tricks/MartyRoll.png','Tricks/MartyShake.png','Tricks/MartyBackpack.png','Tricks/MartyBodySway.png','Hub/ModeHub.png','Hub/ModeHubHost.png','Hub/ModeHubArchives.png','FurDetail/FurDetailMenu.png','Gait/MartyFurGameplay.png','Gait/MartyFurFar.png','Gait/MartyLikenessOverview.png','Gait/MartyEarRootMeal.png','Gait/MartyTailRootSway.png','Gait/MartyTailRootSmooth.png','Gait/MartyEarRootIdle.png','Festival/FestivalTitle.png','Festival/FestivalPorch.png','Festival/FestivalFinale.png','Costumes/HalloweenMartySide.png','Costumes/HalloweenMartyTop.png','Costumes/HalloweenMartyLying.png','Costumes/HalloweenMartyRolling.png')){
+     $file=Join-Path $TestRoot $name
+     if(!(Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).LastWriteTimeUtc -lt $newest){throw ('Missing/stale capture: '+$name)}
+     $bitmap=[Drawing.Bitmap]::new($file)
+@@ -26,7 +26,7 @@ foreach($name in @('Barks','Music','Muted')){ $clip=$wave.$name;if(!$clip -or $c
+ $bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used|\[VSM\].*overflow')
+ if($bad.Count){throw 'Final runtime logs contain errors, material fallbacks or VSM overflows'}
+ $files=@($payload|ForEach-Object {@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
+-@{version='Unified-0.12.1';checks=$checks;rendered=$true;physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
++@{version='Unified-0.13.0';checks=$checks;rendered=$true;physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
+ Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PLAY_GAME.ps1') -Destination (Join-Path $PackageRoot 'PLAY_GAME.ps1')
+ '@echo off','powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0PLAY_GAME.ps1" %*','if errorlevel 1 pause'|Set-Content -LiteralPath (Join-Path $PackageRoot 'PLAY_GAME.cmd')
+ 'Unified adventure enabled: '+$checks+' packaged checks, '+$files.Count+' payload hashes and fresh seasonal captures. Visual inspection and physical controllers are separate checks.'
+diff --git a/Unreal/UE5MovementLab/PLAY_GAME.ps1 b/Unreal/UE5MovementLab/PLAY_GAME.ps1
+index c45f3c0..15b3f6e 100644
+--- a/Unreal/UE5MovementLab/PLAY_GAME.ps1
++++ b/Unreal/UE5MovementLab/PLAY_GAME.ps1
+@@ -36,7 +36,7 @@ function Get-VerifiedArchiveExe($archive){
+ $marker=Join-Path $PackageRoot 'validated-unified.json'
+ if(!(Test-Path -LiteralPath $marker)){throw 'Validated unified package missing; run the release checks first.'}
+ $gate=Get-Content -LiteralPath $marker -Raw|ConvertFrom-Json
+-if($gate.version-ne 'Unified-0.12.1' -or $gate.checks-lt 565 -or !$gate.rendered){throw 'Unified build validation incomplete.'}
++if($gate.version-ne 'Unified-0.13.0' -or $gate.checks-lt 605 -or !$gate.rendered){throw 'Unified build validation incomplete.'}
+ Assert-Payload (Join-Path $PackageRoot 'Windows') @($gate.files)
+ $catalog=Join-Path $local 'ArchiveBuilds.json'
+ $returned=$false;$errorFlag=$false;$archives=@()
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.cpp
+index d3eb047..841bac8 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.cpp
+@@ -7,6 +7,7 @@
+ FString CozyFeatureLabel(ECozyFeature Id);
+ #include "Neighbourhood.h"
+ #include "DogLife.h"
++#include "HomeProgression.h"
+ #include "MartyCharacter.h"
+ #include "Components/AudioComponent.h"
+ #include "Components/StaticMeshComponent.h"
+@@ -20,6 +21,7 @@ FString CozyFeatureLabel(ECozyFeature Id);
+ #include "Misc/ConfigCacheIni.h"
+ #include "Misc/Parse.h"
+ #include "Sound/SoundBase.h"
++#include "Misc/FileHelper.h"
+ 
+ UCozyMissionDefinition::UCozyMissionDefinition()
+ {
+@@ -67,12 +69,14 @@ void UCozyAdventure::BeginPlay()
+     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))Slot=CozyHubProfileSlot();
+     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlaySmoke")))Slot=CozyHubProfileSlot();
+     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTrickModifierSmoke"))){Slot=TEXT("CheweenieTrickModifierAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
++    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))){Slot=TEXT("CheweenieHomeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
+     Mission = NewObject<UCozyMissionDefinition>(this);
+     FString AssetPath;
+     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
+         if (auto* Asset = LoadObject<UCozyMissionDefinition>(nullptr, *AssetPath)) Mission = Asset;
+     // Keep masks bounded and reject definitions that would create an unwinnable patrol.
+     if (Mission->Snacks.IsEmpty() || Mission->Snacks.Num() > 20 || Mission->Visits.IsEmpty()) Mission = NewObject<UCozyMissionDefinition>(this);
++    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume"))){FString LegacyPath;if(FParse::Value(FCommandLine::Get(),TEXT("CheweenieHomeLegacySave="),LegacyPath)){TArray<uint8> Bytes;if(FFileHelper::LoadFileToArray(Bytes,*LegacyPath))if(auto* Legacy=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromMemory(Bytes)))UGameplayStatics::SaveGameToSlot(Legacy,Slot,0);}}
+     Progress = Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(Slot, 0));
+     if (!Progress || Progress->Version != 1) Progress = NewObject<UCozyAdventureSave>(this);
+     if (Progress->MissionId != Mission->MissionId)
+@@ -246,6 +250,7 @@ void UCozyAdventure::Interact()
+     if (!Enabled || Screen != ECozyScreen::Playing) return;
+     if(Marty()&&Marty()->Life&&Marty()->Life->Busy())return;
+     if(Marty()&&Marty()->Life&&Marty()->Life->Activity==EDogActivity::Lying){Marty()->Life->StandUp();return;}
++    if(auto* H=CheweenieHome(this))if(H->Interact())return;
+     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Festival&&M->Festival->Interact(Marty()))return;
+     if(Prompt().IsEmpty()&&Marty()&&Marty()->Life&&Marty()->Life->Interact())return;
+     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood&&Marty()&&Mode->Neighbourhood->Interact(Marty()))return;
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.h b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.h
+index 93c3274..b64ba2d 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.h
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.h
+@@ -14,7 +14,7 @@ UENUM(BlueprintType)
+ enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes };
+ 
+ UENUM()
+-enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, Count };
++enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, HomeProgression, Count };
+ 
+ USTRUCT(BlueprintType)
+ struct FCozyStop
+@@ -76,6 +76,15 @@ public:
+     UPROPERTY(SaveGame) bool HalloweenRoundComplete=false;
+     UPROPERTY(SaveGame) int32 LakituBond=0;
+     UPROPERTY(SaveGame) int32 RioBond=0;
++    UPROPERTY(SaveGame) int32 PraiseStars=3;
++    UPROPERTY(SaveGame) int32 TrickPraiseMask=0;
++    UPROPERTY(SaveGame) int32 ArmorLevel=0;
++    UPROPERTY(SaveGame) int32 StrengthLevel=0;
++    UPROPERTY(SaveGame) int32 AgilityLevel=0;
++    UPROPERTY(SaveGame) int32 SpeedLevel=0;
++    UPROPERTY(SaveGame) float MealBonusRemaining=0;
++    UPROPERTY(SaveGame) float RestBonusRemaining=0;
++    UPROPERTY(SaveGame) float PraiseCooldownRemaining=0;
+ };
+ 
+ UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyFeatures.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyFeatures.cpp
+index 60f2e95..98d586f 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyFeatures.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyFeatures.cpp
+@@ -5,6 +5,7 @@
+ #include "CatCompanions.h"
+ #include "MartyCharacter.h"
+ #include "DogLife.h"
++#include "HomeProgression.h"
+ 
+ bool UCozyAdventure::Feature(ECozyFeature Id) const{return !Progress||(Progress->DisabledFeatures&(1<<uint8(Id)))==0;}
+ int32 UCozyAdventure::FurDetail() const
+@@ -23,7 +24,7 @@ void UCozyAdventure::AdjustFurDetail(int32 Direction)
+ TArray<ECozyFeature> UCozyAdventure::FeatureGroup() const
+ {
+     TArray<ECozyFeature> Result;const int32 First=FeaturePage==0?0:FeaturePage==1?6:17,Last=FeaturePage==0?6:FeaturePage==1?17:24;
+-    for(int32 I=First;I<Last;++I)Result.Add(ECozyFeature(I));if(FeaturePage==1)Result.Add(ECozyFeature::Companions);return Result;
++    for(int32 I=First;I<Last;++I)Result.Add(ECozyFeature(I));if(FeaturePage==1){Result.Add(ECozyFeature::Companions);Result.Add(ECozyFeature::HomeProgression);}return Result;
+ }
+ void UCozyAdventure::ToggleFeature(ECozyFeature Id)
+ {
+@@ -31,6 +32,7 @@ void UCozyAdventure::ToggleFeature(ECozyFeature Id)
+     if(auto* P=Marty())if(P->Life&&((Id>=ECozyFeature::Energy&&Id<=ECozyFeature::Hurry)||Id==ECozyFeature::ActionViews))P->Life->CancelAction();
+     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();
+     if(Id==ECozyFeature::Companions)if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->ApplyFeature();
++    if(Id==ECozyFeature::HomeProgression)if(auto* H=CheweenieHome(this))H->CancelActivities();
+     UpdateMusic();Save();
+ }
+ void UCozyAdventure::OpenMap(){if(Screen==ECozyScreen::Map){SetScreen(ECozyScreen::Playing);return;}if(Screen==ECozyScreen::Playing)SetScreen(ECozyScreen::Map);}
+@@ -42,6 +44,7 @@ bool UCozyAdventure::StopOutdoors(const FCozyStop& Stop) const{const auto* M=Get
+ FString CozyFeatureLabel(ECozyFeature Id)
+ {
+     static const TCHAR* Labels[]={TEXT("Map display"),TEXT("Compass / player heading"),TEXT("Destination guidance"),TEXT("Street route guide"),TEXT("World objective labels"),TEXT("Current location"),TEXT("Energy / tiredness"),TEXT("Health / damage"),TEXT("Backpack storage"),TEXT("Dog tricks"),TEXT("Jump / sofa hop"),TEXT("Dig / bury / recover"),TEXT("Pick up / carry toys"),TEXT("Kitchen meals"),TEXT("Watch TV"),TEXT("Barking"),TEXT("Jog / run / hurry"),TEXT("Mouse / stick camera orbit"),TEXT("Camera presets"),TEXT("Action camera views"),TEXT("Control hints"),TEXT("Detailed Marty coat"),TEXT("Music"),TEXT("Sound effects")};
++    if(Id==ECozyFeature::HomeProgression)return TEXT("Home upgrades & reactions");
+     if(Id==ECozyFeature::Companions)return TEXT("Companion behaviour");return Labels[uint8(Id)];
+ }
+ 
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyHUD.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyHUD.cpp
+index 3813878..6b56659 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyHUD.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyHUD.cpp
+@@ -6,6 +6,7 @@
+ #include "Engine/GameInstance.h"
+ #include "Neighbourhood.h"
+ #include "DogLife.h"
++#include "HomeProgression.h"
+ #include "Engine/Canvas.h"
+ #include "Engine/Texture2D.h"
+ #include "GameFramework/PlayerController.h"
+@@ -41,7 +42,7 @@ bool AMartyHUD::DrawAdventureHUD()
+         if(HalloweenPage)DrawText(FString::Printf(TEXT("PAW-PASS %d / 8 | %s"),Mode->Festival?Mode->Festival->StampCount():0,Session->Progress->HalloweenBadge?TEXT("PUMPKIN PAL EARNED"):TEXT("8 PORCHES / 1 COZY FINALE")),FLinearColor(1,.72f,.35f),X+24,Y+90,nullptr,.9f);
+         if(Session->Screen == ECozyScreen::Controls)
+         {
+-            const TArray<FString> Lines={TEXT("Move: WASD / LS | Look: mouse / RS | Hurry: Shift / A-Cross"),TEXT("Interact: E / X-Square | Jump: Space / Y-Triangle | Bark: B / tap LB"),TEXT("Hold L1/LB + Cross/A: lie | Circle/B: roll | Square/X: shake | Triangle/Y: bark"),TEXT("Keyboard direct tricks: hold Left Ctrl + 1 lie / 2 roll / 3 shake / 4 bark"),TEXT("Dig: F / RT | Drop: Q / LT | Camera: V / R3 | Recenter: R / RB"),TEXT("Map: M / D-pad Up | Tricks: C / B-Circle | Bag: Tab / View"),TEXT("Crew: K / D-pad Down | Pause: Esc / Options | Home: H")};
++            const TArray<FString> Lines={TEXT("Move: WASD / LS | Look: mouse / RS | Hurry: Shift / A-Cross"),TEXT("Interact: E / X-Square | Jump: Space / Y-Triangle | Bark: B / tap LB"),TEXT("Hold L1/LB + Cross/A: lie | Circle/B: roll | Square/X: shake | Triangle/Y: bark"),TEXT("Keyboard direct tricks: hold Left Ctrl + 1 lie / 2 roll / 3 shake / 4 bark"),TEXT("Dig: F / RT | Drop: Q / LT | Camera: V / R3 | Recenter: R / RB"),TEXT("Map: M / D-pad Up | Tricks: C / B-Circle | Bag: Tab / View"),TEXT("Crew: K / D-pad Down | Pause: Esc / Options | Home: H"),TEXT("Home: bed rest | kitchen fuel | garage shield | gym training | tricks earn stars")};
+             for(int32 I=0;I<Lines.Num();++I) DrawText(Lines[I],FLinearColor::White,X+24,Y+95+I*18);
+         }
+         const auto Items=Session->Menu();
+@@ -51,7 +52,7 @@ bool AMartyHUD::DrawAdventureHUD()
+             if(P&&P->Life){DrawText(P->Life->BackpackText(),FLinearColor::White,X+24,Y+105);DrawText(P->Life->Status(),FLinearColor(.7f,1,.7f),X+24,Y+140);}
+             DrawText(TEXT("Carry in mouth, stow safely, retrieve, drop or bury."),FLinearColor::White,X+24,Y+180);
+         }
+-        const float First=Session->Screen==ECozyScreen::Controls ? Y+225 : Session->Screen==ECozyScreen::Backpack?Y+225:Y+115;
++        const float First=Session->Screen==ECozyScreen::Controls ? Y+245 : Session->Screen==ECozyScreen::Backpack?Y+225:Y+115;
+         const int32 Visible=Session->Screen==ECozyScreen::Controls?4:Session->Screen==ECozyScreen::Backpack?3:7;
+         const int32 Begin=FMath::Clamp(Session->Selection-Visible+1,0,FMath::Max(0,Items.Num()-Visible));
+         for(int32 I=Begin;I<FMath::Min(Begin+Visible,Items.Num());++I)
+@@ -74,10 +75,10 @@ bool AMartyHUD::DrawAdventureHUD()
+     }
+     else
+     {
+-        if((Show(ECozyOverlay::Objective))||(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints))||Show(ECozyOverlay::Status)||(Show(ECozyOverlay::Health)&&Session->Feature(ECozyFeature::Health))||(Show(ECozyOverlay::Energy)&&Session->Feature(ECozyFeature::Energy)))
++        if((Show(ECozyOverlay::Objective))||(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints))||Show(ECozyOverlay::Status)||Show(ECozyOverlay::HomeStats)||(Show(ECozyOverlay::Health)&&Session->Feature(ECozyFeature::Health))||(Show(ECozyOverlay::Energy)&&Session->Feature(ECozyFeature::Energy)))
+             DrawRect(FLinearColor(.025f,.055f,.07f,.88f),16,16,760,170);
+         const bool Outside=Mode->Neighbourhood&&Mode->Neighbourhood->Outside;
+-        if(Show(ECozyOverlay::Objective))DrawText(Seasonal?Session->Objective():Outside?TEXT("Neighbourhood walk: meet the dogs, visit the park and school"):Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
++        if(Show(ECozyOverlay::Objective))DrawText(Mode->HomeProgression&&Mode->HomeProgression->Training>=0?Mode->HomeProgression->TrainingObjective():Seasonal?Session->Objective():Outside?TEXT("Neighbourhood walk: meet the dogs, visit the park and school"):Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
+         if(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints)){DrawText(TEXT("Move: WASD / left stick | Interact: E / X-Square | Pause: Esc / Options"),FLinearColor::White,28,57);
+         DrawText(Session->Progress->BodyControls?TEXT("Body controls: LS steers | RS swings/turns | Mouse: look | V / R3: camera"):TEXT("Look: mouse / right stick | Hurry: Shift / A-Cross | Camera: V / R3"),FLinearColor::White,28,79);}
+         const auto* OwnerPC=GetWorld()->GetFirstPlayerController();const auto* Pet=OwnerPC?Cast<AMartyCharacter>(OwnerPC->GetPawn()):nullptr;
+@@ -92,9 +93,10 @@ bool AMartyHUD::DrawAdventureHUD()
+             DrawText(FString::Printf(TEXT("BACKPACK %d / 4"),Session->Progress->BagItems.Num()),FLinearColor(.9f,.82f,.6f),Width-282,30);
+             DrawText(TEXT("Tab / View-Touchpad: open backpack"),FLinearColor::White,Width-282,80);}
+         }
++        if(Show(ECozyOverlay::HomeStats)&&Mode->HomeProgression){auto* H=Mode->HomeProgression.Get();DrawText(H->Summary(),FLinearColor(1,.85f,.55f),450,127,nullptr,.9f);if(H->Enabled()){DrawText(FString::Printf(TEXT("STR %d | AGI %d | SPD %d"),H->Level(0),H->Level(1),H->Level(2)),FLinearColor(.7f,.95f,.8f),450,146,nullptr,.9f);DrawText(H->BuffSummary(),FLinearColor(.75f,.85f,.9f),450,166,nullptr,.85f);}}
+         const FString Prompt=Session->Prompt();
+         if(Show(ECozyOverlay::Prompts)&&!Prompt.IsEmpty()) DrawText(Prompt,FLinearColor(1,.9f,.5f),Width*.5f-140,Height-110,nullptr,1.6f);
+-        if(Show(ECozyOverlay::WorldLabels)&&Session->Feature(ECozyFeature::WorldLabels)&&!Session->Progress->Complete&&!Outside&&!Seasonal)
++        if(Show(ECozyOverlay::WorldLabels)&&Session->Feature(ECozyFeature::WorldLabels)&&!Session->Progress->Complete&&!Outside&&!Seasonal&&!(Mode->HomeProgression&&Mode->HomeProgression->InAnnex()))
+         {
+             for(int32 I=0;I<Session->Mission->Snacks.Num();++I) if(!(Session->Progress->SnackMask & (1<<I)))
+             {
+@@ -112,7 +114,7 @@ bool AMartyHUD::DrawAdventureHUD()
+     {
+         DrawNavigation(false);
+         const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
+-        if(Show(ECozyOverlay::Prompts)&&Pawn){const FString LifePrompt=Pawn->Life?Pawn->Life->Prompt():FString();const FString CatPrompt=Mode->Companions?Mode->Companions->Prompt():FString();const FString AreaPrompt=Mode->Neighbourhood->Prompt(Pawn);DrawText(!Session->Prompt().IsEmpty()?FString():!LifePrompt.IsEmpty()?LifePrompt:AreaPrompt.StartsWith(TEXT("E /"))?AreaPrompt:!CatPrompt.IsEmpty()?CatPrompt:AreaPrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
++        if(Show(ECozyOverlay::Prompts)&&Pawn){const FString HomePrompt=Mode->HomeProgression?Mode->HomeProgression->Prompt():FString();const FString LifePrompt=!HomePrompt.IsEmpty()?HomePrompt:Pawn->Life?Pawn->Life->Prompt():FString();const FString CatPrompt=Mode->Companions?Mode->Companions->Prompt():FString();const FString AreaPrompt=Mode->HomeProgression&&Mode->HomeProgression->InAnnex()?TEXT("Garage + gym: use E / X-Square at a station or the return door"):Mode->Neighbourhood->Prompt(Pawn);DrawText(!Session->Prompt().IsEmpty()?FString():!LifePrompt.IsEmpty()?LifePrompt:AreaPrompt.StartsWith(TEXT("E /"))?AreaPrompt:!CatPrompt.IsEmpty()?CatPrompt:AreaPrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
+         if(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints)&&(!Show(ECozyOverlay::TrickGuide)||!Pawn||!Pawn->TrickModifierVisible())){DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / tap LB: bark"),FLinearColor(.8f,.9f,1),28,Height-145);
+         DrawText(TEXT("Map: M / D-pad Up | Crew: K / D-pad Down | Hold L1/LB: direct tricks | C: trick menu"),FLinearColor(.8f,.9f,1),28,Height-170);}
+     }
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.cpp
+index 8672187..347971e 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.cpp
+@@ -19,7 +19,7 @@
+ #include "Misc/CommandLine.h"
+ 
+ // Stable names make preferences additive and tolerate missing/unknown fields.
+-static const TCHAR* OverlayLabels[]={TEXT("All gameplay overlays"),TEXT("Objective"),TEXT("Control hints"),TEXT("Pet status / activity"),TEXT("Health meter"),TEXT("Energy meter"),TEXT("Backpack summary"),TEXT("Interaction prompts"),TEXT("World objective labels"),TEXT("Local map"),TEXT("Compass"),TEXT("Current location"),TEXT("Destination guidance"),TEXT("Halloween paw-pass"),TEXT("Direct trick guide"),TEXT("Messages / notifications"),TEXT("LAN / memory room status"),TEXT("Other pet name labels")};
++static const TCHAR* OverlayLabels[]={TEXT("All gameplay overlays"),TEXT("Objective"),TEXT("Control hints"),TEXT("Pet status / activity"),TEXT("Health meter"),TEXT("Energy meter"),TEXT("Backpack summary"),TEXT("Interaction prompts"),TEXT("World objective labels"),TEXT("Local map"),TEXT("Compass"),TEXT("Current location"),TEXT("Destination guidance"),TEXT("Halloween paw-pass"),TEXT("Direct trick guide"),TEXT("Messages / notifications"),TEXT("LAN / memory room status"),TEXT("Other pet name labels"),TEXT("Home upgrades / bonuses"),TEXT("Cat reaction labels")};
+ static_assert(UE_ARRAY_COUNT(OverlayLabels)==int32(ECozyOverlay::Count));
+ static FString OverlayPrefsPath(){return FPaths::ProjectSavedDir()/(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlaySmoke"))?TEXT("OverlayAcceptance.json"):TEXT("OverlayPreferences.json"));}
+ bool UCozyModeHub::OverlayVisible(ECozyOverlay Id) const
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.h b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.h
+index 3da5eb4..aa0b21d 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.h
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyModeHub.h
+@@ -9,7 +9,7 @@ class UCozyAdventure;
+ class UNetDriver;
+ enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave, Overlays };
+ // Append-only presentation IDs. These never change gameplay feature flags.
+-enum class ECozyOverlay : uint8 { All, Objective, Hints, Status, Health, Energy, Backpack, Prompts, WorldLabels, LocalMap, Compass, Location, Guidance, Festival, TrickGuide, Messages, RoomStatus, PetNames, Count };
++enum class ECozyOverlay : uint8 { All, Objective, Hints, Status, Health, Energy, Backpack, Prompts, WorldLabels, LocalMap, Compass, Location, Guidance, Festival, TrickGuide, Messages, RoomStatus, PetNames, HomeStats, Reactions, Count };
+ struct FCozyArchiveChoice { FString Id, Label; };
+ FString CozyHubProfileSlot();
+ 
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyNavigation.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyNavigation.cpp
+index 0763807..3f440a6 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyNavigation.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyNavigation.cpp
+@@ -1,4 +1,5 @@
+ #include "CozyNavigation.h"
++#include "HomeProgression.h"
+ #include "HalloweenSpecial.h"
+ #include "CozyAdventure.h"
+ #include "Neighbourhood.h"
+@@ -21,18 +22,19 @@ TArray<FCozyLandmark> UCozyNavigation::Landmarks() const
+     if(M->Festival&&M->Festival->Active())Objective={M->Festival->Objective(),M->Festival->GoalPosition(),M->Festival->NextPorch()>=0||N->Outside};
+     TArray<FCozyLandmark> Result={Objective,{TEXT("Home / headquarters"),FVector(-200,-200,28),false},{TEXT("Park"),N->Park,true},{TEXT("Glen Dhu school"),N->School,true},{TEXT("Kitchen bowl"),FVector(-180,320,0),false}};
+     for(const auto& V:S->Mission->Visits)Result.Add({V.Label,S->StopPosition(V),S->StopOutdoors(V)});
+-    for(const auto& D:N->Dogs)Result.Add({D.Name,D.Position,true});return Result;
++    for(const auto& D:N->Dogs)Result.Add({D.Name,D.Position,true});if(M->HomeProgression){const auto* H=M->HomeProgression.Get();Result.Add({TEXT("Marty bed"),H->Bed,false});Result.Add({TEXT("Garage + gym door"),H->Portal,false});Result.Add({TEXT("Padded harness workshop"),H->ArmorBench,false});Result.Add({TEXT("Strength training"),H->Gym[0],false});Result.Add({TEXT("Agility training"),H->Gym[1],false});Result.Add({TEXT("Speed training"),H->Gym[2],false});Result.Add({TEXT("Annex return door"),H->Exit,false});}return Result;
+ }
+ FCozyLandmark UCozyNavigation::Goal() const
+ {
+     const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto Stops=Landmarks();if(Stops.IsEmpty())return {};
++    if(M->HomeProgression&&M->HomeProgression->Training>=0)return {M->HomeProgression->TrainingObjective(),M->HomeProgression->TrainingGoal(),false};
+     const int32 Choice=FMath::Clamp(M->Adventure->Progress->NavTarget,0,Stops.Num()-1);auto G=Stops[Choice];
+-    if(G.Outdoors!=M->Neighbourhood->Outside){G.Label=TEXT("Door to ")+G.Label;G.Position=M->Neighbourhood->Outside?M->Neighbourhood->Entrance:FVector(-425,-200,28);G.Outdoors=M->Neighbourhood->Outside;}return G;
++    if(G.Outdoors!=M->Neighbourhood->Outside){G.Label=TEXT("Door to ")+G.Label;G.Position=M->Neighbourhood->Outside?M->Neighbourhood->Entrance:FVector(-425,-200,28);G.Outdoors=M->Neighbourhood->Outside;}if(M->HomeProgression&&!G.Outdoors){const auto* H=M->HomeProgression.Get();if(H->InAnnex()&&!UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Return via headquarters: ")+Stops[Choice].Label;G.Position=H->Exit;}else if(!H->InAnnex()&&!M->Neighbourhood->Outside&&UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Garage door to ")+G.Label;G.Position=H->Portal;}}return G;
+ }
+ FString UCozyNavigation::Location() const
+ {
+     const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;if(!M||!P)return TEXT("Locating Marty...");
+-    const FVector Pos=P->GetActorLocation();
++    const FVector Pos=P->GetActorLocation();if(M->HomeProgression&&M->HomeProgression->InAnnex())return Pos.X<8300?TEXT("Headquarters / garage workshop"):TEXT("Headquarters / gym");
+     if(!M->Neighbourhood->Outside){if(Pos.Y>240&&Pos.X<0)return TEXT("Headquarters / kitchen");if(Pos.X>130)return TEXT("Headquarters / sofa corner");return TEXT("Headquarters / cozy room");}
+     auto* N=M->Neighbourhood.Get();if(FVector::Dist2D(Pos,N->Entrance)<900)return TEXT("Headquarters / front garden");
+     if(FVector::Dist2D(Pos,N->Park)<1100)return TEXT("Park");if(FVector::Dist2D(Pos,N->School)<1000)return TEXT("Glen Dhu school approach");
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogLife.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogLife.cpp
+index 3a47518..fd14c5b 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogLife.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogLife.cpp
+@@ -1,4 +1,5 @@
+ #include "DogLife.h"
++#include "HomeProgression.h"
+ #include "MartyCharacter.h"
+ #include "MartyGait.h"
+ #include "CozyAdventure.h"
+@@ -123,13 +124,14 @@ FString UDogLife::Prompt() const
+ void UDogLife::Dig()
+ {
+     if(!Playing()||Busy()||!Allows(ECozyFeature::Dig))return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}
+-    if(Energy()<6){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
+-    if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=6;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
++    const float Cost=CheweenieHome(this)?CheweenieHome(this)->DigCost():6;
++    if(Energy()<Cost){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
++    if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=Cost;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=CheweenieHome(this)?CheweenieHome(this)->DigDuration():.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
+ }
+ void UDogLife::Bark()
+ {
+     if(!Playing()||Busy()||BarkCooldown>0||!Allows(ECozyFeature::Bark))return;
+-    BarkCooldown=1.2f;++BarkCount;Excitement=FMath::Max(Excitement,4.f);Tell(TEXT("Marty: Woof woof! Very important dog announcement."),TEXT("Bark"));
++    BarkCooldown=1.2f;++BarkCount;Excitement=FMath::Max(Excitement,4.f);Tell(TEXT("Marty: Woof woof! Very important dog announcement."),TEXT("Bark"));if(auto* H=CheweenieHome(this))H->OnSkill(3);
+ }
+ void UDogLife::Drop()
+ {
+@@ -143,7 +145,7 @@ bool UDogLife::PayJump()
+ {
+     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Jump))return false;
+     if(Energy()<8){Tell(TEXT("Not enough energy to jump. Rest or eat some food."));return false;}
+-    StopWatching();StandUp();if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=8;Excitement=6;Save();Session()->ActionCue(TEXT("Jump"));return true;
++    StopWatching();StandUp();Pawn()->GetCharacterMovement()->JumpZVelocity=440*(CheweenieHome(this)?CheweenieHome(this)->JumpMultiplier():1);if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=8;Excitement=6;Save();Session()->ActionCue(TEXT("Jump"));return true;
+ }
+ void UDogLife::StopWatching()
+ {
+@@ -192,8 +194,9 @@ void UDogLife::FinishAction()
+         else {D->HoleDepths[PendingPatch]=FMath::Min(3,D->HoleDepths[PendingPatch]+1);Tell(D->HoleDepths[PendingPatch]==3?TEXT("A proper little hole! Bring a toy here and press E to bury it."):TEXT("The hole is getting deeper. Dig again with F / RT."));}
+         SyncHoles();SyncItems();
+     }
+-    else if(Activity==EDogActivity::Eating){if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Min(100.f,D->PetEnergy+30);if(Allows(ECozyFeature::Health))D->PetHealth=FMath::Min(100.f,D->PetHealth+20);FoodCooldown=25;Excitement=10;Tell(TEXT("A full bowl and a happier Marty. Energy restored!"),TEXT("Cozy"));}
++    else if(Activity==EDogActivity::Eating){if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Min(100.f,D->PetEnergy+30);if(Allows(ECozyFeature::Health))D->PetHealth=FMath::Min(100.f,D->PetHealth+20);FoodCooldown=25;Excitement=10;Tell(TEXT("A full bowl and a happier Marty. Energy restored!"),TEXT("Cozy"));if(auto* H=CheweenieHome(this))H->OnMeal();}
+     if(Activity==EDogActivity::Rolling||Activity==EDogActivity::Shaking)if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);
++    if(Activity==EDogActivity::Rolling||Activity==EDogActivity::Shaking)if(auto* H=CheweenieHome(this))H->OnSkill(Activity==EDogActivity::Rolling?1:2);
+     Activity=EDogActivity::Idle;PendingPatch=INDEX_NONE;Save();
+ }
+ void UDogLife::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
+@@ -212,7 +215,7 @@ void UDogLife::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunc
+     }
+     if(Busy()){ActionTime-=Delta;if(ActionTime<=0)FinishAction();}
+     const float Rate=(Activity==EDogActivity::WatchingTV||Activity==EDogActivity::Lying)?TVRecovery:Speed>190?-HurryDrain:Speed>110?-HurryDrain*.5f:Speed>8?-WalkingDrain:Busy()?0:IdleRecovery;
+-    if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Clamp(D->PetEnergy+Rate*Delta,0.f,100.f);
++    if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Clamp(D->PetEnergy+Rate*Delta*(Rate<0&&CheweenieHome(this)?CheweenieHome(this)->DrainMultiplier():1),0.f,100.f);
+     // Keep legacy movement fixtures independent of a needs save that is not present there.
+     P->GetCharacterMovement()->MaxWalkSpeed=WalkSpeed();
+     P->GetCharacterMovement()->MaxAcceleration=WalkSpeed()>180?650:WalkSpeed()>110?500:350;
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogTricks.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogTricks.cpp
+index 9c6d43d..21d10e0 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogTricks.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogTricks.cpp
+@@ -1,4 +1,5 @@
+ #include "DogLife.h"
++#include "HomeProgression.h"
+ #include "MartyCharacter.h"
+ #include "CozyAdventure.h"
+ #include "GameFramework/CharacterMovementComponent.h"
+@@ -20,7 +21,7 @@ static void ShowTrickView(AMartyCharacter* P,ACameraActor* Camera)
+ float UDogLife::Health() const{return Data()?Data()->PetHealth:100;}
+ float UDogLife::ActionProgress() const{return FMath::Clamp(1-ActionTime/TrickDuration,0.f,1.f);}
+ FString UDogLife::PaceName() const{return !Allows(ECozyFeature::Hurry)?TEXT("Walk (hurry off)"):!Data()||Data()->PetPace==0?TEXT("Walk"):Data()->PetPace==1?TEXT("Jog"):TEXT("Run");}
+-float UDogLife::WalkSpeed() const{return Energy()<25?70:(Allows(ECozyFeature::Hurry)&&(SprintRequested||(Data()&&Data()->PetPace==2)))?230:Allows(ECozyFeature::Hurry)&&Data()&&Data()->PetPace==1?155:100;}
++float UDogLife::WalkSpeed() const{return Energy()<25?70:(CheweenieHome(this)?CheweenieHome(this)->SpeedMultiplier():1)*((Allows(ECozyFeature::Hurry)&&(SprintRequested||(Data()&&Data()->PetPace==2)))?230:Allows(ECozyFeature::Hurry)&&Data()&&Data()->PetPace==1?155:100);}
+ FString UDogLife::BackpackText() const
+ {
+     if(!Data()||Data()->BagItems.IsEmpty())return TEXT("Backpack 0 / 4: empty");
+@@ -46,7 +47,7 @@ void UDogLife::LieDown()
+ {
+     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Tricks))return;
+     if(Activity==EDogActivity::Lying){StandUp();Tell(TEXT("Up we get. Adventure awaits!"));return;}
+-    StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Lying;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Marty settles down. E or movement gets him back up."),TEXT("Cozy"));
++    StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Lying;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Marty settles down. E or movement gets him back up."),TEXT("Cozy"));if(auto* H=CheweenieHome(this))H->OnSkill(0);
+ }
+ void UDogLife::RollOver()
+ {
+@@ -64,6 +65,6 @@ void UDogLife::CyclePace()
+ }
+ void UDogLife::AdjustHealth(float Amount)
+ {
+-    if(!Data()||!FMath::IsFinite(Amount)||!Allows(ECozyFeature::Health))return;Data()->PetHealth=FMath::Clamp(Data()->PetHealth+Amount,0.f,100.f);
++    if(!Data()||!FMath::IsFinite(Amount)||!Allows(ECozyFeature::Health))return;if(Amount<0&&CheweenieHome(this))Amount*=CheweenieHome(this)->DamageMultiplier();Data()->PetHealth=FMath::Clamp(Data()->PetHealth+Amount,0.f,100.f);
+     if(Data()->PetHealth<=0){Pawn()->ReturnHome();Data()->PetHealth=25;Data()->PetEnergy=FMath::Max(Data()->PetEnergy,25.f);Tell(TEXT("Marty returns home for a cozy recovery."));}Save();
+ }
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgression.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgression.cpp
+new file mode 100644
+index 0000000..48bf87c
+--- /dev/null
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgression.cpp
+@@ -0,0 +1,173 @@
++#include "HomeProgression.h"
++#include "CozyModeHub.h"
++#include "Engine/GameInstance.h"
++#include "MartyCharacter.h"
++#include "MartyGait.h"
++#include "CozyAdventure.h"
++#include "CozyNavigation.h"
++#include "DogLife.h"
++#include "Neighbourhood.h"
++#include "CatCompanions.h"
++#include "GameFramework/CharacterMovementComponent.h"
++#include "GameFramework/PlayerController.h"
++#include "Components/StaticMeshComponent.h"
++#include "Components/PoseableMeshComponent.h"
++#include "Components/TextRenderComponent.h"
++#include "Components/PointLightComponent.h"
++#include "Engine/StaticMeshActor.h"
++#include "Engine/StaticMesh.h"
++#include "Engine/SkinnedAsset.h"
++#include "Engine/DamageEvents.h"
++#include "Materials/MaterialInstanceDynamic.h"
++
++UHomeProgression* CheweenieHome(const UObject* C){auto* M=C&&C->GetWorld()?C->GetWorld()->GetAuthGameMode<AMartyPlayMode>():nullptr;return M?M->HomeProgression.Get():nullptr;}
++UHomeProgression::UHomeProgression(){PrimaryComponentTick.bCanEverTick=true;PrimaryComponentTick.TickGroup=TG_PostUpdateWork;}
++AMartyPlayMode* UHomeProgression::Mode() const{return Cast<AMartyPlayMode>(GetOwner());}
++AMartyCharacter* UHomeProgression::Marty() const{auto* PC=GetWorld()->GetFirstPlayerController();return PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;}
++UCozyAdventureSave* UHomeProgression::Data() const{return Mode()&&Mode()->Adventure?Mode()->Adventure->Progress.Get():nullptr;}
++bool UHomeProgression::Enabled() const{return Data()&&Mode()->Adventure->Enabled&&Mode()->Adventure->Feature(ECozyFeature::HomeProgression);}
++bool UHomeProgression::Playing() const{return Data()&&Mode()->Adventure->Enabled&&Mode()->Adventure->Screen==ECozyScreen::Playing;}
++bool UHomeProgression::InAnnex() const{return Marty()&&PointInAnnex(Marty()->GetActorLocation());}
++int32 UHomeProgression::Level(int32 Type) const{const auto* D=Data();if(!D)return 0;return FMath::Clamp(Type==0?D->StrengthLevel:Type==1?D->AgilityLevel:Type==2?D->SpeedLevel:D->ArmorLevel,0,3);}
++int32 UHomeProgression::UpgradeCost(int32 Type) const{return (Type==3?3:2)+Level(Type)*2;}
++float UHomeProgression::SpeedMultiplier() const{return Enabled()?1+.05f*Level(2):1;}
++float UHomeProgression::JumpMultiplier() const{return Enabled()?1+.06f*Level(1):1;}
++float UHomeProgression::DamageMultiplier() const{return Enabled()?1-.15f*Level(3):1;}
++float UHomeProgression::DrainMultiplier() const{return !Enabled()?1:(Data()->MealBonusRemaining>0?.75f:1)*(Data()->RestBonusRemaining>0?.85f:1);}
++float UHomeProgression::DigDuration() const{return Enabled()?.9f-.12f*Level(0):.9f;}
++float UHomeProgression::DigCost() const{return Enabled()?6-.75f*Level(0):6;}
++void UHomeProgression::Tell(const FString& Text,const FString& Sound){auto* S=Mode()->Adventure.Get();S->Message=Text;S->HoldMessage(6);S->ActionCue(Sound);}
++void UHomeProgression::Initialize()
++{
++    if(Ready||!Data()||!Marty()||!Mode()->Adventure->Enabled||!Mode()->Neighbourhood||Mode()->Neighbourhood->Houses<9)return;
++    auto* D=Data();D->PraiseStars=FMath::Clamp(D->PraiseStars,0,99);D->TrickPraiseMask&=4095;
++    for(int32* L:{&D->StrengthLevel,&D->AgilityLevel,&D->SpeedLevel,&D->ArmorLevel})*L=FMath::Clamp(*L,0,3);
++    D->MealBonusRemaining=FMath::IsFinite(D->MealBonusRemaining)?FMath::Clamp(D->MealBonusRemaining,0.f,MealDuration):0;
++    D->RestBonusRemaining=FMath::IsFinite(D->RestBonusRemaining)?FMath::Clamp(D->RestBonusRemaining,0.f,RestDuration):0;
++    D->PraiseCooldownRemaining=FMath::IsFinite(D->PraiseCooldownRemaining)?FMath::Clamp(D->PraiseCooldownRemaining,0.f,PraiseCooldown):0;
++    Build();if(Marty()->Gait)AddTickPrerequisiteComponent(Marty()->Gait);Ready=true;
++}
++AActor* UHomeProgression::Shape(const TCHAR* Tag,FVector P,FVector Size,int32 Color,bool Solid,const TCHAR* Mesh)
++{
++    auto* A=GetWorld()->SpawnActor<AStaticMeshActor>(P,FRotator::ZeroRotator);auto* C=A->GetStaticMeshComponent();C->SetMobility(EComponentMobility::Movable);
++    C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,*FString::Printf(TEXT("/Engine/BasicShapes/%s.%s"),Mesh,Mesh)));C->SetMaterial(0,Palette[Color]);A->SetActorScale3D(Size/100);
++    C->SetCollisionEnabled(Solid?ECollisionEnabled::QueryAndPhysics:ECollisionEnabled::NoCollision);if(Solid)C->SetCollisionProfileName(TEXT("BlockAll"));C->SetCanEverAffectNavigation(false);A->Tags.Add(FName(Tag));return A;
++}
++void UHomeProgression::Sign(const FString& Text,FVector P,float Size)
++{
++    auto* A=GetWorld()->SpawnActor<AActor>();auto* C=NewObject<UTextRenderComponent>(A);A->SetRootComponent(C);C->RegisterComponent();C->SetText(FText::FromString(Text));C->SetWorldSize(Size);C->SetTextRenderColor(FColor(255,229,163));C->SetHorizontalAlignment(EHTA_Center);C->SetCollisionEnabled(ECollisionEnabled::NoCollision);A->SetActorLocationAndRotation(P,FRotator(0,180,0));
++}
++void UHomeProgression::Build()
++{
++    auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/World/NeighbourhoodSurface.NeighbourhoodSurface"));
++    for(const auto Color:{FLinearColor(.07f,.13f,.16f),FLinearColor(.15f,.42f,.43f),FLinearColor(.55f,.27f,.08f),FLinearColor(.36f,.39f,.36f),FLinearColor(.8f,.62f,.2f)}){auto* M=UMaterialInstanceDynamic::Create(Base,this);M->SetVectorParameterValue(TEXT("Color"),Color);Palette.Add(M);}
++    Shape(TEXT("CozyHomeBed"),Bed+FVector(0,0,5),FVector(115,80,10),1,false,TEXT("Sphere"));Shape(TEXT("CozyHomePillow"),Bed+FVector(-35,0,12),FVector(30,60,13),4,false,TEXT("Sphere"));Sign(TEXT("MARTY'S BED\nRest + recover"),Bed+FVector(-40,0,85),16);
++    for(float Y:{-50.f,50.f})Shape(TEXT("CozyHomeDoor"),Portal+FVector(30,Y,60),FVector(6,8,150),1);Shape(TEXT("CozyHomeDoor"),Portal+FVector(30,0,135),FVector(6,108,8),1);Sign(TEXT("GARAGE + GYM\nE / X-Square"),Portal+FVector(20,0,120),18);
++    Shape(TEXT("CozyHomeFloor"),FVector(8300,0,-10),FVector(1400,800,20),3,true);
++    for(float X:{7600.f,9000.f})Shape(TEXT("CozyHomeWall"),FVector(X,0,140),FVector(20,800,280),0,true);
++    for(float Y:{-400.f,400.f})Shape(TEXT("CozyHomeWall"),FVector(8300,Y,140),FVector(1400,20,280),0,true);
++    for(float Y:{-255.f,255.f})Shape(TEXT("CozyHomePartition"),FVector(8300,Y,140),FVector(16,290,280),1,true);
++    for(float X:{7950.f,8650.f}){auto* A=GetWorld()->SpawnActor<AActor>();auto* C=NewObject<UPointLightComponent>(A);A->SetRootComponent(C);C->RegisterComponent();C->SetIntensity(5500);C->SetAttenuationRadius(700);C->SetCastShadows(false);A->SetActorLocation(FVector(X,0,230));}
++    Sign(TEXT("GARAGE\nSNUGGLE SHIELD WORKSHOP"),FVector(7980,330,145),26);Sign(TEXT("GYM\nCOACH KEETZ'S PRACTICE CORNER"),FVector(8660,330,145),24);
++    for(float Y:{-50.f,50.f})Shape(TEXT("CozyHomeReturn"),Exit+FVector(-40,Y,40),FVector(6,8,140),1);Shape(TEXT("CozyHomeReturn"),Exit+FVector(-40,0,110),FVector(6,108,8),1);Sign(TEXT("BACK TO HEADQUARTERS\nE / X-Square"),Exit+FVector(-30,0,100),17);
++    Shape(TEXT("CozyHomeArmorBench"),ArmorBench+FVector(0,0,24),FVector(110,70,48),2);Sign(TEXT("PADDED HARNESS\n15% protection / tier"),ArmorBench+FVector(0,0,95),17);
++    Shape(TEXT("CozyHomeFoamTest"),BumpTest+FVector(0,0,38),FVector(55,55,75),4,false,TEXT("Sphere"));Sign(TEXT("FOAM SAFETY TEST\n10 test damage; armor helps"),BumpTest+FVector(0,0,105),16);
++    const TCHAR* Names[]={TEXT("STRENGTH\nE then shake a paw"),TEXT("AGILITY\nE then roll over"),TEXT("SPEED\nE then run to the gold finish")};
++    for(int32 I=0;I<3;++I){Shape(TEXT("CozyHomeTrainingMat"),Gym[I]+FVector(0,0,2),FVector(130,100,4),1);Sign(Names[I],Gym[I]+FVector(0,0,90),17);}
++    for(int32 I=0;I<9;++I)Shape(TEXT("CozyHomeRunLane"),FVector(8400+I*50,180,2),FVector(22,6,3),4);
++    Shape(TEXT("CozyHomeFinish"),Finish-FVector(0,0,25),FVector(25,130,5),4);Sign(TEXT("FINISH\nRun through here"),Finish+FVector(15,0,70),17);
++    ReactionLabels.SetNum(2);Mode()->Companions->Initialize();
++    for(int32 I=0;I<2;++I)if(auto* A=Mode()->Companions->Cats[I].Actor.Get()){auto* T=NewObject<UTextRenderComponent>(A);T->SetupAttachment(A->GetRootComponent());T->RegisterComponent();T->SetRelativeLocation(FVector(0,0,160));T->SetRelativeScale3D(FVector(3.125));T->SetWorldSize(14);T->SetHorizontalAlignment(EHTA_Center);T->SetTextRenderColor(FColor(255,220,90));T->SetVisibility(false);T->SetCollisionEnabled(ECollisionEnabled::NoCollision);ReactionLabels[I]=T;}
++    Gear=GetWorld()->SpawnActor<AActor>();auto* Root=NewObject<USceneComponent>(Gear);Gear->SetRootComponent(Root);Root->RegisterComponent();
++    for(int32 I=0;I<3;++I){auto* C=NewObject<UStaticMeshComponent>(Gear);C->SetupAttachment(Root);C->RegisterComponent();C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,TEXT("/Engine/BasicShapes/Sphere.Sphere")));C->SetMaterial(0,Palette[1]);C->SetRelativeLocation(I==0?FVector(0,0,5):FVector(0,I==1?-9:9,0));C->SetRelativeScale3D((I==0?FVector(25,19,5):FVector(20,5,14))/100);C->SetCollisionEnabled(ECollisionEnabled::NoCollision);C->SetCanEverAffectNavigation(false);GearPieces.Add(C);}Gear->SetActorHiddenInGame(true);
++}
++FString UHomeProgression::Summary() const{return !Enabled()?TEXT("Home upgrades: OFF"):FString::Printf(TEXT("Stars %d | Shield %d/3 (%d%%)"),Data()->PraiseStars,Level(3),Level(3)*15);}
++FString UHomeProgression::BuffSummary() const{return !Enabled()?FString():FString::Printf(TEXT("Meal %ds | Rested %ds"),FMath::CeilToInt(Data()->MealBonusRemaining),FMath::CeilToInt(Data()->RestBonusRemaining));}
++FString UHomeProgression::TrainingObjective() const{return Training==0?TEXT("Strength: finish a shake near the teal mat (L1/LB + Square/X)"):Training==1?TEXT("Agility: finish a roll near the teal mat (L1/LB + Circle/B)"):Training==2?TEXT("Speed: hurry through the gold finish (A/Cross without L1/LB)"):FString();}
++FVector UHomeProgression::TrainingGoal() const{return Training==2?Finish:Training>=0?Gym[Training]:Portal;}
++FString UHomeProgression::Prompt() const
++{
++    if(!Playing()||!Marty())return FString();const FVector P=Marty()->GetActorLocation();
++    if(InAnnex()&&FVector::Dist2D(P,Exit)<85)return TEXT("E / X-Square: return to headquarters");
++    if(!Mode()->Neighbourhood->Outside&&!InAnnex()&&FVector::Dist2D(P,Portal)<85)return TEXT("E / X-Square: enter the garage and gym");
++    if(InAnnex()&&FVector::Dist2D(P,BumpTest)<85)return TEXT("E / X-Square: foam harness test (10 test damage, reduced by armor)");
++    if(Training>=0)return TrainingObjective()+FString::Printf(TEXT(" | %.0fs"),TrainingRemaining);
++    int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&FVector::Dist2D(P,Bed)<85)Station=4;
++    if(InAnnex()){if(FVector::Dist2D(P,ArmorBench)<90)Station=3;for(int32 I=0;I<3;++I)if(FVector::Dist2D(P,Gym[I])<85)Station=I;}
++    if(Station<0)return FString();if(!Enabled())return TEXT("Home upgrades are OFF. Enable Controls > Pet feature switches.");
++    if(Station==4)return Resting?TEXT("Resting in Marty's bed | E or movement: get up"):TEXT("E / X-Square: rest in Marty's bed (energy + health)");
++    const TCHAR* Names[]={TEXT("strength"),TEXT("agility"),TEXT("speed"),TEXT("padded harness")};
++    return Level(Station)>=3?FString(Names[Station])+TEXT(": maximum tier 3 reached"):FString::Printf(TEXT("E / X-Square: %s %s tier %d | %d stars (you have %d)"),Station==3?TEXT("upgrade"):TEXT("train"),Names[Station],Level(Station)+1,UpgradeCost(Station),Data()->PraiseStars);
++}
++void UHomeProgression::Travel(bool Enter)
++{
++    auto* P=Marty();if(!P)return;CancelActivities();P->Life->CancelAction();P->GetCharacterMovement()->StopMovementImmediately();Mode()->Neighbourhood->Outside=false;Mode()->Neighbourhood->SetOutdoorLighting(false);
++    P->TeleportTo(Enter?FVector(7850,-80,28):Portal+FVector(-100,0,0),FRotator::ZeroRotator);if(auto* PC=Cast<APlayerController>(P->GetController()))PC->SetControlRotation(FRotator(-12,0,0));Mode()->Companions->OnPlayerTravel(false);Mode()->Navigation->RefreshRoute();Tell(Enter?TEXT("Garage + gym: earn praise stars with varied tricks, then upgrade or train."):TEXT("Back at cozy headquarters. Your upgrades are kept."));
++}
++bool UHomeProgression::Interact()
++{
++    Initialize();if(!Playing()||!Ready||Marty()->Life->Busy())return false;auto* P=Marty();const FVector Here=P->GetActorLocation();
++    if(InAnnex()&&FVector::Dist2D(Here,Exit)<85){Travel(false);return true;}
++    if(!Mode()->Neighbourhood->Outside&&!InAnnex()&&FVector::Dist2D(Here,Portal)<85){Travel(true);return true;}
++    if(InAnnex()&&FVector::Dist2D(Here,BumpTest)<85){if(!Enabled()||!Mode()->Adventure->Feature(ECozyFeature::Health)){Tell(TEXT("Enable home upgrades and health to try the foam safety test."));return true;}if(BumpCooldown>0){Tell(TEXT("The foam tester is resetting. No extra damage taken."));return true;}const float Before=Data()->PetHealth;P->TakeDamage(10,FDamageEvent(),nullptr,nullptr);BumpCooldown=6;Tell(FString::Printf(TEXT("Foam test: %.1f damage taken; shield blocked %.1f. Bed rest or food restores health."),Before-Data()->PetHealth,10-(Before-Data()->PetHealth)));return true;}
++    int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&FVector::Dist2D(Here,Bed)<85)Station=4;
++    if(InAnnex()){if(FVector::Dist2D(Here,ArmorBench)<90)Station=3;for(int32 I=0;I<3;++I)if(FVector::Dist2D(Here,Gym[I])<85)Station=I;}
++    if(Station<0)return false;if(!Enabled()){Tell(TEXT("Enable Home upgrades & reactions in Controls > Pet feature switches."));return true;}
++    if(Station==4){if(P->GetCharacterMovement()->IsFalling())return true;P->Life->StopWatching();P->Life->Activity=EDogActivity::Lying;P->GetCharacterMovement()->StopMovementImmediately();Resting=true;RestTime=0;Tell(TEXT("Cheeween Cozy: a proper bed break. Rest three seconds for a Rested bonus."),TEXT("Cozy"));return true;}
++    if(Level(Station)>=3){Tell(TEXT("Tier 3 reached. Marty is officially overqualified for this station."));return true;}
++    if(Data()->PraiseStars<UpgradeCost(Station)){Tell(TEXT("More praise stars needed. Show the cats four different tricks, or practice in the gym."));return true;}
++    if(Station==3){Data()->PraiseStars-=UpgradeCost(3);++Data()->ArmorLevel;Mode()->Adventure->Save();Tell(TEXT("Snuggle Shield fitted! A padded harness reduces incoming damage by 15% per tier."),TEXT("Discovery"));return true;}
++    if((Station<2&&!Mode()->Adventure->Feature(ECozyFeature::Tricks))||(Station==2&&!Mode()->Adventure->Feature(ECozyFeature::Hurry))){Tell(TEXT("Enable Dog tricks or Jog/run in Pet feature switches for this session."));return true;}
++    if(Mode()->Adventure->Feature(ECozyFeature::Energy)&&Data()->PetEnergy<30){Tell(TEXT("Training needs 30 energy to start. Rest in bed or eat in the kitchen first."));return true;}
++    Training=Station;TrainingRemaining=30;TrainingSpeed=0;TrainingStart=Here;Tell(TrainingObjective());return true;
++}
++void UHomeProgression::CancelActivities(){Resting=false;RestTime=0;Training=-1;TrainingRemaining=0;TrainingSpeed=0;}
++void UHomeProgression::FinishTraining()
++{
++    if(Training<0||!Enabled())return;const int32 T=Training,Cost=UpgradeCost(T);Training=-1;TrainingRemaining=0;
++    if(Level(T)>=3||Data()->PraiseStars<Cost){Tell(TEXT("Session complete, but more stars are needed before upgrading. No stars spent."));return;}
++    if(Mode()->Adventure->Feature(ECozyFeature::Energy)){if(Data()->PetEnergy<8){Tell(TEXT("Marty needs a rest before this upgrade. No stars spent."));return;}Data()->PetEnergy-=8;}
++    Data()->PraiseStars-=Cost;int32& L=T==0?Data()->StrengthLevel:T==1?Data()->AgilityLevel:Data()->SpeedLevel;++L;Mode()->Adventure->Save();Mode()->Navigation->RefreshRoute();
++    Tell(FString::Printf(TEXT("Coach Keetz: %s tier %d earned! %s"),T==0?TEXT("Strength"):T==1?TEXT("Agility"):TEXT("Speed"),L,T==0?TEXT("Quicker digging, less dig energy."):T==1?TEXT("Higher jumps."):TEXT("Faster walking, jogging and running.")),TEXT("Discovery"));
++}
++void UHomeProgression::Praise(int32 Witness,int32 Skill)
++{
++    auto* D=Data();if(!D||D->PraiseCooldownRemaining>0)return;const int32 Bit=1<<(Witness*4+Skill);const bool Fresh=(D->TrickPraiseMask&Bit)==0;
++    const TCHAR* Names[]={TEXT("Lakitu"),TEXT("Rio"),TEXT("Coach Keetz")};
++    const TCHAR* Lines[]={TEXT("Excellent blanket form. A very horizontal professional."),TEXT("Laundry cycle approved. Please do not tumble-dry the dog."),TEXT("A firm pawshake. Your snack application is under review."),TEXT("Volume checked. Still a dog. Strong work.")};
++    int32 Award=0;if(Fresh){D->TrickPraiseMask|=Bit;Award=1;const int32 Round=15<<(Witness*4);if((D->TrickPraiseMask&Round)==Round){D->TrickPraiseMask&=~Round;Award+=2;}D->PraiseStars=FMath::Min(99,D->PraiseStars+Award);}
++    D->PraiseCooldownRemaining=PraiseCooldown;++Reactions;
++    if(Witness<2){Mode()->Companions->Cats[Witness].Happy=5;ReactionTime[Witness]=4;if(ReactionLabels.IsValidIndex(Witness)&&ReactionLabels[Witness]){ReactionLabels[Witness]->SetText(FText::FromString(Award?FString::Printf(TEXT("APPROVED! +%d STAR%s"),Award,Award==1?TEXT(""):TEXT("S")):TEXT("SHOW ME ANOTHER TRICK!")));ReactionLabels[Witness]->SetVisibility(Mode()->Adventure->Feature(ECozyFeature::WorldLabels)&&GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->OverlayVisible(ECozyOverlay::Reactions));}}
++    Tell(FString::Printf(TEXT("%s: %s %s"),Names[Witness],Lines[Skill],Award?*FString::Printf(TEXT("+%d praise star%s!"),Award,Award==1?TEXT(""):TEXT("s")):TEXT("Try a different trick for another star.")),Witness==0?TEXT("Lakitu"):Witness==1?TEXT("Rio"):TEXT("Cozy"));Mode()->Adventure->Save();
++}
++void UHomeProgression::OnSkill(int32 Skill)
++{
++    if(!Playing()||!Enabled()||Skill<0||Skill>3)return;
++    auto* C=Mode()->Companions.Get();int32 Witness=-1;
++    if(C&&C->Enabled())for(int32 I=0;I<2;++I)if(C->Cats[I].Actor.IsValid()&&C->Outdoors(I)==Mode()->Neighbourhood->Outside&&FVector::Dist2D(Marty()->GetActorLocation(),C->Position(I))<180){Witness=I;break;}
++    if(Witness<0&&InAnnex()&&Marty()->GetActorLocation().X>8320)Witness=2;
++    if(Witness>=0)Praise(Witness,Skill);
++    if(Training>=0&&Training<2&&Skill==(Training==0?2:1)&&FVector::Dist2D(Marty()->GetActorLocation(),Gym[Training])<160)FinishTraining();
++}
++void UHomeProgression::OnMeal(){if(!Enabled())return;Data()->MealBonusRemaining=MealDuration;if(Mode()->Adventure->Feature(ECozyFeature::Energy))Data()->PetEnergy=FMath::Min(100.f,Data()->PetEnergy+10);Tell(TEXT("Kitchen fuel bonus! Extra energy now; 25% less movement energy drain for two minutes."),TEXT("Cozy"));Mode()->Adventure->Save();}
++bool UHomeProgression::GearVisible() const{return Gear&&!Gear->IsHidden();}
++void UHomeProgression::UpdateGear()
++{
++    if(!Gear||!Marty())return;Gear->SetActorHiddenInGame(!Enabled()||Level(3)==0||(Data()->CostumeMask&1));if(Gear->IsHidden())return;
++    auto* Skin=Marty()->Skin.Get();const auto* Asset=Skin->GetSkinnedAsset();if(!Asset)return;
++    const auto& Ref=Asset->GetRefSkeleton();const int32 Index=Ref.FindBoneIndex(TEXT("spine"));if(Index==INDEX_NONE)return;
++    FTransform Bind=Ref.GetRefBonePose()[Index];for(int32 Parent=Ref.GetParentIndex(Index);Parent!=INDEX_NONE;Parent=Ref.GetParentIndex(Parent))Bind=Bind*Ref.GetRefBonePose()[Parent];
++    const FTransform Saddle(FQuat::Identity,Bind.GetLocation()+FVector(-4,0,3));FTransform Follow=Saddle.GetRelativeTransform(Bind)*Skin->GetBoneTransformByName(TEXT("spine"),EBoneSpaces::WorldSpace);Follow.SetScale3D(FVector::OneVector);Gear->SetActorTransform(Follow);
++    for(const auto& C:GearPieces)C->SetMaterial(0,Palette[Level(3)==3?4:Level(3)==2?2:1]);
++}
++void UHomeProgression::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
++{
++    Super::TickComponent(Delta,Type,Function);Initialize();if(!Ready)return;UpdateGear();if(!Playing())return;auto* D=Data();auto* P=Marty();
++    if(!Enabled()){CancelActivities();for(const auto& T:ReactionLabels)if(T)T->SetVisibility(false);return;}
++    BumpCooldown=FMath::Max(0.f,BumpCooldown-Delta);
++    for(float* T:{&D->MealBonusRemaining,&D->RestBonusRemaining,&D->PraiseCooldownRemaining})*T=FMath::Max(0.f,*T-Delta);
++    if(Resting){if(P->Life->Activity!=EDogActivity::Lying||FVector::Dist2D(P->GetActorLocation(),Bed)>100)Resting=false;else{RestTime+=Delta;if(Mode()->Adventure->Feature(ECozyFeature::Energy))D->PetEnergy=FMath::Min(100.f,D->PetEnergy+BedEnergyRecovery*Delta);if(Mode()->Adventure->Feature(ECozyFeature::Health))D->PetHealth=FMath::Min(100.f,D->PetHealth+BedHealthRecovery*Delta);if(RestTime>=3&&D->RestBonusRemaining<=0){D->RestBonusRemaining=RestDuration;Tell(TEXT("Well rested! Marty gets 15% less movement energy drain for three minutes."),TEXT("Cozy"));Mode()->Adventure->Save();}}}
++    if(Training>=0){TrainingRemaining-=Delta;if(!InAnnex()||TrainingRemaining<=0){Training=-1;Tell(TEXT("Training paused. Start again at a gym mat; no stars were spent."));}else if(Training==2){TrainingSpeed=FMath::Max(TrainingSpeed,float(P->GetVelocity().Size2D()));if(FVector::Dist2D(P->GetActorLocation(),Finish)<75&&FVector::Dist2D(TrainingStart,P->GetActorLocation())>280&&TrainingSpeed>180)FinishTraining();}}
++    const auto* PC=GetWorld()->GetFirstPlayerController();FVector View;FRotator Rotation;if(PC)PC->GetPlayerViewPoint(View,Rotation);
++    for(int32 I=0;I<2;++I)if(ReactionLabels.IsValidIndex(I)&&ReactionLabels[I]){ReactionTime[I]=FMath::Max(0.f,ReactionTime[I]-Delta);ReactionLabels[I]->SetVisibility(ReactionTime[I]>0&&Mode()->Adventure->Feature(ECozyFeature::WorldLabels)&&GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->OverlayVisible(ECozyOverlay::Reactions));if(PC)ReactionLabels[I]->SetWorldRotation((View-ReactionLabels[I]->GetComponentLocation()).Rotation());}
++}
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgression.h b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgression.h
+new file mode 100644
+index 0000000..a36a681
+--- /dev/null
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgression.h
+@@ -0,0 +1,76 @@
++#pragma once
++#include "CoreMinimal.h"
++#include "Components/ActorComponent.h"
++#include "HomeProgression.generated.h"
++class AMartyCharacter;
++class AMartyPlayMode;
++class UCozyAdventureSave;
++class UMaterialInstanceDynamic;
++class UTextRenderComponent;
++class UStaticMeshComponent;
++
++// Persistent gentle progression; station actions and scene presentation stay local to solo.
++UCLASS(ClassGroup=(Cheweenie),meta=(BlueprintSpawnableComponent))
++class UHomeProgression : public UActorComponent
++{
++    GENERATED_BODY()
++public:
++    UHomeProgression();
++    virtual void TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function) override;
++    void Initialize();
++    bool Enabled() const;
++    bool InAnnex() const;
++    static bool PointInAnnex(FVector P){return P.X>7400&&P.X<9200&&FMath::Abs(P.Y)<600;}
++    bool Interact();
++    FString Prompt() const;
++    FString Summary() const;
++    FString BuffSummary() const;
++    FString TrainingObjective() const;
++    FVector TrainingGoal() const;
++    void OnSkill(int32 Skill);
++    void OnMeal();
++    void CancelActivities();
++    float SpeedMultiplier() const;
++    float JumpMultiplier() const;
++    float DrainMultiplier() const;
++    float DamageMultiplier() const;
++    float DigDuration() const;
++    float DigCost() const;
++    void Travel(bool Enter);
++    bool GearVisible() const;
++    int32 UpgradeCost(int32 Type) const;
++    int32 Level(int32 Type) const;
++    UPROPERTY(EditAnywhere,Category="Home") float BedEnergyRecovery=4;
++    UPROPERTY(EditAnywhere,Category="Home") float BedHealthRecovery=1.5f;
++    UPROPERTY(EditAnywhere,Category="Home") float MealDuration=120;
++    UPROPERTY(EditAnywhere,Category="Home") float RestDuration=180;
++    UPROPERTY(EditAnywhere,Category="Home") float PraiseCooldown=8;
++    FVector Bed=FVector(-350,-345,0),Portal=FVector(410,350,28),Exit=FVector(7800,-220,28);
++    FVector ArmorBench=FVector(8000,-220,0),BumpTest=FVector(8110,180,0);
++    FVector Gym[3]={FVector(8500,-220,0),FVector(8800,-220,0),FVector(8400,180,0)};
++    FVector Finish=FVector(8820,180,28);
++    bool Resting=false;
++    int32 Training=-1,Reactions=0;
++    float TrainingRemaining=0;
++private:
++    AMartyPlayMode* Mode() const;
++    AMartyCharacter* Marty() const;
++    UCozyAdventureSave* Data() const;
++    bool Playing() const;
++    void Tell(const FString& Text,const FString& Sound=TEXT("Menu"));
++    void Build();
++    void FinishTraining();
++    void UpdateGear();
++    void Praise(int32 Witness,int32 Skill);
++    AActor* Shape(const TCHAR* Tag,FVector P,FVector Size,int32 Color,bool Solid=false,const TCHAR* Mesh=TEXT("Cube"));
++    void Sign(const FString& Text,FVector P,float Size=20);
++    UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Palette;
++    UPROPERTY() TArray<TObjectPtr<UTextRenderComponent>> ReactionLabels;
++    UPROPERTY() TObjectPtr<AActor> Gear;
++    UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> GearPieces;
++    bool Ready=false;
++    float RestTime=0,TrainingSpeed=0,BumpCooldown=0;
++    float ReactionTime[2]={0,0};
++    FVector TrainingStart;
++};
++UHomeProgression* CheweenieHome(const UObject* Context);
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgressionSmoke.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgressionSmoke.cpp
+new file mode 100644
+index 0000000..2e9dd93
+--- /dev/null
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/HomeProgressionSmoke.cpp
+@@ -0,0 +1,111 @@
++#include "MartyCharacter.h"
++#include "HomeProgression.h"
++#include "CozyAdventure.h"
++#include "CozyNavigation.h"
++#include "CatCompanions.h"
++#include "DogLife.h"
++#include "GameFramework/PlayerController.h"
++#include "GameFramework/CharacterMovementComponent.h"
++#include "Kismet/GameplayStatics.h"
++#include "Engine/DamageEvents.h"
++#include "InputKeyEventArgs.h"
++#include "Dom/JsonObject.h"
++#include "Serialization/JsonSerializer.h"
++#include "Misc/FileHelper.h"
++#include "Misc/Paths.h"
++#include "Misc/Parse.h"
++#include "Misc/CommandLine.h"
++#include "Misc/App.h"
++#include "UnrealClient.h"
++
++void AMartyPlayMode::TickHomeProgressionSmoke(float Delta)
++{
++    SmokeTime+=Delta;auto* PC=GetWorld()->GetFirstPlayerController();auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
++    auto* S=Adventure.Get();auto* H=HomeProgression.Get();if(!P||!S||!S->Progress||!H)return;H->Initialize();auto* D=S->Progress.Get();auto* L=P->Life.Get();
++    FString Root=FPaths::ProjectSavedDir();FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Root);
++    auto Key=[&](FKey K,bool Down){PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
++    auto Place=[&](FVector V){L->CancelAction();P->GetCharacterMovement()->StopMovementImmediately();P->GetCharacterMovement()->SetMovementMode(MOVE_Walking);V.Z=28;P->TeleportTo(V,FRotator::ZeroRotator);PC->SetControlRotation(FRotator(-12,0,0));};
++    static int32 ReleasedStage=-1;
++    auto Next=[&](){++SmokeStage;SmokeTime=0;};auto Shot=[&](const TCHAR* File){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/File,true,false);};
++    const bool Resume=FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume"));
++    auto Finish=[&](){auto J=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(const auto& V:In)Out.Add(MakeShared<FJsonValueString>(V));return Out;};J->SetStringField(TEXT("scope"),TEXT("Actual home/annex map, synthetic keyboard/gamepad, real station/trick actions; position, currency, cooldown and legacy-save fixtures. Physical controllers unverified."));J->SetArrayField(TEXT("passed"),Strings(SmokePassed));J->SetArrayField(TEXT("failed"),Strings(SmokeFailed));FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/(Resume?TEXT("home-resume.json"):TEXT("home-progression.json"))));if(Resume)UGameplayStatics::DeleteGameInSlot(S->Slot,0);SmokeStage=999;FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);};
++    if(Resume){if(SmokeStage==0&&SmokeTime>3){SmokeCheck(D->ArmorLevel==1&&D->StrengthLevel==1&&D->AgilityLevel==1&&D->SpeedLevel==1,TEXT("All four upgrade tiers persist in another process"));SmokeCheck(D->PraiseStars==7&&D->TrickPraiseMask==2048,TEXT("Currency and trick-variety ledger persist"));SmokeCheck(D->MealBonusRemaining==60&&D->RestBonusRemaining==90&&D->PraiseCooldownRemaining==5,TEXT("Saved bonus/cooldown durations do not tick on the title screen"));SmokeCheck(!H->Resting&&H->Training<0&&L->Activity==EDogActivity::Idle,TEXT("Resting and training never resume as stuck transient actions"));SmokeCheck(FMath::IsNearlyEqual(H->SpeedMultiplier(),1.05f)&&FMath::IsNearlyEqual(H->DamageMultiplier(),.85f),TEXT("Reloaded upgrades have real movement/protection effects"));Finish();}return;}
++    // Separate interaction releases from the next Started edge, including mixed keyboard/gamepad input.
++    if(ReleasedStage!=SmokeStage){Key(EKeys::E,false);Key(EKeys::Gamepad_FaceButton_Left,false);ReleasedStage=SmokeStage;return;}
++    if(SmokeTime<.2)return;
++    switch(SmokeStage)
++    {
++    case 0:
++        if(SmokeTime<(FApp::CanEverRender()?35:3))break;S->Start(false);D->CatFollowMask=0;D->CostumeMask=0;D->PetPace=0;SmokeYaw=D->Music;SmokePitch=D->SnackMask;
++        SmokeCheck(S->Slot==TEXT("CheweenieHomeAcceptance"),TEXT("Home acceptance uses an isolated slot"));SmokeCheck(D->PraiseStars==3&&H->Level(0)==0&&H->Level(3)==0,TEXT("Older saves acquire compatible starter stars and zero upgrade tiers"));
++        SmokeCheck(H->Enabled()&&H->Prompt().IsEmpty(),TEXT("Home progression defaults on without hijacking the spawn interaction"));
++        Place(Companions->Position(0)+FVector(-95,0,0));Key(EKeys::B,true);Next();break;
++    case 1:
++        Key(EKeys::B,false);SmokeCheck(D->PraiseStars==4&&S->Message.Contains(TEXT("Lakitu")),TEXT("A real nearby bark earns a named cat reaction and a praise star"));SmokeCheck(Companions->Cats[0].Happy>0&&H->Reactions==1,TEXT("Cat response activates visible happy feedback"));Shot(TEXT("HomeCatReaction.png"));Next();break;
++    case 2:
++        if(SmokeTime<1.4)break;D->PraiseCooldownRemaining=0;Key(EKeys::B,true);Next();break;
++    case 3:
++        Key(EKeys::B,false);SmokeCheck(D->PraiseStars==4,TEXT("Repeating the same trick cannot farm praise stars"));D->PraiseCooldownRemaining=0;Key(EKeys::LeftControl,true);Next();break;
++    case 4:Key(EKeys::One,true);Next();break;
++    case 5:
++        Key(EKeys::One,false);SmokeCheck(D->PraiseStars==5&&L->Activity==EDogActivity::Lying,TEXT("Direct lie receives its own contextual reaction"));L->StandUp();D->PraiseCooldownRemaining=0;Key(EKeys::Two,true);Next();break;
++    case 6:Key(EKeys::Two,false);Next();break;
++    case 7:
++        if(SmokeTime<2.7)break;SmokeCheck(D->PraiseStars==6,TEXT("A completed roll receives praise after its animation"));D->PraiseCooldownRemaining=0;Key(EKeys::Three,true);Next();break;
++    case 8:Key(EKeys::Three,false);Next();break;
++    case 9:
++        if(SmokeTime<2)break;Key(EKeys::LeftControl,false);SmokeCheck(D->PraiseStars==9&&(D->TrickPraiseMask&15)==0,TEXT("Four varied tricks complete a round with a bounded two-star bonus"));
++        Place(H->Bed);D->PetEnergy=20;D->PetHealth=60;Key(EKeys::E,true);Next();break;
++    case 10:
++        Key(EKeys::E,false);SmokeCheck(H->Resting&&L->Activity==EDogActivity::Lying,TEXT("Bed interaction starts actual rest without a trick menu"));Next();break;
++    case 11:
++        if(SmokeTime<3.2)break;SmokeCheck(D->PetEnergy>35&&D->PetHealth>64&&D->RestBonusRemaining>170,TEXT("Bed restores needs and grants the Rested bonus after three seconds"));Shot(TEXT("HomeBedRest.png"));Key(EKeys::W,true);Next();break;
++    case 12:
++        Key(EKeys::W,false);SmokeCheck(!H->Resting&&L->Activity==EDogActivity::Idle,TEXT("Movement gets Marty out of bed normally"));Place(L->Bowl+FVector(-35,0,0));D->PetEnergy=20;Key(EKeys::E,true);Next();break;
++    case 13:Key(EKeys::E,false);Next();break;
++    case 14:
++        if(SmokeTime<1.8)break;SmokeCheck(D->PetEnergy>=59&&D->MealBonusRemaining>115,TEXT("The real kitchen meal grants extra energy and the food bonus"));SmokeCheck(H->DrainMultiplier()<.65f,TEXT("Food and Rested bonuses combine with a bounded energy-drain reduction"));
++        S->Pause();SmokePosition=FVector(D->MealBonusRemaining,D->RestBonusRemaining,D->PraiseCooldownRemaining);Next();break;
++    case 15:
++        if(SmokeTime<.6)break;SmokeCheck(FMath::IsNearlyEqual(D->MealBonusRemaining,float(SmokePosition.X),.001f)&&FMath::IsNearlyEqual(D->RestBonusRemaining,float(SmokePosition.Y),.001f),TEXT("Pause freezes home bonus timers"));S->Back();Place(H->Portal);Key(EKeys::Gamepad_FaceButton_Left,true);Next();break;
++    case 16:
++        Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(H->InAnnex()&&Navigation->Location().Contains(TEXT("garage")),TEXT("Controller interaction enters the real garage/gym annex"));
++        SmokeCheck(P->GetCharacterMovement()->IsMovingOnGround(),TEXT("The annex has a real walkable floor"));Place(H->ArmorBench+FVector(-75,0,0));D->PraiseStars=20;Key(EKeys::E,true);Next();break;
++    case 17:
++        Key(EKeys::E,false);SmokeCheck(D->ArmorLevel==1&&D->PraiseStars==17,TEXT("Garage spends the shown star cost for a saved armor tier"));SmokeCheck(H->GearVisible(),TEXT("The padded harness is actually visible on Marty"));Shot(TEXT("HomeArmorWorkshop.png"));SmokeStage=171;SmokeTime=0;break;
++    case 171:
++        if(SmokeTime<.7)break;D->PetHealth=100;Place(H->BumpTest+FVector(-70,0,0));Key(EKeys::E,true);SmokeStage=18;SmokeTime=0;break;
++    case 18:
++        Key(EKeys::E,false);SmokeCheck(D->PetHealth>91&&D->PetHealth<92,TEXT("Foam safety test demonstrates real armor damage mitigation"));Place(H->Gym[0]);D->PraiseCooldownRemaining=0;Key(EKeys::E,true);Next();break;
++    case 19:
++        Key(EKeys::E,false);SmokeCheck(H->Training==0&&D->StrengthLevel==0,TEXT("Strength requires an actual training task before an upgrade"));Key(EKeys::LeftControl,true);Next();break;
++    case 20:Key(EKeys::Three,true);Next();break;
++    case 21:Key(EKeys::Three,false);Next();break;
++    case 22:
++        if(SmokeTime<2)break;Key(EKeys::LeftControl,false);SmokeCheck(D->StrengthLevel==1&&H->Training<0,TEXT("Completing the shake earns the strength tier"));SmokeCheck(H->DigCost()<6&&H->DigDuration()<.9f,TEXT("Strength changes actual digging energy cost and duration"));Place(H->Gym[1]);D->PraiseCooldownRemaining=0;Key(EKeys::E,true);Next();break;
++    case 23:Key(EKeys::E,false);Key(EKeys::LeftControl,true);Next();break;
++    case 24:Key(EKeys::Two,true);Next();break;
++    case 25:Key(EKeys::Two,false);Next();break;
++    case 26:
++        if(SmokeTime<2.7)break;Key(EKeys::LeftControl,false);SmokeCheck(D->AgilityLevel==1&&H->JumpMultiplier()>1,TEXT("Completing the roll earns a real jump-height upgrade"));Place(H->Gym[2]);D->PetEnergy=90;Key(EKeys::E,true);Next();break;
++    case 27:
++        Key(EKeys::E,false);SmokeCheck(H->Training==2&&Navigation->Goal().Label.Contains(TEXT("Speed")),TEXT("Speed training temporarily guides the player to its finish"));Key(EKeys::LeftShift,true);Key(EKeys::W,true);Next();break;
++    case 28:
++        if(H->Training>=0&&SmokeTime<3)break;Key(EKeys::W,false);Key(EKeys::LeftShift,false);SmokeCheck(D->SpeedLevel==1&&H->Training<0,TEXT("Running through the actual finish earns the speed tier"));Shot(TEXT("HomeGym.png"));Next();break;
++    case 29:
++        SmokeCheck(L->WalkSpeed()>100&&L->WalkSpeed()<110,TEXT("Speed tier changes the real movement speed"));S->ToggleFeature(ECozyFeature::HomeProgression);
++        SmokeCheck(H->SpeedMultiplier()==1&&H->DamageMultiplier()==1&&H->DrainMultiplier()==1,TEXT("Disabling progression removes perk effects without deleting levels"));SmokeCheck(D->ArmorLevel==1&&D->StrengthLevel==1,TEXT("Disabled progression preserves purchased upgrades"));Place(H->Exit);Key(EKeys::E,true);Next();break;
++    case 30:
++        Key(EKeys::E,false);SmokeCheck(!H->InAnnex()&&P->GetActorLocation().X<1000,TEXT("The return door works even with progression disabled"));S->ToggleFeature(ECozyFeature::HomeProgression);D->PraiseStars=0;Place(H->Portal);H->Travel(true);Place(H->ArmorBench+FVector(-75,0,0));Key(EKeys::E,true);Next();break;
++    case 31:
++        Key(EKeys::E,false);SmokeCheck(D->ArmorLevel==1&&D->PraiseStars==0,TEXT("Insufficient funds cannot buy or overdraw an upgrade"));D->ArmorLevel=3;D->PraiseStars=20;Next();break;
++    case 32:Key(EKeys::E,true);Next();break;
++    case 33:
++        Key(EKeys::E,false);SmokeCheck(D->ArmorLevel==3&&D->PraiseStars==20,TEXT("Maximum-tier interaction never spends more stars"));D->ArmorLevel=1;Place(H->Gym[0]);Key(EKeys::E,true);Next();break;
++    case 34:
++        Key(EKeys::E,false);P->ReturnHome();SmokeCheck(H->Training<0&&!H->InAnnex(),TEXT("Home recovery safely cancels unfinished station training"));
++        SmokeCheck(D->SnackMask==int32(SmokePitch)&&FMath::IsNearlyEqual(D->Music,SmokeYaw),TEXT("Home progression preserves existing patrol and sound preferences"));
++        D->PraiseStars=7;D->TrickPraiseMask=2048;D->MealBonusRemaining=60;D->RestBonusRemaining=90;D->PraiseCooldownRemaining=5;S->Pause();S->Save();Next();break;
++    case 35:Finish();break;
++    }
++}
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp
+index e3eae2b..15c75fb 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.cpp
+@@ -8,6 +8,7 @@
+ #include "CozyNavigation.h"
+ #include "MartyGait.h"
+ #include "DogLife.h"
++#include "HomeProgression.h"
+ #include "Neighbourhood.h"
+ #include "Components/PoseableMeshComponent.h"
+ #include "Engine/SkeletalMesh.h"
+@@ -291,6 +292,7 @@ void AMartyCharacter::Recenter()
+ }
+ void AMartyCharacter::ReturnHome()
+ {
++    if(auto* H=CheweenieHome(this))H->CancelActivities();
+     if(Life)Life->CancelAction();
+     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
+     GetCharacterMovement()->StopMovementImmediately();
+@@ -308,6 +310,7 @@ AMartyPlayMode::AMartyPlayMode()
+     Navigation=CreateDefaultSubobject<UCozyNavigation>(TEXT("Navigation"));
+     Neighbourhood=CreateDefaultSubobject<UCheweenieNeighbourhood>(TEXT("Neighbourhood"));
+     Festival=CreateDefaultSubobject<UHalloweenSpecial>(TEXT("OptionalHalloweenSpecial"));
++    HomeProgression=CreateDefaultSubobject<UHomeProgression>(TEXT("HomeUpgradesAndReactions"));
+     DefaultPawnClass = AMartyCharacter::StaticClass();
+     HUDClass = AMartyHUD::StaticClass();
+ }
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.h b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.h
+index 681c7bc..7a840f1 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.h
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MartyCharacter.h
+@@ -19,6 +19,7 @@ class UCozyNavigation;
+ class UCatCompanions;
+ class UHalloweenSpecial;
+ class UHalloweenCostume;
++class UHomeProgression;
+ struct FInputActionValue;
+ 
+ UCLASS()
+@@ -106,6 +107,7 @@ public:
+     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
+     UPROPERTY(VisibleAnywhere) TObjectPtr<UCozyNavigation> Navigation;
+     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenSpecial> Festival;
++    UPROPERTY(VisibleAnywhere) TObjectPtr<UHomeProgression> HomeProgression;
+     UPROPERTY(VisibleAnywhere) TObjectPtr<UCatCompanions> Companions;
+ private:
+     void SmokeCheck(bool Passed, const FString& Name);
+@@ -117,6 +119,7 @@ private:
+     void TickAudioSmoke(float Delta);
+     void TickTricksSmoke(float Delta);
+     void TickTrickModifierSmoke(float Delta);
++    void TickHomeProgressionSmoke(float Delta);
+     void TickNavigationSmoke(float Delta);
+     void TickCompanionSmoke(float Delta);
+     void TickWorldSmoke(float Delta);
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MovementSmoke.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MovementSmoke.cpp
+index d8fedd3..02282a4 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MovementSmoke.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/MovementSmoke.cpp
+@@ -25,6 +25,7 @@ void AMartyPlayMode::SmokeCheck(bool Passed, const FString& Name)
+ void AMartyPlayMode::Tick(float DeltaSeconds)
+ {
+     Super::Tick(DeltaSeconds);
++    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))){TickHomeProgressionSmoke(DeltaSeconds);return;}
+     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFurDetailSmoke"))){TickFurDetailSmoke(DeltaSeconds);return;}
+     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalSmoke"))){TickFestivalSmoke(DeltaSeconds);return;}
+     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))){TickRatchetSmoke(DeltaSeconds);return;}
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NavigationHUD.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NavigationHUD.cpp
+index 444023c..378befe 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NavigationHUD.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NavigationHUD.cpp
+@@ -3,6 +3,7 @@
+ #include "CozyModeHub.h"
+ #include "Engine/GameInstance.h"
+ #include "CozyNavigation.h"
++#include "HomeProgression.h"
+ #include "Neighbourhood.h"
+ #include "Engine/Canvas.h"
+ #include "GameFramework/PlayerController.h"
+@@ -27,18 +28,18 @@ void AMartyHUD::DrawNavigation(bool Full)
+         const float Size=Full?FMath::Max(180.f,FMath::Min(W-525,H-255)):250.f;
+         const float X=Full?28:W-278,Y=Full?105:135;
+         DrawRect(FLinearColor(.025f,.065f,.075f,.96f),X,Y,Size,Size);
+-        FVector Center=P->GetActorLocation();float Span=M->Neighbourhood->Outside?7000:1200;
++        const bool Annex=M->HomeProgression&&M->HomeProgression->InAnnex();auto SameRegion=[&](FVector V){return M->Neighbourhood->Outside||UHomeProgression::PointInAnnex(V)==Annex;};FVector Center=P->GetActorLocation();float Span=Annex?1600:M->Neighbourhood->Outside?7000:1200;
+         const auto Stops=N->Landmarks();const auto& Roads=M->Neighbourhood->Streets();
+-        if(Full){FBox Bounds(ForceInit);Bounds+=Center;Bounds+=Goal.Position;for(const auto& L:Stops)if(L.Outdoors==M->Neighbourhood->Outside)Bounds+=L.Position;
+-            if(M->Neighbourhood->Outside){for(const auto& E:Roads){Bounds+=E.Key;Bounds+=E.Value;}}else{Bounds+=FVector(-500,-500,0);Bounds+=FVector(500,500,0);}Center=Bounds.GetCenter();const auto Ext=Bounds.GetSize();Span=FMath::Max(Ext.X,Ext.Y)*1.16f;Span=FMath::Max(Span,1200.f);}
++        if(Full){FBox Bounds(ForceInit);Bounds+=Center;Bounds+=Goal.Position;for(const auto& L:Stops)if(L.Outdoors==M->Neighbourhood->Outside&&SameRegion(L.Position))Bounds+=L.Position;
++            if(M->Neighbourhood->Outside){for(const auto& E:Roads){Bounds+=E.Key;Bounds+=E.Value;}}else{Bounds+=Annex?FVector(7600,-400,0):FVector(-500,-500,0);Bounds+=Annex?FVector(9000,400,0):FVector(500,500,0);}Center=Bounds.GetCenter();const auto Ext=Bounds.GetSize();Span=FMath::Max(Ext.X,Ext.Y)*1.16f;Span=FMath::Max(Span,1200.f);}
+         const float Scale=(Size-40)/Span;const FVector2D Min(X+10,Y+25),Max(X+Size-10,Y+Size-20);
+         auto Point=[&](FVector V){return FVector2D(X+Size/2+(V.X-Center.X)*Scale,Y+Size/2+(V.Y-Center.Y)*Scale);};
+         auto Line=[&](FVector A,FVector B,FLinearColor C,float Thickness){auto U=Point(A),V=Point(B);if(ClipLine(U,V,Min,Max))DrawLine(U.X,U.Y,V.X,V.Y,C,Thickness);};
+         DrawText(Full?TEXT("AREA MAP - NORTH UP"):TEXT("LOCAL MAP - NORTH UP"),FLinearColor(.9f,.85f,.65f),X+12,Y+7);
+         if(M->Neighbourhood->Outside){for(const auto& E:Roads)Line(E.Key,E.Value,FLinearColor(.3f,.4f,.44f),Full?3:5);}
+-        else{const FVector Corners[]={FVector(-480,-480,0),FVector(480,-480,0),FVector(480,480,0),FVector(-480,480,0)};for(int32 I=0;I<4;++I)Line(Corners[I],Corners[(I+1)%4],FLinearColor(.3f,.4f,.44f),3);}
++        else{const FVector Corners[]={Annex?FVector(7600,-400,0):FVector(-480,-480,0),Annex?FVector(9000,-400,0):FVector(480,-480,0),Annex?FVector(9000,400,0):FVector(480,480,0),Annex?FVector(7600,400,0):FVector(-480,480,0)};for(int32 I=0;I<4;++I)Line(Corners[I],Corners[(I+1)%4],FLinearColor(.3f,.4f,.44f),3);}
+         if(S->Feature(ECozyFeature::Route))for(int32 I=1;I<N->Route.Num();++I)Line(N->Route[I-1],N->Route[I],N->StreetRoute?FLinearColor(.3f,1,.7f):FLinearColor(.55f,.65f,.65f),2);
+-        for(int32 I=0;I<Stops.Num();++I){if(Stops[I].Outdoors!=M->Neighbourhood->Outside)continue;const auto V=Point(Stops[I].Position);if(V.X>Min.X&&V.X<Max.X&&V.Y>Min.Y&&V.Y<Max.Y){DrawRect(FLinearColor(.55f,.85f,1),V.X-3,V.Y-3,6,6);if(Full)DrawText(FString::FromInt(I+1),FLinearColor::White,V.X+5,V.Y);}}
++        for(int32 I=0;I<Stops.Num();++I){if(Stops[I].Outdoors!=M->Neighbourhood->Outside||!SameRegion(Stops[I].Position))continue;const auto V=Point(Stops[I].Position);if(V.X>Min.X&&V.X<Max.X&&V.Y>Min.Y&&V.Y<Max.Y){DrawRect(FLinearColor(.55f,.85f,1),V.X-3,V.Y-3,6,6);if(Full)DrawText(FString::FromInt(I+1),FLinearColor::White,V.X+5,V.Y);}}
+         auto Arrow=[&](FVector2D Origin,float Yaw,float Length,FLinearColor C){const float Angle=FMath::DegreesToRadians(Yaw);const FVector2D D(FMath::Cos(Angle),FMath::Sin(Angle)),Side(-D.Y,D.X);const FVector2D Tip=Origin+D*Length;
+             DrawLine(Origin.X,Origin.Y,Tip.X,Tip.Y,C,2);for(float Sign:{-1.f,1.f}){const auto End=Tip-D*7+Side*Sign*4;DrawLine(Tip.X,Tip.Y,End.X,End.Y,C,2);}};
+         auto Me=Point(P->GetActorLocation());Me.X=FMath::Clamp(Me.X,Min.X+25,Max.X-25);Me.Y=FMath::Clamp(Me.Y,Min.Y+25,Max.Y-25);
+diff --git a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/OverlaySmoke.cpp b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/OverlaySmoke.cpp
+index f6c2f92..9ebb651 100644
+--- a/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/OverlaySmoke.cpp
++++ b/Unreal/UE5MovementLab/Source/CheweenieUE5Lab/OverlaySmoke.cpp
+@@ -2,6 +2,10 @@
+ #include "CozyAdventure.h"
+ #include "CozyCoop.h"
+ #include "MartyCharacter.h"
++#include "HomeProgression.h"
++#include "CatCompanions.h"
++#include "Components/TextRenderComponent.h"
++#include "Engine/StaticMeshActor.h"
+ #include "Engine/World.h"
+ #include "Kismet/GameplayStatics.h"
+ #include "InputKeyEventArgs.h"
+@@ -21,6 +25,8 @@ void UCozyModeHub::TickOverlayAcceptance(float Delta)
+     TestTime+=Delta;TestTotal+=Delta;
+     auto* PC=UGameplayStatics::GetPlayerController(this,0);if(!PC)return;
+     auto* S=Session();
++    auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>();
++    auto ReactionVisible=[&](){if(!Mode||!Mode->Companions)return false;for(const auto& Cat:Mode->Companions->Cats)if(auto* A=Cat.Actor.Get()){TArray<UTextRenderComponent*> Labels;A->GetComponents(Labels);for(const auto* Label:Labels)if(Label->IsVisible())return true;}return false;};
+     static FVector HiddenPosition;
+     FString Root=FPaths::ProjectSavedDir();FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Root);
+     auto Check=[&](bool OK,const TCHAR* Label){(OK?TestPassed:TestFailed).Add(Label);};
+@@ -93,8 +99,19 @@ void UCozyModeHub::TickOverlayAcceptance(float Delta)
+         Shot(TEXT("OverlaySettings.png"));Next();break;
+     }
+     case 7:
++        S->Start(false);S->Progress->PraiseCooldownRemaining=0;S->Progress->TrickPraiseMask=0;S->Progress->PraiseStars=0;
++        PC->GetPawn()->SetActorLocation(Mode->Companions->Position(0)+FVector(40,0,0));
++        ToggleOverlay(ECozyOverlay::Reactions);Mode->HomeProgression->OnSkill(0);
++        Check(S->Progress->PraiseStars>0,TEXT("Hiding cat reactions preserves trick rewards"));
++        Check(!ReactionVisible(),TEXT("Cat reaction switch hides actual text components"));
++        ToggleOverlay(ECozyOverlay::Reactions);ToggleOverlay(ECozyOverlay::All);TestStage=102;TestTime=0;break;
++    case 102:
++        Check(!ReactionVisible(),TEXT("Master OFF keeps active cat reaction labels hidden"));
++        ToggleOverlay(ECozyOverlay::All);TestStage=103;TestTime=0;break;
++    case 103:
++        Check(ReactionVisible(),TEXT("Restoring overlays reveals an unexpired cat reaction"));
+         // The subsystem must retain presentation settings across a real room travel.
+-        S->Progress->RatchetUnlocked=true;S->Save();Next();Request(TEXT("ratchet"));break;
++        S->Progress->RatchetUnlocked=true;S->Save();TestStage=8;TestTime=0;Request(TEXT("ratchet"));break;
+     case 8:
+         if(S||!Cast<ACozyCoopController>(PC))break;
+         Check(!OverlayVisible(ECozyOverlay::Objective)&&OverlayVisible(ECozyOverlay::Health),TEXT("Preferences survive solo-to-room map travel"));
+diff --git a/Unreal/UE5MovementLab/TEST_HOME.ps1 b/Unreal/UE5MovementLab/TEST_HOME.ps1
+new file mode 100644
+index 0000000..44b9956
+--- /dev/null
++++ b/Unreal/UE5MovementLab/TEST_HOME.ps1
+@@ -0,0 +1,20 @@
++param([string]$EngineRoot='D:/Epic Games/UE_5.8',[string]$GameExe,[string]$OutputRoot,[string]$LegacySave,[switch]$Render)
++$ErrorActionPreference='Stop'
++if(!$OutputRoot){$OutputRoot=Join-Path $PSScriptRoot 'Saved/HomeProgression'}
++$OutputRoot=[IO.Path]::GetFullPath($OutputRoot);New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
++foreach($phase in @('play','resume')){
++    $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=if($GameExe){$GameExe}else{Join-Path $EngineRoot 'Engine/Binaries/Win64/UnrealEditor.exe'}
++    $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
++    $rhi=if($Render -and $phase-eq 'play'){'-dx12 -RenderOffscreen -windowed -ForceRes -ResX=1280 -ResY=720'}else{'-nullrhi'}
++    $info.Arguments=$project+$rhi+' -CheweenieHomeSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -AbsLog="'+$OutputRoot+'/'+$phase+'.log"'
++    if($phase-eq 'resume'){$info.Arguments+=' -CheweenieHomeResume'}elseif($LegacySave){$info.Arguments+=' -CheweenieHomeLegacySave="'+[IO.Path]::GetFullPath($LegacySave)+'"'}
++    $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']='D:/CheweenieValidation/UE5Cache'
++    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
++    while(!$process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes-gt 10){$process.Kill();throw 'Home acceptance timed out.'}}
++    $path=Join-Path $OutputRoot $(if($phase-eq 'resume'){'home-resume.json'}else{'home-progression.json'})
++    if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $started){throw 'Home report missing or stale.'}
++    $r=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
++    if($process.ExitCode -or $r.failed.Count -or $r.passed.Count-lt $(if($phase-eq 'resume'){5}else{34})){throw ('Home acceptance failed: '+$phase)}
++    if($Render -and $phase-eq 'play'){foreach($file in @('HomeCatReaction.png','HomeBedRest.png','HomeArmorWorkshop.png','HomeGym.png')){if(!(Test-Path -LiteralPath (Join-Path $OutputRoot $file)) -or (Get-Item -LiteralPath (Join-Path $OutputRoot $file)).LastWriteTimeUtc-lt $started){throw ('Home capture missing/stale: '+$file)}}}
++    $phase+': '+$r.passed.Count+' passes'
++}
+diff --git a/Unreal/UE5MovementLab/TEST_OVERLAYS.ps1 b/Unreal/UE5MovementLab/TEST_OVERLAYS.ps1
+index 63f20a8..ea72ba5 100644
+--- a/Unreal/UE5MovementLab/TEST_OVERLAYS.ps1
++++ b/Unreal/UE5MovementLab/TEST_OVERLAYS.ps1
+@@ -17,7 +17,7 @@ foreach($phase in @('main','resume')){
+     $path=Join-Path $root 'overlay-smoke.json'
+     if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $started){throw 'Overlay report missing or stale.'}
+     $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
+-    if($process.ExitCode -or $report.failed.Count -or $report.passed.Count-lt $(if($phase-eq 'main'){69}else{3})){throw ('Overlay acceptance failed: '+$phase)}
++    if($process.ExitCode -or $report.failed.Count -or $report.passed.Count-lt $(if($phase-eq 'main'){79}else{3})){throw ('Overlay acceptance failed: '+$phase)}
+     if($Render -and $phase-eq 'main'){foreach($file in @('OverlaysDefault.png','OverlaysHidden.png','OverlaySettings.png')){
+         $capture=Join-Path $root $file
+         if(!(Test-Path -LiteralPath $capture) -or (Get-Item -LiteralPath $capture).LastWriteTimeUtc-lt $started){throw ('Missing or stale overlay capture: '+$file)}
