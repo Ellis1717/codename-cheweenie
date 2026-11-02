@@ -36,7 +36,7 @@ function Get-VerifiedArchiveExe($archive){
 $marker=Join-Path $PackageRoot 'validated-unified.json'
 if(!(Test-Path -LiteralPath $marker)){throw 'Validated unified package missing; run the release checks first.'}
 $gate=Get-Content -LiteralPath $marker -Raw|ConvertFrom-Json
-if($gate.version-ne 'Unified-0.12.1' -or $gate.checks-lt 565 -or !$gate.rendered){throw 'Unified build validation incomplete.'}
+if($gate.version-ne 'Unified-0.13.0' -or $gate.checks-lt 605 -or !$gate.rendered){throw 'Unified build validation incomplete.'}
 Assert-Payload (Join-Path $PackageRoot 'Windows') @($gate.files)
 $catalog=Join-Path $local 'ArchiveBuilds.json'
 $returned=$false;$errorFlag=$false;$archives=@()

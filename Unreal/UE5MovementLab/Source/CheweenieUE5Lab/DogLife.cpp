@@ -1,4 +1,5 @@
 #include "DogLife.h"
+#include "HomeProgression.h"
 #include "MartyCharacter.h"
 #include "MartyGait.h"
 #include "CozyAdventure.h"
@@ -124,12 +125,12 @@ void UDogLife::Dig()
 {
     if(!Playing()||Busy()||!Allows(ECozyFeature::Dig))return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}
     if(Energy()<6){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
-    if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=6;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
+    if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=CheweenieHome(this)?CheweenieHome(this)->DigCost():6;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=CheweenieHome(this)?CheweenieHome(this)->DigDuration():.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
 }
 void UDogLife::Bark()
 {
     if(!Playing()||Busy()||BarkCooldown>0||!Allows(ECozyFeature::Bark))return;
-    BarkCooldown=1.2f;++BarkCount;Excitement=FMath::Max(Excitement,4.f);Tell(TEXT("Marty: Woof woof! Very important dog announcement."),TEXT("Bark"));
+    BarkCooldown=1.2f;++BarkCount;Excitement=FMath::Max(Excitement,4.f);Tell(TEXT("Marty: Woof woof! Very important dog announcement."),TEXT("Bark"));if(auto* H=CheweenieHome(this))H->OnSkill(3);
 }
 void UDogLife::Drop()
 {
@@ -143,7 +144,7 @@ bool UDogLife::PayJump()
 {
     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Jump))return false;
     if(Energy()<8){Tell(TEXT("Not enough energy to jump. Rest or eat some food."));return false;}
-    StopWatching();StandUp();if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=8;Excitement=6;Save();Session()->ActionCue(TEXT("Jump"));return true;
+    StopWatching();StandUp();Pawn()->GetCharacterMovement()->JumpZVelocity=440*(CheweenieHome(this)?CheweenieHome(this)->JumpMultiplier():1);if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=8;Excitement=6;Save();Session()->ActionCue(TEXT("Jump"));return true;
 }
 void UDogLife::StopWatching()
 {
@@ -192,8 +193,9 @@ void UDogLife::FinishAction()
         else {D->HoleDepths[PendingPatch]=FMath::Min(3,D->HoleDepths[PendingPatch]+1);Tell(D->HoleDepths[PendingPatch]==3?TEXT("A proper little hole! Bring a toy here and press E to bury it."):TEXT("The hole is getting deeper. Dig again with F / RT."));}
         SyncHoles();SyncItems();
     }
-    else if(Activity==EDogActivity::Eating){if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Min(100.f,D->PetEnergy+30);if(Allows(ECozyFeature::Health))D->PetHealth=FMath::Min(100.f,D->PetHealth+20);FoodCooldown=25;Excitement=10;Tell(TEXT("A full bowl and a happier Marty. Energy restored!"),TEXT("Cozy"));}
+    else if(Activity==EDogActivity::Eating){if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Min(100.f,D->PetEnergy+30);if(Allows(ECozyFeature::Health))D->PetHealth=FMath::Min(100.f,D->PetHealth+20);FoodCooldown=25;Excitement=10;Tell(TEXT("A full bowl and a happier Marty. Energy restored!"),TEXT("Cozy"));if(auto* H=CheweenieHome(this))H->OnMeal();}
     if(Activity==EDogActivity::Rolling||Activity==EDogActivity::Shaking)if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);
+    if(Activity==EDogActivity::Rolling||Activity==EDogActivity::Shaking)if(auto* H=CheweenieHome(this))H->OnSkill(Activity==EDogActivity::Rolling?1:2);
     Activity=EDogActivity::Idle;PendingPatch=INDEX_NONE;Save();
 }
 void UDogLife::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
@@ -212,7 +214,7 @@ void UDogLife::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunc
     }
     if(Busy()){ActionTime-=Delta;if(ActionTime<=0)FinishAction();}
     const float Rate=(Activity==EDogActivity::WatchingTV||Activity==EDogActivity::Lying)?TVRecovery:Speed>190?-HurryDrain:Speed>110?-HurryDrain*.5f:Speed>8?-WalkingDrain:Busy()?0:IdleRecovery;
-    if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Clamp(D->PetEnergy+Rate*Delta,0.f,100.f);
+    if(Allows(ECozyFeature::Energy))D->PetEnergy=FMath::Clamp(D->PetEnergy+Rate*Delta*(Rate<0&&CheweenieHome(this)?CheweenieHome(this)->DrainMultiplier():1),0.f,100.f);
     // Keep legacy movement fixtures independent of a needs save that is not present there.
     P->GetCharacterMovement()->MaxWalkSpeed=WalkSpeed();
     P->GetCharacterMovement()->MaxAcceleration=WalkSpeed()>180?650:WalkSpeed()>110?500:350;
