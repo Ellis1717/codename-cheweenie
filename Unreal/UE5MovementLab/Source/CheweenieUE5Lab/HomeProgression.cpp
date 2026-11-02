@@ -60,14 +60,14 @@ void UHomeProgression::Build()
     auto* Base=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/World/NeighbourhoodSurface.NeighbourhoodSurface"));
     for(const auto Color:{FLinearColor(.07f,.13f,.16f),FLinearColor(.15f,.42f,.43f),FLinearColor(.55f,.27f,.08f),FLinearColor(.36f,.39f,.36f),FLinearColor(.8f,.62f,.2f)}){auto* M=UMaterialInstanceDynamic::Create(Base,this);M->SetVectorParameterValue(TEXT("Color"),Color);Palette.Add(M);}
     Shape(TEXT("CozyHomeBed"),Bed+FVector(0,0,5),FVector(115,80,10),1,false,TEXT("Sphere"));Shape(TEXT("CozyHomePillow"),Bed+FVector(-35,0,12),FVector(30,60,13),4,false,TEXT("Sphere"));Sign(TEXT("MARTY'S BED\nRest + recover"),Bed+FVector(-40,0,85),16);
-    Shape(TEXT("CozyHomeDoor"),Portal+FVector(30,0,60),FVector(6,90,150),1);Sign(TEXT("GARAGE + GYM\nE / X-Square"),Portal+FVector(20,0,120),18);
+    for(float Y:{-50.f,50.f})Shape(TEXT("CozyHomeDoor"),Portal+FVector(30,Y,60),FVector(6,8,150),1);Shape(TEXT("CozyHomeDoor"),Portal+FVector(30,0,135),FVector(6,108,8),1);Sign(TEXT("GARAGE + GYM\nE / X-Square"),Portal+FVector(20,0,120),18);
     Shape(TEXT("CozyHomeFloor"),FVector(8300,0,-10),FVector(1400,800,20),3,true);
     for(float X:{7600.f,9000.f})Shape(TEXT("CozyHomeWall"),FVector(X,0,140),FVector(20,800,280),0,true);
     for(float Y:{-400.f,400.f})Shape(TEXT("CozyHomeWall"),FVector(8300,Y,140),FVector(1400,20,280),0,true);
     for(float Y:{-255.f,255.f})Shape(TEXT("CozyHomePartition"),FVector(8300,Y,140),FVector(16,290,280),1,true);
     for(float X:{7950.f,8650.f}){auto* A=GetWorld()->SpawnActor<AActor>();auto* C=NewObject<UPointLightComponent>(A);A->SetRootComponent(C);C->RegisterComponent();C->SetIntensity(5500);C->SetAttenuationRadius(700);C->SetCastShadows(false);A->SetActorLocation(FVector(X,0,230));}
     Sign(TEXT("GARAGE\nSNUGGLE SHIELD WORKSHOP"),FVector(7980,330,145),26);Sign(TEXT("GYM\nCOACH KEETZ'S PRACTICE CORNER"),FVector(8660,330,145),24);
-    Shape(TEXT("CozyHomeReturn"),Exit-FVector(40,0,-40),FVector(6,85,140),1);Sign(TEXT("BACK TO HEADQUARTERS\nE / X-Square"),Exit+FVector(-30,0,100),17);
+    for(float Y:{-50.f,50.f})Shape(TEXT("CozyHomeReturn"),Exit+FVector(-40,Y,40),FVector(6,8,140),1);Shape(TEXT("CozyHomeReturn"),Exit+FVector(-40,0,110),FVector(6,108,8),1);Sign(TEXT("BACK TO HEADQUARTERS\nE / X-Square"),Exit+FVector(-30,0,100),17);
     Shape(TEXT("CozyHomeArmorBench"),ArmorBench+FVector(0,0,24),FVector(110,70,48),2);Sign(TEXT("PADDED HARNESS\n15% protection / tier"),ArmorBench+FVector(0,0,95),17);
     Shape(TEXT("CozyHomeFoamTest"),BumpTest+FVector(0,0,38),FVector(55,55,75),4,false,TEXT("Sphere"));Sign(TEXT("FOAM SAFETY TEST\n10 test damage; armor helps"),BumpTest+FVector(0,0,105),16);
     const TCHAR* Names[]={TEXT("STRENGTH\nE then shake a paw"),TEXT("AGILITY\nE then roll over"),TEXT("SPEED\nE then run to the gold finish")};
