@@ -124,8 +124,9 @@ FString UDogLife::Prompt() const
 void UDogLife::Dig()
 {
     if(!Playing()||Busy()||!Allows(ECozyFeature::Dig))return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}
-    if(Energy()<6){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
-    if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=CheweenieHome(this)?CheweenieHome(this)->DigCost():6;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=CheweenieHome(this)?CheweenieHome(this)->DigDuration():.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
+    const float Cost=CheweenieHome(this)?CheweenieHome(this)->DigCost():6;
+    if(Energy()<Cost){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
+    if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=Cost;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=CheweenieHome(this)?CheweenieHome(this)->DigDuration():.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
 }
 void UDogLife::Bark()
 {
