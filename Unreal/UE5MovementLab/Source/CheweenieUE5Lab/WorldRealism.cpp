@@ -66,6 +66,8 @@ void UpgradeCheweenieNeighbourhood(UWorld* W,const FVector& Park)
     TMap<FName,TObjectPtr<UMaterialInterface>> M;
     for(const TCHAR* Name:{TEXT("Grass"),TEXT("Brick"),TEXT("Concrete"),TEXT("Asphalt"),TEXT("RoofSlate"),TEXT("Bark"),TEXT("Paint"),TEXT("BluePaint")})
         M.Add(Name,LoadObject<UMaterialInterface>(nullptr,*FString::Printf(TEXT("/Game/Adventure/Scenery/Materials/%s_World.%s_World"),Name,Name)));
+    if(auto* Brick=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/Scenery/ReadableBrick/Brick_World.Brick_World")))
+        M.Add(TEXT("Brick"),Brick);
     TArray<TPair<FVector,FRotator>> Trees,Benches;
     TArray<FTransform> Gables,Trim;
     auto* Glass=LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/Scenery/Materials/WindowGlass.WindowGlass"));
