@@ -1,6 +1,7 @@
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "CozyNavigation.h"
+#include "HomeProgression.h"
 #include "Neighbourhood.h"
 #include "Engine/Canvas.h"
 #include "GameFramework/PlayerController.h"
@@ -24,18 +25,18 @@ void AMartyHUD::DrawNavigation(bool Full)
         const float Size=Full?FMath::Max(180.f,FMath::Min(W-525,H-255)):250.f;
         const float X=Full?28:W-278,Y=Full?105:135;
         DrawRect(FLinearColor(.025f,.065f,.075f,.96f),X,Y,Size,Size);
-        FVector Center=P->GetActorLocation();float Span=M->Neighbourhood->Outside?7000:1200;
+        const bool Annex=M->HomeProgression&&M->HomeProgression->InAnnex();auto SameRegion=[&](FVector V){return M->Neighbourhood->Outside||UHomeProgression::PointInAnnex(V)==Annex;};FVector Center=P->GetActorLocation();float Span=Annex?1600:M->Neighbourhood->Outside?7000:1200;
         const auto Stops=N->Landmarks();const auto& Roads=M->Neighbourhood->Streets();
-        if(Full){FBox Bounds(ForceInit);Bounds+=Center;Bounds+=Goal.Position;for(const auto& L:Stops)if(L.Outdoors==M->Neighbourhood->Outside)Bounds+=L.Position;
-            if(M->Neighbourhood->Outside){for(const auto& E:Roads){Bounds+=E.Key;Bounds+=E.Value;}}else{Bounds+=FVector(-500,-500,0);Bounds+=FVector(500,500,0);}Center=Bounds.GetCenter();const auto Ext=Bounds.GetSize();Span=FMath::Max(Ext.X,Ext.Y)*1.16f;Span=FMath::Max(Span,1200.f);}
+        if(Full){FBox Bounds(ForceInit);Bounds+=Center;Bounds+=Goal.Position;for(const auto& L:Stops)if(L.Outdoors==M->Neighbourhood->Outside&&SameRegion(L.Position))Bounds+=L.Position;
+            if(M->Neighbourhood->Outside){for(const auto& E:Roads){Bounds+=E.Key;Bounds+=E.Value;}}else{Bounds+=Annex?FVector(7600,-400,0):FVector(-500,-500,0);Bounds+=Annex?FVector(9000,400,0):FVector(500,500,0);}Center=Bounds.GetCenter();const auto Ext=Bounds.GetSize();Span=FMath::Max(Ext.X,Ext.Y)*1.16f;Span=FMath::Max(Span,1200.f);}
         const float Scale=(Size-40)/Span;const FVector2D Min(X+10,Y+25),Max(X+Size-10,Y+Size-20);
         auto Point=[&](FVector V){return FVector2D(X+Size/2+(V.X-Center.X)*Scale,Y+Size/2+(V.Y-Center.Y)*Scale);};
         auto Line=[&](FVector A,FVector B,FLinearColor C,float Thickness){auto U=Point(A),V=Point(B);if(ClipLine(U,V,Min,Max))DrawLine(U.X,U.Y,V.X,V.Y,C,Thickness);};
         DrawText(Full?TEXT("AREA MAP - NORTH UP"):TEXT("LOCAL MAP - NORTH UP"),FLinearColor(.9f,.85f,.65f),X+12,Y+7);
         if(M->Neighbourhood->Outside){for(const auto& E:Roads)Line(E.Key,E.Value,FLinearColor(.3f,.4f,.44f),Full?3:5);}
-        else{const FVector Corners[]={FVector(-480,-480,0),FVector(480,-480,0),FVector(480,480,0),FVector(-480,480,0)};for(int32 I=0;I<4;++I)Line(Corners[I],Corners[(I+1)%4],FLinearColor(.3f,.4f,.44f),3);}
+        else{const FVector Corners[]={Annex?FVector(7600,-400,0):FVector(-480,-480,0),Annex?FVector(9000,-400,0):FVector(480,-480,0),Annex?FVector(9000,400,0):FVector(480,480,0),Annex?FVector(7600,400,0):FVector(-480,480,0)};for(int32 I=0;I<4;++I)Line(Corners[I],Corners[(I+1)%4],FLinearColor(.3f,.4f,.44f),3);}
         if(S->Feature(ECozyFeature::Route))for(int32 I=1;I<N->Route.Num();++I)Line(N->Route[I-1],N->Route[I],N->StreetRoute?FLinearColor(.3f,1,.7f):FLinearColor(.55f,.65f,.65f),2);
-        for(int32 I=0;I<Stops.Num();++I){if(Stops[I].Outdoors!=M->Neighbourhood->Outside)continue;const auto V=Point(Stops[I].Position);if(V.X>Min.X&&V.X<Max.X&&V.Y>Min.Y&&V.Y<Max.Y){DrawRect(FLinearColor(.55f,.85f,1),V.X-3,V.Y-3,6,6);if(Full)DrawText(FString::FromInt(I+1),FLinearColor::White,V.X+5,V.Y);}}
+        for(int32 I=0;I<Stops.Num();++I){if(Stops[I].Outdoors!=M->Neighbourhood->Outside||!SameRegion(Stops[I].Position))continue;const auto V=Point(Stops[I].Position);if(V.X>Min.X&&V.X<Max.X&&V.Y>Min.Y&&V.Y<Max.Y){DrawRect(FLinearColor(.55f,.85f,1),V.X-3,V.Y-3,6,6);if(Full)DrawText(FString::FromInt(I+1),FLinearColor::White,V.X+5,V.Y);}}
         auto Arrow=[&](FVector2D Origin,float Yaw,float Length,FLinearColor C){const float Angle=FMath::DegreesToRadians(Yaw);const FVector2D D(FMath::Cos(Angle),FMath::Sin(Angle)),Side(-D.Y,D.X);const FVector2D Tip=Origin+D*Length;
             DrawLine(Origin.X,Origin.Y,Tip.X,Tip.Y,C,2);for(float Sign:{-1.f,1.f}){const auto End=Tip-D*7+Side*Sign*4;DrawLine(Tip.X,Tip.Y,End.X,End.Y,C,2);}};
         auto Me=Point(P->GetActorLocation());Me.X=FMath::Clamp(Me.X,Min.X+25,Max.X-25);Me.Y=FMath::Clamp(Me.Y,Min.Y+25,Max.Y-25);

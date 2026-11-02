@@ -7,6 +7,7 @@
 FString CozyFeatureLabel(ECozyFeature Id);
 #include "Neighbourhood.h"
 #include "DogLife.h"
+#include "HomeProgression.h"
 #include "MartyCharacter.h"
 #include "Components/AudioComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -20,6 +21,7 @@ FString CozyFeatureLabel(ECozyFeature Id);
 #include "Misc/ConfigCacheIni.h"
 #include "Misc/Parse.h"
 #include "Sound/SoundBase.h"
+#include "Misc/FileHelper.h"
 
 UCozyMissionDefinition::UCozyMissionDefinition()
 {
@@ -66,12 +68,14 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalSmoke"))){Slot=TEXT("CheweenieFestivalAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))Slot=CozyHubProfileSlot();
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTrickModifierSmoke"))){Slot=TEXT("CheweenieTrickModifierAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))){Slot=TEXT("CheweenieHomeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Mission = NewObject<UCozyMissionDefinition>(this);
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
         if (auto* Asset = LoadObject<UCozyMissionDefinition>(nullptr, *AssetPath)) Mission = Asset;
     // Keep masks bounded and reject definitions that would create an unwinnable patrol.
     if (Mission->Snacks.IsEmpty() || Mission->Snacks.Num() > 20 || Mission->Visits.IsEmpty()) Mission = NewObject<UCozyMissionDefinition>(this);
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume"))){FString LegacyPath;if(FParse::Value(FCommandLine::Get(),TEXT("CheweenieHomeLegacySave="),LegacyPath)){TArray<uint8> Bytes;if(FFileHelper::LoadFileToArray(Bytes,*LegacyPath))if(auto* Legacy=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromMemory(Bytes)))UGameplayStatics::SaveGameToSlot(Legacy,Slot,0);}}
     Progress = Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(Slot, 0));
     if (!Progress || Progress->Version != 1) Progress = NewObject<UCozyAdventureSave>(this);
     if (Progress->MissionId != Mission->MissionId)
@@ -245,6 +249,7 @@ void UCozyAdventure::Interact()
     if (!Enabled || Screen != ECozyScreen::Playing) return;
     if(Marty()&&Marty()->Life&&Marty()->Life->Busy())return;
     if(Marty()&&Marty()->Life&&Marty()->Life->Activity==EDogActivity::Lying){Marty()->Life->StandUp();return;}
+    if(auto* H=CheweenieHome(this))if(H->Interact())return;
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Festival&&M->Festival->Interact(Marty()))return;
     if(Prompt().IsEmpty()&&Marty()&&Marty()->Life&&Marty()->Life->Interact())return;
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood&&Marty()&&Mode->Neighbourhood->Interact(Marty()))return;

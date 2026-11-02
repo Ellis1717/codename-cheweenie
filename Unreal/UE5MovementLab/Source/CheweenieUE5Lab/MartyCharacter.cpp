@@ -8,6 +8,7 @@
 #include "CozyNavigation.h"
 #include "MartyGait.h"
 #include "DogLife.h"
+#include "HomeProgression.h"
 #include "Neighbourhood.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
@@ -291,6 +292,7 @@ void AMartyCharacter::Recenter()
 }
 void AMartyCharacter::ReturnHome()
 {
+    if(auto* H=CheweenieHome(this))H->CancelActivities();
     if(Life)Life->CancelAction();
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
     GetCharacterMovement()->StopMovementImmediately();
@@ -308,6 +310,7 @@ AMartyPlayMode::AMartyPlayMode()
     Navigation=CreateDefaultSubobject<UCozyNavigation>(TEXT("Navigation"));
     Neighbourhood=CreateDefaultSubobject<UCheweenieNeighbourhood>(TEXT("Neighbourhood"));
     Festival=CreateDefaultSubobject<UHalloweenSpecial>(TEXT("OptionalHalloweenSpecial"));
+    HomeProgression=CreateDefaultSubobject<UHomeProgression>(TEXT("HomeUpgradesAndReactions"));
     DefaultPawnClass = AMartyCharacter::StaticClass();
     HUDClass = AMartyHUD::StaticClass();
 }
