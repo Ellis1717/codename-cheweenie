@@ -1,0 +1,15 @@
+{
+  "validatedPrHead": "d34fccd05ad348d0243efaf0e047d6b91b7326d1",
+  "ownerMaterialHashesStillMatch": 2,
+  "releaseEvidence": "ue5-home-progression-build.json",
+  "pr": 42,
+  "compiledNativeSource": "1bc6471b2b199049f960b571dc7bc5cc718cfb4a",
+  "additionalRuntimeTests": "Not repeated: merged native tree exactly equals already compiled and tested source.",
+  "currentPayloadHashesStillMatch": 43,
+  "originalCheckoutFastForwarded": false,
+  "nativeTree": "42117aee8c84f14bd23ac5ad17b6407930e6f3c5",
+  "mergeCommit": "d0cbcd63407884e731b4acc12a7fe607b0124849",
+  "nativeTreeEqualsCompiledSource": true,
+  "mergedTreeEqualsValidatedPr": true,
+  "reason": "Existing independent UI edits remain uncommitted there; source files and Editor binaries left untouched."
+}
