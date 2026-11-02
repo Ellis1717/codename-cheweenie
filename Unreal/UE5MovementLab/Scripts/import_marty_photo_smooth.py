@@ -30,7 +30,7 @@ for i,slot in enumerate(slots):
     if name in ('Marty_Coat','Marty_Cream','Marty_Ears','Marty_FineFur'):
         shader=(script.parent/'shaders'/'marty_gameplay_fur.ush').read_text()
         revision='gameplay-fur-'+hashlib.sha256(shader.encode()).hexdigest()[:12]
-        path='/Game/Adventure/MartyPhotoSmooth/GameplayFibres/'+revision+'/'+name
+        path='/Game/Adventure/MartyPhotoReference/GameplayFibres/'+revision+'/'+name
         if not LIB.does_asset_exist(path):path='/Game/Adventure/MartySoftCoat/DirectionalFibres/'+name
         slot.material_interface=LIB.load_asset(path);assert slot.material_interface
     elif name=='Marty_Nose':slot.material_interface=face_material(name,(.065,.035,.030),.44,.35)

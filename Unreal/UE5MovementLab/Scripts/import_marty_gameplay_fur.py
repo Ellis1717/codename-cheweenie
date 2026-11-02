@@ -20,10 +20,26 @@ builder = source[source.index("FOLDER="):source.index("FIBRE_CODE=r'''")]
 builder = builder.replace('MartySoftCoat/DirectionalFibres', 'MartyPhotoReference/GameplayFibres/'+revision)
 builder = builder.replace('softcoat-fuzz-v4', revision)
 exec(compile(builder, str(script), 'exec'), globals())
+# Preserve the UV-encoded regional markings, including the darker ear roots.
+# A restrained warm tint follows the owner's indoor close-up, not a colour scan.
+old = "    plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)"
+assert material_source.count(old) == 1
+material_source = material_source.replace(old, """    if fur:
+        # Decode the existing brown-to-tan transition in every slot, including
+        # geometric hairs. Slot-based tinting would expose the welded ear seam.
+        warm=node(unreal.MaterialExpressionCustom)
+        color_input=unreal.CustomInput();color_input.set_editor_property('input_name','Coat')
+        warm.set_editor_property('inputs',[color_input])
+        warm.set_editor_property('output_type',unreal.CustomMaterialOutputType.CMOT_FLOAT3)
+        warm.set_editor_property('code','float brown=1.0-smoothstep(0.43,0.53,Coat.g/max(Coat.r,0.001)); return Coat*lerp(float3(1.035,1.015,0.96),float3(0.86,0.74,0.66),brown);')
+        wire(base,'',warm,'Coat');base=warm
+    plug(base,'',unreal.MaterialProperty.MP_BASE_COLOR)""")
+material_source = material_source.replace(".35 if name=='Marty_FineFur' else .18",
+                                          ".20 if name=='Marty_FineFur' else .10")
 exec(compile(material_source, str(script), 'exec'), globals())
 
-spec = {'Marty_Coat': ((.58,.31,.105),.74), 'Marty_Cream': ((.74,.59,.37),.78),
-        'Marty_Ears': ((.30,.125,.042),.76), 'Marty_FineFur': ((.58,.31,.105),.72)}
+spec = {'Marty_Coat': ((.58,.31,.105),.64), 'Marty_Cream': ((.74,.59,.37),.70),
+        'Marty_Ears': ((.30,.125,.042),.66), 'Marty_FineFur': ((.58,.31,.105),.64)}
 slots = pet.get_editor_property('materials')
 updated = []
 for i, slot in enumerate(slots):
@@ -36,7 +52,28 @@ for i, slot in enumerate(slots):
 assert len(updated) == 4
 pet.set_editor_property('materials', slots)
 assert LIB.save_loaded_asset(pet, only_if_is_dirty=False)
-report = {'ready': True, 'materials': updated, 'bands_uv': [[180,720],[46,156],[10,28]],
+# Low uses the same close-lying surface shading without geometric hair.
+# Do not reimport geometry, skeletons, eyes, collar or tags.
+smooth = LIB.load_asset('/Game/Adventure/MartyPhotoSmooth/Marty_RealCoat')
+assert smooth, 'Import the retained Low photo model first'
+shared = {str(slot.material_slot_name): slot.material_interface for slot in slots
+          if str(slot.material_slot_name) in spec}
+smooth_slots = smooth.get_editor_property('materials')
+smooth_updated = []
+for i, slot in enumerate(smooth_slots):
+    name = str(slot.material_slot_name)
+    if name in shared:
+        slot.material_interface = shared[name]
+        smooth_slots[i] = slot
+        smooth_updated.append(name)
+assert set(smooth_updated) == set(spec) - {'Marty_FineFur'}, smooth_updated
+smooth.set_editor_property('materials', smooth_slots)
+assert LIB.save_loaded_asset(smooth, only_if_is_dirty=False)
+report = {'ready': True, 'materials': updated, 'bands_uv': [[220,820],[64,220],[14,40]],
+          'photo_profile': 'owner-closeup-2026-11-02-v3',
+          'reference_policy': 'Indoor photo interpretation; no calibrated colour/length measurements',
+          'low_coat_materials_updated': smooth_updated,
+          'private_photo_embedded': False,
           'shader_revision': revision,
           'filter': 'Each band smoothly fades over 0.35–1.15 UV cells per pixel',
           'mesh_reimported': False, 'earlier_materials_preserved': True,
