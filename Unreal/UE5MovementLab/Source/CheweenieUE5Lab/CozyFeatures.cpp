@@ -46,5 +46,5 @@ FString CozyFeatureLabel(ECozyFeature Id)
 }
 
 void UCozyAdventure::OpenModes(){if(!Progress)return;if(Screen!=ECozyScreen::Modes)ModesReturn=Screen;GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->Open();SetScreen(ECozyScreen::Modes);}
-void UCozyAdventure::CloseModes(){SetScreen(ModesReturn==ECozyScreen::Playing?ECozyScreen::Playing:ModesReturn==ECozyScreen::Pause?ECozyScreen::Pause:ECozyScreen::Title);}
+void UCozyAdventure::CloseModes(){SetScreen(ModesReturn==ECozyScreen::Playing?ECozyScreen::Playing:ModesReturn==ECozyScreen::Pause?ECozyScreen::Pause:ModesReturn==ECozyScreen::Controls?ECozyScreen::Controls:ECozyScreen::Title);}
 void UCozyAdventure::OpenControlsFromModes(){ReturnScreen=ECozyScreen::Modes;SetScreen(ECozyScreen::Controls);}

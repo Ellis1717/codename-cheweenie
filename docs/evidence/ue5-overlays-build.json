@@ -1,0 +1,57 @@
+{
+  "engine": "Unreal Engine 5.8.4",
+  "build": {
+    "target": "CheweenieUE5LabEditor Win64 Development",
+    "result": "Succeeded",
+    "final_seconds": 22.12
+  },
+  "checks": [
+    {
+      "suite": "overlays",
+      "passed": 69,
+      "failed": 0
+    },
+    {
+      "suite": "restart",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "suite": "movement",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "suite": "hub",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "suite": "modifier",
+      "passed": 32,
+      "failed": 0
+    }
+  ],
+  "total_assertion_executions": 149,
+  "sequence": "77 regression assertions passed before the final menu-only cleanup; the final compiled source then passed 69 rendered overlay and 3 restart assertions.",
+  "rendered_captures_reviewed": [
+    "OverlaysDefault.png",
+    "OverlaysHidden.png",
+    "OverlaySettings.png"
+  ],
+  "log_scan": {
+    "error_or_fatal_categories": 0,
+    "default_material_or_vsm_overflow_matches": 0
+  },
+  "corrected_findings": [
+    "Initial acceptance fixture failed C++ compilation because a switch case needed a local scope; fixed and rebuilt successfully.",
+    "Initial cold-cache rendered run was stopped before gameplay assertions; the final run reused the existing engine cache.",
+    "Hidden-HUD capture now waits before opening pause. Final review removed unintended duplicate menu rows; direct Controls entry/back checks passed."
+  ],
+  "unverified": [
+    "Physical keyboard/controller foreground interaction",
+    "Separate-PC LAN hardware",
+    "Standalone Game target compilation and packaging for this source change"
+  ],
+  "release": "Existing validated 0.12.1 package and desktop launcher are unchanged. Unity and content-only preview unchanged."
+}

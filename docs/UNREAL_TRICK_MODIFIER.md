@@ -13,7 +13,7 @@ Movement and the camera remain active while holding the modifier. Roll and shake
 
 The face buttons are consumed by the modifier layer, so a trick does not also jump, hurry, interact or open a menu. Adding the modifier to a face button that is already held cancels that held-button hurry request but waits for a fresh face press before performing a trick. Releasing the modifier while a face button remains held does not start its ordinary action mid-hold. Pause/menu transitions disarm the layer until the modifier is released; menu confirmation/back continue to work normally.
 
-These shortcuts reuse Marty's existing core-adventure actions. **Controls → Pet feature switches → Dog tricks / Barking** retain their independent switches; disabled or busy actions consume the combination without falling through to another action. **Control hints** controls the corner guide. The LAN room retains its existing voice/jump controls; this change does not add replicated trick animation for the cats.
+These shortcuts reuse Marty's existing core-adventure actions. **Controls → Pet feature switches → Dog tricks / Barking** retain their independent switches; disabled or busy actions consume the combination without falling through to another action. **Screen overlays → Direct trick guide** controls the corner guide independently of ordinary control hints. The LAN room retains its existing voice/jump controls; this change does not add replicated trick animation for the cats.
 
 No save-schema, model, texture or Unity change is needed. Earlier packages and the 0.12.0 core build remain available through Archived versions.
 
