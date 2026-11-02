@@ -19,6 +19,7 @@ class UCozyNavigation;
 class UCatCompanions;
 class UHalloweenSpecial;
 class UHalloweenCostume;
+class UHomeProgression;
 struct FInputActionValue;
 
 UCLASS()
@@ -106,6 +107,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCozyNavigation> Navigation;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenSpecial> Festival;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UHomeProgression> HomeProgression;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCatCompanions> Companions;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
@@ -117,6 +119,7 @@ private:
     void TickAudioSmoke(float Delta);
     void TickTricksSmoke(float Delta);
     void TickTrickModifierSmoke(float Delta);
+    void TickHomeProgressionSmoke(float Delta);
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
     void TickWorldSmoke(float Delta);

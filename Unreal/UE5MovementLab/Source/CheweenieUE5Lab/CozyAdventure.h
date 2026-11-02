@@ -14,7 +14,7 @@ UENUM(BlueprintType)
 enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes };
 
 UENUM()
-enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, Count };
+enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, HomeProgression, Count };
 
 USTRUCT(BlueprintType)
 struct FCozyStop
@@ -76,6 +76,15 @@ public:
     UPROPERTY(SaveGame) bool HalloweenRoundComplete=false;
     UPROPERTY(SaveGame) int32 LakituBond=0;
     UPROPERTY(SaveGame) int32 RioBond=0;
+    UPROPERTY(SaveGame) int32 PraiseStars=3;
+    UPROPERTY(SaveGame) int32 TrickPraiseMask=0;
+    UPROPERTY(SaveGame) int32 ArmorLevel=0;
+    UPROPERTY(SaveGame) int32 StrengthLevel=0;
+    UPROPERTY(SaveGame) int32 AgilityLevel=0;
+    UPROPERTY(SaveGame) int32 SpeedLevel=0;
+    UPROPERTY(SaveGame) float MealBonusRemaining=0;
+    UPROPERTY(SaveGame) float RestBonusRemaining=0;
+    UPROPERTY(SaveGame) float PraiseCooldownRemaining=0;
 };
 
 UCLASS(ClassGroup=(Cheweenie), meta=(BlueprintSpawnableComponent))

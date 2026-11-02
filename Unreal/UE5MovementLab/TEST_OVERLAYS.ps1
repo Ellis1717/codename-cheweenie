@@ -17,7 +17,7 @@ foreach($phase in @('main','resume')){
     $path=Join-Path $root 'overlay-smoke.json'
     if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $started){throw 'Overlay report missing or stale.'}
     $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
-    if($process.ExitCode -or $report.failed.Count -or $report.passed.Count-lt $(if($phase-eq 'main'){69}else{3})){throw ('Overlay acceptance failed: '+$phase)}
+    if($process.ExitCode -or $report.failed.Count -or $report.passed.Count-lt $(if($phase-eq 'main'){79}else{3})){throw ('Overlay acceptance failed: '+$phase)}
     if($Render -and $phase-eq 'main'){foreach($file in @('OverlaysDefault.png','OverlaysHidden.png','OverlaySettings.png')){
         $capture=Join-Path $root $file
         if(!(Test-Path -LiteralPath $capture) -or (Get-Item -LiteralPath $capture).LastWriteTimeUtc-lt $started){throw ('Missing or stale overlay capture: '+$file)}

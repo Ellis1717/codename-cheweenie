@@ -9,7 +9,7 @@ class UCozyAdventure;
 class UNetDriver;
 enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave, Overlays };
 // Append-only presentation IDs. These never change gameplay feature flags.
-enum class ECozyOverlay : uint8 { All, Objective, Hints, Status, Health, Energy, Backpack, Prompts, WorldLabels, LocalMap, Compass, Location, Guidance, Festival, TrickGuide, Messages, RoomStatus, PetNames, Count };
+enum class ECozyOverlay : uint8 { All, Objective, Hints, Status, Health, Energy, Backpack, Prompts, WorldLabels, LocalMap, Compass, Location, Guidance, Festival, TrickGuide, Messages, RoomStatus, PetNames, HomeStats, Reactions, Count };
 struct FCozyArchiveChoice { FString Id, Label; };
 FString CozyHubProfileSlot();
 

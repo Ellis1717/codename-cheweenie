@@ -3,17 +3,27 @@
   "build": {
     "target": "CheweenieUE5LabEditor Win64 Development",
     "result": "Succeeded",
-    "final_seconds": 22.12
+    "final_seconds": 199.59
   },
   "checks": [
     {
       "suite": "overlays",
-      "passed": 69,
+      "passed": 79,
       "failed": 0
     },
     {
       "suite": "restart",
       "passed": 3,
+      "failed": 0
+    },
+    {
+      "suite": "home",
+      "passed": 34,
+      "failed": 0
+    },
+    {
+      "suite": "home-restart",
+      "passed": 5,
       "failed": 0
     },
     {
@@ -32,8 +42,8 @@
       "failed": 0
     }
   ],
-  "total_assertion_executions": 149,
-  "sequence": "77 regression assertions passed before the final menu-only cleanup; the final compiled source then passed 69 rendered overlay and 3 restart assertions.",
+  "total_assertion_executions": 198,
+  "sequence": "All 198 assertions ran against the final compiled integration with current main (home progression included).",
   "rendered_captures_reviewed": [
     "OverlaysDefault.png",
     "OverlaysHidden.png",
@@ -46,12 +56,14 @@
   "corrected_findings": [
     "Initial acceptance fixture failed C++ compilation because a switch case needed a local scope; fixed and rebuilt successfully.",
     "Initial cold-cache rendered run was stopped before gameplay assertions; the final run reused the existing engine cache.",
-    "Hidden-HUD capture now waits before opening pause. Final review removed unintended duplicate menu rows; direct Controls entry/back checks passed."
+    "Hidden-HUD capture now waits before opening pause. Final review removed unintended duplicate menu rows; direct Controls entry/back checks passed.",
+    "Integrated PR #42, resolving HUD/document conflicts and retaining new training objectives and home prompts. Added independent home-stats and cat-reaction switches. Corrected the HomeProgression include order before compilation; the final full build succeeded."
   ],
   "unverified": [
     "Physical keyboard/controller foreground interaction",
     "Separate-PC LAN hardware",
     "Standalone Game target compilation and packaging for this source change"
   ],
-  "release": "Existing validated 0.12.1 package and desktop launcher are unchanged. Unity and content-only preview unchanged."
+  "release": "Existing validated 0.13.0 package and desktop launcher are unchanged. Unity and content-only preview unchanged.",
+  "integrated_base": "cec3d69f4e5fbbc1f4948520539a6a4856b1fc5b"
 }

@@ -1,4 +1,5 @@
 #include "DogLife.h"
+#include "HomeProgression.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -20,7 +21,7 @@ static void ShowTrickView(AMartyCharacter* P,ACameraActor* Camera)
 float UDogLife::Health() const{return Data()?Data()->PetHealth:100;}
 float UDogLife::ActionProgress() const{return FMath::Clamp(1-ActionTime/TrickDuration,0.f,1.f);}
 FString UDogLife::PaceName() const{return !Allows(ECozyFeature::Hurry)?TEXT("Walk (hurry off)"):!Data()||Data()->PetPace==0?TEXT("Walk"):Data()->PetPace==1?TEXT("Jog"):TEXT("Run");}
-float UDogLife::WalkSpeed() const{return Energy()<25?70:(Allows(ECozyFeature::Hurry)&&(SprintRequested||(Data()&&Data()->PetPace==2)))?230:Allows(ECozyFeature::Hurry)&&Data()&&Data()->PetPace==1?155:100;}
+float UDogLife::WalkSpeed() const{return Energy()<25?70:(CheweenieHome(this)?CheweenieHome(this)->SpeedMultiplier():1)*((Allows(ECozyFeature::Hurry)&&(SprintRequested||(Data()&&Data()->PetPace==2)))?230:Allows(ECozyFeature::Hurry)&&Data()&&Data()->PetPace==1?155:100);}
 FString UDogLife::BackpackText() const
 {
     if(!Data()||Data()->BagItems.IsEmpty())return TEXT("Backpack 0 / 4: empty");
@@ -46,7 +47,7 @@ void UDogLife::LieDown()
 {
     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Tricks))return;
     if(Activity==EDogActivity::Lying){StandUp();Tell(TEXT("Up we get. Adventure awaits!"));return;}
-    StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Lying;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Marty settles down. E or movement gets him back up."),TEXT("Cozy"));
+    StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Lying;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Marty settles down. E or movement gets him back up."),TEXT("Cozy"));if(auto* H=CheweenieHome(this))H->OnSkill(0);
 }
 void UDogLife::RollOver()
 {
@@ -64,6 +65,6 @@ void UDogLife::CyclePace()
 }
 void UDogLife::AdjustHealth(float Amount)
 {
-    if(!Data()||!FMath::IsFinite(Amount)||!Allows(ECozyFeature::Health))return;Data()->PetHealth=FMath::Clamp(Data()->PetHealth+Amount,0.f,100.f);
+    if(!Data()||!FMath::IsFinite(Amount)||!Allows(ECozyFeature::Health))return;if(Amount<0&&CheweenieHome(this))Amount*=CheweenieHome(this)->DamageMultiplier();Data()->PetHealth=FMath::Clamp(Data()->PetHealth+Amount,0.f,100.f);
     if(Data()->PetHealth<=0){Pawn()->ReturnHome();Data()->PetHealth=25;Data()->PetEnergy=FMath::Max(Data()->PetEnergy,25.f);Tell(TEXT("Marty returns home for a cozy recovery."));}Save();
 }

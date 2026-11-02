@@ -2,6 +2,10 @@
 #include "CozyAdventure.h"
 #include "CozyCoop.h"
 #include "MartyCharacter.h"
+#include "HomeProgression.h"
+#include "CatCompanions.h"
+#include "Components/TextRenderComponent.h"
+#include "Engine/StaticMeshActor.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "InputKeyEventArgs.h"
@@ -21,6 +25,8 @@ void UCozyModeHub::TickOverlayAcceptance(float Delta)
     TestTime+=Delta;TestTotal+=Delta;
     auto* PC=UGameplayStatics::GetPlayerController(this,0);if(!PC)return;
     auto* S=Session();
+    auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>();
+    auto ReactionVisible=[&](){if(!Mode||!Mode->Companions)return false;for(const auto& Cat:Mode->Companions->Cats)if(auto* A=Cat.Actor.Get()){TArray<UTextRenderComponent*> Labels;A->GetComponents(Labels);for(const auto* Label:Labels)if(Label->IsVisible())return true;}return false;};
     static FVector HiddenPosition;
     FString Root=FPaths::ProjectSavedDir();FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Root);
     auto Check=[&](bool OK,const TCHAR* Label){(OK?TestPassed:TestFailed).Add(Label);};
@@ -93,8 +99,19 @@ void UCozyModeHub::TickOverlayAcceptance(float Delta)
         Shot(TEXT("OverlaySettings.png"));Next();break;
     }
     case 7:
+        S->Start(false);S->Progress->PraiseCooldownRemaining=0;S->Progress->TrickPraiseMask=0;S->Progress->PraiseStars=0;
+        PC->GetPawn()->SetActorLocation(Mode->Companions->Position(0)+FVector(40,0,0));
+        ToggleOverlay(ECozyOverlay::Reactions);Mode->HomeProgression->OnSkill(0);
+        Check(S->Progress->PraiseStars>0,TEXT("Hiding cat reactions preserves trick rewards"));
+        Check(!ReactionVisible(),TEXT("Cat reaction switch hides actual text components"));
+        ToggleOverlay(ECozyOverlay::Reactions);ToggleOverlay(ECozyOverlay::All);TestStage=102;TestTime=0;break;
+    case 102:
+        Check(!ReactionVisible(),TEXT("Master OFF keeps active cat reaction labels hidden"));
+        ToggleOverlay(ECozyOverlay::All);TestStage=103;TestTime=0;break;
+    case 103:
+        Check(ReactionVisible(),TEXT("Restoring overlays reveals an unexpired cat reaction"));
         // The subsystem must retain presentation settings across a real room travel.
-        S->Progress->RatchetUnlocked=true;S->Save();Next();Request(TEXT("ratchet"));break;
+        S->Progress->RatchetUnlocked=true;S->Save();TestStage=8;TestTime=0;Request(TEXT("ratchet"));break;
     case 8:
         if(S||!Cast<ACozyCoopController>(PC))break;
         Check(!OverlayVisible(ECozyOverlay::Objective)&&OverlayVisible(ECozyOverlay::Health),TEXT("Preferences survive solo-to-room map travel"));

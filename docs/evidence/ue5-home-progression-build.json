@@ -1,0 +1,446 @@
+{
+  "release": "Unified-0.13.0",
+  "validatedNativeSource": "1bc6471b2b199049f960b571dc7bc5cc718cfb4a",
+  "engine": "5.8.4",
+  "editorCompiled": true,
+  "gameCompiled": true,
+  "fullCookAndArchivePassed": true,
+  "finalNativeRestagingPassed": true,
+  "mainPackageGateAssertions": 605,
+  "privateMapAssertions": 4,
+  "additionalRatchetSeedAssertions": 22,
+  "currentArchiveReturnAssertions": 2,
+  "previousCoreMovementAssertions": 16,
+  "editorHomeAssertions": 39,
+  "editorMovementAssertions": 16,
+  "finalSelectedAssertionExecutions": 704,
+  "physicalControllersVerified": false,
+  "separateMachinesVerified": false,
+  "foregroundDesktopInteractionVerified": false,
+  "broadPerformanceVerified": false,
+  "scope": "Actual solo home/annex map, synthetic keyboard/gamepad actions and two-process same-machine LAN; isolated save, position, currency, cooldown and legacy-profile fixtures. No newly networked progression.",
+  "runtimeErrorFatalMaterialFallbackVsmMatches": 0,
+  "audioWaveforms": {
+    "Barks": {
+      "seconds": 2.7306666666666666,
+      "rms": 0.015736051622559446,
+      "peak": 0.15045166015625
+    },
+    "Music": {
+      "seconds": 2.005333333333333,
+      "rms": 0.008533752620369907,
+      "peak": 0.0347900390625
+    },
+    "Muted": {
+      "seconds": 1.0026666666666666,
+      "rms": 0.0,
+      "peak": 0.0
+    }
+  },
+  "archiveCount": 35,
+  "archivePayloadFilesVerified": 2791.0,
+  "priorArchiveIdentitiesAndHashRecordsPreserved": 34,
+  "localCheckpointAndPrivateResourcesRetained": 3,
+  "ownerMaterialFilesUntouched": 2,
+  "originalCheckoutUpdated": false,
+  "originalCheckoutReason": "Separate uncommitted UI source work preserved; no source pull or Editor module replacement there.",
+  "unitySourceAssetsSettingsChanged": false,
+  "primaryDesktopLauncher": "Play Cheweenie / core 0.13.0",
+  "previousPrimaryShortcutBackedUp": true,
+  "newCapturesReviewed": [
+    "ue5-home-cat-reaction.png",
+    "ue5-home-bed-rest.png",
+    "ue5-home-armor-workshop.png",
+    "ue5-home-gym.png"
+  ],
+  "visualLimitations": "Prototype annex with primitive furnishings; bed follow-camera view is close to the room boundary; existing pet likeness/animation is unchanged. Open portal frames fixed the garage camera occluder.",
+  "repairedFindings": [
+    "Initial mixed keyboard/controller interaction pulses did not allow a separate Enhanced Input Started edge. Acceptance now releases on an intervening frame.",
+    "Legacy save pace was preselected; the isolated movement fixture now explicitly sets walk pace.",
+    "An early rendered get-up check sampled asynchronous state too early; final acceptance waits up to two seconds for actual stand-up.",
+    "Initial garage capture teleported to the next station in the same screenshot frame; the final fixture holds the workshop view.",
+    "An opaque decorative return-door panel obscured the follow camera. Runtime portal frames now have open centers.",
+    "The dig start requirement now uses the upgraded energy cost, matching the actual charge."
+  ],
+  "reports": [
+    {
+      "failed": 0,
+      "passed": 6,
+      "report": "Adventure/adventure-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 25,
+      "report": "Adventure/adventure-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 2,
+      "report": "Archive/hub-archive-return.json"
+    },
+    {
+      "failed": 0,
+      "passed": 16,
+      "report": "Archive/previous-core-movement.json"
+    },
+    {
+      "failed": 0,
+      "passed": 10,
+      "report": "Audio/audio-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 4,
+      "report": "Companions/companions-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 30,
+      "report": "Companions/companions-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 29,
+      "report": "Coop/coop-guest.json"
+    },
+    {
+      "failed": 0,
+      "passed": 32,
+      "report": "Coop/coop-host.json"
+    },
+    {
+      "failed": 0,
+      "passed": 2,
+      "report": "Costumes/costumes-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 29,
+      "report": "Costumes/costumes-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 6,
+      "report": "Festival/festival-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 40,
+      "report": "Festival/festival-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 4,
+      "report": "FurDetail/fur-detail-low.json"
+    },
+    {
+      "failed": 0,
+      "passed": 4,
+      "report": "FurDetail/fur-detail-medium.json"
+    },
+    {
+      "failed": 0,
+      "passed": 15,
+      "report": "FurDetail/fur-detail.json"
+    },
+    {
+      "failed": 0,
+      "passed": 30,
+      "report": "Gait/marty-gait.json"
+    },
+    {
+      "failed": 0,
+      "passed": 34,
+      "report": "Home/home-progression.json"
+    },
+    {
+      "failed": 0,
+      "passed": 5,
+      "report": "Home/home-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 29,
+      "report": "Hub/hub-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 9,
+      "report": "HubLan/hub-guest.json"
+    },
+    {
+      "failed": 0,
+      "passed": 8,
+      "report": "HubLan/hub-host.json"
+    },
+    {
+      "failed": 0,
+      "passed": 5,
+      "report": "Life/life-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 23,
+      "report": "Life/life-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 32,
+      "report": "Modifier/trick-modifier.json"
+    },
+    {
+      "failed": 0,
+      "passed": 4,
+      "report": "Navigation/navigation-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 60,
+      "report": "Navigation/navigation-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 4,
+      "report": "PrivateMap/outside-map-audit.json"
+    },
+    {
+      "failed": 0,
+      "passed": 12,
+      "report": "Ratchet/ratchet-memory.json"
+    },
+    {
+      "failed": 0,
+      "passed": 2,
+      "report": "Ratchet/ratchet-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 3,
+      "report": "Ratchet/ratchet-return.json"
+    },
+    {
+      "failed": 0,
+      "passed": 6,
+      "report": "Ratchet/ratchet-unlock.json"
+    },
+    {
+      "failed": 0,
+      "passed": 11,
+      "report": "RatchetSeed/ratchet-memory.json"
+    },
+    {
+      "failed": 0,
+      "passed": 2,
+      "report": "RatchetSeed/ratchet-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 3,
+      "report": "RatchetSeed/ratchet-return.json"
+    },
+    {
+      "failed": 0,
+      "passed": 6,
+      "report": "RatchetSeed/ratchet-unlock.json"
+    },
+    {
+      "failed": 0,
+      "passed": 5,
+      "report": "Tricks/tricks-resume.json"
+    },
+    {
+      "failed": 0,
+      "passed": 29,
+      "report": "Tricks/tricks-smoke.json"
+    },
+    {
+      "failed": 0,
+      "passed": 28,
+      "report": "UnlockedCoop/coop-guest.json"
+    },
+    {
+      "failed": 0,
+      "passed": 31,
+      "report": "UnlockedCoop/coop-host.json"
+    },
+    {
+      "failed": 0,
+      "passed": 14,
+      "report": "World/world-smoke.json"
+    }
+  ],
+  "payloadHashes": [
+    {
+      "path": "CheweenieUE5Lab.exe",
+      "sha256": "9D6BCC7619AD4648EA25BC5B6A57A1C2F19F5BFCA756B73B846A758113603C7E"
+    },
+    {
+      "path": "Manifest_NonUFSFiles_Win64.txt",
+      "sha256": "E35122383036C596570E1E5972875413E3DCDB6814D9389A421CD1E0D17BC3A3"
+    },
+    {
+      "path": "Manifest_UFSFiles_Win64.txt",
+      "sha256": "910EF0A3DF9A83E6053874109A35A0B5199ED6D9164EB36A48DEFE7EF2FACAFD"
+    },
+    {
+      "path": "NOTICES.txt",
+      "sha256": "BA49AE5586F817B36A2772269F71F899CB1F54B5F2720FAD951319EDD5E140B8"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/CheweenieUE5Lab.exe",
+      "sha256": "B0FC5AAF88F42DF55BE04A2E5AEA12CA424273AF430D06C819538A28F2100203"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbb12.dll",
+      "sha256": "C489B6BD4DD2BE18D4F8778E3F86CAA7672EC8A206C9A54228B3BB60E2923F76"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/tbbmalloc.dll",
+      "sha256": "ACA208101BBA1E440E6FAE6580EEDD45508EC405C9674063BAF7CA23D29316BD"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/D3D12Core.dll",
+      "sha256": "F0CBDBA3043BC30E2A17DFD7D6C05E61C9C4098EB1D5EE8CCD2AB3F4696E8E20"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll",
+      "sha256": "180A630861DC88D26DB517DA787009EDF75E4C83309B819814B84B86F8DB36C1"
+    },
+    {
+      "path": "CheweenieUE5Lab/Binaries/Win64/DML/x64/DirectML.dll",
+      "sha256": "4E357E48C3FB00E5AC868F2B33BA5576873C013349E2CC1D7A9BE0071253AC62"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.pak",
+      "sha256": "B2296BBDA12FD8EF9FC8A44F67F69DE2E038628A145BD486E2D4140E31EB596F"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.ucas",
+      "sha256": "24F3F9EEFB362E018346BD171B8BE0CA9AC845286CB200AFDACD3A938CA9329F"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.utoc",
+      "sha256": "CDCAF36F4EA472B274286254B4DC70F162D9AEDCDB2000D4BD6412E00F6A227C"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/global.ucas",
+      "sha256": "2A18326E188559F392C2B9839ABAB073B80CCEDC7EC05926D8E2D357B74B78DA"
+    },
+    {
+      "path": "CheweenieUE5Lab/Content/Paks/global.utoc",
+      "sha256": "E1BC6A300D4643C611E25E3B8336C438DA29FC9BA3E4CF01B2F79BC148209A58"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/DbgHelp/dbghelp.dll",
+      "sha256": "441A7CCEE2F854352366E783FCB79FE895D09AD4C577689319E1A664F296C4A3"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/MsQuic/v220/win64/msquic.dll",
+      "sha256": "27C231D80310EA9005A6B0C17054F28887272723477E7292A7F9D63B6D1579EE"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/NVIDIA/NVaftermath/Win64/GFSDK_Aftermath_Lib.x64.dll",
+      "sha256": "CE49BE4194706417CCDC57833AEC478FAA1E08646157688C879FE616D43ABD65"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Ogg/Win64/VS2015/libogg_64.dll",
+      "sha256": "C719A5F165E4AFE29E92A7EEE9762C2E9F301A177885AB1AB8D2C7F57D4A86BF"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbis_64.dll",
+      "sha256": "B8A3E31A6C2D401809BAE7AA0FD29F49C2114EECCFBA4DC5C7AC8EDDBD4B7A98"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbisfile_64.dll",
+      "sha256": "6D0E4395BC4D0EF501C3F7F7B4E63FA0CF2AB2CA80328560B7CB10E6D5A171CF"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.dll",
+      "sha256": "583DB3D1ACD76363F0F67D9DA414DD147CA9FFAB4A47824027351B063FE66AEA"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.json",
+      "sha256": "9E55221C225DCE4B5448BAC7DADB7E39FD216F51354DDE02E58F950F4A0DD80B"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.dll",
+      "sha256": "8E080A40AC452C4B249B9060E2F4C208AF9159AFBA9E75E91D1C55D85E387D04"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.json",
+      "sha256": "578BDE354874789671DEE1A96468C965619C9F3BA16CFA65F850E81A80674087"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.dll",
+      "sha256": "780C4BCAE69A50E38181EDFD20A58780FA02539F4FF302C8C4A0E2899EE7A0CB"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.json",
+      "sha256": "71D4E243A2AF74874F4F61378BDFE3753CB01CE5EB9B98400D83612BF882A815"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.dll",
+      "sha256": "9682F7F508855980B9C31147493C962D43A0798C4596870CD7C5DEE009859EA2"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.json",
+      "sha256": "6095C28691757E083A8C1BEF3C69CA76A8B5017E21ACAF55D1BC7E82221A0FBE"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.dll",
+      "sha256": "7026DA236CECADD40B6A1723D0881349D9471592D98CABD60994F99DC2DB3E53"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.json",
+      "sha256": "18ECAFC9A65E1B7AF8CD0E36DC936026CDB3AED333C4EA5A7C17D6D9465CFAF4"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.dll",
+      "sha256": "485EB9B7F0320BD1AF3AF03DBE3A052D6F5E9CDA14496BBE1A062D626D501EAE"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.json",
+      "sha256": "A1E980A24BE9A16A826B00C27D61B85EE0E2E17226DC9C4E8EEC031879E5F26A"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.dll",
+      "sha256": "27FC6A4CA52244F18337A652DB638865ABD679F6E1D129BF4770FD3E6C4F1A60"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.json",
+      "sha256": "5C464B84457776D92A674DE506F7B7A489294583A7D7609F78FCC52BC4406D09"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Windows/WinPixEventRuntime/x64/WinPixEventRuntime.dll",
+      "sha256": "F5F6F69210CC958B92285FF444E2EF48F5C46B4D6470B07960739DBCB6554B54"
+    },
+    {
+      "path": "Engine/Binaries/ThirdParty/Windows/XAudio2_9/x64/xaudio2_9redist.dll",
+      "sha256": "E6AE545B31A5453F1B1002D434CC802A6088CF05C5FAA414D7EBE00264161506"
+    },
+    {
+      "path": "Engine/Config/StagedBuild_CheweenieUE5Lab.ini",
+      "sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5"
+    },
+    {
+      "path": "Engine/Content/Renderer/TessellationTable.bin",
+      "sha256": "EDC4F3B628A139C5E185BBAECA661C95C1F427368D3B92892C5CFF36C56DD941"
+    },
+    {
+      "path": "Engine/Content/Slate/Cursor/invisible.cur",
+      "sha256": "FEF3980FA567E9C45D5D8DCAA432A2C1A3F3BB17FE67D7AB198164F56C142AA1"
+    },
+    {
+      "path": "Engine/Extras/Redist/en-us/vc_redist.arm64.exe",
+      "sha256": "EBC1B8DC6731B2C7E791DD619ABA19D5554B9E678364F3C2A35F125BAAFC0F54"
+    },
+    {
+      "path": "Engine/Extras/Redist/en-us/vc_redist.x64.exe",
+      "sha256": "6FFDEEFF6AAE9F5DCD52217571B2C2A47DE367AF8AA3DB953542BF25C4C29A0D"
+    },
+    {
+      "path": "Engine/Plugins/NNE/NNERuntimeORT/Binaries/ThirdParty/Onnxruntime/Win64/onnxruntime.dll",
+      "sha256": "EACC4D935137D67AB0CC1B896472D1DE551DFC6545ED9AD74AB842400272E036"
+    }
+  ]
+}

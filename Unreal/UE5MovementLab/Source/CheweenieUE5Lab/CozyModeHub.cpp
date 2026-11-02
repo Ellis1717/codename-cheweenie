@@ -19,7 +19,7 @@
 #include "Misc/CommandLine.h"
 
 // Stable names make preferences additive and tolerate missing/unknown fields.
-static const TCHAR* OverlayLabels[]={TEXT("All gameplay overlays"),TEXT("Objective"),TEXT("Control hints"),TEXT("Pet status / activity"),TEXT("Health meter"),TEXT("Energy meter"),TEXT("Backpack summary"),TEXT("Interaction prompts"),TEXT("World objective labels"),TEXT("Local map"),TEXT("Compass"),TEXT("Current location"),TEXT("Destination guidance"),TEXT("Halloween paw-pass"),TEXT("Direct trick guide"),TEXT("Messages / notifications"),TEXT("LAN / memory room status"),TEXT("Other pet name labels")};
+static const TCHAR* OverlayLabels[]={TEXT("All gameplay overlays"),TEXT("Objective"),TEXT("Control hints"),TEXT("Pet status / activity"),TEXT("Health meter"),TEXT("Energy meter"),TEXT("Backpack summary"),TEXT("Interaction prompts"),TEXT("World objective labels"),TEXT("Local map"),TEXT("Compass"),TEXT("Current location"),TEXT("Destination guidance"),TEXT("Halloween paw-pass"),TEXT("Direct trick guide"),TEXT("Messages / notifications"),TEXT("LAN / memory room status"),TEXT("Other pet name labels"),TEXT("Home upgrades / bonuses"),TEXT("Cat reaction labels")};
 static_assert(UE_ARRAY_COUNT(OverlayLabels)==int32(ECozyOverlay::Count));
 static FString OverlayPrefsPath(){return FPaths::ProjectSavedDir()/(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlaySmoke"))?TEXT("OverlayAcceptance.json"):TEXT("OverlayPreferences.json"));}
 bool UCozyModeHub::OverlayVisible(ECozyOverlay Id) const
