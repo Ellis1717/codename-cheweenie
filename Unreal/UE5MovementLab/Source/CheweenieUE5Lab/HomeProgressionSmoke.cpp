@@ -25,12 +25,13 @@ void AMartyPlayMode::TickHomeProgressionSmoke(float Delta)
     FString Root=FPaths::ProjectSavedDir();FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Root);
     auto Key=[&](FKey K,bool Down){PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
     auto Place=[&](FVector V){L->CancelAction();P->GetCharacterMovement()->StopMovementImmediately();P->GetCharacterMovement()->SetMovementMode(MOVE_Walking);V.Z=28;P->TeleportTo(V,FRotator::ZeroRotator);PC->SetControlRotation(FRotator(-12,0,0));};
+    static int32 ReleasedStage=-1;
     auto Next=[&](){++SmokeStage;SmokeTime=0;};auto Shot=[&](const TCHAR* File){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/File,true,false);};
     const bool Resume=FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume"));
     auto Finish=[&](){auto J=MakeShared<FJsonObject>();auto Strings=[](const TArray<FString>& In){TArray<TSharedPtr<FJsonValue>> Out;for(const auto& V:In)Out.Add(MakeShared<FJsonValueString>(V));return Out;};J->SetStringField(TEXT("scope"),TEXT("Actual home/annex map, synthetic keyboard/gamepad, real station/trick actions; position, currency, cooldown and legacy-save fixtures. Physical controllers unverified."));J->SetArrayField(TEXT("passed"),Strings(SmokePassed));J->SetArrayField(TEXT("failed"),Strings(SmokeFailed));FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/(Resume?TEXT("home-resume.json"):TEXT("home-progression.json"))));if(Resume)UGameplayStatics::DeleteGameInSlot(S->Slot,0);SmokeStage=999;FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);};
     if(Resume){if(SmokeStage==0&&SmokeTime>3){SmokeCheck(D->ArmorLevel==1&&D->StrengthLevel==1&&D->AgilityLevel==1&&D->SpeedLevel==1,TEXT("All four upgrade tiers persist in another process"));SmokeCheck(D->PraiseStars==7&&D->TrickPraiseMask==2048,TEXT("Currency and trick-variety ledger persist"));SmokeCheck(D->MealBonusRemaining==60&&D->RestBonusRemaining==90&&D->PraiseCooldownRemaining==5,TEXT("Saved bonus/cooldown durations do not tick on the title screen"));SmokeCheck(!H->Resting&&H->Training<0&&L->Activity==EDogActivity::Idle,TEXT("Resting and training never resume as stuck transient actions"));SmokeCheck(FMath::IsNearlyEqual(H->SpeedMultiplier(),1.05f)&&FMath::IsNearlyEqual(H->DamageMultiplier(),.85f),TEXT("Reloaded upgrades have real movement/protection effects"));Finish();}return;}
     // Separate interaction releases from the next Started edge, including mixed keyboard/gamepad input.
-    if(SmokeTime>.05&&SmokeTime<.2){Key(EKeys::E,false);Key(EKeys::Gamepad_FaceButton_Left,false);}
+    if(ReleasedStage!=SmokeStage){Key(EKeys::E,false);Key(EKeys::Gamepad_FaceButton_Left,false);ReleasedStage=SmokeStage;return;}
     if(SmokeTime<.2)return;
     switch(SmokeStage)
     {
@@ -71,7 +72,9 @@ void AMartyPlayMode::TickHomeProgressionSmoke(float Delta)
         Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(H->InAnnex()&&Navigation->Location().Contains(TEXT("garage")),TEXT("Controller interaction enters the real garage/gym annex"));
         SmokeCheck(P->GetCharacterMovement()->IsMovingOnGround(),TEXT("The annex has a real walkable floor"));Place(H->ArmorBench+FVector(-75,0,0));D->PraiseStars=20;Key(EKeys::E,true);Next();break;
     case 17:
-        Key(EKeys::E,false);SmokeCheck(D->ArmorLevel==1&&D->PraiseStars==17,TEXT("Garage spends the shown star cost for a saved armor tier"));SmokeCheck(H->GearVisible(),TEXT("The padded harness is actually visible on Marty"));Shot(TEXT("HomeArmorWorkshop.png"));D->PetHealth=100;Place(H->BumpTest+FVector(-70,0,0));Key(EKeys::E,true);Next();break;
+        Key(EKeys::E,false);SmokeCheck(D->ArmorLevel==1&&D->PraiseStars==17,TEXT("Garage spends the shown star cost for a saved armor tier"));SmokeCheck(H->GearVisible(),TEXT("The padded harness is actually visible on Marty"));Shot(TEXT("HomeArmorWorkshop.png"));SmokeStage=171;SmokeTime=0;break;
+    case 171:
+        if(SmokeTime<.7)break;D->PetHealth=100;Place(H->BumpTest+FVector(-70,0,0));Key(EKeys::E,true);SmokeStage=18;SmokeTime=0;break;
     case 18:
         Key(EKeys::E,false);SmokeCheck(D->PetHealth>91&&D->PetHealth<92,TEXT("Foam safety test demonstrates real armor damage mitigation"));Place(H->Gym[0]);D->PraiseCooldownRemaining=0;Key(EKeys::E,true);Next();break;
     case 19:
@@ -88,7 +91,7 @@ void AMartyPlayMode::TickHomeProgressionSmoke(float Delta)
     case 27:
         Key(EKeys::E,false);SmokeCheck(H->Training==2&&Navigation->Goal().Label.Contains(TEXT("Speed")),TEXT("Speed training temporarily guides the player to its finish"));Key(EKeys::LeftShift,true);Key(EKeys::W,true);Next();break;
     case 28:
-        if(SmokeTime<2.4)break;Key(EKeys::W,false);Key(EKeys::LeftShift,false);SmokeCheck(D->SpeedLevel==1&&H->Training<0,TEXT("Running through the actual finish earns the speed tier"));Shot(TEXT("HomeGym.png"));Next();break;
+        if(H->Training>=0&&SmokeTime<3)break;Key(EKeys::W,false);Key(EKeys::LeftShift,false);SmokeCheck(D->SpeedLevel==1&&H->Training<0,TEXT("Running through the actual finish earns the speed tier"));Shot(TEXT("HomeGym.png"));Next();break;
     case 29:
         SmokeCheck(L->WalkSpeed()>100&&L->WalkSpeed()<110,TEXT("Speed tier changes the real movement speed"));S->ToggleFeature(ECozyFeature::HomeProgression);
         SmokeCheck(H->SpeedMultiplier()==1&&H->DamageMultiplier()==1&&H->DrainMultiplier()==1,TEXT("Disabling progression removes perk effects without deleting levels"));SmokeCheck(D->ArmorLevel==1&&D->StrengthLevel==1,TEXT("Disabled progression preserves purchased upgrades"));Place(H->Exit);Key(EKeys::E,true);Next();break;

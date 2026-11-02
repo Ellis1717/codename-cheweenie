@@ -29,7 +29,7 @@ FCozyLandmark UCozyNavigation::Goal() const
     const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto Stops=Landmarks();if(Stops.IsEmpty())return {};
     if(M->HomeProgression&&M->HomeProgression->Training>=0)return {M->HomeProgression->TrainingObjective(),M->HomeProgression->TrainingGoal(),false};
     const int32 Choice=FMath::Clamp(M->Adventure->Progress->NavTarget,0,Stops.Num()-1);auto G=Stops[Choice];
-    if(G.Outdoors!=M->Neighbourhood->Outside){G.Label=TEXT("Door to ")+G.Label;G.Position=M->Neighbourhood->Outside?M->Neighbourhood->Entrance:FVector(-425,-200,28);G.Outdoors=M->Neighbourhood->Outside;}if(M->HomeProgression&&!G.Outdoors){const auto* H=M->HomeProgression.Get();if(H->InAnnex()&&!UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Door to ")+G.Label;G.Position=H->Exit;}else if(!H->InAnnex()&&!M->Neighbourhood->Outside&&UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Garage door to ")+G.Label;G.Position=H->Portal;}}return G;
+    if(G.Outdoors!=M->Neighbourhood->Outside){G.Label=TEXT("Door to ")+G.Label;G.Position=M->Neighbourhood->Outside?M->Neighbourhood->Entrance:FVector(-425,-200,28);G.Outdoors=M->Neighbourhood->Outside;}if(M->HomeProgression&&!G.Outdoors){const auto* H=M->HomeProgression.Get();if(H->InAnnex()&&!UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Return via headquarters: ")+Stops[Choice].Label;G.Position=H->Exit;}else if(!H->InAnnex()&&!M->Neighbourhood->Outside&&UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Garage door to ")+G.Label;G.Position=H->Portal;}}return G;
 }
 FString UCozyNavigation::Location() const
 {

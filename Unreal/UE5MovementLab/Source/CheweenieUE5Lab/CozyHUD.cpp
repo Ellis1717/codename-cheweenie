@@ -94,7 +94,7 @@ bool AMartyHUD::DrawAdventureHUD()
         if(Mode->HomeProgression){auto* H=Mode->HomeProgression.Get();DrawText(H->Summary(),FLinearColor(1,.85f,.55f),450,127,nullptr,.9f);if(H->Enabled()){DrawText(FString::Printf(TEXT("STR %d | AGI %d | SPD %d"),H->Level(0),H->Level(1),H->Level(2)),FLinearColor(.7f,.95f,.8f),450,146,nullptr,.9f);DrawText(H->BuffSummary(),FLinearColor(.75f,.85f,.9f),450,166,nullptr,.85f);}}
         const FString Prompt=Session->Prompt();
         if(!Prompt.IsEmpty()) DrawText(Prompt,FLinearColor(1,.9f,.5f),Width*.5f-140,Height-110,nullptr,1.6f);
-        if(Session->Feature(ECozyFeature::WorldLabels)&&!Session->Progress->Complete&&!Outside&&!Seasonal)
+        if(Session->Feature(ECozyFeature::WorldLabels)&&!Session->Progress->Complete&&!Outside&&!Seasonal&&!(Mode->HomeProgression&&Mode->HomeProgression->InAnnex()))
         {
             for(int32 I=0;I<Session->Mission->Snacks.Num();++I) if(!(Session->Progress->SnackMask & (1<<I)))
             {
@@ -112,7 +112,7 @@ bool AMartyHUD::DrawAdventureHUD()
     {
         DrawNavigation(false);
         const auto* PC=GetWorld()->GetFirstPlayerController();const auto* Pawn=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
-        if(Pawn){const FString HomePrompt=Mode->HomeProgression?Mode->HomeProgression->Prompt():FString();const FString LifePrompt=!HomePrompt.IsEmpty()?HomePrompt:Pawn->Life?Pawn->Life->Prompt():FString();const FString CatPrompt=Mode->Companions?Mode->Companions->Prompt():FString();const FString AreaPrompt=Mode->Neighbourhood->Prompt(Pawn);DrawText(!Session->Prompt().IsEmpty()?FString():!LifePrompt.IsEmpty()?LifePrompt:AreaPrompt.StartsWith(TEXT("E /"))?AreaPrompt:!CatPrompt.IsEmpty()?CatPrompt:AreaPrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
+        if(Pawn){const FString HomePrompt=Mode->HomeProgression?Mode->HomeProgression->Prompt():FString();const FString LifePrompt=!HomePrompt.IsEmpty()?HomePrompt:Pawn->Life?Pawn->Life->Prompt():FString();const FString CatPrompt=Mode->Companions?Mode->Companions->Prompt():FString();const FString AreaPrompt=Mode->HomeProgression&&Mode->HomeProgression->InAnnex()?TEXT("Garage + gym: use E / X-Square at a station or the return door"):Mode->Neighbourhood->Prompt(Pawn);DrawText(!Session->Prompt().IsEmpty()?FString():!LifePrompt.IsEmpty()?LifePrompt:AreaPrompt.StartsWith(TEXT("E /"))?AreaPrompt:!CatPrompt.IsEmpty()?CatPrompt:AreaPrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
         if(Session->Feature(ECozyFeature::Hints)&&(!Pawn||!Pawn->TrickModifierVisible())){DrawText(TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / tap LB: bark"),FLinearColor(.8f,.9f,1),28,Height-145);
         DrawText(TEXT("Map: M / D-pad Up | Crew: K / D-pad Down | Hold L1/LB: direct tricks | C: trick menu"),FLinearColor(.8f,.9f,1),28,Height-170);}
     }
