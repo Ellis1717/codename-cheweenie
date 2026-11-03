@@ -1,0 +1,67 @@
+{
+  "engine": "Unreal Engine 5.8.4",
+  "native_editor_build": "Succeeded",
+  "final_build_seconds": 21.71,
+  "presets": [
+    "Classic Teal",
+    "Cozy Paper",
+    "Midnight Pop",
+    "Clean Slate"
+  ],
+  "checks": [
+    {
+      "suite": "styles",
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "suite": "style-restart",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "suite": "visibility",
+      "passed": 79,
+      "failed": 0
+    },
+    {
+      "suite": "visibility-restart",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "suite": "movement",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "suite": "menu-travel",
+      "passed": 29,
+      "failed": 0
+    }
+  ],
+  "selected_assertion_executions": 142,
+  "reviewed_captures": [
+    "Style0Game.png",
+    "Style0Menu.png",
+    "Style1Game.png",
+    "Style1Menu.png",
+    "Style2Game.png",
+    "Style2Menu.png",
+    "Style3Game.png",
+    "Style3Menu.png"
+  ],
+  "sequence": "15 style/restart assertions and 127 regressions passed. After cosmetic map-marker/legend refinements, the final rendered style pass repeated all 11 in-process assertions and eight captures. A redundant final rendered restart and a headless retry stalled in engine startup before gameplay, then were stopped; that final restart recheck is unverified. The earlier four restart assertions remain recorded, with settings/persistence logic unchanged.",
+  "corrected_findings": [
+    "Darkened Paper map symbols after visual review; limited the tint to 6x6 symbols so short health fills retain semantic colors.",
+    "Replaced color-specific map legends with body/camera arrow lengths."
+  ],
+  "runtime_error_fatal_matches_in_completed_checks": 0,
+  "source_context": "The local development project also contains independent uncommitted coat/world work. Those changes are excluded from the UI commit; README/handoff are staged using a patch containing only style additions.",
+  "unverified": [
+    "Final redundant restart recheck (engine startup stalled)",
+    "Physical keyboard/controller/mouse interaction",
+    "Standalone Game target compilation and packaged release for these styles"
+  ],
+  "release": "Existing packaged desktop launcher unchanged."
+}

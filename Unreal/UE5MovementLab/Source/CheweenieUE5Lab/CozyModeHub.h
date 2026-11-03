@@ -44,6 +44,9 @@ public:
     void ResetOverlays();
     void LoadOverlays();
     void SaveOverlays();
+    int32 OverlayStyle() const { return HUDStyle; }
+    FString OverlayStyleName() const;
+    void AdjustOverlayStyle(int32 Direction);
     void Request(const FString& Mode);
     void TravelSolo(const FString& Action=TEXT("hub"));
     bool RatchetAvailable() const;
@@ -66,9 +69,11 @@ private:
     int32 CachedFur=2;
     bool FurLoaded=false;
     uint32 HiddenOverlays=0;
+    int32 HUDStyle=0;
     // Acceptance state is dormant outside explicit test arguments.
     void TickAcceptance(float Delta);
     void TickOverlayAcceptance(float Delta);
+    void TickStyleAcceptance(float Delta);
     int32 TestStage=0;
     double TestTime=0,TestTotal=0;
     TArray<FString> TestPassed,TestFailed;
