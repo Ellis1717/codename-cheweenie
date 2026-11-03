@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$PackageRoot,[Parameter(Mandatory)][string]$TestRoot)
+param([Parameter(Mandatory)][string]$PackageRoot,[Parameter(Mandatory)][string]$TestRoot,[ValidateSet('Unified-0.13.0','Unified-0.13.1')][string]$ReleaseVersion='Unified-0.13.0')
 $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot);$TestRoot=[IO.Path]::GetFullPath($TestRoot)
 $windows=Join-Path $PackageRoot 'Windows'
@@ -13,6 +13,30 @@ foreach($entry in @(@('Home/home-progression.json',34),@('Home/home-resume.json'
     if($result.failed.Count -or $result.passed.Count -lt $entry[1]){throw ('Failed/incomplete acceptance: '+$entry[0])};$checks+=$result.passed.Count
 }
 Add-Type -AssemblyName System.Drawing
+$hasOverlays=Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')
+if($ReleaseVersion -eq 'Unified-0.13.1'){
+    $brickProbePath=Join-Path $TestRoot 'World/brick-render.json'
+    if(!(Test-Path -LiteralPath $brickProbePath) -or (Get-Item -LiteralPath $brickProbePath).LastWriteTimeUtc -lt $newest){throw 'Fresh brick pixel verification missing.'}
+    $brickProbe=Get-Content -LiteralPath $brickProbePath -Raw|ConvertFrom-Json
+    if(!$brickProbe.clayPaletteVisible -or $brickProbe.width -ne 1920 -or $brickProbe.height -ne 1080){throw 'Brick pixel verification failed.'}
+    $releaseReports=,@('World/world-smoke.json',16)
+    if($hasOverlays){$releaseReports+=@(@('Overlays/main/overlay-smoke.json',79),@('Overlays/resume/overlay-smoke.json',3))}
+    foreach($entry in $releaseReports){
+        $path=Join-Path $TestRoot $entry[0]
+        if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale release report: '+$entry[0])}
+        $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
+        if($report.failed.Count -or $report.passed.Count -lt $entry[1]){throw ('Failed release report: '+$entry[0])}
+        if($entry[0] -notlike 'World/*'){$checks+=$report.passed.Count}
+    }
+    $releaseCaptures=@('World/WorldBrickDogHeight.png','World/WorldHome.png')
+    if($hasOverlays){$releaseCaptures+=@('Overlays/main/OverlaysDefault.png','Overlays/main/OverlaysHidden.png','Overlays/main/OverlaySettings.png')}
+    foreach($name in $releaseCaptures){
+        $path=Join-Path $TestRoot $name
+        if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale release capture: '+$name)}
+        $bitmap=[Drawing.Bitmap]::new($path)
+        try{$expectedWidth=if($name -like 'World/*'){1920}else{1280};$expectedHeight=if($name -like 'World/*'){1080}else{720};if($bitmap.Width -ne $expectedWidth -or $bitmap.Height -ne $expectedHeight){throw ('Invalid release capture dimensions: '+$name)}}finally{$bitmap.Dispose()}
+    }
+}
 foreach($name in @('Home/HomeCatReaction.png','Home/HomeBedRest.png','Home/HomeArmorWorkshop.png','Home/HomeGym.png','Modifier/TrickModifierGuide.png','Modifier/TrickModifierLie.png','Modifier/TrickModifierRoll.png','Modifier/TrickModifierShake.png','Tricks/MartyLying.png','Tricks/MartyRoll.png','Tricks/MartyShake.png','Tricks/MartyBackpack.png','Tricks/MartyBodySway.png','Hub/ModeHub.png','Hub/ModeHubHost.png','Hub/ModeHubArchives.png','FurDetail/FurDetailMenu.png','Gait/MartyFurGameplay.png','Gait/MartyFurFar.png','Gait/MartyLikenessOverview.png','Gait/MartyEarRootMeal.png','Gait/MartyTailRootSway.png','Gait/MartyTailRootSmooth.png','Gait/MartyEarRootIdle.png','Festival/FestivalTitle.png','Festival/FestivalPorch.png','Festival/FestivalFinale.png','Costumes/HalloweenMartySide.png','Costumes/HalloweenMartyTop.png','Costumes/HalloweenMartyLying.png','Costumes/HalloweenMartyRolling.png')){
     $file=Join-Path $TestRoot $name
     if(!(Test-Path -LiteralPath $file) -or (Get-Item -LiteralPath $file).LastWriteTimeUtc -lt $newest){throw ('Missing/stale capture: '+$name)}
@@ -26,7 +50,8 @@ foreach($name in @('Barks','Music','Muted')){ $clip=$wave.$name;if(!$clip -or $c
 $bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used|\[VSM\].*overflow')
 if($bad.Count){throw 'Final runtime logs contain errors, material fallbacks or VSM overflows'}
 $files=@($payload|ForEach-Object {@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
-@{version='Unified-0.13.0';checks=$checks;rendered=$true;physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
+if($ReleaseVersion -eq 'Unified-0.13.1'){Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PORTABLE_README.txt') -Destination (Join-Path $PackageRoot 'README.txt')}
+@{version=$ReleaseVersion;checks=$checks;rendered=$true;overlaysVerified=($hasOverlays -and $ReleaseVersion -eq 'Unified-0.13.1');physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PLAY_GAME.ps1') -Destination (Join-Path $PackageRoot 'PLAY_GAME.ps1')
 '@echo off','powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0PLAY_GAME.ps1" %*','if errorlevel 1 pause'|Set-Content -LiteralPath (Join-Path $PackageRoot 'PLAY_GAME.cmd')
 'Unified adventure enabled: '+$checks+' packaged checks, '+$files.Count+' payload hashes and fresh seasonal captures. Visual inspection and physical controllers are separate checks.'

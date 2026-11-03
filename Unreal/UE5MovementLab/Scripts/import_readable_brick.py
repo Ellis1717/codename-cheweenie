@@ -90,8 +90,12 @@ if not m:
 alias = FOLDER + '/Brick_World'
 instance = LIB.load_asset(alias) if LIB.does_asset_exist(alias) else TOOLS.create_asset('Brick_World', FOLDER, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
 EDIT.set_material_instance_parent(instance, m)
-LIB.save_loaded_asset(instance)
+LIB.set_metadata_tag(instance, 'ReadableBrickRevision', revision)
+EDIT.update_material_instance(instance)
+assert instance.get_editor_property('parent') == m
+assert LIB.save_loaded_asset(instance, only_if_is_dirty=False)
 report = {'revision': revision, 'material': alias, 'resolution': spec['resolution'], 'tile_cm': spec['tile_cm'],
+          'parent': instance.get_editor_property('parent').get_path_name(),
           'texture_samples': 3, 'world_space_normals': not m.get_editor_property('tangent_space_normal'),
           'textures': {role: {'srgb': t.get_editor_property('srgb'), 'width': t.blueprint_get_size_x()} for role, t in textures.items()}}
 (ROOT / 'Saved/readable-brick-import.json').write_text(json.dumps(report, indent=2))
