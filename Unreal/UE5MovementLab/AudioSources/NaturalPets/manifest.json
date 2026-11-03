@@ -1,0 +1,87 @@
+{
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "provenance": "Real animal recordings; Freesound HQ MP3 previews, not lossless originals or recordings of the game pets.",
+  "sources": {
+    "SmallDog": {
+      "author": "ivolipa",
+      "page": "https://freesound.org/people/ivolipa/sounds/332457/",
+      "download": "https://cdn.freesound.org/previews/332/332457_3474310-hq.mp3",
+      "sha256": "0dde21ab733e3cb22291473458feffdf891a126c84281fecfc1085de0a400ed6"
+    },
+    "Lakitu": {
+      "author": "qubodup; original recording Jofae",
+      "page": "https://freesound.org/people/qubodup/sounds/813119/",
+      "download": "https://cdn.freesound.org/previews/813/813119_71257-hq.mp3",
+      "sha256": "fee516f6d91d690a466961591e81e8504ec8142fe5ff6f565dd3f8c6c71ef7b0"
+    },
+    "Rio": {
+      "author": "qubodup; original recording tuberatanka",
+      "page": "https://freesound.org/people/qubodup/sounds/813113/",
+      "download": "https://cdn.freesound.org/previews/813/813113_71257-hq.mp3",
+      "sha256": "4d1964449b1aa07c043ad1c71854fc5e524b33bf2aa4393b58e470c2a1f6f110"
+    }
+  },
+  "clips": {
+    "Bark01": {
+      "source": "SmallDog",
+      "start": 0.68,
+      "end": 1.47,
+      "rate": 44100,
+      "seconds": 0.79,
+      "peak": 0.63,
+      "rms": 0.11026137300969271,
+      "sha256": "b07441679dd19390d6843c0f5548935fbcd183292a12f87fec572e89d81402e4"
+    },
+    "Bark02": {
+      "source": "SmallDog",
+      "start": 3.19,
+      "end": 4.0,
+      "rate": 44100,
+      "seconds": 0.81,
+      "peak": 0.63,
+      "rms": 0.09082272063704264,
+      "sha256": "8476a417ba2dcc57c3df5d20b714127d47582978348fbd395d902beed9736d75"
+    },
+    "Bark03": {
+      "source": "SmallDog",
+      "start": 6.04,
+      "end": 6.92,
+      "rate": 44100,
+      "seconds": 0.88,
+      "peak": 0.63,
+      "rms": 0.08197746874296181,
+      "sha256": "e55a257c2734f8bbbb119646e78e100cbca07f4d7121b61b43e4811281ad84c0"
+    },
+    "Bark04": {
+      "source": "SmallDog",
+      "start": 10.4,
+      "end": 11.25,
+      "rate": 44100,
+      "seconds": 0.85,
+      "peak": 0.63,
+      "rms": 0.08708962109133671,
+      "sha256": "8f06788b24ac63c298cecbdb8d9a71253f65759169f9aa648fb8fc864f678c24"
+    },
+    "Lakitu": {
+      "source": "Lakitu",
+      "start": 0,
+      "end": 0.456,
+      "rate": 44100,
+      "seconds": 0.45510204081632655,
+      "peak": 0.63,
+      "rms": 0.15323267220354211,
+      "sha256": "9819dfb8da931248ac502e7d14d2c47c82b67345826ec24cbfb1b671fd085928"
+    },
+    "Rio": {
+      "source": "Rio",
+      "start": 0,
+      "end": 0.6,
+      "rate": 44100,
+      "seconds": 0.5991156462585034,
+      "peak": 0.63,
+      "rms": 0.16012173560268664,
+      "sha256": "599c92dd46afcf50b563f6110c050f19d96c29e2e9e2384bb9acb434365136dc"
+    }
+  }
+}

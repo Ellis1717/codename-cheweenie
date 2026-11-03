@@ -1,3 +1,4 @@
+#include "NaturalPetAudio.h"
 #include "CozyCoop.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
@@ -71,6 +72,9 @@ ACozyCoopPet::ACozyCoopPet()
     static ConstructorHelpers::FObjectFinder<USoundBase> B(TEXT("/Game/Adventure/Audio/Bark.Bark"));
     static ConstructorHelpers::FObjectFinder<USoundBase> K(TEXT("/Game/Adventure/Audio/Lakitu.Lakitu"));
     static ConstructorHelpers::FObjectFinder<USoundBase> S(TEXT("/Game/Adventure/Audio/Rio.Rio"));Voices={B.Object,K.Object,S.Object};
+    LoadNaturalBarks(BarkTakes);
+    if(auto* Voice=NaturalCatVoice(TEXT("Lakitu")))Voices[1]=Voice;
+    if(auto* Voice=NaturalCatVoice(TEXT("Rio")))Voices[2]=Voice;
 }
 void ACozyCoopPet::BeginPlay()
 {
@@ -128,7 +132,10 @@ void ACozyCoopPet::ServerVoice_Implementation()
 }
 void ACozyCoopPet::PlayVoice_Implementation(int32 Id)
 {
-    if(GetNetMode()!=NM_DedicatedServer&&Voices.IsValidIndex(Id)&&Voices[Id])UGameplayStatics::PlaySoundAtLocation(this,Voices[Id],GetActorLocation(),.6f);
+    if(GetNetMode()==NM_DedicatedServer||!Voices.IsValidIndex(Id))return;
+    USoundBase* Voice=Id==0?ChooseNaturalBark(BarkTakes,LastBarkTake):nullptr;
+    if(!Voice)Voice=Voices[Id];
+    if(Voice)UGameplayStatics::PlaySoundAtLocation(this,Voice,GetActorLocation(),.6f);
 }
 void ACozyCoopPet::ServerToy_Implementation(bool DropOnly)
 {
