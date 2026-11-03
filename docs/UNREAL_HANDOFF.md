@@ -1,6 +1,6 @@
 # Codename .... Cheweenie — Unreal development handoff
 
-Standalone 0.13.1 preparation adds a sequential release runner and versioned launcher/finalizer gates requiring at least 689 packaged assertions. Six guard fixtures passed; clean compilation and distribution acceptance are pending. The existing desktop 0.13.0 release and all prior resources remain intact. [Procedure and actual status](UNREAL_READABLE_RELEASE.md).
+Standalone 0.13.1 preparation adds a sequential release runner and versioned launcher/finalizer gates requiring at least 607 packaged assertions, or 689 with the overlay integration. Clean compilation and distribution acceptance are pending. The existing desktop 0.13.0 release and all prior resources remain intact. [Procedure and actual status](UNREAL_READABLE_RELEASE.md).
 
 Marty close-up coat work is isolated on `codex/marty-closeup-coat` from current main, retaining the original mixed checkout. The final photo-profile materials are shared across Low/Medium/High without reimporting geometry or changing the rig. Clean Editor/Game compilation, material import and 53 fresh real-map gait/fur-control/restart assertions passed with synthetic keyboard/gamepad events. Four new captures were reviewed and final runtime Error/Fatal/material fallback/VSM-overflow matches were zero. The desktop package is unchanged; physical controllers and owner likeness approval remain unverified. [Guide and clean-branch evidence](UNREAL_MARTY_CLOSEUP_COAT.md).
 

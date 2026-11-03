@@ -1,6 +1,6 @@
 # Codename .... Cheweenie 🐾
 
-**Standalone 0.13.1 candidate:** release tooling requires the readable-brick world capture and persistent overlay controls alongside the full core gameplay/audio checks. Six launcher guard fixtures passed; clean compilation and packaged acceptance are pending. The desktop launcher remains on 0.13.0. [Release procedure and actual status](docs/UNREAL_READABLE_RELEASE.md).
+**Standalone 0.13.1 candidate:** release tooling requires the readable-brick world capture alongside the full core gameplay/audio checks, plus overlay checks when that integration is present. Clean compilation and packaged acceptance are pending. The desktop launcher remains on 0.13.0. [Release procedure and actual status](docs/UNREAL_READABLE_RELEASE.md).
 
 **Marty’s close-up coat (development project):** finer, flatter golden-tan detail, restrained darker hairs and a continuously blended brown/tan tint soften the coat across Low, Medium and High. The coat-only changes are isolated from ongoing UI work. Clean native Editor/Game compilation and **53 fresh synthetic gait/fur-control/restart assertions** passed; four current real-map captures were reviewed with zero final runtime Error/Fatal/material fallback/VSM-overflow matches. [Body detail](docs/screenshots/ue5-marty-closeup-body.png), [guide](docs/UNREAL_MARTY_CLOSEUP_COAT.md), [actual evidence](docs/evidence/ue5-marty-closeup-coat.json). The existing desktop package is unchanged; physical controllers and owner likeness approval remain unverified.
 

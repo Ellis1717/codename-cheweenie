@@ -11,9 +11,10 @@ foreach($suite in @(@('NAVIGATION','Navigation'),@('COMPANIONS','Companions'),@(
 $homeChecks=@{GameExe=$GameExe;Render=$true;OutputRoot=(Join-Path $OutputRoot 'Home')}
 if($LegacySave){$homeChecks.LegacySave=$LegacySave}
 & (Join-Path $PSScriptRoot 'TEST_HOME.ps1') @homeChecks
-foreach($suite in @(@('MODE_HUB','Hub'),@('TRICK_MODIFIER','Modifier'),@('TRICKS','Tricks'),@('GAIT','Gait'),@('FUR_DETAIL','FurDetail'),@('COSTUMES','Costumes'),@('FESTIVAL','Festival'),@('OVERLAYS','Overlays'))){
+foreach($suite in @(@('MODE_HUB','Hub'),@('TRICK_MODIFIER','Modifier'),@('TRICKS','Tricks'),@('GAIT','Gait'),@('FUR_DETAIL','FurDetail'),@('COSTUMES','Costumes'),@('FESTIVAL','Festival'))){
     & (Join-Path $PSScriptRoot ('TEST_'+$suite[0]+'.ps1')) -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot $suite[1])
 }
+if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')){& (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Overlays')}
 & (Join-Path $PSScriptRoot 'TEST_AUDIO.ps1') -GameExe $GameExe -OutputRoot (Join-Path $OutputRoot 'Audio')
 & (Join-Path $PSScriptRoot 'TEST_MODE_HUB.ps1') -GameExe $GameExe -Lan -Port $Port -OutputRoot (Join-Path $OutputRoot 'HubLan')
 & (Join-Path $PSScriptRoot 'TEST_COOP.ps1') -GameExe $GameExe -Port ($Port+1) -OutputRoot (Join-Path $OutputRoot 'Coop')
