@@ -1,0 +1,10 @@
+{
+	"passed": [
+		"Style acceptance uses an isolated checkpoint",
+		"Chosen style survives a second process",
+		"Visibility choice survives with the style",
+		"Restore defaults returns to Classic Teal and visible overlays"
+	],
+	"failed": [],
+	"scope": "Real solo/room maps; synthetic keyboard, gamepad and HUD mouse hitbox input; isolated preferences/save and rendering when requested. Physical hardware unverified."
+}
