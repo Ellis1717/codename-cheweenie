@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Backpack clothes (Unreal development build):** open **Tab / View → Clothes on / off** to toggle Marty, Lakitu and Rio independently. Changes save automatically; Back returns to the same backpack entry. All four bag actions stay visible. Native Editor compilation and **90 real-map automated assertions** passed in an isolated main-based checkout, including 44 clothing, 2 outfit restart, 28 pet-life/save and 16 movement checks. Two menu captures were reviewed. Input was synthetic keyboard/gamepad; physical controllers remain unverified. The desktop package is unchanged. [Guide and verification](docs/UNREAL_HALLOWEEN.md), [backpack](docs/screenshots/ue5-backpack-clothes.png).
+
 **Combined overlay/coat integration:** the integration for PRs #43 and #45 retains all overlay, coat and brick changes. Native Editor/Game builds and **180 fresh real-map assertions** passed: 82 overlay/restart, 53 gait/fur/restart, 16 movement and 29 shared-menu/travel checks. Input was synthetic; physical controllers remain unverified. The original mixed checkout was preserved, and this integration does not rebuild the desktop package. [Actual combined verification](docs/evidence/ue5-pr43-45-integration.json).
 
 
