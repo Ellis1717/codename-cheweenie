@@ -1,5 +1,9 @@
 # Codename .... Cheweenie 🐾
 
+**Overlay style review (native source):** cycle **Overlay look** in the shared Graphics menu or Screen overlays. Four saved presets keep the same layout for comparison: **Classic Teal**, **Cozy Paper**, **Midnight Pop**, and **Clean Slate**. [Review guide and gameplay images](docs/UNREAL_OVERLAY_STYLES.md).
+
+Native Editor compilation passed. Style/restart checks (11 + 4), visibility/restart regressions (79 + 3), movement (16), and shared-menu/travel (29) passed: **142 assertion executions**. Eight actual gameplay/menu captures were reviewed. Input was synthetic keyboard/gamepad/mouse; physical hardware remains unverified. A redundant final restart recheck stalled before gameplay and is marked unverified; the earlier restart checks passed. The packaged desktop launcher is unchanged. [Results and scope](docs/evidence/ue5-overlay-styles-build.json).
+
 **Combined overlay/coat integration:** the integration for PRs #43 and #45 retains all overlay, coat and brick changes. Native Editor/Game builds and **180 fresh real-map assertions** passed: 82 overlay/restart, 53 gait/fur/restart, 16 movement and 29 shared-menu/travel checks. Input was synthetic; physical controllers remain unverified. The original mixed checkout was preserved, and this integration does not rebuild the desktop package. [Actual combined verification](docs/evidence/ue5-pr43-45-integration.json).
 
 

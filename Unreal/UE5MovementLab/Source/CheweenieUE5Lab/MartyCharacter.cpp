@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "CozyHUDStyle.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
 #include "HalloweenSpecial.h"
@@ -367,9 +368,9 @@ void AMartyHUD::DrawHUD()
     if (!Canvas) return;
     if (DrawAdventureHUD()) return;
     if(!GetGameInstance()->GetSubsystem<UCozyModeHub>()->OverlayVisible(ECozyOverlay::Hints))return;
-    DrawRect(FLinearColor(0.025f, 0.035f, 0.04f, .88f), 16, 16, 700, 100);
-    DrawText(TEXT("Codename .... Cheweenie | Marty movement lab"), FLinearColor::White, 28, 25);
-    DrawText(TEXT("Move: WASD / arrows / left stick   |   Look: mouse / right stick"), FLinearColor::White, 28, 48);
-    DrawText(TEXT("Hurry: Shift / A-Cross   |   Camera: V / R3   |   Recenter: R / RB-R1"), FLinearColor::White, 28, 69);
-    DrawText(TEXT("Return home: H / Start-Options   |   Marty: skinned procedural canine gait"), FLinearColor::White, 28, 90);
+    CozyDrawRect(this,FLinearColor(0.025f, 0.035f, 0.04f, .88f), 16, 16, 700, 100);
+    CozyDrawText(this,TEXT("Codename .... Cheweenie | Marty movement lab"), FLinearColor::White, 28, 25);
+    CozyDrawText(this,TEXT("Move: WASD / arrows / left stick   |   Look: mouse / right stick"), FLinearColor::White, 28, 48);
+    CozyDrawText(this,TEXT("Hurry: Shift / A-Cross   |   Camera: V / R3   |   Recenter: R / RB-R1"), FLinearColor::White, 28, 69);
+    CozyDrawText(this,TEXT("Return home: H / Start-Options   |   Marty: skinned procedural canine gait"), FLinearColor::White, 28, 90);
 }

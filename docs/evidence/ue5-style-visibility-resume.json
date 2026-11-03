@@ -1,0 +1,9 @@
+{
+	"scope": "Real solo/room maps, synthetic keyboard/gamepad input, isolated preferences. Physical hardware unverified.",
+	"passed": [
+		"Checkpoint is isolated",
+		"Master OFF survives a new process",
+		"Individual choices survive a new process independently"
+	],
+	"failed": []
+}
