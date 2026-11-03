@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Combined overlay/coat integration:** the integration for PRs #43 and #45 retains all overlay, coat and brick changes. Native Editor/Game builds and **180 fresh real-map assertions** passed: 82 overlay/restart, 53 gait/fur/restart, 16 movement and 29 shared-menu/travel checks. Input was synthetic; physical controllers remain unverified. The original mixed checkout was preserved, and this integration does not rebuild the desktop package. [Actual combined verification](docs/evidence/ue5-pr43-45-integration.json).
+
 
 **Configurable screen overlays (native source):** open **Pause → Controls → Screen overlays**, or **Game & versions → Graphics, overlays & controls → Screen overlays**. Each of the 19 gameplay overlay groups has an independent saved visibility switch, plus a master switch and restore defaults. Choices apply locally in solo and LAN/memory rooms, survive travel/restarts, and leave gameplay mechanics enabled. Menus remain accessible with the HUD hidden. [Guide](docs/UNREAL_OVERLAYS.md), [settings capture](docs/screenshots/ue5-overlay-settings.png), [hidden HUD capture](docs/screenshots/ue5-overlays-hidden.png).
 
