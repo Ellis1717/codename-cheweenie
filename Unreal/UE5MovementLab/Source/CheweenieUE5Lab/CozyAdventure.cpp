@@ -1,3 +1,4 @@
+#include "NaturalPetAudio.h"
 #include "CozyAdventure.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
@@ -99,6 +100,9 @@ void UCozyAdventure::BeginPlay()
         const FString Path = TEXT("/Game/Adventure/Audio/") + Name + TEXT(".") + Name;
         if (auto* Sound = LoadObject<USoundBase>(nullptr, *Path)) Sounds.Add(Name, Sound);
     }
+    LoadNaturalBarks(BarkTakes);
+    for(const FString& Name:{TEXT("Lakitu"),TEXT("Rio")})
+        if(auto* Voice=NaturalCatVoice(Name)) Sounds.Add(Name,Voice);
     CheckRatchetUnlock();
     BuildFort(); CompleteRoom(); RebuildMarkers(); UpdateMusic(); SetScreen(ECozyScreen::Title);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHalloweenSpecial")))OpenHalloween();
@@ -374,7 +378,9 @@ void UCozyAdventure::PlayCue(const FString& Name)
     if(Name.IsEmpty()||!Progress||Progress->Effects<=0||!Feature(ECozyFeature::Effects)) return;
     if(!Sounds.Contains(Name))
         if(auto* Asset=LoadObject<USoundBase>(nullptr,*(TEXT("/Game/Adventure/Audio/")+Name+TEXT(".")+Name))) Sounds.Add(Name,Asset);
-    if (USoundBase* Sound=Sounds.FindRef(Name)) if(UGameplayStatics::SpawnSound2D(this,Sound,Progress->Effects)){LastCue=Name;++AudibleCueCount;}
+    USoundBase* Sound=Name==TEXT("Bark")?ChooseNaturalBark(BarkTakes,LastBarkTake):nullptr;
+    if(!Sound)Sound=Sounds.FindRef(Name);
+    if(Sound&&UGameplayStatics::SpawnSound2D(this,Sound,Progress->Effects)){LastCue=Name;++AudibleCueCount;}
 }
 void UCozyAdventure::UpdateMusic()
 {

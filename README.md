@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Recorded pet voices (Unreal development project):** four real small-dog bark takes now vary without consecutive repeats, and Lakitu/Rio use real cat meows. CC0 sources and original synthesized fallbacks are retained. Native Editor compilation, six imports, 14 real-map audio assertions and three recorded waveform checks passed; input was synthetic keyboard/gamepad. Movement passed 16/16 headlessly and 15/16 rendered, with rendered recenter unresolved. Physical controllers and subjective listening remain unverified. The desktop package is unchanged. [Pack, licenses and actual verification](docs/UNREAL_NATURAL_PET_AUDIO.md).
+
 **Combined overlay/coat integration:** the integration for PRs #43 and #45 retains all overlay, coat and brick changes. Native Editor/Game builds and **180 fresh real-map assertions** passed: 82 overlay/restart, 53 gait/fur/restart, 16 movement and 29 shared-menu/travel checks. Input was synthetic; physical controllers remain unverified. The original mixed checkout was preserved, and this integration does not rebuild the desktop package. [Actual combined verification](docs/evidence/ue5-pr43-45-integration.json).
 
 
