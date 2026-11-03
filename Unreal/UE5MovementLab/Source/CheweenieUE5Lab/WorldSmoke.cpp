@@ -8,6 +8,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
+#include "Materials/MaterialInterface.h"
 #include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -66,6 +67,17 @@ void AMartyPlayMode::TickWorldSmoke(float Delta)
     case 10:
         Key(EKeys::Gamepad_RightThumbstick,false);if(SmokeTime<.2f)break;SmokeCheck(P->CameraPreset==1,TEXT("Synthetic controller camera switching remains available"));Next();break;
     case 11:
+        if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieReadableBrickSmoke"))){SmokeStage=13;SmokeTime=0;break;}
+        Neighbourhood->GoOutside(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;
+        {bool Found=false;for(TActorIterator<AStaticMeshActor> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("Headquarters brick main wing")))
+        {auto* C=It->GetStaticMeshComponent();SmokeCheck(C->GetMaterial(0)&&C->GetMaterial(0)->GetPathName().Contains(TEXT("/ReadableBrick/")),TEXT("Headquarters uses the readable brick revision"));
+        const FVector Wall=C->Bounds.Origin+FVector(-C->Bounds.BoxExtent.X,0,45-C->Bounds.Origin.Z);
+        View(Wall+FVector(-160,-75,12),Wall+FVector(0,35,10));Found=true;break;}
+        SmokeCheck(Found,TEXT("Brick inspection camera targets an actual headquarters wall"));}
+        Next();break;
+    case 12:
+        if(SmokeTime<8)break;Shot(TEXT("WorldBrickDogHeight.png"));Next();break;
+    case 13:
         if(SmokeTime<1)break;
         {auto J=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto S:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(S));for(auto S:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(S));J->SetArrayField(TEXT("passed"),Pass);J->SetArrayField(TEXT("failed"),Fail);J->SetStringField(TEXT("input"),TEXT("Synthetic keyboard/gamepad; physical hardware unverified"));J->SetStringField(TEXT("frame_scope"),TEXT("Offscreen DX12 frame intervals on this machine; not GPU timings, a baseline comparison or a playable-frame-rate benchmark"));if(!Frames.IsEmpty()){Frames.Sort();J->SetNumberField(TEXT("frame_samples"),Frames.Num());J->SetNumberField(TEXT("median_frame_ms"),Frames[Frames.Num()/2]);J->SetNumberField(TEXT("p95_frame_ms"),Frames[FMath::FloorToInt((Frames.Num()-1)*.95)]);}FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/TEXT("world-smoke.json")));UGameplayStatics::DeleteGameInSlot(TEXT("CheweenieWorldAcceptance"),0);FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);Next();}break;
     }

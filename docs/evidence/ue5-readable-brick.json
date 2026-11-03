@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-02",
+  "native_editor_build": "passed on current integration checkout with pre-existing coat/UI work; queued build reported target up to date after concurrent compilation",
+  "clean_branch_build": "unverified",
+  "runtime": {
+    "passed": [
+      "Marty remains grounded on the retained room floor",
+      "Seven detailed room mesh batches are present",
+      "Detailed room surfaces retain existing collision via visual-only overlays",
+      "FBX handedness correction aligns sofa with tested gameplay coordinates",
+      "Original leafy park trees and bench replace primitive silhouettes",
+      "Oak uses a 2K colour-managed base map",
+      "Fabric normal map uses linear normal data",
+      "Brick roughness map uses linear data",
+      "Keyboard movement traverses the detailed room",
+      "Headquarters door travel still reaches the neighbourhood",
+      "Grass batch has no collision or actor tick",
+      "Park grass is drawn in one 640-instance batch",
+      "Return-home recovery restores the detailed indoor room",
+      "Synthetic controller camera switching remains available",
+      "Headquarters uses the readable brick revision",
+      "Brick inspection camera targets an actual headquarters wall"
+    ],
+    "failed": [],
+    "input": "Synthetic keyboard/gamepad; physical hardware unverified",
+    "frame_scope": "Offscreen DX12 frame intervals on this machine; not GPU timings, a baseline comparison or a playable-frame-rate benchmark",
+    "frame_samples": 439,
+    "median_frame_ms": 18.773797899484634,
+    "p95_frame_ms": 21.504301577806473
+  },
+  "import": {
+    "revision": "a773f7a03f3a",
+    "material": "/Game/Adventure/Scenery/ReadableBrick/Brick_World",
+    "resolution": 1024,
+    "tile_cm": 192.0,
+    "texture_samples": 3,
+    "world_space_normals": true,
+    "textures": {
+      "Base": {
+        "srgb": true,
+        "width": 1024
+      },
+      "Normal": {
+        "srgb": false,
+        "width": 1024
+      },
+      "Rough": {
+        "srgb": false,
+        "width": 1024
+      }
+    }
+  },
+  "runtime_error_fatal_material_fallback_vsm_matches": 0,
+  "capture_review": [
+    "WorldBrickDogHeight.png: reviewed clear mortar, clay shoulders, correct course scale",
+    "WorldHome.png: reviewed walls and instanced gables"
+  ],
+  "captures": [
+    {
+      "file": "WorldBrickDogHeight.png",
+      "sha256": "3C2041E10134BFF84E3F16CF0E48FDB2787E5132E7CC30829526C6EE36B64E14"
+    },
+    {
+      "file": "WorldDogView.png",
+      "sha256": "0D3A188D43F9EB5A90473A9C57CF1CCC0047CF9A4F671A3E09245110DE9DB733"
+    },
+    {
+      "file": "WorldHome.png",
+      "sha256": "2588DC11F75A54C966D89DBEE73D8A797BF307712927B907D53CE3D762DAD726"
+    },
+    {
+      "file": "WorldPark.png",
+      "sha256": "D47327FEF6F2E8CFB12F66320F68FD9F76034AF7858D42F793163D64C9EB070F"
+    },
+    {
+      "file": "WorldRoom.png",
+      "sha256": "50D29383D651C7C514B41DCE1235AAF27B34064B72B084E36C92628650F3B006"
+    }
+  ],
+  "packaged_launcher": "unchanged",
+  "physical_controller": "unverified",
+  "gpu_before_after": "unverified"
+}

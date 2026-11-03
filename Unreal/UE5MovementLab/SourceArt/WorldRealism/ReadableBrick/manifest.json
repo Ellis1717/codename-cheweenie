@@ -1,0 +1,18 @@
+{
+  "original_procedural_art": true,
+  "resolution": 1024,
+  "tile_cm": 192.0,
+  "brick_pitch_cm": [
+    24,
+    8
+  ],
+  "mortar_width_cm": 1,
+  "relief_cm": 0.38,
+  "normal_convention": "DirectX; world projection converts green to negative V",
+  "generator_sha256": "be35ede7c20b200a33c2c70258c9556f8d5ce7f71e82c9299f43657d361e1dc4",
+  "textures": {
+    "Brick_Base.png": "14373a22080de12e8c726e5bb5560284ef4728b19223ef7f5ed30ae69f5e8065",
+    "Brick_Normal.png": "2c25ddbd8f54641dc7fbf232e1ac56bfcbed1d00a9935dcc6935f50b2a002809",
+    "Brick_Rough.png": "65c7b20315b9435b45f3984db6edd07cf6e9291927cdf8872be8b41754259a9b"
+  }
+}

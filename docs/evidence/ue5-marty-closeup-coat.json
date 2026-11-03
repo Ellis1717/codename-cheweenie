@@ -1,0 +1,201 @@
+{
+  "recorded_utc": "2026-11-02T23:56:12.3853598+00:00",
+  "scope": "Isolated coat branch on main 4f0379c; desktop package not rebuilt",
+  "native_editor_build": {
+    "command": "Build.bat CheweenieUE5LabEditor Win64 Development -WaitMutex -MaxParallelActions=2 -NoXGE -NoUBA -gather",
+    "exit_code": 0,
+    "result": "Succeeded; clean isolated project; 43 actions"
+  },
+  "python_sources_parse": true,
+  "import": {
+    "ready": true,
+    "materials": [
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_Coat.Marty_Coat",
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_Ears.Marty_Ears",
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_Cream.Marty_Cream",
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_FineFur.Marty_FineFur"
+    ],
+    "bands_uv": [
+      [
+        220,
+        820
+      ],
+      [
+        64,
+        220
+      ],
+      [
+        14,
+        40
+      ]
+    ],
+    "photo_profile": "owner-closeup-2026-11-02-v3",
+    "reference_policy": "Indoor photo interpretation; no calibrated colour/length measurements",
+    "low_coat_materials_updated": [
+      "Marty_Coat",
+      "Marty_Ears",
+      "Marty_Cream"
+    ],
+    "private_photo_embedded": false,
+    "shader_revision": "gameplay-fur-c6485ebe6901",
+    "filter": "Each band smoothly fades over 0.35–1.15 UV cells per pixel",
+    "mesh_reimported": false,
+    "earlier_materials_preserved": true,
+    "scope": "Material import only; rendered appearance and gameplay require runtime checks"
+  },
+  "high_detail_link": {
+    "ready": true,
+    "fur_strands": 64000,
+    "asset": "/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat",
+    "materials": [
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_Coat.Marty_Coat",
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_Ears.Marty_Ears",
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_Cream.Marty_Cream",
+      "/Game/Adventure/MartyPhotoReference/GameplayFibres/gameplay-fur-c6485ebe6901/Marty_FineFur.Marty_FineFur"
+    ],
+    "shader_revision": "gameplay-fur-c6485ebe6901",
+    "reference_asset": "/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat",
+    "geometry_reimported": false,
+    "earlier_materials_preserved": true
+  },
+  "assertions": {
+    "gait": {
+      "scope": "Native skin-weighted mesh, analytic canine IK, synthetic keyboard/gamepad. Physical devices and subjective realism unverified.",
+      "passed": [
+        "Skin-weighted Marty and 24 anatomical joints load",
+        "Detailed short-coat model loads as the playable character",
+        "Connected ear-tail skin is the active detailed model",
+        "Ear, ear-tip and tail roots match their reference offsets on animated parents",
+        "Photo-guided lower stance and shorter ear reference rig load independently",
+        "Combed fine fur uses the new microfibre material in the real game",
+        "Body, cream, ears and geometric fur load the distance-readable coat materials",
+        "Imported centimetre rig faces positive X",
+        "Two-bone foreleg IK bends elbow backward at fixed bone length",
+        "Hind stifle bends forward rather than copying foreleg anatomy",
+        "Fourth camera provides a close character inspection view",
+        "Keyboard traversal advances gait by measured travel",
+        "Skinned elbow and knee actually bend while walking",
+        "Locomotion retains supporting stance paws",
+        "Ear and tail roots stay pinned while walking",
+        "Flexible ear tips are independently skinned and posed",
+        "Ear tips visibly change angle during actual travel",
+        "Analog controller hurry drives the trot at higher speed",
+        "Trotting IK remains finite",
+        "Ear and tail roots stay pinned while trotting",
+        "Pause freezes gait and paw pose",
+        "Return-home and stopping recover a stable four-paw idle",
+        "Home recovery retains attached ear and tail roots",
+        "Ear roots follow the visibly tilted head during a kitchen meal",
+        "Ear and tail roots follow body sway without rest-position drift",
+        "Root attachments remain pinned when lying down",
+        "Root attachments remain pinned during a full-body roll",
+        "Root attachments recover after rolling",
+        "Smooth coat also uses connected skin and pinned roots",
+        "Detailed coat switching preserves the connected root rig"
+      ],
+      "failed": []
+    },
+    "detail": {
+      "scope": "Real map; synthetic keyboard/gamepad with menu-selection and progress fixtures; three-process isolated save checks. Physical controllers unverified.",
+      "passed": [
+        "Fresh saves default to High fur detail",
+        "High detail selects the new raised-hair mesh",
+        "Fur acceptance uses an isolated save slot",
+        "Keyboard starts the real game before adjusting detail",
+        "Keyboard opens Pause for fur controls",
+        "A-Cross opens Controls from Pause",
+        "Graphics controls display the current High fur level",
+        "Keyboard Left lowers High to Medium",
+        "Medium changes the actual mesh live and refreshes gait",
+        "D-pad Right restores High and the raised hairs",
+        "Keyboard Right wraps High to the smooth Low model",
+        "A-Cross cycles Low to Medium without leaving the menu",
+        "Enter cycles Medium to High live",
+        "Changing detail keeps Marty still and preserves patrol and sound state",
+        "The selected Medium quality is written to the save"
+      ],
+      "failed": []
+    },
+    "medium_reload": {
+      "scope": "Real map; synthetic keyboard/gamepad with menu-selection and progress fixtures; three-process isolated save checks. Physical controllers unverified.",
+      "passed": [
+        "Medium fur preference reloads in another process",
+        "Reload selects the actual medium coat and valid gait",
+        "Fur reload preserves patrol and sound preferences",
+        "Legacy coat-off switch retains Medium and saves Low"
+      ],
+      "failed": []
+    },
+    "low_reload": {
+      "scope": "Real map; synthetic keyboard/gamepad with menu-selection and progress fixtures; three-process isolated save checks. Physical controllers unverified.",
+      "passed": [
+        "Low setting reloads while remembering the preferred enabled coat",
+        "Low reload selects the actual smooth coat",
+        "Legacy coat-on switch restores Medium with a valid rig",
+        "Quality switches retain existing patrol and sound state"
+      ],
+      "failed": []
+    }
+  },
+  "total_final_assertions": 53,
+  "runtime_error_fatal_shader_fallback_vsm_matches": {
+    "Unreal\\UE5MovementLab\\Saved\\CloseupCoatClean\\Gait\\Gait.log": [],
+    "Unreal\\UE5MovementLab\\Saved\\CloseupCoatClean\\Detail\\FurDetail-play.log": [],
+    "Unreal\\UE5MovementLab\\Saved\\CloseupCoatClean\\Detail\\FurDetail-medium.log": [],
+    "Unreal\\UE5MovementLab\\Saved\\CloseupCoatClean\\Detail\\FurDetail-low.log": [],
+    "Unreal\\UE5MovementLab\\Saved\\ImportMartyGameplayFur.log": []
+  },
+  "captures_sha256": {
+    "docs/screenshots/ue5-marty-closeup-body.png": "FE66AF1287E2D5EC55DC70BE4B76263D69C7865DBE99194332938338AEEE0E0C",
+    "docs/screenshots/ue5-marty-closeup-far.png": "412C08FD74CE675933E77CA6A72D7CA6FDF7F438FF758D662D6AE290BA3E410F",
+    "docs/screenshots/ue5-marty-closeup-gameplay.png": "E28F8B75801A5260A63AD8DB878CDBB813014C77B739883C9726C8485D43B5D0",
+    "docs/screenshots/ue5-marty-closeup-overview.png": "F4BE9173C625C7153AE042FABF89A169E7AEACF64639F627995A9DF4CB96E8DC"
+  },
+  "input": "Synthetic keyboard/gamepad in the actual game map; physical controllers unverified",
+  "geometry_reimported": false,
+  "private_photo_embedded": false,
+  "prior_findings": [
+    "Sandbox Zen cache startup stalled; own import process stopped and rerun with authorization.",
+    "Initial Low assertion incorrectly expected a geometric-hair slot; corrected to three surface slots.",
+    "Rendered slot-based brown ear tint exposed a colour boundary; final palette-based tint is continuous across skin and hair.",
+    "Final importer encountered a temporary Low asset sharing lock; Unreal recovered during retry and saved successfully."
+  ],
+  "checkout": "Isolated codex/marty-closeup-coat branch; original mixed checkout preserved without writes",
+  "unity_retested": false,
+  "native_game_build": {
+    "command": "Build.bat CheweenieUE5Lab Win64 Development -WaitMutex -MaxParallelActions=2 -NoXGE -NoUBA -gather",
+    "exit_code": 0,
+    "result": "Succeeded; clean isolated project; 42 actions"
+  },
+  "base_main_commit": "4f0379c21e4218ead55a5362ad3b46ca21bc4a60",
+  "original_integration_verification": {
+    "recorded_utc": "2026-11-02T18:39:13.293566-05:00",
+    "scope": "Local Unreal project material update; desktop package not rebuilt",
+    "assertions": 53,
+    "checkout": "Pre-existing unmerged index entries and other edits retained; no commit or PR created from the mixed checkout",
+    "prior_findings": [
+      "Sandbox Zen cache startup stalled; own import process stopped and rerun with authorization.",
+      "Initial Low assertion incorrectly expected a geometric-hair slot; corrected to three surface slots.",
+      "Rendered slot-based brown ear tint exposed a colour boundary; final palette-based tint is continuous across skin and hair.",
+      "Final importer encountered a temporary Low asset sharing lock; Unreal recovered during retry and saved successfully."
+    ]
+  },
+  "preserved_original_coat_snapshot_files": [
+    "Unreal/UE5MovementLab/Scripts/import_marty_gameplay_fur.py",
+    "Unreal/UE5MovementLab/Scripts/import_marty_photo_smooth.py",
+    "Unreal/UE5MovementLab/Scripts/shaders/marty_gameplay_fur.ush",
+    "Unreal/UE5MovementLab/Content/Adventure/MartyPhotoReference/Marty_RealCoat.uasset",
+    "Unreal/UE5MovementLab/Content/Adventure/MartyPhotoSmooth/Marty_RealCoat.uasset",
+    "Unreal/UE5MovementLab/Content/Adventure/MartyVisibleStrands/Marty_RealCoat.uasset",
+    "docs/UNREAL_MARTY_CLOSEUP_COAT.md",
+    "docs/evidence/ue5-marty-closeup-coat.json",
+    "docs/screenshots/ue5-marty-closeup-overview.png",
+    "docs/screenshots/ue5-marty-closeup-body.png",
+    "docs/screenshots/ue5-marty-closeup-gameplay.png",
+    "docs/screenshots/ue5-marty-closeup-far.png",
+    "Unreal\\UE5MovementLab\\Content\\Adventure\\MartyPhotoReference\\GameplayFibres\\gameplay-fur-c6485ebe6901\\Marty_Coat.uasset",
+    "Unreal\\UE5MovementLab\\Content\\Adventure\\MartyPhotoReference\\GameplayFibres\\gameplay-fur-c6485ebe6901\\Marty_Cream.uasset",
+    "Unreal\\UE5MovementLab\\Content\\Adventure\\MartyPhotoReference\\GameplayFibres\\gameplay-fur-c6485ebe6901\\Marty_Ears.uasset",
+    "Unreal\\UE5MovementLab\\Content\\Adventure\\MartyPhotoReference\\GameplayFibres\\gameplay-fur-c6485ebe6901\\Marty_FineFur.uasset"
+  ]
+}
