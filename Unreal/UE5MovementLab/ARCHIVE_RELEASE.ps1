@@ -12,7 +12,7 @@ if($gate.version -ne 'Unified-0.13.1' -or !$gate.rendered -or $gate.checks -lt $
 $windows=[IO.Path]::GetFullPath((Join-Path $PackageRoot 'Windows')).TrimEnd('\','/')
 $entries=@()
 foreach($file in $gate.files){
-    if([IO.Path]::IsPathRooted($file.path) -or $file.path -match '(^|[\\/])(Saved|LocalGameData|Logs)([\\/]|$)'){throw 'Runtime/private payload path rejected.'}
+    if([IO.Path]::IsPathRooted($file.path) -or $file.path -match '(^|[\\/])(Saved|LocalGameData|Logs)([\\/]|$)|\.log$'){throw 'Runtime/private payload path rejected.'}
     $source=[IO.Path]::GetFullPath((Join-Path $windows $file.path))
     if(!$source.StartsWith($windows+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Payload path escapes the distribution.'}
     if(!(Test-Path -LiteralPath $source -PathType Leaf) -or (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash -ne $file.sha256){throw ('Payload changed: '+$file.path)}

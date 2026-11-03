@@ -15,6 +15,10 @@ foreach($entry in @(@('Home/home-progression.json',34),@('Home/home-resume.json'
 Add-Type -AssemblyName System.Drawing
 $hasOverlays=Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')
 if($ReleaseVersion -eq 'Unified-0.13.1'){
+    $brickProbePath=Join-Path $TestRoot 'World/brick-render.json'
+    if(!(Test-Path -LiteralPath $brickProbePath) -or (Get-Item -LiteralPath $brickProbePath).LastWriteTimeUtc -lt $newest){throw 'Fresh brick pixel verification missing.'}
+    $brickProbe=Get-Content -LiteralPath $brickProbePath -Raw|ConvertFrom-Json
+    if(!$brickProbe.clayPaletteVisible -or $brickProbe.width -ne 1920 -or $brickProbe.height -ne 1080){throw 'Brick pixel verification failed.'}
     $releaseReports=,@('World/world-smoke.json',16)
     if($hasOverlays){$releaseReports+=@(@('Overlays/main/overlay-smoke.json',79),@('Overlays/resume/overlay-smoke.json',3))}
     foreach($entry in $releaseReports){

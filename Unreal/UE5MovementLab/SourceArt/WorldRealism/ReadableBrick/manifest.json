@@ -9,7 +9,7 @@
   "mortar_width_cm": 1,
   "relief_cm": 0.38,
   "normal_convention": "DirectX; world projection converts green to negative V",
-  "generator_sha256": "be35ede7c20b200a33c2c70258c9556f8d5ce7f71e82c9299f43657d361e1dc4",
+  "generator_sha256": "06e59b4e354d6e667d09bc312d91e2fbbd36d9ae19f47f3c9b4eeedc59b9945c",
   "textures": {
     "Brick_Base.png": "14373a22080de12e8c726e5bb5560284ef4728b19223ef7f5ed30ae69f5e8065",
     "Brick_Normal.png": "2c25ddbd8f54641dc7fbf232e1ac56bfcbed1d00a9935dcc6935f50b2a002809",
