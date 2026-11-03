@@ -88,6 +88,8 @@ private:
     UPROPERTY() TObjectPtr<UStaticMesh> RioMesh;
     UPROPERTY() TObjectPtr<UStaticMesh> RatchetMesh;
     UPROPERTY() TArray<TObjectPtr<USoundBase>> Voices;
+    UPROPERTY() TArray<TObjectPtr<USoundBase>> BarkTakes;
+    int32 LastBarkTake=-1;
     double NextVoice=0;
     int32 PosePolicy=-1;
 };
