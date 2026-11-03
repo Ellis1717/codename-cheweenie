@@ -1,0 +1,8 @@
+{
+	"passed": [
+		"Independent Marty/Rio on and Lakitu off choices survive a second process",
+		"Reload applies only the saved costume choices"
+	],
+	"failed": [],
+	"scope": "Actual game map; synthetic keyboard/gamepad with menu/action fixtures. Physical controller and cloth simulation unverified."
+}
