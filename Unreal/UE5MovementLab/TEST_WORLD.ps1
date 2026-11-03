@@ -17,5 +17,6 @@ $result=Get-Content -LiteralPath $report -Raw|ConvertFrom-Json
 if($result.failed.Count -or $result.passed.Count -lt 14){throw 'World acceptance failed/incomplete'}
 if($ReadableBrick -and $result.passed.Count -lt 16){throw 'Readable brick checks missing'}
 if($ReadableBrick -and $Render){$capture=Join-Path $OutputRoot 'WorldBrickDogHeight.png';if(!(Test-Path -LiteralPath $capture) -or (Get-Item -LiteralPath $capture).LastWriteTimeUtc -lt $started){throw 'Brick inspection capture missing/stale'}}
+if($ReadableBrick -and $Render){& (Join-Path $PSScriptRoot 'CHECK_BRICK.ps1') -ImagePath (Join-Path $OutputRoot 'WorldBrickDogHeight.png')}
 if($Render){foreach($name in @('WorldRoom.png','WorldDogView.png','WorldHome.png','WorldPark.png')){if(!(Test-Path -LiteralPath (Join-Path $OutputRoot $name)) -or (Get-Item -LiteralPath (Join-Path $OutputRoot $name)).LastWriteTimeUtc -lt $started){throw 'World capture missing/stale'}}}
 $result

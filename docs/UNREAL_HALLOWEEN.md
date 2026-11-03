@@ -1,5 +1,7 @@
 # Optional Halloween wardrobe
 
+The clean PR #46–#49 integration reran all 44 wardrobe/backpack assertions and 2 outfit-reload assertions successfully with the shared overlay styles and recorded pet voices included. Fresh backpack and wardrobe captures were reviewed. [Combined results and separate known camera finding](evidence/ue5-pr46-49-integration.json).
+
 Codename .... Cheweenie adds three independent cosmetic outfits to the active Unreal game:
 
 - Marty: padded hot dog with bun sides, red saddle and mustard, based on the owner's costume photograph.
@@ -7,6 +9,10 @@ Codename .... Cheweenie adds three independent cosmetic outfits to the active Un
 - Rio: yellow/black bumblebee jacket with pale wings, based on the owner's costume photograph.
 
 **Hot-dog fit, 0.11.1:** the buns, sausage and mustard run from Marty's shoulders toward his rump. The attachment removes the imported spine bone's reference orientation before following the animated torso, rather than using bone axes as garment axes. The saddle is centered between shoulders and hips; the head, paws and tail remain exposed. The same component is used by solo and LAN Marty, and works with both detailed and smooth coat meshes. It remains a rigid padded overlay, without cloth simulation. [Actual side view](screenshots/ue5-hotdog-lengthwise-side.png), [top view](screenshots/ue5-hotdog-lengthwise-top.png), [0.11.1 results](evidence/ue5-hotdog-fit-build.json).
+
+In the Unreal development project, open the backpack with **Tab / View** and select **Clothes on / off**. Choose Marty, Lakitu or Rio and press **Enter / A / Cross** to toggle their outfit. The menu stays open for multiple changes; **Back to backpack** or **Escape / B / Circle** returns to the clothing entry in the bag. All four backpack actions remain visible, including toy storage/retrieval and Close. Clothing choices use the same saved preferences as the existing wardrobe.
+
+Backpack validation: native Editor compilation and 90 real-map assertions passed (44 wardrobe/backpack, 2 costume reload, 23 pet-life, 5 life reload, 16 movement), with two menu captures visually reviewed. Input was synthetic; physical controllers remain unverified. Initial default-cache play attempts stalled before assertions and were stopped; all retries passed with `-ddc=InstalledNoZenLocalFallback`. Reproduce the wardrobe suite with `BUILD.ps1` then `TEST_COSTUMES.ps1 -Render -NoZen`. The optional `-NoZen` switch selects that filesystem-cache fallback for both test phases. The desktop package and original checkout module are unchanged. [Actual results](evidence/ue5-backpack-clothes-build.json), [backpack menu](screenshots/ue5-backpack-clothes.png), [pet switches](screenshots/ue5-backpack-wardrobe.png).
 
 All outfits default **off**. Open **Pause or Title → Controls & cameras → Halloween costumes (optional)**. Choose a pet with arrow keys/D-pad and press Enter/A-Cross to toggle; Escape/B-Circle returns to Controls. Each solo choice is saved separately; a new patrol preserves these preferences. Existing saves get the default off mask without a version reset.
 

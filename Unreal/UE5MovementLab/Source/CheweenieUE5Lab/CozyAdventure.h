@@ -147,6 +147,8 @@ public:
     FString MusicTrack;
     FString LastCue;
     int32 AudibleCueCount=0;
+    int32 NaturalBarkCount() const { return BarkTakes.Num(); }
+    int32 LastBarkTake=-1;
 private:
     AMartyCharacter* Marty() const;
     void SetScreen(ECozyScreen Next);
@@ -156,6 +158,7 @@ private:
     void CompleteRoom();
     UPROPERTY() TArray<TObjectPtr<AStaticMeshActor>> Markers;
     UPROPERTY() TMap<FString,TObjectPtr<USoundBase>> Sounds;
+    UPROPERTY() TArray<TObjectPtr<USoundBase>> BarkTakes;
     UPROPERTY() TObjectPtr<UAudioComponent> MusicPlayer;
     ECozyScreen ReturnScreen = ECozyScreen::Title;
     ECozyScreen ModesReturn = ECozyScreen::Title;

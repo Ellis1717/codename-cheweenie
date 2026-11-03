@@ -22,6 +22,7 @@
 void UCozyModeHub::TickOverlayAcceptance(float Delta)
 {
     if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlaySmoke"))||TestStage==999)return;
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlayStyleSmoke"))){TickStyleAcceptance(Delta);return;}
     TestTime+=Delta;TestTotal+=Delta;
     auto* PC=UGameplayStatics::GetPlayerController(this,0);if(!PC)return;
     auto* S=Session();

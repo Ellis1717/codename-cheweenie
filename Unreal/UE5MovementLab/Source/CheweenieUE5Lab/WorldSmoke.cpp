@@ -9,6 +9,7 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/Texture2D.h"
 #include "Materials/MaterialInterface.h"
+#include "Materials/Material.h"
 #include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -70,7 +71,8 @@ void AMartyPlayMode::TickWorldSmoke(float Delta)
         if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieReadableBrickSmoke"))){SmokeStage=13;SmokeTime=0;break;}
         Neighbourhood->GoOutside(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;
         {bool Found=false;for(TActorIterator<AStaticMeshActor> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("Headquarters brick main wing")))
-        {auto* C=It->GetStaticMeshComponent();SmokeCheck(C->GetMaterial(0)&&C->GetMaterial(0)->GetPathName().Contains(TEXT("/ReadableBrick/")),TEXT("Headquarters uses the readable brick revision"));
+        {auto* C=It->GetStaticMeshComponent();auto* Surface=C->GetMaterial(0);auto* Parent=Surface?Surface->GetMaterial():nullptr;
+        SmokeCheck(Surface&&Surface->GetPathName().Contains(TEXT("/ReadableBrick/"))&&Parent&&Parent->GetPathName().Contains(TEXT("/ReadableBrick/r")),TEXT("Headquarters uses the readable brick revision with its saved parent"));
         const FVector Wall=C->Bounds.Origin+FVector(-C->Bounds.BoxExtent.X,0,45-C->Bounds.Origin.Z);
         View(Wall+FVector(-160,-75,12),Wall+FVector(0,35,10));Found=true;break;}
         SmokeCheck(Found,TEXT("Brick inspection camera targets an actual headquarters wall"));}

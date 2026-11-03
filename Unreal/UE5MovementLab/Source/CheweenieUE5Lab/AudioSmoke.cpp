@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "NaturalPetAudio.h"
 #include "DogLife.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
@@ -23,16 +24,17 @@ void AMartyPlayMode::TickAudioSmoke(float Delta)
     auto Next=[this](){++SmokeStage;SmokeTime=0;};
     auto Record=[this](){UAudioMixerBlueprintLibrary::StartRecordingOutput(this,8);};
     auto Stop=[&](const TCHAR* Name){UAudioMixerBlueprintLibrary::StopRecordingOutput(this,EAudioRecordingExportType::WavFile,Name,Root);};
+    static int32 FirstBarkTake=-1;
     switch(SmokeStage)
     {
     case 0:
-        if(SmokeTime>5){SmokeCheck(S->LoadedSoundCount()==14,TEXT("All fourteen music/effect assets load from the real map"));Key(EKeys::Enter,true);Next();}break;
+        if(SmokeTime>5){SmokeCheck(S->LoadedSoundCount()==14,TEXT("All fourteen music/effect assets load from the real map"));SmokeCheck(NaturalCatVoice(TEXT("Lakitu"))&&NaturalCatVoice(TEXT("Rio")),TEXT("Both recorded cat voices load"));SmokeCheck(S->NaturalBarkCount()==4,TEXT("Four recorded small-dog bark takes load"));Key(EKeys::Enter,true);Next();}break;
     case 1:
         if(SmokeTime>.6){Key(EKeys::Enter,false);SmokeCheck(S->MusicTrack==TEXT("Home")&&S->MusicPlaying(),TEXT("Home music plays on the actual audio device"));D->Music=0;D->Effects=.6f;S->UpdateMusic();Next();}break;
     case 2:
         if(SmokeTime>.5){Record();Key(EKeys::B,true);Next();}break;
     case 3:
-        if(SmokeTime>.1){Key(EKeys::B,false);SmokeCheck(L->BarkCount==1&&S->LastCue==TEXT("Bark"),TEXT("Keyboard B triggers the bark cue"));Key(EKeys::B,true);Next();}break;
+        if(SmokeTime>.1){Key(EKeys::B,false);SmokeCheck(L->BarkCount==1&&S->LastCue==TEXT("Bark"),TEXT("Keyboard B triggers the bark cue"));FirstBarkTake=S->LastBarkTake;SmokeCheck(FirstBarkTake>=0,TEXT("Keyboard bark uses a recorded take"));Key(EKeys::B,true);Next();}break;
     case 4:
         if(SmokeTime>.1){Key(EKeys::B,false);SmokeCheck(L->BarkCount==1,TEXT("Bark cooldown prevents button spam"));Next();}break;
     case 5:
@@ -40,7 +42,7 @@ void AMartyPlayMode::TickAudioSmoke(float Delta)
     case 6:
         if(SmokeTime>.1){Key(EKeys::Gamepad_LeftShoulder,false);Next();}break;
     case 7:
-        if(SmokeTime>1){SmokeCheck(L->BarkCount==2&&S->LastCue==TEXT("Bark"),TEXT("Controller LB tap-release triggers the same bark cue"));Stop(TEXT("Barks"));D->Music=.3f;D->Effects=0;Neighbourhood->GoOutside(P);S->UpdateMusic();Next();}break;
+        if(SmokeTime>1){SmokeCheck(L->BarkCount==2&&S->LastCue==TEXT("Bark"),TEXT("Controller LB tap-release triggers the same bark cue"));SmokeCheck(S->LastBarkTake>=0&&S->LastBarkTake!=FirstBarkTake,TEXT("Consecutive keyboard/controller barks select different recordings"));Stop(TEXT("Barks"));D->Music=.3f;D->Effects=0;Neighbourhood->GoOutside(P);S->UpdateMusic();Next();}break;
     case 8:
         if(SmokeTime>.6){SmokeCheck(S->MusicTrack==TEXT("Backyard")&&S->MusicPlaying(),TEXT("Outdoor travel selects looping backyard music"));Record();Next();}break;
     case 9:
@@ -48,7 +50,7 @@ void AMartyPlayMode::TickAudioSmoke(float Delta)
     case 10:
         if(SmokeTime>.6){Key(EKeys::B,false);SmokeCheck(S->AudibleCueCount==SmokeYaw,TEXT("Effects volume zero suppresses bark playback"));Record();Next();}break;
     case 11:
-        if(SmokeTime>1){Stop(TEXT("Muted"));P->ReturnHome();S->UpdateMusic();SmokeCheck(S->MusicTrack==TEXT("Home"),TEXT("Return home restores the home music track"));D->Effects=.6f;D->Music=.25f;S->UpdateMusic();SmokeYaw=S->AudibleCueCount;for(const FString& Cue:{TEXT("Dig"),TEXT("Crunch"),TEXT("Toy"),TEXT("Step"),TEXT("Jump"),TEXT("Land")})S->ActionCue(Cue);SmokeCheck(S->AudibleCueCount==SmokeYaw+6,TEXT("All pet action cues spawn on the audio device"));S->Screen=ECozyScreen::Pause;SmokeYaw=L->BarkCount;Key(EKeys::B,true);Next();}break;
+        if(SmokeTime>1){Stop(TEXT("Muted"));P->ReturnHome();S->UpdateMusic();SmokeCheck(S->MusicTrack==TEXT("Home"),TEXT("Return home restores the home music track"));D->Effects=.6f;D->Music=.25f;S->UpdateMusic();SmokeYaw=S->AudibleCueCount;for(const FString& Cue:{TEXT("Dig"),TEXT("Crunch"),TEXT("Toy"),TEXT("Step"),TEXT("Jump"),TEXT("Land"),TEXT("Lakitu"),TEXT("Rio")})S->ActionCue(Cue);SmokeCheck(S->AudibleCueCount==SmokeYaw+8,TEXT("All pet action and companion cues spawn on the audio device"));S->Screen=ECozyScreen::Pause;SmokeYaw=L->BarkCount;Key(EKeys::B,true);Next();}break;
     case 12:
         if(SmokeTime>.2){Key(EKeys::B,false);SmokeCheck(L->BarkCount==SmokeYaw,TEXT("Pause suppresses bark input"));Next();}break;
     case 13:
