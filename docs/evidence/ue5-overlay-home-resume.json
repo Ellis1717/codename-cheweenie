@@ -1,0 +1,11 @@
+{
+	"scope": "Actual home/annex map, synthetic keyboard/gamepad, real station/trick actions; position, currency, cooldown and legacy-save fixtures. Physical controllers unverified.",
+	"passed": [
+		"All four upgrade tiers persist in another process",
+		"Currency and trick-variety ledger persist",
+		"Saved bonus/cooldown durations do not tick on the title screen",
+		"Resting and training never resume as stuck transient actions",
+		"Reloaded upgrades have real movement/protection effects"
+	],
+	"failed": []
+}
