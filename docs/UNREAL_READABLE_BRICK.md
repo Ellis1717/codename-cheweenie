@@ -15,14 +15,14 @@ The separate `/Game/Adventure/Scenery/ReadableBrick/Brick_World` material instan
 From `Unreal/UE5MovementLab`, run:
 
 ```powershell
-./IMPORT_READABLE_BRICK.ps1
 ./BUILD.ps1
+./IMPORT_READABLE_BRICK.ps1
 ./TEST_WORLD.ps1 -Render -ReadableBrick -OutputRoot "$PWD/Saved/ReadableBrick/Rendered"
 ```
 
 The generator uses Python's standard library, including a small PNG writer, and the Python executable bundled with Unreal. No paid assets or added Python packages are required. The old full world generator is independent; rerun the brick import after regenerating the world. The dedicated importer retains earlier hash-named revisions instead of deleting loaded material graphs.
 
-The extended world smoke checks that headquarters uses the revision and captures `WorldBrickDogHeight.png` from a scripted camera approximately 57 cm above the outdoor ground. This is a rendered view of the actual wall, not Marty’s live camera. The existing `WorldDogView.png` is the live player camera; the suite also traverses the room using synthetic keyboard input and switches camera using synthetic gamepad input. Physical controller handling remains unverified.
+The extended world smoke checks that headquarters uses the revision with a saved, non-default parent and captures `WorldBrickDogHeight.png` from a scripted camera approximately 57 cm above the outdoor ground. A rendered-pixel probe rejects the default grid's grey palette. This is a rendered view of the actual wall, not Marty’s live camera. The existing `WorldDogView.png` is the live player camera; the suite also traverses the room using synthetic keyboard input and switches camera using synthetic gamepad input. Physical controller handling remains unverified. The importer verifies saved dependencies in a second Editor process.
 
 ## Verification
 
@@ -31,3 +31,5 @@ Original map generation and Unreal import passed. The import report confirms thr
 [Actual close-up](screenshots/ue5-readable-brick-closeup.png) · [Actual headquarters view](screenshots/ue5-readable-brick-home.png) · [Evidence](evidence/ue5-readable-brick.json)
 
 The normal-space implementation follows the distinction in [Epic’s world-aligned texturing documentation](https://dev.epicgames.com/documentation/unreal-engine/texturing-material-functions-in-unreal-engine). Broad performance and subjective art approval require further review.
+
+The standalone follow-up caught an alias persistence failure in a clean checkout that the earlier mixed-checkout tests did not expose. The corrected importer force-saves the selected parent; clean-process dependency verification and a pixel probe now guard this. [Release procedure, actual status and repaired findings](UNREAL_READABLE_RELEASE.md).
