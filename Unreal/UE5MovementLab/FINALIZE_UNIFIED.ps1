@@ -50,6 +50,7 @@ foreach($name in @('Barks','Music','Muted')){ $clip=$wave.$name;if(!$clip -or $c
 $bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used|\[VSM\].*overflow')
 if($bad.Count){throw 'Final runtime logs contain errors, material fallbacks or VSM overflows'}
 $files=@($payload|ForEach-Object {@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
+if($ReleaseVersion -eq 'Unified-0.13.1'){Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PORTABLE_README.txt') -Destination (Join-Path $PackageRoot 'README.txt')}
 @{version=$ReleaseVersion;checks=$checks;rendered=$true;overlaysVerified=($hasOverlays -and $ReleaseVersion -eq 'Unified-0.13.1');physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PLAY_GAME.ps1') -Destination (Join-Path $PackageRoot 'PLAY_GAME.ps1')
 '@echo off','powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0PLAY_GAME.ps1" %*','if errorlevel 1 pause'|Set-Content -LiteralPath (Join-Path $PackageRoot 'PLAY_GAME.cmd')

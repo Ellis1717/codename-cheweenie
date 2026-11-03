@@ -26,9 +26,9 @@ The extended world smoke checks that headquarters uses the revision with a saved
 
 ## Verification
 
-Original map generation and Unreal import passed. The import report confirms three 1024-square maps, expected colour spaces and world-space normal output. Native Editor compilation passed on the current checkout, including concurrent pre-existing coat/UI work. The rendered real-map suite passed all 16 assertions, including synthetic keyboard traversal and gamepad camera switching. Runtime Error/Fatal/material fallback matches were zero. The dog-height close-up and headquarters overview were visually inspected; all five 1920 × 1080 captures were produced. Packaged desktop launchers have not been updated. No clean-branch build, physical-controller check or before/after GPU benchmark is claimed.
+Standalone core 0.13.1 passed clean Editor/Game builds, full cooking/archive and all 689 required packaged assertions. Its 16 rendered world checks include the saved parent, synthetic keyboard traversal and gamepad camera switching; a real-pixel check rejects the default grid's grey palette. The close-up and headquarters captures were visually reviewed. Final runtime Error/Fatal/material-fallback/VSM matches were zero. The desktop Play Cheweenie shortcut now selects this package. Physical controllers and comparative GPU performance remain unverified.
 
-[Actual close-up](screenshots/ue5-readable-brick-closeup.png) · [Actual headquarters view](screenshots/ue5-readable-brick-home.png) · [Evidence](evidence/ue5-readable-brick.json)
+[Packaged close-up](screenshots/ue5-core-0131-brick.png) · [Packaged headquarters](screenshots/ue5-core-0131-home.png) · [Release evidence](evidence/ue5-readable-release-build.json) · [Initial development evidence](evidence/ue5-readable-brick.json)
 
 The normal-space implementation follows the distinction in [Epic’s world-aligned texturing documentation](https://dev.epicgames.com/documentation/unreal-engine/texturing-material-functions-in-unreal-engine). Broad performance and subjective art approval require further review.
 
