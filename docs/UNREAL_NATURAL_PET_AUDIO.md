@@ -1,5 +1,7 @@
 # Codename .... Cheweenie — recorded pet voices
 
+Fresh PR #46–#49 integration verification supplies the formerly missing clean-checkout build and runtime coverage: native Editor compilation, 14 audio assertions and all three master-submix waveform checks passed, with exact-zero muted output. Movement passed 16/16 headlessly and 15/16 rendered; the existing RB/R1 recenter assertion remains unresolved, and its function is unchanged from pre-PR main. Physical controls and subjective listening remain unverified; this is not a new package. [Combined results](evidence/ue5-pr46-49-integration.json).
+
 The Unreal development project now uses four distinct small-dog bark takes and
 two real cat meows. Solo barking chooses randomly without repeating the previous
 take; the shared LAN/memory-room pets use the same pack and selection rule.

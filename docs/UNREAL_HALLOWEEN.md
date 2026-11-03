@@ -1,5 +1,7 @@
 # Optional Halloween wardrobe
 
+The clean PR #46–#49 integration reran all 44 wardrobe/backpack assertions and 2 outfit-reload assertions successfully with the shared overlay styles and recorded pet voices included. Fresh backpack and wardrobe captures were reviewed. [Combined results and separate known camera finding](evidence/ue5-pr46-49-integration.json).
+
 Codename .... Cheweenie adds three independent cosmetic outfits to the active Unreal game:
 
 - Marty: padded hot dog with bun sides, red saddle and mustard, based on the owner's costume photograph.

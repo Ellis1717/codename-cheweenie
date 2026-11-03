@@ -1,5 +1,7 @@
 # Codename .... Cheweenie — overlay style review
 
+Fresh clean combined-checkout validation for PRs #46–#49 passed native Editor compilation, all 11 style assertions and all 4 second-process persistence checks using filesystem DDC fallback. This integration style run was headless; the earlier rendered comparisons below remain historical evidence. Backpack captures were freshly reviewed with the shared style code included. [Combined results, including the separate known rendered camera finding](evidence/ue5-pr46-49-integration.json).
+
 Open **Game & versions → Graphics, overlays & controls → Overlay look**. The same selector is near the bottom of **Controls → Screen overlays**. Left/right or D-pad cycles backward/forward; Enter / A-Cross or the mouse row cycles forward. Mouse minus/plus buttons also work. The change is immediate, so resume play to compare the same scene.
 
 | Preset | Look |
