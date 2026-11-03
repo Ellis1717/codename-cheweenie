@@ -1,0 +1,375 @@
+{
+  "release": "Unified-0.13.1",
+  "date": "2026-11-02",
+  "validatedSource": "aa0c56da27901cdd582f6910945f25688a4aa937",
+  "baseMain": "474c5a88154c70cc0654c0ce1e2c72c417048d35",
+  "nativeSourceTree": "11a1c0b73aa25a07e617a1e3c50ebd55a81e63bf",
+  "contentTree": "2efaec0fae77034c4e861f0e4810212e4e45ef8a",
+  "configTree": "9ccf9cf8bf4d55a4abdd4677e72314ce013cebd4",
+  "engine": "5.8.4",
+  "editorCompiled": true,
+  "gameCompiled": true,
+  "fullCookAndArchivePassed": true,
+  "packageGateAssertions": 689,
+  "additionalRatchetSeedAssertions": 22,
+  "privateMapAssertions": 4,
+  "archiveRoundTripAssertions": 18,
+  "finalSelectedNativeAssertions": 733,
+  "runtimeErrorFatalMaterialFallbackVsmMatches": 0,
+  "cookErrorFatalMissingDependencyMatches": 0,
+  "launcherGuardFixtures": 8,
+  "portableZipFixtures": 5,
+  "brickProbeFixtures": {
+    "badPackagedGridRejected": true,
+    "earlierActualBrickAccepted": true
+  },
+  "savedParent": {
+    "parent": "/Game/Adventure/Scenery/ReadableBrick/r071a2a42df7d/Brick_World.Brick_World",
+    "revision": "071a2a42df7d",
+    "fresh_process_parent_and_textures_verified": true
+  },
+  "brickPixels": {
+    "scope": "Actual pixels in the scripted wall inspection; not a realism score or performance benchmark",
+    "height": 1080,
+    "width": 1920,
+    "samples": 3255,
+    "meanRGB": [
+      132.55238095238096,
+      79.7889400921659,
+      52.583717357910906
+    ],
+    "clayPaletteVisible": true
+  },
+  "audioWaveforms": {
+    "Barks": {
+      "seconds": 2.752,
+      "rms": 0.015674940511610357,
+      "peak": 0.15045166015625
+    },
+    "Music": {
+      "seconds": 2.005333333333333,
+      "rms": 0.0085020051804978,
+      "peak": 0.03466796875
+    },
+    "Muted": {
+      "seconds": 1.0026666666666666,
+      "rms": 0.0,
+      "peak": 0.0
+    }
+  },
+  "payloadFiles": 43,
+  "portableZip": {
+    "version": "Unified-0.13.1",
+    "sha256": "BF79D612F72722B66C4321AB7AB02ED575FDA82DA3D7C259F68440BD2D551CB6",
+    "roundTripHashesVerified": true,
+    "privateDataExcluded": true,
+    "payloadFiles": 43,
+    "totalEntries": 47,
+    "bytes": 503613128
+  },
+  "retainedArchives": 36,
+  "retainedArchivePayloadFiles": 2834,
+  "archiveIntegrityScope": "Payload integrity only; not a new gameplay test of every historical build",
+  "previousArchiveRecords": {
+    "previousArchiveIdentities": 35,
+    "newArchiveIdentities": 36,
+    "previousRecordsPreserved": true
+  },
+  "activation": {
+    "foregroundInteractionVerified": false,
+    "checks": 689,
+    "checkpoint": "Previous checkpoint copied with matching hash",
+    "physicalControllersVerified": false,
+    "previousPackageRetained": true,
+    "version": "Unified-0.13.1",
+    "shortcutUpdated": true,
+    "shortcutBackedUp": true,
+    "privateFilesRetained": 2
+  },
+  "physicalControllersVerified": false,
+  "separateMachinesVerified": false,
+  "foregroundInteractionVerified": false,
+  "comparativeGpuPerformanceVerified": false,
+  "unitySourceAssetsSettingsChanged": false,
+  "reviewedCaptures": [
+    "World/WorldBrickDogHeight.png",
+    "World/WorldHome.png",
+    "Gait/MartyFurGameplay.png",
+    "Gait/MartyPortrait.png",
+    "Overlays/main/OverlaySettings.png",
+    "Overlays/main/OverlaysHidden.png"
+  ],
+  "repairedFindings": [
+    "Clean candidate alias referenced an absent initial revision retained in the mixed checkout; rendered review rejected the default grid before activation.",
+    "Importer updates and force-saves the alias and verifies parent/textures in a second Editor process. Runtime retains original brick when the new parent is unusable.",
+    "Native world assertion checks the resolved parent; a rendered-pixel probe rejects the bad grid capture.",
+    "First Editor render stopped during startup before gameplay; first packaged regression stopped after visual rejection; partial rebuild stopped before cooking to integrate merged overlays. Final combined acceptance reran from fresh reports."
+  ],
+  "reports": [
+    {
+      "report": "Adventure/adventure-resume.json",
+      "passed": 6,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Adventure/adventure-smoke.json",
+      "passed": 25,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Archive/archive-movement.json",
+      "passed": 16,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Archive/hub-archive-return.json",
+      "passed": 2,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Archive/previous-core-movement.json",
+      "passed": 16,
+      "failed": 0,
+      "counted": false
+    },
+    {
+      "report": "Audio/audio-smoke.json",
+      "passed": 10,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Companions/companions-resume.json",
+      "passed": 4,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Companions/companions-smoke.json",
+      "passed": 30,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Coop/coop-guest.json",
+      "passed": 29,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Coop/coop-host.json",
+      "passed": 32,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Costumes/costumes-resume.json",
+      "passed": 2,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Costumes/costumes-smoke.json",
+      "passed": 29,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Festival/festival-resume.json",
+      "passed": 6,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Festival/festival-smoke.json",
+      "passed": 40,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "FurDetail/fur-detail-low.json",
+      "passed": 4,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "FurDetail/fur-detail-medium.json",
+      "passed": 4,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "FurDetail/fur-detail.json",
+      "passed": 15,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Gait/marty-gait.json",
+      "passed": 30,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Home/home-progression.json",
+      "passed": 34,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Home/home-resume.json",
+      "passed": 5,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Hub/hub-smoke.json",
+      "passed": 29,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "HubLan/hub-guest.json",
+      "passed": 9,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "HubLan/hub-host.json",
+      "passed": 8,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Life/life-resume.json",
+      "passed": 5,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Life/life-smoke.json",
+      "passed": 23,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Modifier/trick-modifier.json",
+      "passed": 32,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Navigation/navigation-resume.json",
+      "passed": 4,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Navigation/navigation-smoke.json",
+      "passed": 60,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Overlays/main/overlay-smoke.json",
+      "passed": 79,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Overlays/resume/overlay-smoke.json",
+      "passed": 3,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "PrivateMap/outside-map-audit.json",
+      "passed": 4,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Ratchet/ratchet-memory.json",
+      "passed": 12,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Ratchet/ratchet-resume.json",
+      "passed": 2,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Ratchet/ratchet-return.json",
+      "passed": 3,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Ratchet/ratchet-unlock.json",
+      "passed": 6,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "RatchetSeed/ratchet-memory.json",
+      "passed": 11,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "RatchetSeed/ratchet-resume.json",
+      "passed": 2,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "RatchetSeed/ratchet-return.json",
+      "passed": 3,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "RatchetSeed/ratchet-unlock.json",
+      "passed": 6,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Tricks/tricks-resume.json",
+      "passed": 5,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "Tricks/tricks-smoke.json",
+      "passed": 29,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "UnlockedCoop/coop-guest.json",
+      "passed": 28,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "UnlockedCoop/coop-host.json",
+      "passed": 31,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "report": "World/world-smoke.json",
+      "passed": 16,
+      "failed": 0,
+      "counted": true
+    }
+  ],
+  "validatedPackageOverwriteFixtures": 3
+}

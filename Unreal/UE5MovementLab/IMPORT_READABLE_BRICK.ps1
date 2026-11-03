@@ -15,3 +15,11 @@ if($process.ExitCode){throw 'Brick import failed; inspect Saved/ImportReadableBr
 $report=Join-Path $PSScriptRoot 'Saved/readable-brick-import.json'
 if(!(Test-Path -LiteralPath $report) -or (Get-Item -LiteralPath $report).LastWriteTimeUtc -lt $started){throw 'Brick import report missing/stale'}
 Get-Content -LiteralPath $report
+$verificationScript=(Join-Path $PSScriptRoot 'Scripts/verify_readable_brick.py').Replace('\','/')
+$info.Arguments='"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -ExecutePythonScript="'+$verificationScript+'" -unattended -nop4 -nosplash -nullrhi -AbsLog="'+(Join-Path $PSScriptRoot 'Saved/VerifyReadableBrick.log')+'"'
+$verificationStart=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+while(!$process.WaitForExit(1000)){if(([DateTime]::UtcNow-$verificationStart).TotalMinutes -gt 15){$process.Kill();throw 'Saved brick verification timed out'}}
+if($process.ExitCode){throw 'Saved brick verification failed; inspect Saved/VerifyReadableBrick.log'}
+$verificationReport=Join-Path $PSScriptRoot 'Saved/readable-brick-persisted.json'
+if(!(Test-Path -LiteralPath $verificationReport) -or (Get-Item -LiteralPath $verificationReport).LastWriteTimeUtc -lt $verificationStart){throw 'Saved brick verification report missing/stale'}
+Get-Content -LiteralPath $verificationReport
