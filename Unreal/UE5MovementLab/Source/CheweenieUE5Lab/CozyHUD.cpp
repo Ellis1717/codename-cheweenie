@@ -54,7 +54,7 @@ bool AMartyHUD::DrawAdventureHUD()
             CozyDrawText(this,TEXT("Carry in mouth, stow safely, retrieve, drop or bury."),FLinearColor::White,X+24,Y+180);
         }
         const float First=Session->Screen==ECozyScreen::Controls ? Y+245 : Session->Screen==ECozyScreen::Backpack?Y+225:Y+115;
-        const int32 Visible=Session->Screen==ECozyScreen::Controls?4:Session->Screen==ECozyScreen::Backpack?3:7;
+        const int32 Visible=Session->Screen==ECozyScreen::Controls?4:Session->Screen==ECozyScreen::Backpack?4:7;
         const int32 Begin=FMath::Clamp(Session->Selection-Visible+1,0,FMath::Max(0,Items.Num()-Visible));
         for(int32 I=Begin;I<FMath::Min(Begin+Visible,Items.Num());++I)
         {

@@ -143,7 +143,65 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
     case 14:
         if(SmokeTime<1)break;PC->SetViewTarget(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=true;
         Neighbourhood->GoOutside(P);SmokeCheck(Neighbourhood->Outside&&Outfits[0]->VisiblePieces()>0,TEXT("Costume stays available through outdoor door travel"));P->ReturnHome();
-        S->Pause();S->Selection=2;S->Confirm();S->Selection=5;S->Confirm();S->Selection=1;S->Confirm();Next();break;
+        Key(EKeys::Tab,true);SmokeStage=40;SmokeTime=0;break;
+    case 40:
+        Key(EKeys::Tab,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Backpack&&S->Menu().Num()==4&&S->Menu()[2]==TEXT("Clothes on / off"),TEXT("Keyboard backpack exposes clothing alongside toy actions and Close"));
+        Shot(TEXT("BackpackClothes.png"));S->Selection=2;Key(EKeys::Enter,true);Next();break;
+    case 41:
+        Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Last()==TEXT("Back to backpack"),TEXT("Keyboard opens clothing with a backpack return destination"));
+        Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 42:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
+        SmokeCheck(D->CostumeMask==6&&Outfits[0]->VisiblePieces()==0&&S->Screen==ECozyScreen::Wardrobe,TEXT("Controller removes Marty clothes while keeping the clothing menu open"));
+        Key(EKeys::Gamepad_DPad_Down,true);Next();break;
+    case 43:
+        Key(EKeys::Gamepad_DPad_Down,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Selection==1,TEXT("Backpack clothing supports controller selection of Lakitu"));Key(EKeys::Enter,true);Next();break;
+    case 44:
+        Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
+        SmokeCheck(D->CostumeMask==4&&Outfits[1]->VisiblePieces()==0&&Outfits[2]->VisiblePieces()>0,TEXT("Keyboard removes Lakitu clothes independently of Rio"));Key(EKeys::Down,true);Next();break;
+    case 45:
+        Key(EKeys::Down,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Selection==2,TEXT("Backpack clothing supports keyboard selection of Rio"));Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 46:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
+        SmokeCheck(D->CostumeMask==0&&Outfits[0]->VisiblePieces()==0&&Outfits[1]->VisiblePieces()==0&&Outfits[2]->VisiblePieces()==0,TEXT("All three outfits can be removed through the backpack"));
+        S->Selection=0;S->Confirm();S->Selection=2;S->Confirm();Next();break;
+    case 47:
+        if(SmokeTime<.3f)break;
+        SmokeCheck(D->CostumeMask==5&&Outfits[0]->VisiblePieces()>0&&Outfits[2]->VisiblePieces()>0,TEXT("Backpack clothing puts Marty and Rio outfits back on independently"));
+        Shot(TEXT("BackpackWardrobe.png"));Key(EKeys::Gamepad_FaceButton_Right,true);Next();break;
+    case 48:
+        Key(EKeys::Gamepad_FaceButton_Right,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Backpack&&S->Selection==2,TEXT("Controller Back returns to the backpack clothing entry"));
+        Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 49:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Wardrobe,TEXT("Controller reopens clothing directly from the backpack"));
+        S->Selection=3;Key(EKeys::Enter,true);Next();break;
+    case 50:
+        Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Backpack&&S->Selection==2,TEXT("Back to backpack row returns without closing the bag"));
+        S->Selection=3;Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 51:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Playing,TEXT("Controller Close backpack resumes gameplay after changing clothes"));
+        D->CarryItem=0;D->BagItems.Reset();D->ItemHoles[0]=-1;Key(EKeys::Tab,true);Next();break;
+    case 52:
+        Key(EKeys::Tab,false);if(SmokeTime<.3f)break;Key(EKeys::Enter,true);Next();break;
+    case 53:
+        Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Playing&&D->CarryItem==-1&&D->BagItems.Contains(0),TEXT("Keyboard backpack Stow still stores a toy after clothing changes"));
+        Key(EKeys::Gamepad_Special_Left,true);Next();break;
+    case 54:
+        Key(EKeys::Gamepad_Special_Left,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Backpack,TEXT("Controller View still opens the backpack after clothing changes"));S->Selection=1;Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 55:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
+        SmokeCheck(S->Screen==ECozyScreen::Playing&&D->CarryItem==0&&D->BagItems.IsEmpty()&&D->CostumeMask==5,TEXT("Controller backpack Retrieve keeps the toy unique and the clothing choices intact"));
+        SmokeStage=15;SmokeTime=0;break;
     case 15:
         if(SmokeTime<.3f)break;SmokeCheck(D->CostumeMask==5&&Outfits[1]->VisiblePieces()==0&&Outfits[0]->VisiblePieces()>0&&Outfits[2]->VisiblePieces()>0,TEXT("Lakitu outfit turns off without removing Marty or Rio outfits"));S->ToggleFeature(ECozyFeature::Companions);SmokeCheck(Outfits[2]->VisiblePieces()>0,TEXT("Costumes are independent of companion behaviour setting"));S->Save();Finish(false);break;
     }

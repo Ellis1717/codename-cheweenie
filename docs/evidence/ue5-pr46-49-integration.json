@@ -1,0 +1,271 @@
+{
+  "brick_pixels": {
+    "samples": 3255,
+    "scope": "Actual pixels in the scripted wall inspection; not a realism score or performance benchmark",
+    "meanRGB": [
+      132.5520737327189,
+      79.7815668202765,
+      52.591090629800306
+    ],
+    "height": 1080,
+    "width": 1920,
+    "clayPaletteVisible": true
+  },
+  "failed_assertions": 1,
+  "passed_assertions": 122,
+  "limitations": [
+    "Physical controllers and subjective listening unverified",
+    "No new package or desktop launcher change; installed release remains 0.13.1",
+    "Original mixed checkout and its Editor module were not modified by this merge task"
+  ],
+  "runtime_error_fatal_material_fallback_vsm_matches": 0,
+  "engine": "Unreal Engine 5.8.4",
+  "reports": [
+    {
+      "report": "Audio/main/audio-smoke.json",
+      "results": {
+        "scope": "Synthetic keyboard/gamepad and real audio-device master-submix recordings. Physical controls and subjective listening unverified.",
+        "passed": [
+          "All fourteen music/effect assets load from the real map",
+          "Both recorded cat voices load",
+          "Four recorded small-dog bark takes load",
+          "Home music plays on the actual audio device",
+          "Keyboard B triggers the bark cue",
+          "Keyboard bark uses a recorded take",
+          "Bark cooldown prevents button spam",
+          "Controller LB tap-release triggers the same bark cue",
+          "Consecutive keyboard/controller barks select different recordings",
+          "Outdoor travel selects looping backyard music",
+          "Effects volume zero suppresses bark playback",
+          "Return home restores the home music track",
+          "All pet action and companion cues spawn on the audio device",
+          "Pause suppresses bark input"
+        ],
+        "failed": []
+      }
+    },
+    {
+      "report": "World/main/world-smoke.json",
+      "results": {
+        "passed": [
+          "Marty remains grounded on the retained room floor",
+          "Seven detailed room mesh batches are present",
+          "Detailed room surfaces retain existing collision via visual-only overlays",
+          "FBX handedness correction aligns sofa with tested gameplay coordinates",
+          "Original leafy park trees and bench replace primitive silhouettes",
+          "Oak uses a 2K colour-managed base map",
+          "Fabric normal map uses linear normal data",
+          "Brick roughness map uses linear data",
+          "Keyboard movement traverses the detailed room",
+          "Headquarters door travel still reaches the neighbourhood",
+          "Grass batch has no collision or actor tick",
+          "Park grass is drawn in one 640-instance batch",
+          "Return-home recovery restores the detailed indoor room",
+          "Synthetic controller camera switching remains available",
+          "Headquarters uses the readable brick revision with its saved parent",
+          "Brick inspection camera targets an actual headquarters wall"
+        ],
+        "failed": [],
+        "input": "Synthetic keyboard/gamepad; physical hardware unverified",
+        "frame_scope": "Offscreen DX12 frame intervals on this machine; not GPU timings, a baseline comparison or a playable-frame-rate benchmark",
+        "frame_samples": 191,
+        "median_frame_ms": 44.58970203995705,
+        "p95_frame_ms": 49.76419731974602
+      }
+    },
+    {
+      "report": "Styles/main/overlay-styles.json",
+      "results": {
+        "passed": [
+          "Style acceptance uses an isolated checkpoint",
+          "Classic Teal remains the default",
+          "Graphics exposes a named adjustable style row",
+          "Keyboard right selects Cozy Paper live",
+          "Gamepad D-pad selects Midnight Pop live",
+          "Mouse plus hitbox selects Clean Slate",
+          "Saved style reloads exactly",
+          "Forward wrap preserves visibility choices",
+          "Backward wrap returns to Clean Slate",
+          "Style and visibility survive actual room travel",
+          "Room menu cycles the same local style"
+        ],
+        "failed": [],
+        "scope": "Real solo/room maps; synthetic keyboard, gamepad and HUD mouse hitbox input; isolated preferences/save and rendering when requested. Physical hardware unverified."
+      }
+    },
+    {
+      "report": "Styles/resume/overlay-styles.json",
+      "results": {
+        "passed": [
+          "Style acceptance uses an isolated checkpoint",
+          "Chosen style survives a second process",
+          "Visibility choice survives with the style",
+          "Restore defaults returns to Classic Teal and visible overlays"
+        ],
+        "failed": [],
+        "scope": "Real solo/room maps; synthetic keyboard, gamepad and HUD mouse hitbox input; isolated preferences/save and rendering when requested. Physical hardware unverified."
+      }
+    },
+    {
+      "report": "Costumes/costumes-smoke.json",
+      "results": {
+        "passed": [
+          "New saves default to costumes off",
+          "All three pets start without costume geometry",
+          "Keyboard opens the three-pet wardrobe from Controls",
+          "Controller confirm enables Marty's hot-dog outfit independently",
+          "Controller D-pad selects Lakitu's outfit",
+          "Keyboard confirm enables Lakitu's pumpkin outfit",
+          "Rio's bee outfit can be enabled alongside both friends",
+          "Pet 0 outfit never blocks traversal or navigation",
+          "Pet 0 original costume materials and shapes loaded",
+          "Pet 1 outfit never blocks traversal or navigation",
+          "Pet 1 original costume materials and shapes loaded",
+          "Pet 2 outfit never blocks traversal or navigation",
+          "Pet 2 original costume materials and shapes loaded",
+          "Controller Back returns wardrobe to Controls",
+          "Marty still walks with costume enabled",
+          "Both buns and sausage stay lengthwise while Marty walks",
+          "Hot dog runs hips to shoulders with head and tail clearance at rest",
+          "Hot dog keeps its front-to-back fit after turning",
+          "Hot dog stays lengthwise and fitted when Marty lies down",
+          "Ear and tail roots stay pinned with the costume while lying down",
+          "Hot dog returns to its fitted standing pose after getting up",
+          "Hot dog follows the rolling torso without rotating across its back",
+          "Ear and tail roots stay pinned with the costume while rolling",
+          "Hot dog recovers its fit after the roll",
+          "Lengthwise fit also works with the smooth Marty mesh",
+          "Lengthwise fit survives switching back to the detailed coat",
+          "Costume stays available through outdoor door travel",
+          "Keyboard backpack exposes clothing alongside toy actions and Close",
+          "Keyboard opens clothing with a backpack return destination",
+          "Controller removes Marty clothes while keeping the clothing menu open",
+          "Backpack clothing supports controller selection of Lakitu",
+          "Keyboard removes Lakitu clothes independently of Rio",
+          "Backpack clothing supports keyboard selection of Rio",
+          "All three outfits can be removed through the backpack",
+          "Backpack clothing puts Marty and Rio outfits back on independently",
+          "Controller Back returns to the backpack clothing entry",
+          "Controller reopens clothing directly from the backpack",
+          "Back to backpack row returns without closing the bag",
+          "Controller Close backpack resumes gameplay after changing clothes",
+          "Keyboard backpack Stow still stores a toy after clothing changes",
+          "Controller View still opens the backpack after clothing changes",
+          "Controller backpack Retrieve keeps the toy unique and the clothing choices intact",
+          "Lakitu outfit turns off without removing Marty or Rio outfits",
+          "Costumes are independent of companion behaviour setting"
+        ],
+        "failed": [],
+        "scope": "Actual game map; synthetic keyboard/gamepad with menu/action fixtures. Physical controller and cloth simulation unverified."
+      }
+    },
+    {
+      "report": "Costumes/costumes-resume.json",
+      "results": {
+        "passed": [
+          "Independent Marty/Rio on and Lakitu off choices survive a second process",
+          "Reload applies only the saved costume choices"
+        ],
+        "failed": [],
+        "scope": "Actual game map; synthetic keyboard/gamepad with menu/action fixtures. Physical controller and cloth simulation unverified."
+      }
+    },
+    {
+      "report": "Movement/main/movement-smoke.json",
+      "results": {
+        "engine": "5.8.4-58902052+++UE5+Release-5.8",
+        "scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+        "passed": [
+          "Spawn lands on room floor",
+          "W keyboard binding moves Marty",
+          "Keyboard release stops Marty",
+          "V switches camera distance",
+          "H returns Marty home",
+          "Synthetic left stick preserves analog walking",
+          "Stick release stops Marty",
+          "A/Cross enables hurry",
+          "R3 switches camera distance",
+          "A/Cross release restores walking",
+          "Menu/Options returns Marty home",
+          "Right stick orbits camera",
+          "Right stick up looks upward",
+          "RB/R1 recenters camera",
+          "Room boundaries block sustained movement without falling",
+          "Sofa blocks actual character movement"
+        ],
+        "failed": []
+      }
+    },
+    {
+      "report": "MovementRendered/main/movement-smoke.json",
+      "results": {
+        "engine": "5.8.4-58902052+++UE5+Release-5.8",
+        "scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+        "passed": [
+          "Spawn lands on room floor",
+          "W keyboard binding moves Marty",
+          "Keyboard release stops Marty",
+          "V switches camera distance",
+          "H returns Marty home",
+          "Synthetic left stick preserves analog walking",
+          "Stick release stops Marty",
+          "A/Cross enables hurry",
+          "R3 switches camera distance",
+          "A/Cross release restores walking",
+          "Menu/Options returns Marty home",
+          "Right stick orbits camera",
+          "Right stick up looks upward",
+          "Room boundaries block sustained movement without falling",
+          "Sofa blocks actual character movement"
+        ],
+        "failed": [
+          "RB/R1 recenters camera"
+        ]
+      }
+    }
+  ],
+  "runtime_cache_graph": "InstalledNoZenLocalFallback",
+  "validated_commit": "2f7dc7e17de0ea83e5e650f1694e74e3cdc3f63c",
+  "known_failure": {
+    "headless_passed": 16,
+    "rendered_passed": 15,
+    "cause": "Unresolved; same rendered-only assertion failure previously recorded by PR #47. This merge does not fix or hide it.",
+    "rendered_failed": 1,
+    "headless_failed": 0,
+    "recenter_function_unchanged_from_474c5a8": true,
+    "assertion": "RB/R1 recenters camera"
+  },
+  "native_source_tree": "993c76af735a0e3eef04b3618a82707344272928",
+  "scope": "Clean combined checkout; real game maps with synthetic keyboard/gamepad and HUD hitbox input. Audio, world, costumes and the additional rendered movement run used DX12; style/reload and headless movement checks used nullrhi.",
+  "audio_waveforms": {
+    "Barks": {
+      "seconds": 2.752,
+      "rms": 0.0142106201507039,
+      "peak": 0.133026123046875
+    },
+    "Music": {
+      "seconds": 1.984,
+      "rms": 0.008552222573211789,
+      "peak": 0.0347900390625
+    },
+    "Muted": {
+      "seconds": 1.0026666666666666,
+      "rms": 0.0,
+      "peak": 0.0
+    }
+  },
+  "editor_build": "passed",
+  "reviewed_captures": [
+    "docs/screenshots/ue5-pr46-49-backpack.png",
+    "docs/screenshots/ue5-pr46-49-wardrobe.png",
+    "docs/screenshots/ue5-pr46-49-brick.png"
+  ],
+  "prs": [
+    46,
+    47,
+    48,
+    49
+  ],
+  "config_tree": "9ccf9cf8bf4d55a4abdd4677e72314ce013cebd4",
+  "content_tree": "a60474a9ad59ba2b46a9ab216ce6169201718493"
+}

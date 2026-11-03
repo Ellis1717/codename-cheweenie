@@ -1,0 +1,163 @@
+{
+  "runtime_error_fatal_or_world_grid_matches": 0,
+  "total_assertions": 90,
+  "runtime_cache_graph": "InstalledNoZenLocalFallback",
+  "initial_attempt": "Default-cache costume and life play processes stalled during engine startup and were manually stopped without assertion reports. All five retry processes completed with filesystem DDC fallback.",
+  "engine": "Unreal Engine 5.8.4",
+  "compiled_source_sha256": {
+    "CostumeSmoke.cpp": "E5ED61E1237E3A3A42ED2929295B374DBA596D4D9E6C401FF309D224C956CA03",
+    "CozyHUD.cpp": "EEC8E0FD0443B975191CC55BB6FAAA31AF1BDCB08BA0F79926A884F79234BD7D",
+    "CozyAdventure.cpp": "C4B64D5F6643B509A02C2F673CFD37336721FE6D8D091542F39688733DF8A665"
+  },
+  "base_commit": "474c5a8",
+  "limitations": [
+    "No physical controller check",
+    "No desktop package update",
+    "Original mixed checkout retained; its Editor module was not replaced"
+  ],
+  "editor_build": "passed",
+  "reports": [
+    {
+      "results": {
+        "passed": [
+          "New saves default to costumes off",
+          "All three pets start without costume geometry",
+          "Keyboard opens the three-pet wardrobe from Controls",
+          "Controller confirm enables Marty's hot-dog outfit independently",
+          "Controller D-pad selects Lakitu's outfit",
+          "Keyboard confirm enables Lakitu's pumpkin outfit",
+          "Rio's bee outfit can be enabled alongside both friends",
+          "Pet 0 outfit never blocks traversal or navigation",
+          "Pet 0 original costume materials and shapes loaded",
+          "Pet 1 outfit never blocks traversal or navigation",
+          "Pet 1 original costume materials and shapes loaded",
+          "Pet 2 outfit never blocks traversal or navigation",
+          "Pet 2 original costume materials and shapes loaded",
+          "Controller Back returns wardrobe to Controls",
+          "Marty still walks with costume enabled",
+          "Both buns and sausage stay lengthwise while Marty walks",
+          "Hot dog runs hips to shoulders with head and tail clearance at rest",
+          "Hot dog keeps its front-to-back fit after turning",
+          "Hot dog stays lengthwise and fitted when Marty lies down",
+          "Ear and tail roots stay pinned with the costume while lying down",
+          "Hot dog returns to its fitted standing pose after getting up",
+          "Hot dog follows the rolling torso without rotating across its back",
+          "Ear and tail roots stay pinned with the costume while rolling",
+          "Hot dog recovers its fit after the roll",
+          "Lengthwise fit also works with the smooth Marty mesh",
+          "Lengthwise fit survives switching back to the detailed coat",
+          "Costume stays available through outdoor door travel",
+          "Keyboard backpack exposes clothing alongside toy actions and Close",
+          "Keyboard opens clothing with a backpack return destination",
+          "Controller removes Marty clothes while keeping the clothing menu open",
+          "Backpack clothing supports controller selection of Lakitu",
+          "Keyboard removes Lakitu clothes independently of Rio",
+          "Backpack clothing supports keyboard selection of Rio",
+          "All three outfits can be removed through the backpack",
+          "Backpack clothing puts Marty and Rio outfits back on independently",
+          "Controller Back returns to the backpack clothing entry",
+          "Controller reopens clothing directly from the backpack",
+          "Back to backpack row returns without closing the bag",
+          "Controller Close backpack resumes gameplay after changing clothes",
+          "Keyboard backpack Stow still stores a toy after clothing changes",
+          "Controller View still opens the backpack after clothing changes",
+          "Controller backpack Retrieve keeps the toy unique and the clothing choices intact",
+          "Lakitu outfit turns off without removing Marty or Rio outfits",
+          "Costumes are independent of companion behaviour setting"
+        ],
+        "failed": [],
+        "scope": "Actual game map; synthetic keyboard/gamepad with menu/action fixtures. Physical controller and cloth simulation unverified."
+      },
+      "report": "Costumes/costumes-smoke.json"
+    },
+    {
+      "results": {
+        "passed": [
+          "Independent Marty/Rio on and Lakitu off choices survive a second process",
+          "Reload applies only the saved costume choices"
+        ],
+        "failed": [],
+        "scope": "Actual game map; synthetic keyboard/gamepad with menu/action fixtures. Physical controller and cloth simulation unverified."
+      },
+      "report": "Costumes/costumes-resume.json"
+    },
+    {
+      "results": {
+        "scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+        "passed": [
+          "Three dig patches and compatible default energy initialize",
+          "Low energy makes Marty tired and slows his walk",
+          "Tired Marty cannot hurry",
+          "Rested Marty has a normal mood",
+          "Controller picks up the ball and makes Marty excited",
+          "Timed digging advances hole to depth 1",
+          "Timed digging advances hole to depth 2",
+          "Timed digging advances hole to depth 3",
+          "Digging consumes energy",
+          "Interact buries the carried ball in the open hole",
+          "Controller digging recovers buried treasure",
+          "Recovered ball can be picked up again",
+          "Dropping releases the toy without burying or duplicating it",
+          "Dropped toy can be picked up and buried again",
+          "Eating kitchen food restores energy and excitement",
+          "Food cooldown prevents instant repeated meals",
+          "Space performs a real physics jump",
+          "Jumping spends energy",
+          "Assisted controller hop lands on the real sofa collider",
+          "Watching original TV on the couch restores energy",
+          "Pause freezes pet energy and action timers",
+          "Walking away stops TV rest",
+          "Another item can be carried while the first stays buried"
+        ],
+        "failed": []
+      },
+      "report": "Life/life-smoke.json"
+    },
+    {
+      "results": {
+        "scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+        "passed": [
+          "Energy reloads in a second process",
+          "Carried pebble and buried ball reload without duplication",
+          "Dug hole and TV state persist",
+          "Transient actions do not resume on the title screen",
+          "Continue keeps the carried item at home"
+        ],
+        "failed": []
+      },
+      "report": "Life/life-resume.json"
+    },
+    {
+      "results": {
+        "engine": "5.8.4-58902052+++UE5+Release-5.8",
+        "scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+        "passed": [
+          "Spawn lands on room floor",
+          "W keyboard binding moves Marty",
+          "Keyboard release stops Marty",
+          "V switches camera distance",
+          "H returns Marty home",
+          "Synthetic left stick preserves analog walking",
+          "Stick release stops Marty",
+          "A/Cross enables hurry",
+          "R3 switches camera distance",
+          "A/Cross release restores walking",
+          "Menu/Options returns Marty home",
+          "Right stick orbits camera",
+          "Right stick up looks upward",
+          "RB/R1 recenters camera",
+          "Room boundaries block sustained movement without falling",
+          "Sofa blocks actual character movement"
+        ],
+        "failed": []
+      },
+      "report": "Movement"
+    }
+  ],
+  "input": "Synthetic keyboard/gamepad events on the real game map; physical controllers unverified",
+  "reviewed_captures": [
+    "docs/screenshots/ue5-backpack-clothes.png",
+    "docs/screenshots/ue5-backpack-wardrobe.png"
+  ],
+  "validation_checkout": "Isolated main-based codex/backpack-clothes worktree"
+}
