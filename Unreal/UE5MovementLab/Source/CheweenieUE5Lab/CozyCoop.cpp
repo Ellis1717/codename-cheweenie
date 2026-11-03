@@ -1,5 +1,6 @@
 #include "NaturalPetAudio.h"
 #include "CozyCoop.h"
+#include "CozyHUDStyle.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
 #include "CozyAdventure.h"
@@ -214,22 +215,22 @@ void ACozyCoopHUD::DrawHUD()
     Super::DrawHUD();if(!Canvas)return;auto* PC=Cast<ACozyCoopController>(PlayerOwner);auto* Pet=PC?Cast<ACozyCoopPet>(PC->GetPawn()):nullptr;
     if(PC&&PC->MenuOpen){DrawHub();return;}
     const auto* Hub=GetGameInstance()->GetSubsystem<UCozyModeHub>();
-    if(Hub->OverlayVisible(ECozyOverlay::RoomStatus)||(Hub->OverlayVisible(ECozyOverlay::Hints)))DrawRect(FLinearColor(.025f,.055f,.07f,.92f),16,16,850,180);
+    if(Hub->OverlayVisible(ECozyOverlay::RoomStatus)||(Hub->OverlayVisible(ECozyOverlay::Hints)))CozyDrawRect(this,FLinearColor(.025f,.055f,.07f,.92f),16,16,850,180);
     if(Hub->OverlayVisible(ECozyOverlay::RoomStatus))
     {
-    DrawText(GetNetMode()==NM_Standalone?TEXT("Codename .... Cheweenie | Ratchet memory walk"):TEXT("Codename .... Cheweenie | LAN Cozy Crew"),FLinearColor(1,.86f,.5f),28,28,nullptr,1.3f);
-    DrawText(Pet?FString(TEXT("You: "))+Pet->PetName():TEXT("Joining the crew..."),FLinearColor::White,28,58);
+    CozyDrawText(this,GetNetMode()==NM_Standalone?TEXT("Codename .... Cheweenie | Ratchet memory walk"):TEXT("Codename .... Cheweenie | LAN Cozy Crew"),FLinearColor(1,.86f,.5f),28,28,nullptr,1.3f);
+    CozyDrawText(this,Pet?FString(TEXT("You: "))+Pet->PetName():TEXT("Joining the crew..."),FLinearColor::White,28,58);
     }
     if(Hub->OverlayVisible(ECozyOverlay::Hints))
     {
-    DrawText(TEXT("WASD / LS: move | mouse / RS: look | Shift / A-Cross: hurry"),FLinearColor::White,28,83);
-    DrawText(TEXT("Space / Y-Triangle: jump | B / LB-L1: voice | E / X-Square: carry | Q / LT: drop"),FLinearColor::White,28,105);
-    DrawText(TEXT("1 Marty | 2 Lakitu | 3 Rio | D-pad left/right: change pet | V / R3: camera"),FLinearColor::White,28,127);
-    const auto* State=GetWorld()->GetGameState<ACozyCoopState>();DrawText(State&&State->RatchetUnlocked?TEXT("4 Ratchet unlocked | T / D-pad Up: costume | F9 / View: return (offline)"):TEXT("Ratchet locked: host finishes solo Cozy Patrol | T / D-pad Up: costume"),FLinearColor::White,28,149);
+    CozyDrawText(this,TEXT("WASD / LS: move | mouse / RS: look | Shift / A-Cross: hurry"),FLinearColor::White,28,83);
+    CozyDrawText(this,TEXT("Space / Y-Triangle: jump | B / LB-L1: voice | E / X-Square: carry | Q / LT: drop"),FLinearColor::White,28,105);
+    CozyDrawText(this,TEXT("1 Marty | 2 Lakitu | 3 Rio | D-pad left/right: change pet | V / R3: camera"),FLinearColor::White,28,127);
+    const auto* State=GetWorld()->GetGameState<ACozyCoopState>();CozyDrawText(this,State&&State->RatchetUnlocked?TEXT("4 Ratchet unlocked | T / D-pad Up: costume | F9 / View: return (offline)"):TEXT("Ratchet locked: host finishes solo Cozy Patrol | T / D-pad Up: costume"),FLinearColor::White,28,149);
     }
-    if(PC&&PC->MenuOpen){DrawText(TEXT("Controls open - friends keep playing. Esc / Options: close"),FLinearColor::White,28,195);DrawText(TEXT("H: return home | R / RB-R1: recenter | Alt+F4: leave game"),FLinearColor::White,28,225);DrawText(TEXT("LAN room: shared toy and voices. Solo quests/saves remain separate."),FLinearColor::White,28,255);}
-    if(Hub->OverlayVisible(ECozyOverlay::Messages)&&PC&&!PC->Message.IsEmpty())DrawText(PC->Message,FLinearColor(1,.85f,.45f),28,Canvas->SizeY-50);
-    if(Hub->OverlayVisible(ECozyOverlay::PetNames))for(TActorIterator<ACozyCoopPet> It(GetWorld());It;++It)if(*It!=Pet){const FVector P=Project(It->GetActorLocation()+FVector(0,0,50));if(P.Z>0)DrawText(It->PetName(),FLinearColor(1,.9f,.6f),P.X-20,P.Y);}
+    if(PC&&PC->MenuOpen){CozyDrawText(this,TEXT("Controls open - friends keep playing. Esc / Options: close"),FLinearColor::White,28,195);CozyDrawText(this,TEXT("H: return home | R / RB-R1: recenter | Alt+F4: leave game"),FLinearColor::White,28,225);CozyDrawText(this,TEXT("LAN room: shared toy and voices. Solo quests/saves remain separate."),FLinearColor::White,28,255);}
+    if(Hub->OverlayVisible(ECozyOverlay::Messages)&&PC&&!PC->Message.IsEmpty())CozyDrawText(this,PC->Message,FLinearColor(1,.85f,.45f),28,Canvas->SizeY-50);
+    if(Hub->OverlayVisible(ECozyOverlay::PetNames))for(TActorIterator<ACozyCoopPet> It(GetWorld());It;++It)if(*It!=Pet){const FVector P=Project(It->GetActorLocation()+FVector(0,0,50));if(P.Z>0)CozyDrawText(this,It->PetName(),FLinearColor(1,.9f,.6f),P.X-20,P.Y);}
 }
 
 void ACozyCoopPet::HubConfirm(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){BlockHurryAfterMenu=PC->IsInputKeyDown(EKeys::Gamepad_FaceButton_Bottom);GetGameInstance()->GetSubsystem<UCozyModeHub>()->Confirm();}}
