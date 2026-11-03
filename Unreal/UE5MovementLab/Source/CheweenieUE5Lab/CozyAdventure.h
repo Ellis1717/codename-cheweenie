@@ -69,6 +69,7 @@ public:
     UPROPERTY(SaveGame) int32 NavTarget=0;
     UPROPERTY(SaveGame) int32 CatFollowMask=0;
     UPROPERTY(SaveGame) int32 CostumeMask=0;
+    UPROPERTY(SaveGame) int32 MartyJacket=0;
     UPROPERTY(SaveGame) bool RatchetUnlocked=false;
     UPROPERTY(SaveGame) bool HalloweenActive=false;
     UPROPERTY(SaveGame) int32 HalloweenStampMask=0;
@@ -106,6 +107,7 @@ public:
     UFUNCTION(BlueprintPure,Category="Cheweenie|Adventure") bool AllowsMovement() const { return !Enabled || Screen == ECozyScreen::Playing; }
     void HoldMessage(float Seconds) { MessageTime=Seconds; }
     void ActionCue(const FString& Name) { PlayCue(Name); }
+    void AdjustMartyJacket(int32 Direction);
     void OpenHalloween();
     void OpenModes();
     void CloseModes();

@@ -6,6 +6,7 @@
   "Description": "Codename .... Cheweenie isolated Marty movement prototype. Native compilation required; not the Unity adventure port.",
   "Plugins": [
     {"Name": "EnhancedInput", "Enabled": true},
+    {"Name": "ProceduralMeshComponent", "Enabled": true},
     {"Name": "PythonScriptPlugin", "Enabled": true},
     {"Name": "EditorScriptingUtilities", "Enabled": true},
     {"Name": "AndroidFileServer", "Enabled": false}
