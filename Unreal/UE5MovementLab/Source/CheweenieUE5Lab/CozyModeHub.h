@@ -7,7 +7,9 @@
 
 class UCozyAdventure;
 class UNetDriver;
-enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave };
+enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave, Overlays };
+// Append-only presentation IDs. These never change gameplay feature flags.
+enum class ECozyOverlay : uint8 { All, Objective, Hints, Status, Health, Energy, Backpack, Prompts, WorldLabels, LocalMap, Compass, Location, Guidance, Festival, TrickGuide, Messages, RoomStatus, PetNames, HomeStats, Reactions, Count };
 struct FCozyArchiveChoice { FString Id, Label; };
 FString CozyHubProfileSlot();
 
@@ -37,6 +39,11 @@ public:
     void SoloReady(UCozyAdventure* Session);
     void RoomReady();
     bool CanAdjust(int32 Row) const;
+    bool OverlayVisible(ECozyOverlay Id) const;
+    void ToggleOverlay(ECozyOverlay Id);
+    void ResetOverlays();
+    void LoadOverlays();
+    void SaveOverlays();
     void Request(const FString& Mode);
     void TravelSolo(const FString& Action=TEXT("hub"));
     bool RatchetAvailable() const;
@@ -58,8 +65,10 @@ private:
     bool Returning=false,ReturnQueued=false,Connecting=false,Hosting=false;
     int32 CachedFur=2;
     bool FurLoaded=false;
+    uint32 HiddenOverlays=0;
     // Acceptance state is dormant outside explicit test arguments.
     void TickAcceptance(float Delta);
+    void TickOverlayAcceptance(float Delta);
     int32 TestStage=0;
     double TestTime=0,TestTotal=0;
     TArray<FString> TestPassed,TestFailed;

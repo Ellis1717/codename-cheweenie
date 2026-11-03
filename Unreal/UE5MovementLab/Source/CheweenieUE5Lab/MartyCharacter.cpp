@@ -366,6 +366,7 @@ void AMartyHUD::DrawHUD()
     Super::DrawHUD();
     if (!Canvas) return;
     if (DrawAdventureHUD()) return;
+    if(!GetGameInstance()->GetSubsystem<UCozyModeHub>()->OverlayVisible(ECozyOverlay::Hints))return;
     DrawRect(FLinearColor(0.025f, 0.035f, 0.04f, .88f), 16, 16, 700, 100);
     DrawText(TEXT("Codename .... Cheweenie | Marty movement lab"), FLinearColor::White, 28, 25);
     DrawText(TEXT("Move: WASD / arrows / left stick   |   Look: mouse / right stick"), FLinearColor::White, 28, 48);

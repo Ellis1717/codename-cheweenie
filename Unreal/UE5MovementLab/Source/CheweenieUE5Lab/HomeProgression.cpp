@@ -1,4 +1,6 @@
 #include "HomeProgression.h"
+#include "CozyModeHub.h"
+#include "Engine/GameInstance.h"
 #include "MartyCharacter.h"
 #include "MartyGait.h"
 #include "CozyAdventure.h"
@@ -135,7 +137,7 @@ void UHomeProgression::Praise(int32 Witness,int32 Skill)
     const TCHAR* Lines[]={TEXT("Excellent blanket form. A very horizontal professional."),TEXT("Laundry cycle approved. Please do not tumble-dry the dog."),TEXT("A firm pawshake. Your snack application is under review."),TEXT("Volume checked. Still a dog. Strong work.")};
     int32 Award=0;if(Fresh){D->TrickPraiseMask|=Bit;Award=1;const int32 Round=15<<(Witness*4);if((D->TrickPraiseMask&Round)==Round){D->TrickPraiseMask&=~Round;Award+=2;}D->PraiseStars=FMath::Min(99,D->PraiseStars+Award);}
     D->PraiseCooldownRemaining=PraiseCooldown;++Reactions;
-    if(Witness<2){Mode()->Companions->Cats[Witness].Happy=5;ReactionTime[Witness]=4;if(ReactionLabels.IsValidIndex(Witness)&&ReactionLabels[Witness]){ReactionLabels[Witness]->SetText(FText::FromString(Award?FString::Printf(TEXT("APPROVED! +%d STAR%s"),Award,Award==1?TEXT(""):TEXT("S")):TEXT("SHOW ME ANOTHER TRICK!")));ReactionLabels[Witness]->SetVisibility(Mode()->Adventure->Feature(ECozyFeature::WorldLabels));}}
+    if(Witness<2){Mode()->Companions->Cats[Witness].Happy=5;ReactionTime[Witness]=4;if(ReactionLabels.IsValidIndex(Witness)&&ReactionLabels[Witness]){ReactionLabels[Witness]->SetText(FText::FromString(Award?FString::Printf(TEXT("APPROVED! +%d STAR%s"),Award,Award==1?TEXT(""):TEXT("S")):TEXT("SHOW ME ANOTHER TRICK!")));ReactionLabels[Witness]->SetVisibility(Mode()->Adventure->Feature(ECozyFeature::WorldLabels)&&GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->OverlayVisible(ECozyOverlay::Reactions));}}
     Tell(FString::Printf(TEXT("%s: %s %s"),Names[Witness],Lines[Skill],Award?*FString::Printf(TEXT("+%d praise star%s!"),Award,Award==1?TEXT(""):TEXT("s")):TEXT("Try a different trick for another star.")),Witness==0?TEXT("Lakitu"):Witness==1?TEXT("Rio"):TEXT("Cozy"));Mode()->Adventure->Save();
 }
 void UHomeProgression::OnSkill(int32 Skill)
@@ -167,5 +169,5 @@ void UHomeProgression::TickComponent(float Delta,ELevelTick Type,FActorComponent
     if(Resting){if(P->Life->Activity!=EDogActivity::Lying||FVector::Dist2D(P->GetActorLocation(),Bed)>100)Resting=false;else{RestTime+=Delta;if(Mode()->Adventure->Feature(ECozyFeature::Energy))D->PetEnergy=FMath::Min(100.f,D->PetEnergy+BedEnergyRecovery*Delta);if(Mode()->Adventure->Feature(ECozyFeature::Health))D->PetHealth=FMath::Min(100.f,D->PetHealth+BedHealthRecovery*Delta);if(RestTime>=3&&D->RestBonusRemaining<=0){D->RestBonusRemaining=RestDuration;Tell(TEXT("Well rested! Marty gets 15% less movement energy drain for three minutes."),TEXT("Cozy"));Mode()->Adventure->Save();}}}
     if(Training>=0){TrainingRemaining-=Delta;if(!InAnnex()||TrainingRemaining<=0){Training=-1;Tell(TEXT("Training paused. Start again at a gym mat; no stars were spent."));}else if(Training==2){TrainingSpeed=FMath::Max(TrainingSpeed,float(P->GetVelocity().Size2D()));if(FVector::Dist2D(P->GetActorLocation(),Finish)<75&&FVector::Dist2D(TrainingStart,P->GetActorLocation())>280&&TrainingSpeed>180)FinishTraining();}}
     const auto* PC=GetWorld()->GetFirstPlayerController();FVector View;FRotator Rotation;if(PC)PC->GetPlayerViewPoint(View,Rotation);
-    for(int32 I=0;I<2;++I)if(ReactionLabels.IsValidIndex(I)&&ReactionLabels[I]){ReactionTime[I]=FMath::Max(0.f,ReactionTime[I]-Delta);ReactionLabels[I]->SetVisibility(ReactionTime[I]>0&&Mode()->Adventure->Feature(ECozyFeature::WorldLabels));if(PC)ReactionLabels[I]->SetWorldRotation((View-ReactionLabels[I]->GetComponentLocation()).Rotation());}
+    for(int32 I=0;I<2;++I)if(ReactionLabels.IsValidIndex(I)&&ReactionLabels[I]){ReactionTime[I]=FMath::Max(0.f,ReactionTime[I]-Delta);ReactionLabels[I]->SetVisibility(ReactionTime[I]>0&&Mode()->Adventure->Feature(ECozyFeature::WorldLabels)&&GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->OverlayVisible(ECozyOverlay::Reactions));if(PC)ReactionLabels[I]->SetWorldRotation((View-ReactionLabels[I]->GetComponentLocation()).Rotation());}
 }

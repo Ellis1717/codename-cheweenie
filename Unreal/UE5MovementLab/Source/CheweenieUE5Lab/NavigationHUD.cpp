@@ -1,5 +1,7 @@
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
+#include "CozyModeHub.h"
+#include "Engine/GameInstance.h"
 #include "CozyNavigation.h"
 #include "HomeProgression.h"
 #include "Neighbourhood.h"
@@ -18,9 +20,10 @@ void AMartyHUD::DrawNavigation(bool Full)
 {
     const auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;
     if(!M||!M->Navigation||!P||!M->Adventure->Progress)return;const auto* S=M->Adventure.Get();const auto* N=M->Navigation.Get();
+    const auto* Hub=GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>();
     const float W=Canvas->SizeX,H=Canvas->SizeY;const auto Goal=N->Goal();
     if(Full&&!S->Feature(ECozyFeature::Map)){DrawText(TEXT("Map display is OFF."),FLinearColor::White,28,130);DrawText(TEXT("Enable it in Controls > Navigation."),FLinearColor(.7f,.85f,.8f),28,160);DrawText(TEXT("You can still choose a destination on the right."),FLinearColor(.7f,.85f,.8f),28,190);}
-    if(S->Feature(ECozyFeature::Map))
+    if(S->Feature(ECozyFeature::Map)&&(Full||Hub->OverlayVisible(ECozyOverlay::LocalMap)))
     {
         const float Size=Full?FMath::Max(180.f,FMath::Min(W-525,H-255)):250.f;
         const float X=Full?28:W-278,Y=Full?105:135;
@@ -46,7 +49,7 @@ void AMartyHUD::DrawNavigation(bool Full)
         DrawText(TEXT("N"),FLinearColor::White,X+Size/2-4,Y+26);DrawText(FString::Printf(TEXT("%.0f m across"),Span/100),FLinearColor(.7f,.8f,.8f),X+12,Y+Size-18);
         if(Full){DrawText(TEXT("Gold: Marty | Blue: camera | X: destination"),FLinearColor::White,X,Y+Size+14);DrawText(TEXT("Mint: street guide; grey: direct bearing. Not obstacle avoidance."),FLinearColor(.7f,.85f,.8f),X,Y+Size+38);}
     }
-    if(!Full&&S->Feature(ECozyFeature::Compass)){const float Bearing=UCozyNavigation::Bearing(P->GetActorForwardVector());DrawRect(FLinearColor(.025f,.065f,.075f,.94f),W-278,395,250,50);DrawText(FString::Printf(TEXT("Marty: %s %03.0f deg"),*UCozyNavigation::Cardinal(Bearing),Bearing),FLinearColor(1,.85f,.4f),W-266,403);DrawText(TEXT("Gold = body | Blue = camera"),FLinearColor(.6f,.8f,1),W-266,425);}
-    if(!Full&&S->Feature(ECozyFeature::Location))DrawText(TEXT("You are at: ")+N->Location(),FLinearColor(.7f,.9f,1),28,193);
-    if(!Full&&S->Feature(ECozyFeature::Waypoint)){DrawRect(FLinearColor(.025f,.065f,.075f,.94f),16,220,FMath::Min(W-32,960.f),48);DrawText(N->Guidance(),FLinearColor(1,.85f,.45f),28,231,nullptr,1.1f);}
+    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Compass)&&S->Feature(ECozyFeature::Compass)){const float Bearing=UCozyNavigation::Bearing(P->GetActorForwardVector());DrawRect(FLinearColor(.025f,.065f,.075f,.94f),W-278,395,250,50);DrawText(FString::Printf(TEXT("Marty: %s %03.0f deg"),*UCozyNavigation::Cardinal(Bearing),Bearing),FLinearColor(1,.85f,.4f),W-266,403);DrawText(TEXT("Gold = body | Blue = camera"),FLinearColor(.6f,.8f,1),W-266,425);}
+    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Location)&&S->Feature(ECozyFeature::Location))DrawText(TEXT("You are at: ")+N->Location(),FLinearColor(.7f,.9f,1),28,193);
+    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Guidance)&&S->Feature(ECozyFeature::Waypoint)){DrawRect(FLinearColor(.025f,.065f,.075f,.94f),16,220,FMath::Min(W-32,960.f),48);DrawText(N->Guidance(),FLinearColor(1,.85f,.45f),28,231,nullptr,1.1f);}
 }

@@ -18,12 +18,36 @@
 #include "Misc/Parse.h"
 #include "Misc/CommandLine.h"
 
+// Stable names make preferences additive and tolerate missing/unknown fields.
+static const TCHAR* OverlayLabels[]={TEXT("All gameplay overlays"),TEXT("Objective"),TEXT("Control hints"),TEXT("Pet status / activity"),TEXT("Health meter"),TEXT("Energy meter"),TEXT("Backpack summary"),TEXT("Interaction prompts"),TEXT("World objective labels"),TEXT("Local map"),TEXT("Compass"),TEXT("Current location"),TEXT("Destination guidance"),TEXT("Halloween paw-pass"),TEXT("Direct trick guide"),TEXT("Messages / notifications"),TEXT("LAN / memory room status"),TEXT("Other pet name labels"),TEXT("Home upgrades / bonuses"),TEXT("Cat reaction labels")};
+static_assert(UE_ARRAY_COUNT(OverlayLabels)==int32(ECozyOverlay::Count));
+static FString OverlayPrefsPath(){return FPaths::ProjectSavedDir()/(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlaySmoke"))?TEXT("OverlayAcceptance.json"):TEXT("OverlayPreferences.json"));}
+bool UCozyModeHub::OverlayVisible(ECozyOverlay Id) const
+{
+    const uint32 Index=uint32(Id);return Index<uint32(ECozyOverlay::Count)&&(HiddenOverlays&((1u<<uint32(ECozyOverlay::All))|(1u<<Index)))==0;
+}
+void UCozyModeHub::LoadOverlays()
+{
+    HiddenOverlays=0;FString Json;TSharedPtr<FJsonObject> Data;
+    if(!FFileHelper::LoadFileToString(Json,*OverlayPrefsPath())||!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json),Data)||!Data)return;
+    for(int32 I=0;I<int32(ECozyOverlay::Count);++I){bool Visible=true;if(Data->TryGetBoolField(OverlayLabels[I],Visible)&&!Visible)HiddenOverlays|=1u<<I;}
+}
+void UCozyModeHub::SaveOverlays()
+{
+    auto Data=MakeShared<FJsonObject>();for(int32 I=0;I<int32(ECozyOverlay::Count);++I)Data->SetBoolField(OverlayLabels[I],(HiddenOverlays&(1u<<I))==0);
+    FString Json;FJsonSerializer::Serialize(Data,TJsonWriterFactory<>::Create(&Json));
+    if(!FFileHelper::SaveStringToFile(Json,*OverlayPrefsPath()))Status=TEXT("Overlay change applied, but could not save preferences on this PC.");
+}
+void UCozyModeHub::ToggleOverlay(ECozyOverlay Id){if(uint32(Id)>=uint32(ECozyOverlay::Count))return;HiddenOverlays^=1u<<uint32(Id);SaveOverlays();}
+void UCozyModeHub::ResetOverlays(){HiddenOverlays=0;SaveOverlays();}
+
 static const TCHAR* MapPath=TEXT("/Game/VisualLab/Comparison");
 FString CozyHubProfileSlot()
 {
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))return FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubGuest"))?TEXT("CheweenieHubGuestAcceptance"):TEXT("CheweenieHubAcceptance");
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieRatchetLan")))return TEXT("CheweenieRatchetAcceptance");
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCoopSmoke")))return TEXT("CheweenieCoopAcceptance");
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOverlaySmoke")))return TEXT("CheweenieOverlayAcceptance");
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoke")))return TEXT("CheweenieHubPresentationAcceptance");
     return TEXT("CheweenieAdventureV1");
 }
@@ -42,6 +66,7 @@ void UCozyModeHub::Initialize(FSubsystemCollectionBase& Collection)
     }
     int32 Override=0;if(FParse::Value(FCommandLine::Get(),TEXT("CheweenieHubPort="),Override))Port=FMath::Clamp(Override,1024,65535);
     if((FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubSmoke"))||FParse::Param(FCommandLine::Get(),TEXT("CheweenieHubArchiveSmoke")))&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieArchiveReturned")))UGameplayStatics::DeleteGameInSlot(CozyHubProfileSlot(),0);
+    LoadOverlays();
     LoadArchives();
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieArchiveError")))Status=TEXT("That archived build could not be verified. The latest game is ready.");
 }
@@ -74,19 +99,21 @@ TArray<FString> UCozyModeHub::Rows() const
 {
     switch(Page)
     {
-    case ECozyHubPage::Modes:if(Session())return {TEXT("Play / continue adventure"),TEXT("Host Cozy Crew LAN room"),TEXT("Join Cozy Crew LAN room"),TEXT("Graphics & controller guide"),FString::Printf(TEXT("Archived versions (%d)"),Archives.Num()),TEXT("Back / resume"),TEXT("Quit game")};else return {TEXT("Resume this room"),TEXT("Return to core adventure"),TEXT("Host Cozy Crew LAN room"),TEXT("Join Cozy Crew LAN room"),TEXT("Graphics & controller guide"),FString::Printf(TEXT("Archived versions (%d)"),Archives.Num()),TEXT("Quit game")};
+    case ECozyHubPage::Modes:if(Session())return {TEXT("Play / continue adventure"),TEXT("Host Cozy Crew LAN room"),TEXT("Join Cozy Crew LAN room"),TEXT("Graphics, overlays & controls"),FString::Printf(TEXT("Archived versions (%d)"),Archives.Num()),TEXT("Back / resume"),TEXT("Quit game")};else return {TEXT("Resume this room"),TEXT("Return to core adventure"),TEXT("Host Cozy Crew LAN room"),TEXT("Join Cozy Crew LAN room"),TEXT("Graphics, overlays & controls"),FString::Printf(TEXT("Archived versions (%d)"),Archives.Num()),TEXT("Quit game")};
     case ECozyHubPage::Join:return {Connecting?TEXT("Connecting..."):FString(TEXT("Join "))+Address()+FString::Printf(TEXT(":%d"),Port),FString::Printf(TEXT("Address part 1: %d"),Octets[0]),FString::Printf(TEXT("Address part 2: %d"),Octets[1]),FString::Printf(TEXT("Address part 3: %d"),Octets[2]),FString::Printf(TEXT("Address part 4: %d"),Octets[3]),FString::Printf(TEXT("Port: %d"),Port),Connecting?TEXT("Cancel connection"):TEXT("Back")};
     case ECozyHubPage::Host:{TArray<FString> R={TEXT("Start hosting - up to two players"),FString::Printf(TEXT("Port: %d"),Port)};for(const auto& A:HostAddresses())R.Add(TEXT("Share host address: ")+A);R.Add(TEXT("Back"));return R;}
     case ECozyHubPage::Archives:{TArray<FString> R;for(const auto& A:Archives)R.Add(A.Label);if(R.IsEmpty())R.Add(TEXT("Use Play Cheweenie to load local archives"));R.Add(TEXT("Back"));return R;}
-    case ECozyHubPage::Graphics:{const TCHAR* Levels[]={TEXT("LOW - smooth"),TEXT("MEDIUM - short hairs"),TEXT("HIGH - more hairs")};return {FString(TEXT("Fur detail: "))+Levels[const_cast<UCozyModeHub*>(this)->FurDetail()],Session()?TEXT("Full controls, cameras & sound"):TEXT("Full solo controls (leave room)"),TEXT("Keyboard & controller guide"),TEXT("Back")};}
+    case ECozyHubPage::Graphics:{const TCHAR* Levels[]={TEXT("LOW - smooth"),TEXT("MEDIUM - short hairs"),TEXT("HIGH - more hairs")};return {FString(TEXT("Fur detail: "))+Levels[const_cast<UCozyModeHub*>(this)->FurDetail()],Session()?TEXT("Full controls, cameras & sound"):TEXT("Full solo controls (leave room)"),TEXT("Keyboard & controller guide"),TEXT("Screen overlays"),TEXT("Back")};}
+    case ECozyHubPage::Overlays:{TArray<FString> R;for(int32 I=0;I<int32(ECozyOverlay::Count);++I)R.Add(FString(OverlayLabels[I])+((HiddenOverlays&(1u<<I))?TEXT(": OFF"):TEXT(": ON")));R.Add(TEXT("Restore overlay defaults"));R.Add(TEXT("Back"));return R;}
     case ECozyHubPage::Help:return {TEXT("WASD / left stick: move"),TEXT("Mouse / right stick: look | V / R3: camera"),TEXT("Esc / Options: pause / modes"),TEXT("Menus: arrows / D-pad | Enter / A-Cross"),TEXT("Left / right: settings | B-Circle: back"),TEXT("Solo: hold L1/LB + A-Cross: lie | B-Circle: roll"),TEXT("Solo: hold L1/LB + X-Square: shake | Y-Triangle: bark"),TEXT("Left Ctrl + 1/2/3/4: same direct tricks (solo)"),TEXT("LAN: brackets / D-pad left-right: choose pet"),TEXT("Back")};
     case ECozyHubPage::Leave:return {TEXT("Keep playing"),PendingLeave==TEXT("quit")?TEXT("Leave session and quit"):TEXT("Leave session and switch")};
     }return {};
 }
-FString UCozyModeHub::Heading() const{return Page==ECozyHubPage::Modes?TEXT("Codename .... Cheweenie"):Page==ECozyHubPage::Host?TEXT("Host a Cozy Crew room"):Page==ECozyHubPage::Join?TEXT("Join a Cozy Crew room"):Page==ECozyHubPage::Archives?TEXT("Archived versions"):Page==ECozyHubPage::Leave?TEXT("Leave this room?"):Page==ECozyHubPage::Help?TEXT("Keyboard & controller guide"):TEXT("Graphics");}
+FString UCozyModeHub::Heading() const{return Page==ECozyHubPage::Overlays?TEXT("Screen overlays"):Page==ECozyHubPage::Modes?TEXT("Codename .... Cheweenie"):Page==ECozyHubPage::Host?TEXT("Host a Cozy Crew room"):Page==ECozyHubPage::Join?TEXT("Join a Cozy Crew room"):Page==ECozyHubPage::Archives?TEXT("Archived versions"):Page==ECozyHubPage::Leave?TEXT("Leave this room?"):Page==ECozyHubPage::Help?TEXT("Keyboard & controller guide"):TEXT("Graphics");}
 FString UCozyModeHub::Hint() const
 {
     if(!Status.IsEmpty())return Status;
+    if(Page==ECozyHubPage::Overlays)return TEXT("Saved on this PC for solo & LAN. Master OFF hides gameplay overlays; menus remain available.");
     if(Page==ECozyHubPage::Join)return TEXT("Use left/right to edit each address part. Both PCs need this same build.");
     if(Page==ECozyHubPage::Host)return TEXT("Share this PC's address and port. LAN room: pets, shared toy and voices.");
     if(Page==ECozyHubPage::Archives)return TEXT("Older builds open separately. Quit the archive to return here; latest progress is retained.");
@@ -94,10 +121,11 @@ FString UCozyModeHub::Hint() const
     return TEXT("One adventure: home, neighbourhood, activities and unlocks. Older builds stay archived.");
 }
 void UCozyModeHub::Navigate(int32 D){const int32 N=Rows().Num();if(N)Selection=(Selection+D+N)%N;}
-bool UCozyModeHub::CanAdjust(int32 Row) const{return (Page==ECozyHubPage::Graphics&&Row==0)||(!Connecting&&((Page==ECozyHubPage::Join&&Row>=1&&Row<=5)||(Page==ECozyHubPage::Host&&Row==1)));}
+bool UCozyModeHub::CanAdjust(int32 Row) const{return (Page==ECozyHubPage::Overlays&&Row>=0&&Row<int32(ECozyOverlay::Count))||(Page==ECozyHubPage::Graphics&&Row==0)||(!Connecting&&((Page==ECozyHubPage::Join&&Row>=1&&Row<=5)||(Page==ECozyHubPage::Host&&Row==1)));}
 void UCozyModeHub::Adjust(int32 D)
 {
     if(!D||Connecting)return;
+    if(Page==ECozyHubPage::Overlays&&Selection>=0&&Selection<int32(ECozyOverlay::Count)){ToggleOverlay(ECozyOverlay(Selection));return;}
     if(Page==ECozyHubPage::Graphics&&Selection==0){AdjustFur(D);return;}
     if(Page==ECozyHubPage::Join&&Selection>=1&&Selection<=4){int32& N=Octets[Selection-1];N=(N+(D>0?1:255))%256;SaveNetworkPreferences();return;}
     if((Page==ECozyHubPage::Join&&Selection==5)||(Page==ECozyHubPage::Host&&Selection==1)){Port=FMath::Clamp(Port+(D>0?1:-1),1024,65535);SaveNetworkPreferences();}
@@ -105,7 +133,7 @@ void UCozyModeHub::Adjust(int32 D)
 void UCozyModeHub::Back()
 {
     if(Connecting){Connecting=false;GEngine->CancelPending(GetWorld());Status=TEXT("Connection cancelled.");}
-    if(Page==ECozyHubPage::Help){NewPage(ECozyHubPage::Graphics);return;}
+    if(Page==ECozyHubPage::Help||Page==ECozyHubPage::Overlays){NewPage(ECozyHubPage::Graphics);return;}
     if(Page!=ECozyHubPage::Modes){NewPage(ECozyHubPage::Modes);return;}
     if(auto* S=Session())S->CloseModes();
     else if(auto* PC=Cast<ACozyCoopController>(UGameplayStatics::GetPlayerController(this,0)))PC->SetHubMenu(false);
@@ -114,8 +142,9 @@ void UCozyModeHub::Confirm()
 {
     Status.Empty();
     if(Page==ECozyHubPage::Modes){const bool Room=Session()==nullptr;if(Selection==6){Request(TEXT("quit"));return;}if((Room&&Selection==0)||(!Room&&Selection==5)){Back();return;}const int32 Choice=Selection-(Room?1:0);switch(Choice){case 0:Request(TEXT("continue"));break;case 1:NewPage(ECozyHubPage::Host);break;case 2:NewPage(ECozyHubPage::Join);break;case 3:NewPage(ECozyHubPage::Graphics);break;case 4:NewPage(ECozyHubPage::Archives);break;}return;}
+    if(Page==ECozyHubPage::Overlays){if(Selection>=0&&Selection<int32(ECozyOverlay::Count))ToggleOverlay(ECozyOverlay(Selection));else if(Selection==int32(ECozyOverlay::Count))ResetOverlays();else Back();return;}
     if(Page==ECozyHubPage::Leave){if(Selection==1){const FString Action=PendingLeave;PendingLeave.Empty();Execute(Action);}else NewPage(ECozyHubPage::Modes);return;}
-    if(Page==ECozyHubPage::Graphics){if(Selection==0)AdjustFur(1);else if(Selection==1){if(auto* S=Session())S->OpenControlsFromModes();else Request(TEXT("controls"));}else if(Selection==2)NewPage(ECozyHubPage::Help);else Back();return;}
+    if(Page==ECozyHubPage::Graphics){if(Selection==0)AdjustFur(1);else if(Selection==1){if(auto* S=Session())S->OpenControlsFromModes();else Request(TEXT("controls"));}else if(Selection==2)NewPage(ECozyHubPage::Help);else if(Selection==3)NewPage(ECozyHubPage::Overlays);else Back();return;}
     if(Page==ECozyHubPage::Host){if(Selection==0)Request(TEXT("host"));else if(Selection==Rows().Num()-1)Back();return;}
     if(Page==ECozyHubPage::Join){if(Selection==0&&!Connecting)Request(TEXT("join"));else if(Selection==6)Back();return;}
     if(Page==ECozyHubPage::Archives){if(Archives.IsValidIndex(Selection))Request(TEXT("archive:")+Archives[Selection].Id);else Back();return;}
@@ -186,5 +215,6 @@ void UCozyModeHub::Tick(float Delta)
         else if(Action==TEXT("halloween")){if(M&&M->Festival)M->Festival->StartTrail();}
         else {if(S->Progress->HalloweenActive&&M&&M->Festival)M->Festival->Toggle();S->Start(false);if(Action==TEXT("explore")&&M&&M->Neighbourhood)M->Neighbourhood->GoOutside(Cast<AMartyCharacter>(UGameplayStatics::GetPlayerPawn(this,0)));}
     }
+    TickOverlayAcceptance(Delta);
     TickAcceptance(Delta);
 }
