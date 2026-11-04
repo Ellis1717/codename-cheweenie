@@ -1,0 +1,9 @@
+{
+	"passed": [
+		"Completed legacy checkpoint migrates to permanent Ratchet unlock",
+		"Title advertises the unlocked memory walk",
+		"Controller View returns from Ratchet to the real solo patrol"
+	],
+	"failed": [],
+	"scope": "Actual map/travel with synthetic keyboard/gamepad and isolated completion/save fixtures. Static first-pass Ratchet model; physical controllers unverified."
+}

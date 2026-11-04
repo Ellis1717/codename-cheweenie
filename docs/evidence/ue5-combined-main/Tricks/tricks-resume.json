@@ -1,0 +1,11 @@
+{
+	"scope": "Synthetic keyboard/controller menus, actual skin poses and CharacterMovement acceleration. Health/item/selection fixtures; physical devices unverified.",
+	"passed": [
+		"Both backpack items reload without duplicating a mouth item",
+		"Health and energy reload in a second process",
+		"Selected run pace persists",
+		"Transient tricks do not resume on title",
+		"Control mode persists while spring offsets reset safely"
+	],
+	"failed": []
+}

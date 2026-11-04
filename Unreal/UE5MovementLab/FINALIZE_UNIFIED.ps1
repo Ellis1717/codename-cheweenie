@@ -48,12 +48,12 @@ if(!(Test-Path -LiteralPath $wavePath) -or (Get-Item -LiteralPath $wavePath).Las
 $wave=Get-Content -LiteralPath $wavePath -Raw|ConvertFrom-Json
 foreach($name in @('Barks','Music','Muted')){ $clip=$wave.$name;if(!$clip -or $clip.seconds-le .5 -or $clip.peak-ge .999 -or ($name-ne 'Muted' -and $clip.rms-le .0002) -or ($name-eq 'Muted' -and $clip.rms-ge .0002)){throw ('Audio waveform check failed: '+$name)} }
 if($ReleaseVersion -eq 'Unified-0.14.0'){
-    foreach($entry in @(@('Life/life-smoke.json',45),@('Life/life-resume.json',7),@('Audio/audio-smoke.json',19),@('Costumes/costumes-smoke.json',44),@('Jackets/jackets-smoke.json',21),@('Jackets/jackets-resume.json',3),@('Upstairs/upstairs-smoke.json',18),@('ControllerGuide/controller-guide-smoke.json',14),@('OverlayStyles/main/overlay-styles.json',11),@('OverlayStyles/resume/overlay-styles.json',4))){
+    foreach($entry in @(@('Movement/movement-smoke.json',16),@('Life/life-smoke.json',45),@('Life/life-resume.json',7),@('Audio/audio-smoke.json',19),@('Costumes/costumes-smoke.json',44),@('Jackets/jackets-smoke.json',21),@('Jackets/jackets-resume.json',3),@('Upstairs/upstairs-smoke.json',18),@('ControllerGuide/controller-guide-smoke.json',14),@('OverlayStyles/main/overlay-styles.json',11),@('OverlayStyles/resume/overlay-styles.json',4))){
         $path=Join-Path $TestRoot $entry[0]
         if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale combined-game report: '+$entry[0])}
         $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
         if($report.failed.Count -or $report.passed.Count -lt $entry[1]){throw ('Failed combined-game report: '+$entry[0])}
-        if($entry[0] -like 'Jackets/*' -or $entry[0] -like 'Upstairs/*' -or $entry[0] -like 'ControllerGuide/*' -or $entry[0] -like 'OverlayStyles/*'){$checks+=$report.passed.Count}
+        if($entry[0] -like 'Movement/*' -or $entry[0] -like 'Jackets/*' -or $entry[0] -like 'Upstairs/*' -or $entry[0] -like 'ControllerGuide/*' -or $entry[0] -like 'OverlayStyles/*'){$checks+=$report.passed.Count}
     }
     $squeak=$wave.RainbowSqueak
     if(!$squeak -or $squeak.seconds -le .1 -or $squeak.rms -le .0002 -or $squeak.peak -ge .999){throw 'Rainbow Guy bite squeak waveform verification failed'}

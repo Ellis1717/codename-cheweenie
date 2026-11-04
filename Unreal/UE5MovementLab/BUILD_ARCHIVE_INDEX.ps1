@@ -5,6 +5,18 @@ $PackageRoot=[IO.Path]::GetFullPath($PackageRoot)
 $data=Join-Path $PackageRoot 'LocalGameData'
 New-Item -ItemType Directory -Path $data -Force|Out-Null
 $entries=@();$seen=@{}
+# A junction or duplicate installation of the current payload is still the main
+# game, not an archived version. Seed deduplication with its validated manifest.
+$currentMarker=Get-ChildItem -LiteralPath $PackageRoot -Filter 'validated*.json' -File|Sort-Object LastWriteTimeUtc -Descending|Select-Object -First 1
+if($currentMarker){
+    $currentGate=Get-Content -LiteralPath $currentMarker.FullName -Raw|ConvertFrom-Json
+    if($currentGate.files.Count){
+        $currentIdentity=($currentGate.files|Sort-Object path|ForEach-Object {$_.path+':'+$_.sha256}) -join '|'
+        $currentHasher=[Security.Cryptography.SHA256]::Create()
+        try{$currentId=([BitConverter]::ToString($currentHasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($currentIdentity)))).Replace('-','').ToLowerInvariant()}finally{$currentHasher.Dispose()}
+        $seen[$currentId]=$true
+    }
+}
 foreach($root in $ArchiveRoots){
     if(!(Test-Path -LiteralPath $root)){continue}
     foreach($dir in Get-ChildItem -LiteralPath $root -Directory|Sort-Object Name -Descending){

@@ -1,0 +1,312 @@
+{
+  "release": "Unified-0.14.0",
+  "baseMain": "3658cd6c7fd7de7f1e8176756cdd8e273465bdae",
+  "compiledNativeSource": "15d34806477f2386b7c3cbbbfa845e77307f9359",
+  "nativeSourceContentConfigStillMatchCompiledSnapshot": true,
+  "engine": "5.8.4",
+  "editorCompiled": true,
+  "gameCompiled": true,
+  "fullCookStageArchivePassed": true,
+  "cookErrors": 0,
+  "cookWarnings": 0,
+  "requiredPackagedAssertions": 824,
+  "additionalRatchetSeedAssertions": 22,
+  "privateMapAssertions": 4,
+  "allPackagedAssertions": 850,
+  "editorHeadlessMovementAssertions": 16,
+  "archiveMovementAssertions": 16,
+  "currentArchiveReturnAssertions": 2,
+  "selectedAssertionExecutions": 884,
+  "runtimeErrorFatalMaterialFallbackVsmMatches": 0,
+  "mainPayloadHashesVerified": 43,
+  "archiveCount": 37,
+  "archivePayloadFilesVerified": 2877,
+  "previousArchiveIdentitiesPreserved": 36,
+  "currentPayloadAliasExcludedFromArchiveCatalog": true,
+  "portableArchive": {
+    "bytes": 503755368,
+    "payloadFiles": 43,
+    "privateDataExcluded": true,
+    "sha256": "38F771531043E9E610FE81F10AA683B0E4169FD06E07D6000B7F1D6B05D812E1",
+    "version": "Unified-0.14.0",
+    "totalEntries": 47,
+    "roundTripHashesVerified": true
+  },
+  "primaryDesktopVersion": "0.14.0",
+  "desktopShortcutTargetVerified": true,
+  "originalRootLauncherAndMainJunctionUpdated": true,
+  "previousShortcutAndRootLauncherBackedUp": true,
+  "productionCheckpointCopiedWithoutOverwritingNewProgress": true,
+  "savedPreferencesAndPrivateResourcesCopiedWithMatchingHashes": 4,
+  "unitySourceAssetsSettingsChanged": false,
+  "independentContentPreviewChanged": false,
+  "physicalControllersVerified": false,
+  "separateMachinesVerified": false,
+  "foregroundDesktopClickVerified": false,
+  "broadPerformanceVerified": false,
+  "inputScope": "Synthetic keyboard/gamepad/mouse actions, simulated device descriptors and Slate events; two-process LAN on this PC. Acceptance slots and position/state fixtures remain distinct from physical input.",
+  "limitations": [
+    "Jackets use rigid prototype geometry; cloth draping/deformation is unfinished.",
+    "Upstairs/annex furniture is schematic primitive geometry.",
+    "Outdoor quests, upstairs progression, Rainbow Guy and jackets are not newly replicated in LAN.",
+    "Unity field-guide/rebinding presentation and articulated cat motion are not claimed as matching native Unreal implementations."
+  ],
+  "initialRuns": [
+    "Two inherited matching-header include orders were fixed before the final successful native build.",
+    "The first Editor startup was intentionally stopped before gameplay to let packaging rebuild its DLL without contention. The later final Editor movement run passed 16/16."
+  ],
+  "reviewedCaptures": [
+    "Movement/MovementGameplay.png",
+    "Life/DigDeep.png",
+    "Life/RainbowGuy.png",
+    "Jackets/JacketPink.png",
+    "Upstairs/UpstairsGameplay.png",
+    "ControllerGuide/ControllerGuideXbox.png",
+    "Hub/ModeHub.png",
+    "World/WorldBrickDogHeight.png",
+    "OverlayStyles/main/Style3Menu.png",
+    "Festival/FestivalTitle.png"
+  ],
+  "reports": [
+    {
+      "report": "Adventure/adventure-resume.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "Adventure/adventure-smoke.json",
+      "passed": 25,
+      "failed": 0
+    },
+    {
+      "report": "Audio/audio-smoke.json",
+      "passed": 19,
+      "failed": 0
+    },
+    {
+      "report": "Companions/companions-resume.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "Companions/companions-smoke.json",
+      "passed": 30,
+      "failed": 0
+    },
+    {
+      "report": "ControllerGuide/controller-guide-smoke.json",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "report": "Coop/coop-guest.json",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "report": "Coop/coop-host.json",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "report": "Costumes/costumes-resume.json",
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "report": "Costumes/costumes-smoke.json",
+      "passed": 44,
+      "failed": 0
+    },
+    {
+      "report": "Festival/festival-resume.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "Festival/festival-smoke.json",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "report": "FurDetail/fur-detail-low.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "FurDetail/fur-detail-medium.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "FurDetail/fur-detail.json",
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "report": "Gait/marty-gait.json",
+      "passed": 30,
+      "failed": 0
+    },
+    {
+      "report": "Home/home-progression.json",
+      "passed": 34,
+      "failed": 0
+    },
+    {
+      "report": "Home/home-resume.json",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "report": "Hub/hub-smoke.json",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "report": "HubLan/hub-guest.json",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "report": "HubLan/hub-host.json",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "report": "Jackets/jackets-resume.json",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "report": "Jackets/jackets-smoke.json",
+      "passed": 21,
+      "failed": 0
+    },
+    {
+      "report": "Life/life-resume.json",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "report": "Life/life-smoke.json",
+      "passed": 45,
+      "failed": 0
+    },
+    {
+      "report": "Modifier/trick-modifier.json",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "report": "Movement/movement-smoke.json",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "report": "Navigation/navigation-resume.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "Navigation/navigation-smoke.json",
+      "passed": 60,
+      "failed": 0
+    },
+    {
+      "report": "Overlays/main/overlay-smoke.json",
+      "passed": 79,
+      "failed": 0
+    },
+    {
+      "report": "Overlays/resume/overlay-smoke.json",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "report": "OverlayStyles/main/overlay-styles.json",
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "report": "OverlayStyles/resume/overlay-styles.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "PrivateMap/outside-map-audit.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "Ratchet/ratchet-memory.json",
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "report": "Ratchet/ratchet-resume.json",
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "report": "Ratchet/ratchet-return.json",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "report": "Ratchet/ratchet-unlock.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "RatchetSeed/ratchet-memory.json",
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "report": "RatchetSeed/ratchet-resume.json",
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "report": "RatchetSeed/ratchet-return.json",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "report": "RatchetSeed/ratchet-unlock.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "Tricks/tricks-resume.json",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "report": "Tricks/tricks-smoke.json",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "report": "UnlockedCoop/coop-guest.json",
+      "passed": 28,
+      "failed": 0
+    },
+    {
+      "report": "UnlockedCoop/coop-host.json",
+      "passed": 31,
+      "failed": 0
+    },
+    {
+      "report": "Upstairs/upstairs-smoke.json",
+      "passed": 18,
+      "failed": 0
+    },
+    {
+      "report": "World/world-smoke.json",
+      "passed": 16,
+      "failed": 0
+    }
+  ]
+}

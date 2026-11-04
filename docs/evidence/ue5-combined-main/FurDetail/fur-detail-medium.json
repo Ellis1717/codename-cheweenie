@@ -1,0 +1,10 @@
+{
+	"scope": "Real map; synthetic keyboard/gamepad with menu-selection and progress fixtures; three-process isolated save checks. Physical controllers unverified.",
+	"passed": [
+		"Medium fur preference reloads in another process",
+		"Reload selects the actual medium coat and valid gait",
+		"Fur reload preserves patrol and sound preferences",
+		"Legacy coat-off switch retains Medium and saves Low"
+	],
+	"failed": []
+}

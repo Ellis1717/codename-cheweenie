@@ -1,0 +1,17 @@
+{
+	"passed": [
+		"Style acceptance uses an isolated checkpoint",
+		"Classic Teal remains the default",
+		"Graphics exposes a named adjustable style row",
+		"Keyboard right selects Cozy Paper live",
+		"Gamepad D-pad selects Midnight Pop live",
+		"Mouse plus hitbox selects Clean Slate",
+		"Saved style reloads exactly",
+		"Forward wrap preserves visibility choices",
+		"Backward wrap returns to Clean Slate",
+		"Style and visibility survive actual room travel",
+		"Room menu cycles the same local style"
+	],
+	"failed": [],
+	"scope": "Real solo/room maps; synthetic keyboard, gamepad and HUD mouse hitbox input; isolated preferences/save and rendering when requested. Physical hardware unverified."
+}

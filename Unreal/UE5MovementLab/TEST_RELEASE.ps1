@@ -3,6 +3,7 @@ $ErrorActionPreference='Stop'
 $GameExe=[IO.Path]::GetFullPath($GameExe);$OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
 if(!(Test-Path -LiteralPath $GameExe)){throw 'Release executable missing'}
 New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
+& (Join-Path $PSScriptRoot 'TEST.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Movement')
 # Suites are sequential: they intentionally exercise persisted preferences and unlocks.
 foreach($suite in @(@('NAVIGATION','Navigation'),@('COMPANIONS','Companions'),@('ADVENTURE','Adventure'))){
     & (Join-Path $PSScriptRoot ('TEST_'+$suite[0]+'.ps1')) -GameExe $GameExe -OutputRoot (Join-Path $OutputRoot $suite[1])

@@ -1,0 +1,12 @@
+{
+  "scope": "Actual pixels in the scripted wall inspection; not a realism score or performance benchmark",
+  "height": 1080,
+  "clayPaletteVisible": true,
+  "meanRGB": [
+    132.60983102918587,
+    79.84239631336405,
+    52.591090629800306
+  ],
+  "width": 1920,
+  "samples": 3255
+}

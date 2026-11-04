@@ -1,0 +1,13 @@
+{
+	"passed": [
+		"Standalone special launch flag opens the seasonal menu on reload",
+		"Partial replay and disabled Halloween preference survive another process",
+		"Permanent Pumpkin Pal badge survives replay and reload",
+		"Main patrol and previously earned character remain intact after reload",
+		"Paused event restores ordinary scenery visibility on reload",
+		"Continue resumes the saved sticker trail outside"
+	],
+	"failed": [],
+	"scope": "Actual game map, synthetic keyboard/controller, isolated checkpoint plus position/action/cosmetic fixtures; physical controllers unverified. Local map source details excluded.",
+	"private_layout": false
+}
