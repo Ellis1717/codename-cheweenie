@@ -22,7 +22,7 @@ void AMartyCharacter::BeginTrickModifier()
     ModifierActive=true;ModifierUsed=false;ModifierStartedAt=FPlatformTime::Seconds();
     const auto* PC=Cast<APlayerController>(Controller);ModifierBarkTap=PC&&PC->IsInputKeyDown(EKeys::Gamepad_LeftShoulder);
     const auto* S=Adventure();ModifierBlocked=!S||!S->Enabled||S->Screen!=ECozyScreen::Playing;
-    SetSprint(false);
+    ClearControllerHurry();
 }
 void AMartyCharacter::EndTrickModifier()
 {

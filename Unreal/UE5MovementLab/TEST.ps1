@@ -4,13 +4,15 @@ if(!$GameExe -and -not(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Binaries
 $runtimeSaved=if($GameExe){Join-Path (Split-Path -Parent ([IO.Path]::GetFullPath($GameExe))) 'CheweenieUE5Lab/Saved'}else{Join-Path $PSScriptRoot 'Saved'}
 if(!$OutputRoot){$OutputRoot=$runtimeSaved}
 $OutputRoot=[IO.Path]::GetFullPath($OutputRoot);New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
+$testUser=Join-Path $OutputRoot 'User'
+$runtimeSaved=Join-Path $testUser 'Saved'
 $info=[Diagnostics.ProcessStartInfo]::new()
 $info.FileName=if($GameExe){[IO.Path]::GetFullPath($GameExe)}else{Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor.exe'}
 $backend=if($Render){'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
 # The native build validates SDKs; runtime acceptance must not queue another build-tool
 # SDK query behind a different checkout's compilation (TargetPlatformManager's supported flag).
 $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game -Multiprocess '}
-$info.Arguments=$project+$backend+' -CheweenieSmoke -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $OutputRoot 'MovementSmoke.log')+'"'
+$info.Arguments=$project+$backend+' -CheweenieSmoke -UserDir="'+$testUser+'" -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $OutputRoot 'MovementSmoke.log')+'"'
 $info.UseShellExecute=$false
 $info.CreateNoWindow=$true
 $info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot

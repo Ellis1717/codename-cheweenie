@@ -1,9 +1,13 @@
-param([Parameter(Mandatory)][string]$GameExe,[Parameter(Mandatory)][string]$OutputRoot,[string]$LegacySave,[string]$MapFile,[int]$Port=19140,[ValidateSet('Unified-0.14.0','Unified-0.14.1')][string]$ReleaseVersion='Unified-0.14.1')
+param([Parameter(Mandatory)][string]$GameExe,[Parameter(Mandatory)][string]$OutputRoot,[string]$LegacySave,[string]$MapFile,[int]$Port=19140,[ValidateSet('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2')][string]$ReleaseVersion='Unified-0.14.2',[switch]$ResumeAfterControllerAudit)
 $ErrorActionPreference='Stop'
 $GameExe=[IO.Path]::GetFullPath($GameExe);$OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
 if(!(Test-Path -LiteralPath $GameExe)){throw 'Release executable missing'}
 New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
-if($ReleaseVersion -eq 'Unified-0.14.1'){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_BUTTONS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerButtons')}
+# The finalizer still requires fresh passing controller reports for this exact payload.
+if(!$ResumeAfterControllerAudit){
+    if($ReleaseVersion -eq 'Unified-0.14.2'){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_COMFORT.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerComfort')}
+    if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_BUTTONS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerButtons')}
+}
 & (Join-Path $PSScriptRoot 'TEST.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Movement')
 # Suites are sequential: they intentionally exercise persisted preferences and unlocks.
 foreach($suite in @(@('NAVIGATION','Navigation'),@('COMPANIONS','Companions'),@('ADVENTURE','Adventure'))){

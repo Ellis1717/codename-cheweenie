@@ -1,4 +1,6 @@
 #include "MartyCharacter.h"
+#include "ControllerComfort.h"
+#include "CozyCoop.h"
 #include "CozyHUDStyle.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
@@ -102,6 +104,7 @@ void AMartyCharacter::BeginPlay()
     if(UsesAdventureHome()) TeleportTo(FVector(-200, -200, 60), FRotator(0, 40, 0));
     Home = GetActorLocation();
     Recenter();
+    RefreshControllerZoom();
 }
 
 void AMartyCharacter::PossessedBy(AController* NewController)
@@ -121,6 +124,7 @@ void AMartyCharacter::PossessedBy(AController* NewController)
 void AMartyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    TickControllerComfort(DeltaSeconds);
     UpdateTrickModifier();
     if(auto* Hub=GetGameInstance()->GetSubsystem<UCozyModeHub>()){const int32 Detail=FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"))?0:Hub->FurDetail();if(LastFurDetail!=Detail){LastFurDetail=Detail;const TCHAR* Coats[]={TEXT("/Game/Adventure/MartyPhotoSmooth/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat")};if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Coats[Detail])){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
     if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
@@ -149,16 +153,6 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     auto Axis = [this](UInputAction* Target, FKey Key, bool Y, bool Negative)
     {
         auto& Entry = Mapping->MapKey(Target, Key);
-        // Enhanced Input reads raw values rather than the legacy AxisConfig dead zone.
-        if (Key == EKeys::Gamepad_LeftX || Key == EKeys::Gamepad_LeftY ||
-            Key == EKeys::Gamepad_RightX || Key == EKeys::Gamepad_RightY)
-        {
-            auto* DeadZone = NewObject<UInputModifierDeadZone>(Mapping);
-            DeadZone->Type = EDeadZoneType::Axial;
-            DeadZone->LowerThreshold = .2f;
-            DeadZone->UpperThreshold = 1.f;
-            Entry.Modifiers.Add(DeadZone);
-        }
         if (Negative) Entry.Modifiers.Add(NewObject<UInputModifierNegate>(Mapping));
         if (Y)
         {
@@ -175,12 +169,11 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     Axis(MoveAction, EKeys::Down, true, true);
     Axis(MoveAction, EKeys::Left, false, true);
     Axis(MoveAction, EKeys::Right, false, false);
-    Axis(MoveAction, EKeys::Gamepad_LeftX, false, false);
-    Axis(MoveAction, EKeys::Gamepad_LeftY, true, false);
+    auto Stick=[&](UInputAction* Target,FKey Key,bool Right){auto& Entry=Mapping->MapKey(Target,Key);auto* Mod=NewObject<UCozyStickDeadZone>(Mapping);Mod->RightStick=Right;Entry.Modifiers.Add(Mod);};
+    Stick(MoveAction,EKeys::Gamepad_Left2D,false);
     Axis(MouseAction, EKeys::MouseX, false, false);
     Axis(MouseAction, EKeys::MouseY, true, false);
-    Axis(StickAction, EKeys::Gamepad_RightX, false, false);
-    Axis(StickAction, EKeys::Gamepad_RightY, true, false);
+    Stick(StickAction,EKeys::Gamepad_Right2D,true);
     Mapping->MapKey(SprintAction, EKeys::LeftShift);
     Mapping->MapKey(SprintAction, EKeys::Gamepad_FaceButton_Bottom);
     Mapping->MapKey(CameraAction, EKeys::V);
@@ -205,8 +198,12 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::Up,EKeys::Invalid,&AMartyCharacter::MenuUp);
         Button(EKeys::Invalid,EKeys::Gamepad_DPad_Up,&AMartyCharacter::PadUp);
         Button(EKeys::Down,EKeys::Invalid,&AMartyCharacter::MenuDown);Button(EKeys::Invalid,EKeys::Gamepad_DPad_Down,&AMartyCharacter::PadDown);Button(EKeys::K,EKeys::Invalid,&AMartyCharacter::Crew);
-        Button(EKeys::Left,EKeys::Gamepad_DPad_Left,&AMartyCharacter::MenuLeft);
-        Button(EKeys::Right,EKeys::Gamepad_DPad_Right,&AMartyCharacter::MenuRight);
+        Button(EKeys::Left,EKeys::Invalid,&AMartyCharacter::MenuLeft);
+        Button(EKeys::Right,EKeys::Invalid,&AMartyCharacter::MenuRight);
+        Button(EKeys::Invalid,EKeys::Gamepad_DPad_Left,&AMartyCharacter::PadLeft);
+        Button(EKeys::Invalid,EKeys::Gamepad_DPad_Right,&AMartyCharacter::PadRight);
+        Button(EKeys::Equals,EKeys::Invalid,&AMartyCharacter::ZoomIn);
+        Button(EKeys::Hyphen,EKeys::Invalid,&AMartyCharacter::ZoomOut);
         Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&AMartyCharacter::Interact);
         auto* JumpAction=Action(EInputActionValueType::Boolean);MenuActions.Add(JumpAction);
         Mapping->MapKey(JumpAction,EKeys::SpaceBar);Mapping->MapKey(JumpAction,EKeys::Gamepad_FaceButton_Top);
@@ -236,6 +233,11 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     Enhanced->BindAction(CameraAction, ETriggerEvent::Started, this, &AMartyCharacter::CycleCamera);
     Enhanced->BindAction(RecenterAction, ETriggerEvent::Started, this, &AMartyCharacter::Recenter);
     Enhanced->BindAction(HomeAction, ETriggerEvent::Started, this, &AMartyCharacter::ReturnHome);
+    auto* HurryClick=Action(EInputActionValueType::Boolean);MenuActions.Add(HurryClick);
+    Mapping->MapKey(HurryClick,EKeys::Gamepad_LeftThumbstick);
+    Enhanced->BindAction(HurryClick,ETriggerEvent::Started,this,&AMartyCharacter::ControllerHurryPress);
+    Enhanced->BindAction(HurryClick,ETriggerEvent::Completed,this,&AMartyCharacter::ControllerHurryRelease);
+    Enhanced->BindAction(HurryClick,ETriggerEvent::Canceled,this,&AMartyCharacter::ControllerHurryRelease);
     if (auto* PC = Cast<APlayerController>(GetController()))
         if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
             Subsystem->AddMappingContext(Mapping, 0);
@@ -263,11 +265,12 @@ void AMartyCharacter::LookStick(const FInputActionValue& Value)
     if (!CanPlay()) return;
     if(Life&&Life->UsesBodyControls()){Life->SetBodyStick(Value.Get<FVector2D>());return;}
     if(Adventure()&&!Adventure()->Feature(ECozyFeature::Orbit))return;
-    const FVector2D Axis = Value.Get<FVector2D>() * (80.f * GetWorld()->GetDeltaSeconds());
+    auto* Comfort=GetGameInstance()->GetSubsystem<UControllerComfort>();
+    const FVector2D Axis = Comfort->ShapeLook(Value.Get<FVector2D>()) * (80.f * GetWorld()->GetDeltaSeconds());
     AddControllerYawInput(Axis.X);
     AddControllerPitchInput(Axis.Y);
 }
-void AMartyCharacter::SetSprint(bool Active) { Active=Active&&!TrickModifierDown(); if(Life)Life->SprintRequested=Active&&CanPlay();GetCharacterMovement()->MaxWalkSpeed=Life?Life->WalkSpeed():Active&&CanPlay()?230:100; }
+void AMartyCharacter::SetSprint(bool Active) { SetControllerHurryHeld(Active); }
 UCozyAdventure* AMartyCharacter::Adventure() const
 {
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>(); return Mode ? Mode->Adventure.Get() : nullptr;
@@ -281,7 +284,7 @@ void AMartyCharacter::Map(){if(auto* S=Adventure())S->OpenMap();}
 void AMartyCharacter::Backpack(){if(auto* S=Adventure())S->OpenBackpack();}
 void AMartyCharacter::ClearBodyStick(){if(Life)Life->ClearBodyStick();}
 float AMartyCharacter::TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer){const float Applied=Super::TakeDamage(Amount,Event,EventInstigator,Causer);if(Life&&Applied>0)Life->AdjustHealth(-Applied);return Applied;}
-void AMartyCharacter::MenuConfirm() { if(TryTrickShortcut(0))return;if(auto* Session=Adventure()) Session->Confirm(); }
+void AMartyCharacter::MenuConfirm() { if(TryTrickShortcut(0))return;if(auto* Session=Adventure()){if(Session->Screen!=ECozyScreen::Playing)ClearControllerInput();Session->Confirm();} }
 void AMartyCharacter::MenuBack() { if(TryTrickShortcut(1))return;if(auto* Session=Adventure()) Session->Back(); }
 void AMartyCharacter::MenuPause() { if(auto* Session=Adventure()) Session->Pause(); }
 void AMartyCharacter::MenuUp() { if(auto* Session=Adventure())Session->Navigate(-1); }
@@ -291,14 +294,17 @@ void AMartyCharacter::PadDown(){if(auto* S=Adventure()){if(S->Screen==ECozyScree
 void AMartyCharacter::MenuDown() { if(auto* Session=Adventure()) Session->Navigate(1); }
 void AMartyCharacter::MenuLeft() { if(auto* Session=Adventure()) Session->Adjust(-1); }
 void AMartyCharacter::MenuRight() { if(auto* Session=Adventure()) Session->Adjust(1); }
+void AMartyCharacter::PadLeft(){if(auto* S=Adventure()){if(S->Screen==ECozyScreen::Playing)ZoomCamera(-30);else S->Adjust(-1);}}
+void AMartyCharacter::PadRight(){if(auto* S=Adventure()){if(S->Screen==ECozyScreen::Playing)ZoomCamera(30);else S->Adjust(1);}}
+void AMartyCharacter::ZoomIn(){ZoomCamera(30);}void AMartyCharacter::ZoomOut(){ZoomCamera(-30);}
 void AMartyCharacter::Interact() { if(TryTrickShortcut(2))return;if(auto* Session=Adventure()) Session->Interact(); }
 void AMartyCharacter::CycleCamera()
 {
-    if (!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))) return;
+    if (ControllerMenuOpen()||!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))) return;
     CameraPreset = (CameraPreset + 1) % 4;
-    const float Distances[] = {220, 330, 140, 120};
     const float Heights[] = {35, 0, 0, 0};
-    Boom->TargetArmLength = Distances[CameraPreset];
+    Boom->TargetArmLength=GetGameInstance()->GetSubsystem<UControllerComfort>()->CameraDistances[CameraPreset];
+    ZoomInterpolating=false;
     Boom->SocketOffset.Z = Heights[CameraPreset];
 }
 void AMartyCharacter::Recenter()
@@ -307,6 +313,7 @@ void AMartyCharacter::Recenter()
 }
 void AMartyCharacter::ReturnHome()
 {
+    ClearControllerInput();
     if(auto* H=CheweenieHome(this))H->CancelActivities();
     if(Life)Life->CancelAction();
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}

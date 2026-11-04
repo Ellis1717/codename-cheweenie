@@ -102,7 +102,7 @@ FString UHomeProgression::Prompt() const
 }
 void UHomeProgression::Travel(bool Enter)
 {
-    auto* P=Marty();if(!P)return;CancelActivities();P->Life->CancelAction();P->GetCharacterMovement()->StopMovementImmediately();Mode()->Neighbourhood->Outside=false;Mode()->Neighbourhood->SetOutdoorLighting(false);
+    auto* P=Marty();if(!P)return;P->ClearControllerInput();CancelActivities();P->Life->CancelAction();P->GetCharacterMovement()->StopMovementImmediately();Mode()->Neighbourhood->Outside=false;Mode()->Neighbourhood->SetOutdoorLighting(false);
     P->TeleportTo(Enter?FVector(7850,-80,28):Portal+FVector(-100,0,0),FRotator::ZeroRotator);if(auto* PC=Cast<APlayerController>(P->GetController()))PC->SetControlRotation(FRotator(-12,0,0));Mode()->Companions->OnPlayerTravel(false);Mode()->Navigation->RefreshRoute();Tell(Enter?TEXT("Garage + gym: earn praise stars with varied tricks, then upgrade or train."):TEXT("Back at cozy headquarters. Your upgrades are kept."));
 }
 bool UHomeProgression::Interact()

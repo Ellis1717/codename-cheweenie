@@ -97,7 +97,7 @@ bool AMartyHUD::DrawAdventureHUD()
             else CozyDrawRect(this,I==Session->Selection ? (Seasonal?FLinearColor(.40f,.16f,.055f,1):FLinearColor(.20f,.38f,.42f,1)) : (Seasonal?FLinearColor(.11f,.045f,.15f,1):FLinearColor(.065f,.14f,.18f,1)),X+18,Row,PanelWidth-36,38);
             MenuText((I==Session->Selection ? FString(TEXT(">  ")) : FString(TEXT("   ")))+Items[I],Inlaid?FLinearColor(1.f,I==Session->Selection?.86f:.93f,I==Session->Selection?.62f:.82f):FLinearColor::White,X+28,Row+10,nullptr,1.15f);
             AddHitBox(FVector2D(X+18,Row),FVector2D(PanelWidth-36,38),FName(*FString::Printf(TEXT("CozyRow_%d"),I)),true);
-            if((Session->Screen==ECozyScreen::Wardrobe&&I==3)||(Modes&&Hub->CanAdjust(I))||(Session->Screen==ECozyScreen::Settings && I<2)||(Session->Screen==ECozyScreen::Features && Session->FeatureGroup().IsValidIndex(I) && Session->FeatureGroup()[I]==ECozyFeature::DetailedCoat))
+            if((Session->Screen==ECozyScreen::ControllerSetup&&I<6)||(Session->Screen==ECozyScreen::Wardrobe&&I==3)||(Modes&&Hub->CanAdjust(I))||(Session->Screen==ECozyScreen::Settings && I<2)||(Session->Screen==ECozyScreen::Features && Session->FeatureGroup().IsValidIndex(I) && Session->FeatureGroup()[I]==ECozyFeature::DetailedCoat))
             {
                 AddHitBox(FVector2D(X+550,Row),FVector2D(50,38),FName(*FString::Printf(TEXT("CozyMinus_%d"),I)),true,10);
                 AddHitBox(FVector2D(X+605,Row),FVector2D(50,38),FName(*FString::Printf(TEXT("CozyPlus_%d"),I)),true,10);

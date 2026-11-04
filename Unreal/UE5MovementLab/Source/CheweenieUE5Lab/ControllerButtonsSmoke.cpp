@@ -91,7 +91,9 @@ void AMartyPlayMode::TickControllerButtonsSmoke(float Delta)
         Tap(EKeys::Gamepad_RightThumbstick,[&](){Check(P->CameraPreset==(Camera+1)%4,TEXT("R3 advances the camera and wraps through all four release views"));});
     }
     Add(.2f,[&](){View=PC->GetControlRotation();Camera=P->CameraPreset;Start=P->GetActorLocation();});
-    Tap(EKeys::Gamepad_LeftThumbstick,[&](){Check(P->CameraPreset==Camera&&S->Screen==ECozyScreen::Playing&&FVector::Dist2D(Start,P->GetActorLocation())<.5f,TEXT("Unassigned L3 causes no unintended action"));});
+    Tap(EKeys::Gamepad_LeftThumbstick,[&](){Check(L->SprintRequested&&P->CameraPreset==Camera&&S->Screen==ECozyScreen::Playing&&FVector::Dist2D(Start,P->GetActorLocation())<.5f,TEXT("L3 toggles hurry without moving Marty or changing camera"));});
+    Add(.2f,[&](){Check(L->SprintRequested,TEXT("L3 hurry remains active after release"));});
+    Tap(EKeys::Gamepad_LeftThumbstick,[&](){Check(!L->SprintRequested,TEXT("Second L3 click restores walking"));});
     for(int32 I=0;I<4;++I)
     {
         Add(.3f,[&,I](){Place(FVector(-200,-200,35));Start=P->GetActorLocation();Axes=FVector4(I<2?(I==0?.6f:-.6f):0,I>=2?(I==2?.6f:-.6f):0,0,0);});

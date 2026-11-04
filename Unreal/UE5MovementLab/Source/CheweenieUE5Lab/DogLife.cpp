@@ -34,7 +34,7 @@ FString UDogLife::Mood() const{return Energy()<25?TEXT("Tired"):Excitement>0?TEX
 FString UDogLife::Status() const
 {
     const auto* D=Data();FString Carry=CheweenieToyName(D?D->CarryItem:-1);
-    return (Allows(ECozyFeature::Energy)?FString::Printf(TEXT("Energy %d / 100"),FMath::RoundToInt(Energy())):FString(TEXT("Energy: OFF")))+FString::Printf(TEXT(" | %s | %s | Mouth: %s"),*Mood(),*PaceName(),*Carry);
+    return (Allows(ECozyFeature::Energy)?FString::Printf(TEXT("Energy %d / 100"),FMath::RoundToInt(Energy())):FString(TEXT("Energy: OFF")))+FString::Printf(TEXT(" | %s | %s | Mouth: %s"),*Mood(),*PaceName(),*Carry)+(SprintRequested&&Allows(ECozyFeature::Hurry)?TEXT(" | Hurry ON"):TEXT(""));
 }
 void UDogLife::Tell(const FString& Text,const FString& Sound){if(auto* S=Session()){S->Message=Text;S->HoldMessage(5);S->ActionCue(Sound);}}
 void UDogLife::Save(){if(auto* S=Session())S->Save();SaveTime=0;}

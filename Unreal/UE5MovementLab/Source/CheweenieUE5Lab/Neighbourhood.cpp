@@ -267,7 +267,7 @@ void UCheweenieNeighbourhood::Message(const FString& Text)
 }
 void UCheweenieNeighbourhood::GoOutside(AMartyCharacter* Pawn)
 {
-    if(Pawn->Life)Pawn->Life->CancelAction();
+    Pawn->ClearControllerInput();if(Pawn->Life)Pawn->Life->CancelAction();
     Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Entrance+FVector(0,-300,0),FRotator(0,-90,0));Outside=true;
     SetOutdoorLighting(true);
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->OnPlayerTravel(true);
