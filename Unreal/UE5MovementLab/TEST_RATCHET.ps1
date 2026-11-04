@@ -8,7 +8,8 @@ foreach($phase in @('play','resume')){
     $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
     $rhi=if($Render -and !$MapFile -and $phase -eq 'resume'){'-dx12 -RenderOffscreen -ForceRes -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
     $resume=if($phase -eq 'resume'){' -CheweenieRatchetResume'}else{''}
-    $info.Arguments=$project+$rhi+' -CheweenieRatchetSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Ratchet-'+$phase+'.log"'
+    # Keep synthetic movement at a stable tick rate in both headless and rendered phases.
+    $info.Arguments=$project+$rhi+' -CheweenieRatchetSmoke'+$resume+' -ExecCmds="t.MaxFPS 60" -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Ratchet-'+$phase+'.log"'
     if($MapFile){$info.Arguments+=' -CheweenieNeighbourhood="'+[IO.Path]::GetFullPath($MapFile)+'"'};$info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
     $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Ratchet test timed out'}}

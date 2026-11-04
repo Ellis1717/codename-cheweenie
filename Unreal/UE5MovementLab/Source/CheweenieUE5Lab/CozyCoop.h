@@ -61,6 +61,7 @@ public:
     FString PetName() const;
     bool PetAvailable(int32 Id) const;
 private:
+    virtual void ApplyControllerHurry(bool Active) override;
     void MoveCoop(const FInputActionValue& Value);
     void MouseCoop(const FInputActionValue& Value);
     void StickCoop(const FInputActionValue& Value);

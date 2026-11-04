@@ -38,13 +38,34 @@ public:
     virtual bool UsesAdventureHome() const { return true; }
     virtual float TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer) override;
     bool TrickModifierVisible() const;
+    bool ControllerMenuOpen() const;
+    bool ControllerAxisBlocked(bool Right) const;
+    void ObserveControllerStick(bool Right,FVector2D Raw);
+    void ClearControllerInput();
+    void ClearControllerHurry();
+    void ControllerHurryPress();
+    void ControllerHurryRelease();
+    void ZoomCamera(float Amount);
+    void RefreshControllerZoom();
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenCostume> Costume;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UDogJackets> Jackets;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UPoseableMeshComponent> Skin;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UDogLife> Life;
+protected:
+    void SetControllerHurryHeld(bool Active);
+    virtual void ApplyControllerHurry(bool Active);
 private:
+    void TickControllerComfort(float Delta);
+    void RefreshControllerHurry();
+    void PadLeft();void PadRight();void ZoomIn();void ZoomOut();
+    bool HurryHeld=false,HurryL3Held=false,HurryLatched=false,LastHurryApplied=false,SuppressHurryUntilRelease=false;
+    bool HadControllerMenu=false,WaitMenuNeutral=true,BlockLeftUntilNeutral=false,BlockRightUntilNeutral=false;
+    FVector2D RawControllerLeft=FVector2D::ZeroVector,RawControllerRight=FVector2D::ZeroVector;
+    int32 StickMenuX=0,StickMenuY=0;
+    float StickRepeat=0,ZoomTarget=220;
+    bool ZoomInterpolating=false;
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void LookStick(const FInputActionValue& Value);
@@ -116,6 +137,7 @@ private:
     void TickAdventureSmoke(float Delta);
     void TickControllerGuideSmoke(float Delta);
     void TickControllerButtonsSmoke(float Delta);
+    void TickControllerComfortSmoke(float Delta);
     void TickGaitSmoke(float Delta);
     void TickFurDetailSmoke(float Delta);
     void TickOutsideSmoke(float Delta);

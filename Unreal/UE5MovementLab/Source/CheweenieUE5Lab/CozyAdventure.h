@@ -11,7 +11,7 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes, ControllerSetup };
 
 UENUM()
 enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, HomeProgression, Count };

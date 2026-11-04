@@ -36,9 +36,10 @@ function Get-VerifiedArchiveExe($archive){
 $marker=Join-Path $PackageRoot 'validated-unified.json'
 if(!(Test-Path -LiteralPath $marker)){throw 'Validated unified package missing; run the release checks first.'}
 $gate=Get-Content -LiteralPath $marker -Raw|ConvertFrom-Json
-$minimumChecks=if($gate.version-in @('Unified-0.14.0','Unified-0.14.1')){if(!$gate.combinedGameVerified){throw 'Combined-game checks missing'};824}elseif($gate.version-eq 'Unified-0.13.1'){if($gate.overlaysVerified){689}else{607}}else{605}
+$minimumChecks=if($gate.version-in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2')){if(!$gate.combinedGameVerified){throw 'Combined-game checks missing'};824}elseif($gate.version-eq 'Unified-0.13.1'){if($gate.overlaysVerified){689}else{607}}else{605}
 if($gate.version-eq 'Unified-0.14.1'){if(!$gate.controllerButtonsVerified){throw 'Controller-button checks missing'};$minimumChecks=874}
-if($gate.version-notin @('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1') -or $gate.checks-lt $minimumChecks -or !$gate.rendered){throw 'Unified build validation incomplete.'}
+if($gate.version-eq 'Unified-0.14.2'){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimumChecks=950}
+if($gate.version-notin @('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2') -or $gate.checks-lt $minimumChecks -or !$gate.rendered){throw 'Unified build validation incomplete.'}
 Assert-Payload (Join-Path $PackageRoot 'Windows') @($gate.files)
 $catalog=Join-Path $local 'ArchiveBuilds.json'
 $returned=$false;$errorFlag=$false;$archives=@()
@@ -89,9 +90,10 @@ do {
         foreach($pair in @(@('streets.json','CheweenieNeighbourhood'),@('NeighbourDogs.json','CheweenieDogs'))){$path=Join-Path $oldLocal $pair[0];if(Test-Path -LiteralPath $path){$oldArgs+=('-'+$pair[1]+'="'+$path+'"')}}
         if($ArchiveAcceptance){
             if($archive.engine-ne 'Unreal'){throw 'Use an Unreal fixture for unattended round-trip acceptance.'}
-            # Historical builds predate the stick filter. Keep this synthetic fixture
-            # independent of a connected controller; ordinary archive play is unchanged.
-            $oldArgs+=@('-nullrhi','-NoGamepad','-ExecCmds="t.MaxFPS 60"','-unattended','-nosound','-CheweenieSmoke',('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/archive.log"'))
+            # Isolate synthetic input from hardware polling. The retained one-frame
+            # recenter probe needs 120 Hz to keep its pending look below one degree.
+            # Ordinary main/archive play keeps the owner's frame and input settings.
+            $oldArgs+=@('-nullrhi','-NoGamepad','-ExecCmds="t.MaxFPS 120"','-unattended','-nosound','-CheweenieSmoke',('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/archive.log"'))
         }
         $archiveStarted=[DateTime]::UtcNow
         Run-Game $exe $oldArgs

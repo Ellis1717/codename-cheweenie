@@ -1,5 +1,7 @@
 # Codename .... Cheweenie — controller button audit
 
+This page records the historical 0.14.1 layout. Current main is 0.14.2, with L3 hurry, stick menu navigation, zoom and saved tuning: [current controller guide](UNREAL_CONTROLLER_COMFORT.md).
+
 This work targets the cumulative main Unreal game, based on the validated 0.14.0 release. The original development checkout also contains later camera/menu experiments; those are not automatically part of this release branch.
 
 ## Expected controls

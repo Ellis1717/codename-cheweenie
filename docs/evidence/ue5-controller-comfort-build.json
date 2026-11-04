@@ -1,0 +1,87 @@
+{
+  "originalMixedSourcePreserved": true,
+  "mainJunctionsVerified": 2,
+  "unresolvedScope": [
+    "Human physical comfort assessment of the new layout",
+    "PlayStation hardware",
+    "Separate-PC LAN",
+    "Comparative performance and latency"
+  ],
+  "recordedUtc": "2026-11-04T21:32:47.3336759Z",
+  "project": "Codename .... Cheweenie",
+  "version": "Unified-0.14.2",
+  "standardDigitalSignalsObservedPreviously": 14,
+  "archives": {
+    "count": 39,
+    "payloadFiles": 2963.0,
+    "newlyRehashedPreviousMainFiles": 43,
+    "roundTripFixture": "0.14.1 at 120 Hz",
+    "ordinaryArchiveFrameSettingsUnchanged": true,
+    "unchangedEntriesAndManifestsPreserved": 38,
+    "verificationBaseline": "0.14.1: 38 archives / 2920 files verified earlier in this session"
+  },
+  "fullCookStageArchivePassed": true,
+  "productionButtonAssertions": 59,
+  "onboardProfileOrFirmwareChanged": false,
+  "screenshotsReviewed": [
+    "ue5-controller-comfort-settings.png",
+    "ue5-controller-comfort-gameplay.png",
+    "ue5-controller-comfort-xbox.png"
+  ],
+  "sourceBranch": "codex/controller-comfort",
+  "nativeEditorBuild": "Succeeded",
+  "privateMapAssertions": 4,
+  "playStationHardwareVerified": false,
+  "previousMainRetained": true,
+  "selectedAssertionExecutions": 1180,
+  "desktopShortcutVerified": true,
+  "newPhysicalGameplayVerified": false,
+  "priorPhysicalSignalEvidence": "ue5-controller-physical-signals.json",
+  "preservation": {
+    "ownerResources": [
+      {
+        "hashMatched": true,
+        "relativePath": "Windows/CheweenieUE5Lab/Saved/SaveGames/CheweenieAdventureV1.sav"
+      },
+      {
+        "hashMatched": true,
+        "relativePath": "Windows/CheweenieUE5Lab/Saved/Config/Windows/GameUserSettings.ini"
+      },
+      {
+        "hashMatched": true,
+        "relativePath": "LocalGameData/streets.json"
+      },
+      {
+        "hashMatched": true,
+        "relativePath": "LocalGameData/NeighbourDogs.json"
+      }
+    ],
+    "archiveCount": 39,
+    "archiveCatalogRestored": true
+  },
+  "hardwareModelConfirmed": "Razer Wolverine Ultimate",
+  "comfortAssertions": 45,
+  "validationRepairs": [
+    "Hold the menu-navigation stick before pressing Back in its fixture",
+    "Allow isolated Editor config writes under MultiprocessSaveConfig",
+    "Sample each co-op fixture axis once per frame",
+    "Use a separate user directory for the legacy default-zoom movement fixture",
+    "Cap the headless unlock acceptance runner at 60 FPS"
+  ],
+  "newPortableZipGenerated": false,
+  "comfortRestartAssertions": 9,
+  "archiveRoundTripAssertions": 18,
+  "comparativePerformanceVerified": false,
+  "currentPayloadFilesVerified": 43,
+  "nativeGameBuild": "Succeeded",
+  "editorAssertions": 143,
+  "inputScope": "Real maps and travel with synthetic ordinary Enhanced Input, isolated save/profile fixtures and simulated deactivation/disconnect events. Physical signal observation is from the earlier owner sweep.",
+  "finalNativeRestagePassed": true,
+  "separatePCsVerified": false,
+  "normalAndUnlockedLanAssertions": 176,
+  "fullCookPackages": 778,
+  "additionalUnlockSeedAssertions": 22,
+  "historicalArchiveLimitation": "0.13.1 and 0.14.1 each passed 15/16 archived movement checks at 60 Hz, failing the tight one-frame recenter probe. Binaries were retained unchanged. Final 0.14.1 round-trip movement passed 16/16 at 120 Hz, followed by 2/2 current-game return checks. Ordinary play is unaffected by acceptance-only frame/input flags.",
+  "engine": "5.8.4",
+  "requiredPackagedAssertions": 993
+}

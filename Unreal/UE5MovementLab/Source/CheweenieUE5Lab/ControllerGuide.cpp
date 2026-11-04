@@ -1,4 +1,5 @@
 #include "ControllerGuide.h"
+#include "ControllerComfort.h"
 #include "Framework/Application/IInputProcessor.h"
 #include "Framework/Application/SlateApplication.h"
 #include "GenericPlatform/InputDeviceRegistry.h"
@@ -42,7 +43,7 @@ void UControllerGuide::Deinitialize()
 ECozyInputFamily UControllerGuide::Classify(const FString& Name)
 {
     if(Name.Contains(TEXT("DualSense"))||Name.Contains(TEXT("DualShock"))||Name.Contains(TEXT("PlayStation"))||Name.Contains(TEXT("Sony"))||Name.Contains(TEXT("PS4"))||Name.Contains(TEXT("PS5")))return ECozyInputFamily::PlayStation;
-    if(Name.Contains(TEXT("XInput"))||Name.Contains(TEXT("Xbox")))return ECozyInputFamily::Xbox;
+    if(Name.Contains(TEXT("XInput"))||Name.Contains(TEXT("Xbox"))||Name.Contains(TEXT("Wolverine Ultimate")))return ECozyInputFamily::Xbox;
     return ECozyInputFamily::Generic;
 }
 void UControllerGuide::Observe(FKey Key,FInputDeviceId Device,float Amount)
@@ -75,19 +76,21 @@ FString UControllerGuide::PreferenceLabel() const
 TArray<FString> UControllerGuide::Controls() const
 {
     const bool PS=Family()==ECozyInputFamily::PlayStation;
+    const int32 Mode=GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode;
+    const FString L3=Mode==2?TEXT(" | L3: toggle hurry"):Mode==1?TEXT(" | L3: hold hurry"):TEXT(" | L3: off");
     if(Family()==ECozyInputFamily::Keyboard)return {
-        TEXT("WASD: move | Mouse: look | Shift: hurry"),TEXT("E: interact | Space: jump | B: bark"),TEXT("F: dig | Q: drop | Tab: backpack"),TEXT("V: camera | R: recenter | H: home"),TEXT("M: map | K: crew | C: trick menu"),TEXT("Hold Left Ctrl + 1/2/3/4: lie/roll/shake/bark"),TEXT("Arrows: menu | Enter: select | Backspace: back"),TEXT("Esc: pause | Connect a pad and press a button")};
+        TEXT("WASD: move | Mouse: look | Shift: hurry"),TEXT("E: interact | Space: jump | B: bark"),TEXT("F: dig | Q: drop | Tab: backpack"),TEXT("V: camera | R: recenter | H: home | +/-: zoom"),TEXT("M: map | K: crew | C: trick menu"),TEXT("Hold Left Ctrl + 1/2/3/4: lie/roll/shake/bark"),TEXT("Arrows: menu | Enter: select | Backspace: back"),TEXT("Esc: pause | Connect a pad and press a button")};
     if(Family()==ECozyInputFamily::Generic)return {
-        TEXT("LS: move | RS: look | Bottom: hurry"),TEXT("Left face: interact | Top face: jump"),TEXT("Right face: trick menu | Tap LB: bark"),TEXT("RT: dig | LT: drop | Left special: bag"),TEXT("R3: camera | RB: recenter | Right special: pause"),TEXT("D-pad Up: map | Down: crew"),TEXT("Hold LB + Bottom/Right/Left/Top: tricks"),TEXT("Choose Xbox or PlayStation display below if needed")};
+        FString(TEXT("LS: move/menu | RS: look | Bottom: hurry"))+L3,TEXT("Left face: interact | Top face: jump"),TEXT("Right face: trick menu | Tap LB: bark"),TEXT("RT: dig | LT: drop | Left special: bag"),TEXT("R3: camera | RB: recenter | Right special: pause"),TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),TEXT("Hold LB + Bottom/Right/Left/Top: tricks"),TEXT("Choose Xbox or PlayStation display below if needed")};
     return {
-        PS?TEXT("LS: move | RS: look | Cross: hurry"):TEXT("LS: move | RS: look | A: hurry"),
+        FString(PS?TEXT("LS: move/menu | RS: look | Cross: hurry"):TEXT("LS: move/menu | RS: look | A: hurry"))+L3,
         PS?TEXT("Square: interact | Triangle: jump"):TEXT("X: interact | Y: jump"),
         PS?TEXT("Circle: trick menu | Tap L1: bark"):TEXT("B: trick menu | Tap LB: bark"),
         PS?TEXT("R2: dig | L2: drop | Touchpad: backpack"):TEXT("RT: dig | LT: drop | View: backpack"),
         PS?TEXT("R3: camera | R1: recenter | Options: pause"):TEXT("R3: camera | RB: recenter | Menu: pause"),
-        TEXT("D-pad Up: map | Down: crew"),
+        TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),
         PS?TEXT("Hold L1 + Cross/Circle/Square/Triangle: tricks"):TEXT("Hold LB + A/B/X/Y: lie/roll/shake/bark"),
-        PS?TEXT("Menus: D-pad | Cross: select | Circle: back"):TEXT("Menus: D-pad | A: select | B: back")};
+        PS?TEXT("Menus: LS / D-pad | Cross: select | Circle: back"):TEXT("Menus: LS / D-pad | A: select | B: back")};
 }
 FString UControllerGuide::Format(const FString& Text) const
 {
@@ -113,7 +116,7 @@ FString UControllerGuide::Format(const FString& Text) const
         {TEXT("K / D-pad Down"),TEXT("K"),TEXT("D-pad Down"),TEXT("D-pad Down"),TEXT("D-pad Down")},
         {TEXT("C / B-Circle"),TEXT("C"),TEXT("B"),TEXT("Circle"),TEXT("right face")},
         {TEXT("Esc / Options"),TEXT("Esc"),TEXT("Menu"),TEXT("Options"),TEXT("right special")},
-        {TEXT("Arrows / D-pad"),TEXT("Arrows"),TEXT("D-pad"),TEXT("D-pad"),TEXT("D-pad")},
+        {TEXT("Arrows / D-pad"),TEXT("Arrows"),TEXT("LS / D-pad"),TEXT("LS / D-pad"),TEXT("LS / D-pad")},
         {TEXT("Enter / A-Cross"),TEXT("Enter"),TEXT("A"),TEXT("Cross"),TEXT("bottom face")},
         {TEXT("L1 / LB or Left Ctrl"),TEXT("Left Ctrl"),TEXT("LB"),TEXT("L1"),TEXT("LB")},
         {TEXT("Cross / A"),TEXT("1"),TEXT("A"),TEXT("Cross"),TEXT("bottom face")},
@@ -125,7 +128,7 @@ FString UControllerGuide::Format(const FString& Text) const
         {TEXT("Y-Triangle"),TEXT("Space"),TEXT("Y"),TEXT("Triangle"),TEXT("top face")},
         {TEXT("B-Circle"),TEXT("Backspace"),TEXT("B"),TEXT("Circle"),TEXT("right face")},
         {TEXT("L1/LB"),TEXT("Left Ctrl"),TEXT("LB"),TEXT("L1"),TEXT("LB")},
-        {TEXT("D-pad choose | A select | B back"),TEXT("Arrows choose | Enter select | Backspace back"),TEXT("D-pad choose | A select | B back"),TEXT("D-pad choose | Cross select | Circle back"),TEXT("D-pad choose | Bottom select | Right back")}
+        {TEXT("D-pad choose | A select | B back"),TEXT("Arrows choose | Enter select | Backspace back"),TEXT("LS/D-pad choose | A select | B back"),TEXT("LS/D-pad choose | Cross select | Circle back"),TEXT("LS/D-pad choose | Bottom select | Right back")}
     };
     for(const auto& Phrase:Phrases)Result.ReplaceInline(Phrase[0],Phrase[Column],ESearchCase::CaseSensitive);
     return Result;

@@ -1,4 +1,5 @@
 #include "CozyCoop.h"
+#include "ControllerComfort.h"
 #include "NaturalPetAudio.h"
 #include "CozyHUDStyle.h"
 #include "CozyModeHub.h"
@@ -122,7 +123,7 @@ void ACozyCoopPet::EndPlay(const EEndPlayReason::Type Reason)
     Super::EndPlay(Reason);
 }
 void ACozyCoopPet::ServerHurry_Implementation(bool Active){GetCharacterMovement()->MaxWalkSpeed=Active?230:100;}
-void ACozyCoopPet::ReturnHome(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(1);return;}if(HasAuthority())ServerHome_Implementation();else if(IsLocallyControlled())ServerHome();}
+void ACozyCoopPet::ReturnHome(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(1);return;}ClearControllerInput();if(HasAuthority())ServerHome_Implementation();else if(IsLocallyControlled())ServerHome();}
 void ACozyCoopPet::ServerHome_Implementation()
 {
     ServerToy(true);GetCharacterMovement()->StopMovementImmediately();const int32 Slot=PetId==3?0:FMath::Max(0,PetId);TeleportTo(FVector(-240+Slot*120,-200+Slot*80,60),FRotator::ZeroRotator);ForceNetUpdate();
@@ -153,11 +154,12 @@ void ACozyCoopPet::MoveCoop(const FInputActionValue& V)
     AddMovementInput(Heading.Vector(),A.Y);AddMovementInput(FRotationMatrix(Heading).GetUnitAxis(EAxis::Y),A.X);
 }
 void ACozyCoopPet::MouseCoop(const FInputActionValue& V){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;auto A=V.Get<FVector2D>();AddControllerYawInput(A.X);AddControllerPitchInput(A.Y);}
-void ACozyCoopPet::StickCoop(const FInputActionValue& V){MouseCoop(FInputActionValue(V.Get<FVector2D>()*(80*GetWorld()->GetDeltaSeconds())));}
-void ACozyCoopPet::HurryOn(){if(BlockHurryAfterMenu)return;if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){HubConfirm();return;}GetCharacterMovement()->MaxWalkSpeed=230;ServerHurry(true);}
-void ACozyCoopPet::HurryOff(){BlockHurryAfterMenu=false;GetCharacterMovement()->MaxWalkSpeed=100;ServerHurry(false);}
-void ACozyCoopPet::NextPet(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(1);return;}for(int32 I=1;I<4;++I){const int32 Id=(PetId+I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
-void ACozyCoopPet::PreviousPet(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(-1);return;}for(int32 I=1;I<4;++I){const int32 Id=(PetId+4-I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
+void ACozyCoopPet::StickCoop(const FInputActionValue& V){MouseCoop(FInputActionValue(GetGameInstance()->GetSubsystem<UControllerComfort>()->ShapeLook(V.Get<FVector2D>())*(80*GetWorld()->GetDeltaSeconds())));}
+void ACozyCoopPet::ApplyControllerHurry(bool Active){GetCharacterMovement()->MaxWalkSpeed=Active?230:100;ServerHurry(Active);}
+void ACozyCoopPet::HurryOn(){if(BlockHurryAfterMenu)return;if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){HubConfirm();return;}SetControllerHurryHeld(true);}
+void ACozyCoopPet::HurryOff(){BlockHurryAfterMenu=false;SetControllerHurryHeld(false);}
+void ACozyCoopPet::NextPet(){if(auto* PC=Cast<ACozyCoopController>(Controller)){if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(1);return;}if(PC->IsInputKeyDown(EKeys::Gamepad_RightShoulder)){ZoomCamera(30);return;}}for(int32 I=1;I<4;++I){const int32 Id=(PetId+I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
+void ACozyCoopPet::PreviousPet(){if(auto* PC=Cast<ACozyCoopController>(Controller)){if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(-1);return;}if(PC->IsInputKeyDown(EKeys::Gamepad_RightShoulder)){ZoomCamera(-30);return;}}for(int32 I=1;I<4;++I){const int32 Id=(PetId+4-I)%4;if(PetAvailable(Id)){ServerChoosePet(Id);return;}}}
 void ACozyCoopPet::Marty(){ServerChoosePet(0);}void ACozyCoopPet::Lakitu(){ServerChoosePet(1);}void ACozyCoopPet::Rio(){ServerChoosePet(2);}
 void ACozyCoopPet::Ratchet(){ServerChoosePet(3);}
 void ACozyCoopPet::ReturnPatrol(){if(GetNetMode()==NM_Standalone)UGameplayStatics::OpenLevel(this,TEXT("/Game/VisualLab/Comparison"),true,TEXT("game=/Script/CheweenieUE5Lab.MartyPlayMode"));}
@@ -172,18 +174,14 @@ void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
     auto* E=CastChecked<UEnhancedInputComponent>(Input);CoopMapping=NewObject<UInputMappingContext>(this);
     auto Action=[&](EInputActionValueType T){auto* A=NewObject<UInputAction>(this);A->ValueType=T;CoopActions.Add(A);return A;};
     auto Axis=[&](UInputAction* A,FKey K,bool Y,bool Minus){auto& M=CoopMapping->MapKey(A,K);
-        if(K==EKeys::Gamepad_LeftX||K==EKeys::Gamepad_LeftY||K==EKeys::Gamepad_RightX||K==EKeys::Gamepad_RightY)
-        {
-            auto* DeadZone=NewObject<UInputModifierDeadZone>(CoopMapping);
-            DeadZone->Type=EDeadZoneType::Axial;DeadZone->LowerThreshold=.2f;DeadZone->UpperThreshold=1.f;
-            M.Modifiers.Add(DeadZone);
-        }
         if(Minus)M.Modifiers.Add(NewObject<UInputModifierNegate>(CoopMapping));if(Y){auto* S=NewObject<UInputModifierSwizzleAxis>(CoopMapping);S->Order=EInputAxisSwizzle::YXZ;M.Modifiers.Add(S);}};
-    auto* Move=Action(EInputActionValueType::Axis2D);Axis(Move,EKeys::W,true,false);Axis(Move,EKeys::S,true,true);Axis(Move,EKeys::A,false,true);Axis(Move,EKeys::D,false,false);Axis(Move,EKeys::Gamepad_LeftX,false,false);Axis(Move,EKeys::Gamepad_LeftY,true,false);E->BindAction(Move,ETriggerEvent::Triggered,this,&ACozyCoopPet::MoveCoop);
+    auto StickMap=[&](UInputAction* A,FKey K,bool Right){auto& M=CoopMapping->MapKey(A,K);auto* Mod=NewObject<UCozyStickDeadZone>(CoopMapping);Mod->RightStick=Right;M.Modifiers.Add(Mod);};
+    auto* Move=Action(EInputActionValueType::Axis2D);Axis(Move,EKeys::W,true,false);Axis(Move,EKeys::S,true,true);Axis(Move,EKeys::A,false,true);Axis(Move,EKeys::D,false,false);StickMap(Move,EKeys::Gamepad_Left2D,false);E->BindAction(Move,ETriggerEvent::Triggered,this,&ACozyCoopPet::MoveCoop);
     auto* Mouse=Action(EInputActionValueType::Axis2D);Axis(Mouse,EKeys::MouseX,false,false);Axis(Mouse,EKeys::MouseY,true,false);E->BindAction(Mouse,ETriggerEvent::Triggered,this,&ACozyCoopPet::MouseCoop);
-    auto* Stick=Action(EInputActionValueType::Axis2D);Axis(Stick,EKeys::Gamepad_RightX,false,false);Axis(Stick,EKeys::Gamepad_RightY,true,false);E->BindAction(Stick,ETriggerEvent::Triggered,this,&ACozyCoopPet::StickCoop);
+    auto* Stick=Action(EInputActionValueType::Axis2D);StickMap(Stick,EKeys::Gamepad_Right2D,true);E->BindAction(Stick,ETriggerEvent::Triggered,this,&ACozyCoopPet::StickCoop);
     auto Button=[&](FKey K,FKey Pad,auto Callback){auto* A=Action(EInputActionValueType::Boolean);if(K.IsValid())CoopMapping->MapKey(A,K);if(Pad.IsValid())CoopMapping->MapKey(A,Pad);E->BindAction(A,ETriggerEvent::Started,this,Callback);return A;};
     auto* Run=Button(EKeys::LeftShift,EKeys::Gamepad_FaceButton_Bottom,&ACozyCoopPet::HurryOn);E->BindAction(Run,ETriggerEvent::Completed,this,&ACozyCoopPet::HurryOff);E->BindAction(Run,ETriggerEvent::Canceled,this,&ACozyCoopPet::HurryOff);
+    auto* HurryClick=Button(EKeys::Invalid,EKeys::Gamepad_LeftThumbstick,&ACozyCoopPet::ControllerHurryPress);E->BindAction(HurryClick,ETriggerEvent::Completed,this,&ACozyCoopPet::ControllerHurryRelease);E->BindAction(HurryClick,ETriggerEvent::Canceled,this,&ACozyCoopPet::ControllerHurryRelease);
     auto* Hop=Button(EKeys::SpaceBar,EKeys::Gamepad_FaceButton_Top,&ACozyCoopPet::JumpCoop);E->BindAction(Hop,ETriggerEvent::Completed,this,&ACozyCoopPet::StopJumping);
     Button(EKeys::V,EKeys::Gamepad_RightThumbstick,&ACozyCoopPet::CycleCamera);Button(EKeys::R,EKeys::Gamepad_RightShoulder,&ACozyCoopPet::RecenterCoop);
     Button(EKeys::H,EKeys::Gamepad_DPad_Down,&ACozyCoopPet::ReturnHome);Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&ACozyCoopPet::Voice);Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&ACozyCoopPet::UseToy);Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&ACozyCoopPet::DropToy);
@@ -226,15 +224,16 @@ void ACozyCoopHUD::DrawHUD()
     if(Hub->OverlayVisible(ECozyOverlay::RoomStatus))
     {
     CozyDrawText(this,GetNetMode()==NM_Standalone?TEXT("Codename .... Cheweenie | Ratchet memory walk"):TEXT("Codename .... Cheweenie | LAN Cozy Crew"),FLinearColor(1,.86f,.5f),28,28,nullptr,1.3f);
-    CozyDrawText(this,Pet?FString(TEXT("You: "))+Pet->PetName():TEXT("Joining the crew..."),FLinearColor::White,28,58);
+    CozyDrawText(this,Pet?FString(TEXT("You: "))+Pet->PetName()+(Pet->GetCharacterMovement()->MaxWalkSpeed>150?TEXT(" | Hurry ON"):TEXT("")):TEXT("Joining the crew..."),FLinearColor::White,28,58);
     }
     if(Hub->OverlayVisible(ECozyOverlay::Hints))
     {
-    CozyDrawText(this,TEXT("WASD / LS: move | mouse / RS: look | Shift / A-Cross: hurry"),FLinearColor::White,28,83);
+    CozyDrawText(this,FString(TEXT("WASD / LS: move | mouse / RS: look | Shift / A-Cross: hold hurry | L3: "))+(GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode==2?TEXT("toggle"):GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode==1?TEXT("hold"):TEXT("off")),FLinearColor::White,28,83);
     CozyDrawText(this,TEXT("Space / Y-Triangle: jump | B / LB-L1: voice | E / X-Square: carry | Q / LT: drop"),FLinearColor::White,28,105);
     CozyDrawText(this,TEXT("1 Marty | 2 Lakitu | 3 Rio | D-pad left/right: change pet | V / R3: camera"),FLinearColor::White,28,127);
     const auto* State=GetWorld()->GetGameState<ACozyCoopState>();CozyDrawText(this,State&&State->RatchetUnlocked?TEXT("4 Ratchet unlocked | T / D-pad Up: costume | F9 / View: return (offline)"):TEXT("Ratchet locked: host finishes solo Cozy Patrol | T / D-pad Up: costume"),FLinearColor::White,28,149);
     }
+    if(Hub->OverlayVisible(ECozyOverlay::Hints))CozyDrawText(this,TEXT("RB-R1: recenter | Hold RB + D-pad left/right: zoom | Menu-Options: menu"),FLinearColor::White,28,171);
     if(PC&&PC->MenuOpen){CozyDrawText(this,TEXT("Controls open - friends keep playing. Esc / Options: close"),FLinearColor::White,28,195);CozyDrawText(this,TEXT("H: return home | R / RB-R1: recenter | Alt+F4: leave game"),FLinearColor::White,28,225);CozyDrawText(this,TEXT("LAN room: shared toy and voices. Solo quests/saves remain separate."),FLinearColor::White,28,255);}
     if(Hub->OverlayVisible(ECozyOverlay::Messages)&&PC&&!PC->Message.IsEmpty())CozyDrawText(this,PC->Message,FLinearColor(1,.85f,.45f),28,Canvas->SizeY-50);
     if(Hub->OverlayVisible(ECozyOverlay::PetNames))for(TActorIterator<ACozyCoopPet> It(GetWorld());It;++It)if(*It!=Pet){const FVector P=Project(It->GetActorLocation()+FVector(0,0,50));if(P.Z>0)CozyDrawText(this,It->PetName(),FLinearColor(1,.9f,.6f),P.X-20,P.Y);}
@@ -246,4 +245,4 @@ void ACozyCoopPet::HubUp(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(
 void ACozyCoopPet::HubDown(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(1);}
 void ACozyCoopPet::HubLeft(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(-1);}
 void ACozyCoopPet::HubRight(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)GetGameInstance()->GetSubsystem<UCozyModeHub>()->Adjust(1);}
-void ACozyCoopController::SetHubMenu(bool Open){MenuOpen=Open;bShowMouseCursor=Open;bEnableClickEvents=Open;if(Open){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Open();SetInputMode(FInputModeGameAndUI().SetHideCursorDuringCapture(false));}else SetInputMode(FInputModeGameOnly());}
+void ACozyCoopController::SetHubMenu(bool Open){MenuOpen=Open;if(auto* P=Cast<ACozyCoopPet>(GetPawn())){P->ClearControllerInput();if(Open)P->GetCharacterMovement()->StopMovementImmediately();}bShowMouseCursor=Open;bEnableClickEvents=Open;if(Open){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Open();SetInputMode(FInputModeGameAndUI().SetHideCursorDuringCapture(false));}else SetInputMode(FInputModeGameOnly());}

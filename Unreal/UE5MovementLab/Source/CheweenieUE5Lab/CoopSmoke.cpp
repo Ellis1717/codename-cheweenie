@@ -1,5 +1,7 @@
 // Real server/client acceptance, opt-in only. Inputs are synthetic, not physical hardware.
 #include "CozyCoop.h"
+#include "CozyModeHub.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "HalloweenCostume.h"
 #include "MartyGait.h"
 #include "Components/PoseableMeshComponent.h"
@@ -28,7 +30,12 @@ void ACozyCoopController::TickAcceptance(float Delta)
     for(TActorIterator<ACozyCoopToy> It(GetWorld());It;++It)Toy=*It;
     auto Check=[&](bool OK,const TCHAR* Label){(OK?Passed:Failed).Add(Label);UE_LOG(LogTemp,Display,TEXT("COOP_CHECK %s %s"),OK?TEXT("PASS"):TEXT("FAIL"),Label);};
     auto Key=[&](FKey K,bool Down){InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
-    auto Axis=[&](FKey K,float V){InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,V,Delta,1,FPlatformTime::Cycles64()));};
+    // Sample each axis once per frame, like a controller poll. Summing a held
+    // value and its zero release in one frame leaves UE's paired axis held.
+    static FVector4 TestAxes(0,0,0,0);
+    const FKey StickKeys[]={EKeys::Gamepad_LeftX,EKeys::Gamepad_LeftY,EKeys::Gamepad_RightX,EKeys::Gamepad_RightY};
+    for(int32 I=0;I<4;++I)InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,StickKeys[I],TestAxes[I],Delta,1,FPlatformTime::Cycles64()));
+    auto Axis=[&](FKey K,float V){for(int32 I=0;I<4;++I)if(K==StickKeys[I])TestAxes[I]=V;};
     auto Next=[&](){++Stage;StageTime=0;P->ServerAcceptanceStage(Stage);};
     if(FPlatformTime::Seconds()-Started>100){UE_LOG(LogTemp,Error,TEXT("COOP_CHECK timeout stage %d pawns %d"),Stage,Count);FPlatformMisc::RequestExitWithStatus(false,1);return;}
     if(Stage<13&&(!P||!Other||!Toy||Count!=2)){if(Stage>1)StageTime+=Delta;return;}
@@ -134,6 +141,41 @@ void ACozyCoopController::TickAcceptance(float Delta)
         Check(!MenuOpen,TEXT("Co-op B/Circle closes the room menu"));
         Next();break;
     case 19:
+        Key(EKeys::Gamepad_LeftThumbstick,true);Next();break;
+    case 20:
+        Key(EKeys::Gamepad_LeftThumbstick,false);if(StageTime<.3f)break;
+        Check(P->GetCharacterMovement()->MaxWalkSpeed>200,TEXT("Co-op L3 toggles hurry after release"));
+        Key(EKeys::Gamepad_LeftThumbstick,true);Next();break;
+    case 21:
+        Key(EKeys::Gamepad_LeftThumbstick,false);if(StageTime<.3f)break;
+        Check(FMath::IsNearlyEqual(P->GetCharacterMovement()->MaxWalkSpeed,100.f),TEXT("Co-op second L3 click restores walking"));
+        OwnStart=FVector(P->FindComponentByClass<USpringArmComponent>()->TargetArmLength,P->PetId,P->CameraPreset);
+        Key(EKeys::Gamepad_RightShoulder,true);Key(EKeys::Gamepad_DPad_Right,true);Next();break;
+    case 22:
+        Key(EKeys::Gamepad_DPad_Right,false);Key(EKeys::Gamepad_RightShoulder,false);if(StageTime<.6f)break;
+        Check(FMath::IsNearlyEqual(P->FindComponentByClass<USpringArmComponent>()->TargetArmLength,OwnStart.X-30,1.f)&&P->PetId==int32(OwnStart.Y),TEXT("Co-op RB plus D-pad zooms without changing pet"));
+        Key(EKeys::Gamepad_Special_Right,true);Next();break;
+    case 23:
+        Key(EKeys::Gamepad_Special_Right,false);if(StageTime<.3f)break;
+        Key(EKeys::Gamepad_RightThumbstick,true);Key(EKeys::Gamepad_LeftThumbstick,true);Axis(EKeys::Gamepad_LeftY,-.9f);Next();break;
+    case 24:
+        Axis(EKeys::Gamepad_LeftY,-.9f);Key(EKeys::Gamepad_RightThumbstick,false);Key(EKeys::Gamepad_LeftThumbstick,false);if(StageTime<.2f)break;
+        Check(GetGameInstance()->GetSubsystem<UCozyModeHub>()->Selection==1,TEXT("Co-op left stick navigates the local menu"));
+        Check(P->CameraPreset==int32(OwnStart.Z)&&FMath::IsNearlyEqual(P->GetCharacterMovement()->MaxWalkSpeed,100.f),TEXT("Co-op menu blocks camera cycling and hurry toggle"));
+        Axis(EKeys::Gamepad_LeftY,0);GetGameInstance()->GetSubsystem<UCozyModeHub>()->Page=ECozyHubPage::Graphics;GetGameInstance()->GetSubsystem<UCozyModeHub>()->Selection=5;Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 25:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(StageTime<.2f)break;
+        Check(GetGameInstance()->GetSubsystem<UCozyModeHub>()->Page==ECozyHubPage::ControllerSetup,TEXT("Co-op exposes the shared controller comfort settings"));
+        Key(EKeys::Gamepad_FaceButton_Right,true);Next();break;
+    case 26:
+        Key(EKeys::Gamepad_FaceButton_Right,false);if(StageTime<.2f)break;
+        Check(GetGameInstance()->GetSubsystem<UCozyModeHub>()->Page==ECozyHubPage::Graphics,TEXT("Co-op comfort Back returns to graphics"));
+        Key(EKeys::Gamepad_Special_Right,true);Next();break;
+    case 27:
+        Key(EKeys::Gamepad_Special_Right,false);if(StageTime<.3f)break;
+        Check(!MenuOpen&&FMath::IsNearlyEqual(P->GetCharacterMovement()->MaxWalkSpeed,100.f),TEXT("Co-op resumes without a queued hurry action"));
+        Next();break;
+    case 28:
         if(StageTime<(Host?6.f:2.f))break;
         if(Host){Check(Count==1,TEXT("Guest disconnect removes the remote pawn"));Check(P->PetAvailable(1),TEXT("Disconnected pet becomes available again"));}
         {FString Out;FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Out);auto J=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto S:Passed)Pass.Add(MakeShared<FJsonValueString>(S));for(auto S:Failed)Fail.Add(MakeShared<FJsonValueString>(S));J->SetArrayField(TEXT("passed"),Pass);J->SetArrayField(TEXT("failed"),Fail);J->SetStringField(TEXT("role"),Host?TEXT("listen-server"):TEXT("remote-client"));J->SetStringField(TEXT("input"),TEXT("Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"));FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));FFileHelper::SaveStringToFile(Json,*FPaths::Combine(Out,Host?TEXT("coop-host.json"):TEXT("coop-guest.json")));FPlatformMisc::RequestExitWithStatus(false,Failed.IsEmpty()?0:1);Next();}break;
