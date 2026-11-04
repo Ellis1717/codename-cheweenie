@@ -1,0 +1,135 @@
+{
+  "scope": "Owner performed two physical button sweeps; passive XInput signal observation only. In-game effects are verified separately with synthetic input.",
+  "physicalGameplayVerified": false,
+  "standardButtonsObserved": 14,
+  "buttonsObserved": {
+    "LB": true,
+    "View": true,
+    "R3": true,
+    "X": true,
+    "Right": true,
+    "B": true,
+    "Y": true,
+    "Menu": true,
+    "Up": true,
+    "Down": true,
+    "Left": true,
+    "A": true,
+    "L3": true,
+    "RB": true
+  },
+  "controller": "Owner reports Xbox-based Razer Wolverine Ultimate",
+  "attempts": [
+    {
+      "connectedSamples": 4921,
+      "seconds": 155.5822355,
+      "buttonsObserved": {
+        "RB": true,
+        "Left": true,
+        "View": false,
+        "Menu": false,
+        "Y": true,
+        "Right": true,
+        "X": true,
+        "R3": false,
+        "LB": true,
+        "Up": true,
+        "A": true,
+        "B": true,
+        "L3": false,
+        "Down": true
+      },
+      "samples": 4921,
+      "stickRanges": {
+        "ly": [
+          -32768,
+          32767
+        ],
+        "lx": [
+          -30626,
+          32767
+        ],
+        "ry": [
+          -32768,
+          32767
+        ],
+        "rx": [
+          -32768,
+          32767
+        ]
+      },
+      "scope": "Passive physical XInput capture. Proves observed signals only, not in-game action correctness.",
+      "triggerMaximum": {
+        "RT": 255,
+        "LT": 255
+      }
+    },
+    {
+      "connectedSamples": 7638,
+      "samples": 7638,
+      "stickRanges": {
+        "lx": [
+          -6996,
+          5244
+        ],
+        "ly": [
+          -4276,
+          13608
+        ],
+        "rx": [
+          -24488,
+          16601
+        ],
+        "ry": [
+          -31319,
+          4354
+        ]
+      },
+      "triggerMaximum": {
+        "RT": 0,
+        "LT": 0
+      },
+      "scope": "Passive physical XInput capture. Proves observed signals only, not in-game action correctness.",
+      "seconds": 240.8675062,
+      "buttonsObserved": {
+        "Up": false,
+        "Y": false,
+        "View": true,
+        "LB": false,
+        "RB": false,
+        "Down": false,
+        "X": false,
+        "L3": true,
+        "A": false,
+        "Left": false,
+        "Menu": true,
+        "Right": false,
+        "B": false,
+        "R3": true
+      }
+    }
+  ],
+  "expectedStandardButtons": 14,
+  "stickRanges": {
+    "ly": [
+      -32768,
+      32767
+    ],
+    "lx": [
+      -30626,
+      32767
+    ],
+    "ry": [
+      -32768,
+      32767
+    ],
+    "rx": [
+      -32768,
+      32767
+    ]
+  },
+  "triggerMaximum": {
+    "RT": 255,
+    "LT": 255
+  }
+}

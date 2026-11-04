@@ -171,7 +171,14 @@ void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
     // Do not install the solo menu/action bindings on a network pawn.
     auto* E=CastChecked<UEnhancedInputComponent>(Input);CoopMapping=NewObject<UInputMappingContext>(this);
     auto Action=[&](EInputActionValueType T){auto* A=NewObject<UInputAction>(this);A->ValueType=T;CoopActions.Add(A);return A;};
-    auto Axis=[&](UInputAction* A,FKey K,bool Y,bool Minus){auto& M=CoopMapping->MapKey(A,K);if(Minus)M.Modifiers.Add(NewObject<UInputModifierNegate>(CoopMapping));if(Y){auto* S=NewObject<UInputModifierSwizzleAxis>(CoopMapping);S->Order=EInputAxisSwizzle::YXZ;M.Modifiers.Add(S);}};
+    auto Axis=[&](UInputAction* A,FKey K,bool Y,bool Minus){auto& M=CoopMapping->MapKey(A,K);
+        if(K==EKeys::Gamepad_LeftX||K==EKeys::Gamepad_LeftY||K==EKeys::Gamepad_RightX||K==EKeys::Gamepad_RightY)
+        {
+            auto* DeadZone=NewObject<UInputModifierDeadZone>(CoopMapping);
+            DeadZone->Type=EDeadZoneType::Axial;DeadZone->LowerThreshold=.2f;DeadZone->UpperThreshold=1.f;
+            M.Modifiers.Add(DeadZone);
+        }
+        if(Minus)M.Modifiers.Add(NewObject<UInputModifierNegate>(CoopMapping));if(Y){auto* S=NewObject<UInputModifierSwizzleAxis>(CoopMapping);S->Order=EInputAxisSwizzle::YXZ;M.Modifiers.Add(S);}};
     auto* Move=Action(EInputActionValueType::Axis2D);Axis(Move,EKeys::W,true,false);Axis(Move,EKeys::S,true,true);Axis(Move,EKeys::A,false,true);Axis(Move,EKeys::D,false,false);Axis(Move,EKeys::Gamepad_LeftX,false,false);Axis(Move,EKeys::Gamepad_LeftY,true,false);E->BindAction(Move,ETriggerEvent::Triggered,this,&ACozyCoopPet::MoveCoop);
     auto* Mouse=Action(EInputActionValueType::Axis2D);Axis(Mouse,EKeys::MouseX,false,false);Axis(Mouse,EKeys::MouseY,true,false);E->BindAction(Mouse,ETriggerEvent::Triggered,this,&ACozyCoopPet::MouseCoop);
     auto* Stick=Action(EInputActionValueType::Axis2D);Axis(Stick,EKeys::Gamepad_RightX,false,false);Axis(Stick,EKeys::Gamepad_RightY,true,false);E->BindAction(Stick,ETriggerEvent::Triggered,this,&ACozyCoopPet::StickCoop);

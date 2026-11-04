@@ -84,6 +84,7 @@ void UCozyAdventure::BeginPlay()
     // Keep masks bounded and reject definitions that would create an unwinnable patrol.
     if (Mission->Snacks.IsEmpty() || Mission->Snacks.Num() > 20 || Mission->Visits.IsEmpty()) Mission = NewObject<UCozyMissionDefinition>(this);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))&&!FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume"))){FString LegacyPath;if(FParse::Value(FCommandLine::Get(),TEXT("CheweenieHomeLegacySave="),LegacyPath)){TArray<uint8> Bytes;if(FFileHelper::LoadFileToArray(Bytes,*LegacyPath))if(auto* Legacy=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromMemory(Bytes)))UGameplayStatics::SaveGameToSlot(Legacy,Slot,0);}}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerButtonsSmoke"))){Slot=TEXT("CheweenieControllerButtonsAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Progress = Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(Slot, 0));
     if (!Progress || Progress->Version != 1) Progress = NewObject<UCozyAdventureSave>(this);
     if (Progress->MissionId != Mission->MissionId)
