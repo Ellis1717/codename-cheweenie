@@ -149,6 +149,16 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     auto Axis = [this](UInputAction* Target, FKey Key, bool Y, bool Negative)
     {
         auto& Entry = Mapping->MapKey(Target, Key);
+        // Enhanced Input reads raw values rather than the legacy AxisConfig dead zone.
+        if (Key == EKeys::Gamepad_LeftX || Key == EKeys::Gamepad_LeftY ||
+            Key == EKeys::Gamepad_RightX || Key == EKeys::Gamepad_RightY)
+        {
+            auto* DeadZone = NewObject<UInputModifierDeadZone>(Mapping);
+            DeadZone->Type = EDeadZoneType::Axial;
+            DeadZone->LowerThreshold = .2f;
+            DeadZone->UpperThreshold = 1.f;
+            Entry.Modifiers.Add(DeadZone);
+        }
         if (Negative) Entry.Modifiers.Add(NewObject<UInputModifierNegate>(Mapping));
         if (Y)
         {

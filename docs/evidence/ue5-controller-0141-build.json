@@ -1,0 +1,911 @@
+{
+  "physicalGameplayVerified": false,
+  "packageGate": {
+    "checks": 905,
+    "version": "Unified-0.14.1",
+    "controllerButtonsVerified": true,
+    "rendered": true,
+    "combinedGameVerified": true,
+    "overlaysVerified": true,
+    "physicalControllersVerified": false,
+    "separateMachinesVerified": false,
+    "files": [
+      {
+        "path": "CheweenieUE5Lab.exe",
+        "sha256": "9D6BCC7619AD4648EA25BC5B6A57A1C2F19F5BFCA756B73B846A758113603C7E"
+      },
+      {
+        "path": "Manifest_NonUFSFiles_Win64.txt",
+        "sha256": "A26A2808315037D3DA31FFAA31F61E8690AC10E035B72C939F11EEEC663CE4DC"
+      },
+      {
+        "path": "Manifest_UFSFiles_Win64.txt",
+        "sha256": "FE87189AC411C93842618FB5861422E964DB9C959D06BA3D29589B482C6C3127"
+      },
+      {
+        "path": "NOTICES.txt",
+        "sha256": "BA49AE5586F817B36A2772269F71F899CB1F54B5F2720FAD951319EDD5E140B8"
+      },
+      {
+        "path": "CheweenieUE5Lab/Binaries/Win64/CheweenieUE5Lab.exe",
+        "sha256": "3AF4C5F4B838E3A8BCC0DAE479A28F2B85759CA8EC8E3F0B1C82C721E36D8521"
+      },
+      {
+        "path": "CheweenieUE5Lab/Binaries/Win64/tbb12.dll",
+        "sha256": "C489B6BD4DD2BE18D4F8778E3F86CAA7672EC8A206C9A54228B3BB60E2923F76"
+      },
+      {
+        "path": "CheweenieUE5Lab/Binaries/Win64/tbbmalloc.dll",
+        "sha256": "ACA208101BBA1E440E6FAE6580EEDD45508EC405C9674063BAF7CA23D29316BD"
+      },
+      {
+        "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/D3D12Core.dll",
+        "sha256": "F0CBDBA3043BC30E2A17DFD7D6C05E61C9C4098EB1D5EE8CCD2AB3F4696E8E20"
+      },
+      {
+        "path": "CheweenieUE5Lab/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll",
+        "sha256": "180A630861DC88D26DB517DA787009EDF75E4C83309B819814B84B86F8DB36C1"
+      },
+      {
+        "path": "CheweenieUE5Lab/Binaries/Win64/DML/x64/DirectML.dll",
+        "sha256": "4E357E48C3FB00E5AC868F2B33BA5576873C013349E2CC1D7A9BE0071253AC62"
+      },
+      {
+        "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.pak",
+        "sha256": "B56169AFA5CED1AE4980645DA0810760C96F5EE345687E554EFE0E7D3D8D90F0"
+      },
+      {
+        "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.ucas",
+        "sha256": "2CFD0747EBDFBB98F7B3507B1AA94E2F8CD6CE9858C8E388AB46711381344AAC"
+      },
+      {
+        "path": "CheweenieUE5Lab/Content/Paks/CheweenieUE5Lab-Windows.utoc",
+        "sha256": "1940672F96D81B574C153FB8F802A83DBAE7EF19FD10119E98111C7A2CCA94F2"
+      },
+      {
+        "path": "CheweenieUE5Lab/Content/Paks/global.ucas",
+        "sha256": "B66C1DF7711BA370FF51BB21D27A19B9E8BF8234B2C10E7BD03FB0CDE3F07E20"
+      },
+      {
+        "path": "CheweenieUE5Lab/Content/Paks/global.utoc",
+        "sha256": "9AC8094E5C6329C77D7C77626BB687A9A38DE6B25DE52A5D8A60D728F6DEF1FC"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/DbgHelp/dbghelp.dll",
+        "sha256": "441A7CCEE2F854352366E783FCB79FE895D09AD4C577689319E1A664F296C4A3"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/MsQuic/v220/win64/msquic.dll",
+        "sha256": "27C231D80310EA9005A6B0C17054F28887272723477E7292A7F9D63B6D1579EE"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/NVIDIA/NVaftermath/Win64/GFSDK_Aftermath_Lib.x64.dll",
+        "sha256": "CE49BE4194706417CCDC57833AEC478FAA1E08646157688C879FE616D43ABD65"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Ogg/Win64/VS2015/libogg_64.dll",
+        "sha256": "C719A5F165E4AFE29E92A7EEE9762C2E9F301A177885AB1AB8D2C7F57D4A86BF"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbis_64.dll",
+        "sha256": "B8A3E31A6C2D401809BAE7AA0FD29F49C2114EECCFBA4DC5C7AC8EDDBD4B7A98"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vorbis/Win64/VS2015/libvorbisfile_64.dll",
+        "sha256": "6D0E4395BC4D0EF501C3F7F7B4E63FA0CF2AB2CA80328560B7CB10E6D5A171CF"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.dll",
+        "sha256": "583DB3D1ACD76363F0F67D9DA414DD147CA9FFAB4A47824027351B063FE66AEA"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_api_dump.json",
+        "sha256": "9E55221C225DCE4B5448BAC7DADB7E39FD216F51354DDE02E58F950F4A0DD80B"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.dll",
+        "sha256": "8E080A40AC452C4B249B9060E2F4C208AF9159AFBA9E75E91D1C55D85E387D04"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_crash_diagnostic.json",
+        "sha256": "578BDE354874789671DEE1A96468C965619C9F3BA16CFA65F850E81A80674087"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.dll",
+        "sha256": "780C4BCAE69A50E38181EDFD20A58780FA02539F4FF302C8C4A0E2899EE7A0CB"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_gfxreconstruct.json",
+        "sha256": "71D4E243A2AF74874F4F61378BDFE3753CB01CE5EB9B98400D83612BF882A815"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.dll",
+        "sha256": "9682F7F508855980B9C31147493C962D43A0798C4596870CD7C5DEE009859EA2"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_profiles.json",
+        "sha256": "6095C28691757E083A8C1BEF3C69CA76A8B5017E21ACAF55D1BC7E82221A0FBE"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.dll",
+        "sha256": "7026DA236CECADD40B6A1723D0881349D9471592D98CABD60994F99DC2DB3E53"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_shader_object.json",
+        "sha256": "18ECAFC9A65E1B7AF8CD0E36DC936026CDB3AED333C4EA5A7C17D6D9465CFAF4"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.dll",
+        "sha256": "485EB9B7F0320BD1AF3AF03DBE3A052D6F5E9CDA14496BBE1A062D626D501EAE"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_synchronization2.json",
+        "sha256": "A1E980A24BE9A16A826B00C27D61B85EE0E2E17226DC9C4E8EEC031879E5F26A"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.dll",
+        "sha256": "27FC6A4CA52244F18337A652DB638865ABD679F6E1D129BF4770FD3E6C4F1A60"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Vulkan/Win64/VkLayer_khronos_validation.json",
+        "sha256": "5C464B84457776D92A674DE506F7B7A489294583A7D7609F78FCC52BC4406D09"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Windows/WinPixEventRuntime/x64/WinPixEventRuntime.dll",
+        "sha256": "F5F6F69210CC958B92285FF444E2EF48F5C46B4D6470B07960739DBCB6554B54"
+      },
+      {
+        "path": "Engine/Binaries/ThirdParty/Windows/XAudio2_9/x64/xaudio2_9redist.dll",
+        "sha256": "E6AE545B31A5453F1B1002D434CC802A6088CF05C5FAA414D7EBE00264161506"
+      },
+      {
+        "path": "Engine/Config/StagedBuild_CheweenieUE5Lab.ini",
+        "sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5"
+      },
+      {
+        "path": "Engine/Content/Renderer/TessellationTable.bin",
+        "sha256": "EDC4F3B628A139C5E185BBAECA661C95C1F427368D3B92892C5CFF36C56DD941"
+      },
+      {
+        "path": "Engine/Content/Slate/Cursor/invisible.cur",
+        "sha256": "FEF3980FA567E9C45D5D8DCAA432A2C1A3F3BB17FE67D7AB198164F56C142AA1"
+      },
+      {
+        "path": "Engine/Extras/Redist/en-us/vc_redist.arm64.exe",
+        "sha256": "EBC1B8DC6731B2C7E791DD619ABA19D5554B9E678364F3C2A35F125BAAFC0F54"
+      },
+      {
+        "path": "Engine/Extras/Redist/en-us/vc_redist.x64.exe",
+        "sha256": "6FFDEEFF6AAE9F5DCD52217571B2C2A47DE367AF8AA3DB953542BF25C4C29A0D"
+      },
+      {
+        "path": "Engine/Plugins/NNE/NNERuntimeORT/Binaries/ThirdParty/Onnxruntime/Win64/onnxruntime.dll",
+        "sha256": "EACC4D935137D67AB0CC1B896472D1DE551DFC6545ED9AD74AB842400272E036"
+      }
+    ]
+  },
+  "reports": [
+    {
+      "passed": 6,
+      "report": "Adventure/adventure-resume.json",
+      "sha256": "17E56C8A4F468E5E4342E246769C22998DBD674D4993A622EF096CF10690D7CC",
+      "failed": 0
+    },
+    {
+      "passed": 25,
+      "report": "Adventure/adventure-smoke.json",
+      "sha256": "3A731A7C857CD6CDD9E49E9939F5E377C8645DBA0E17FCB99FE7A64CF588C0D3",
+      "failed": 0
+    },
+    {
+      "passed": 19,
+      "report": "Audio/audio-smoke.json",
+      "sha256": "BB4BC64593E36669568B43C4F103CF53B2D18554D3756C4972465591C9A57AA5",
+      "failed": 0
+    },
+    {
+      "passed": 4,
+      "report": "Companions/companions-resume.json",
+      "sha256": "8295FF0A78381799D52152C76B6E6A2055AAD2966529AF338B6C00761B26B2DA",
+      "failed": 0
+    },
+    {
+      "passed": 30,
+      "report": "Companions/companions-smoke.json",
+      "sha256": "475C31080A0FC0C358478EABD0611D4A6BC4086811C262C678138C7C8BA4F08F",
+      "failed": 0
+    },
+    {
+      "passed": 57,
+      "report": "ControllerButtons/controller-buttons.json",
+      "sha256": "ABCC9C2C0E8D9648A0C2DF390895980A9D7BEFE0DDA217E754B05CE92D60DC60",
+      "failed": 0
+    },
+    {
+      "passed": 14,
+      "report": "ControllerGuide/controller-guide-smoke.json",
+      "sha256": "12BE7AAF42BE470E325BD9FE5DEC06E5C62884824211E11E65449B52003779AE",
+      "failed": 0
+    },
+    {
+      "passed": 35,
+      "report": "Coop/coop-guest.json",
+      "sha256": "D51283EFDF5281354AC546C03EA53650041C0EC0EBC7F271FB24782B2D73A920",
+      "failed": 0
+    },
+    {
+      "passed": 38,
+      "report": "Coop/coop-host.json",
+      "sha256": "9D138D148C09AD5480B602979BF67B930604D059F181ABC42A024CDFEABF54C4",
+      "failed": 0
+    },
+    {
+      "passed": 2,
+      "report": "Costumes/costumes-resume.json",
+      "sha256": "410B13D868DD915C93966767359FE78FC334343CB7155112F5DE46A2AAA5912E",
+      "failed": 0
+    },
+    {
+      "passed": 44,
+      "report": "Costumes/costumes-smoke.json",
+      "sha256": "FCDBAF77E316C028CDB97178E485C3F0746AE967F869C79971A8306961BC1535",
+      "failed": 0
+    },
+    {
+      "passed": 6,
+      "report": "Festival/festival-resume.json",
+      "sha256": "EA4111616881BEE7C604ED37CF038735BCE1CAE3FE46E68141F241FAF97F268C",
+      "failed": 0
+    },
+    {
+      "passed": 40,
+      "report": "Festival/festival-smoke.json",
+      "sha256": "4AE9824B7CEBE6154F6245823D1FE4B45DE02242E5BDEC7188F195B345CA13A9",
+      "failed": 0
+    },
+    {
+      "passed": 4,
+      "report": "FurDetail/fur-detail-low.json",
+      "sha256": "F33025485E5F80B9E7ED24DBE53357E27234EB571BF8CEFF8101E6DD95562C0E",
+      "failed": 0
+    },
+    {
+      "passed": 4,
+      "report": "FurDetail/fur-detail-medium.json",
+      "sha256": "8CEAAF20DCAC3904ACE68C5FA360C2D5CB4C1546F6F3E6E24EC4FBDFD1B84A2D",
+      "failed": 0
+    },
+    {
+      "passed": 15,
+      "report": "FurDetail/fur-detail.json",
+      "sha256": "EB2B1CC0EBFEF7CC9FB98EAE716BA48B06824EB3FEEE5792CC6F872633F3FF31",
+      "failed": 0
+    },
+    {
+      "passed": 30,
+      "report": "Gait/marty-gait.json",
+      "sha256": "A4A5C1293A973A49B3062EF9E334F0E3DB8E6AD36889470ED4266A4E317B9CE3",
+      "failed": 0
+    },
+    {
+      "passed": 34,
+      "report": "Home/home-progression.json",
+      "sha256": "7189B7A33B2030CBC3CA93CEE1A27B2ED4D0D65DE976166DD23CFC8818883838",
+      "failed": 0
+    },
+    {
+      "passed": 5,
+      "report": "Home/home-resume.json",
+      "sha256": "D48348F0A3727F3923DD466FF7F65C56AD6D03E1D56D18BB0F38AA9A94DB35CB",
+      "failed": 0
+    },
+    {
+      "passed": 29,
+      "report": "Hub/hub-smoke.json",
+      "sha256": "E479AED58A1932C337854F5A244AB48983BAABBEDC2356B66C194C3E1DC81D7D",
+      "failed": 0
+    },
+    {
+      "passed": 9,
+      "report": "HubLan/hub-guest.json",
+      "sha256": "667CB5577DB175DFEBC7891A251494218ED126A8ADA4D2CAA10CE131BD3E9616",
+      "failed": 0
+    },
+    {
+      "passed": 8,
+      "report": "HubLan/hub-host.json",
+      "sha256": "B44F356C195F9228E980F45837585D9A655D90E6C6B4A8B3DC9010A7EF9A62B2",
+      "failed": 0
+    },
+    {
+      "passed": 3,
+      "report": "Jackets/jackets-resume.json",
+      "sha256": "425467C460CFA9A9389E0729A8C1B0F05A61B7141AE71791061A23E6F794CEF8",
+      "failed": 0
+    },
+    {
+      "passed": 21,
+      "report": "Jackets/jackets-smoke.json",
+      "sha256": "A4C8C59C0395715AEA2F334700D10BD7A6715687FE5BDE18CC69540EEA560FE2",
+      "failed": 0
+    },
+    {
+      "passed": 7,
+      "report": "Life/life-resume.json",
+      "sha256": "65D3DE75E86D1F6E9DB63986C375FD27ED87EF083FF145A8C64C191CAAEA4C0F",
+      "failed": 0
+    },
+    {
+      "passed": 45,
+      "report": "Life/life-smoke.json",
+      "sha256": "360240D907E5C6A514E970B467E9254F9789171D375BD15033D181F974AB99B4",
+      "failed": 0
+    },
+    {
+      "passed": 32,
+      "report": "Modifier/trick-modifier.json",
+      "sha256": "5D77A4A6D86F7CB3B34D5F885E35F4DA3A8E167C5E7D591ACB3734EA1F130EB9",
+      "failed": 0
+    },
+    {
+      "passed": 16,
+      "report": "Movement/movement-smoke.json",
+      "sha256": "1391BF022D62BD4C376FCB5808B87140C4D757161740FCAFDD8DDDE90637D0D6",
+      "failed": 0
+    },
+    {
+      "passed": 4,
+      "report": "Navigation/navigation-resume.json",
+      "sha256": "03D26623900C8E47E8DA672F3749205FDAB0FFFBEF8A1BAAAD66E19358F43BA9",
+      "failed": 0
+    },
+    {
+      "passed": 60,
+      "report": "Navigation/navigation-smoke.json",
+      "sha256": "54783275C1E79878F478051D0664ED2905836592AFAA00B7FF8F0AB783873B4A",
+      "failed": 0
+    },
+    {
+      "passed": 79,
+      "report": "Overlays/main/overlay-smoke.json",
+      "sha256": "16A741DAAAF09A671DF7287B7068519D97E7F1681C78A64167EB5FC973C6CD6D",
+      "failed": 0
+    },
+    {
+      "passed": 3,
+      "report": "Overlays/resume/overlay-smoke.json",
+      "sha256": "3A3A6426D3A6A29AB6033AEC98A6EC4FE12D2373E881B9302803A7B12052A6CB",
+      "failed": 0
+    },
+    {
+      "passed": 11,
+      "report": "OverlayStyles/main/overlay-styles.json",
+      "sha256": "2767116626E0CD2534E0A712497C9E0396F4E048EF4B14DF3C317B0F7A47F173",
+      "failed": 0
+    },
+    {
+      "passed": 4,
+      "report": "OverlayStyles/resume/overlay-styles.json",
+      "sha256": "91A7C9EF13DE9B0F227332F4BA2DB44252772D1A6F3B1FF01CDA637BDB7C1581",
+      "failed": 0
+    },
+    {
+      "passed": 12,
+      "report": "Ratchet/ratchet-memory.json",
+      "sha256": "3CB4AD50B3661FC076BD03E6308A16949C505A274E9AAD554B10626146A0A57F",
+      "failed": 0
+    },
+    {
+      "passed": 2,
+      "report": "Ratchet/ratchet-resume.json",
+      "sha256": "444BCFED7735CC208FC49903EBEA809D0CBB4C29B5006825CC48638CB088CC29",
+      "failed": 0
+    },
+    {
+      "passed": 3,
+      "report": "Ratchet/ratchet-return.json",
+      "sha256": "2D48BF07C5C8DE86A1FF963171E258341F518B5A3D846B99F44B31AE69573E22",
+      "failed": 0
+    },
+    {
+      "passed": 6,
+      "report": "Ratchet/ratchet-unlock.json",
+      "sha256": "AF0855DE1791809757BD8FE8E045E0F2477D7D10130153EAC7EFAA40C811EAE0",
+      "failed": 0
+    },
+    {
+      "passed": 11,
+      "report": "RatchetSeed/ratchet-memory.json",
+      "sha256": "4F17559552119C5EBFF494F2A84B94ECB1E77C60A84C2E39FF3CBF757502C88A",
+      "failed": 0
+    },
+    {
+      "passed": 2,
+      "report": "RatchetSeed/ratchet-resume.json",
+      "sha256": "444BCFED7735CC208FC49903EBEA809D0CBB4C29B5006825CC48638CB088CC29",
+      "failed": 0
+    },
+    {
+      "passed": 3,
+      "report": "RatchetSeed/ratchet-return.json",
+      "sha256": "2D48BF07C5C8DE86A1FF963171E258341F518B5A3D846B99F44B31AE69573E22",
+      "failed": 0
+    },
+    {
+      "passed": 6,
+      "report": "RatchetSeed/ratchet-unlock.json",
+      "sha256": "AF0855DE1791809757BD8FE8E045E0F2477D7D10130153EAC7EFAA40C811EAE0",
+      "failed": 0
+    },
+    {
+      "passed": 5,
+      "report": "Tricks/tricks-resume.json",
+      "sha256": "F2FA13A2C33AE88D254EF4A7F93BF4931D74063E9C4C0AB906705B1B459D0810",
+      "failed": 0
+    },
+    {
+      "passed": 29,
+      "report": "Tricks/tricks-smoke.json",
+      "sha256": "05F74BD3B78931FA04ED0B165221CEC483143580D32A0BEF9E8DD041656B1923",
+      "failed": 0
+    },
+    {
+      "passed": 34,
+      "report": "UnlockedCoop/coop-guest.json",
+      "sha256": "DF27EDF8C2D458DC99CAEB68EB16357177004EA41BA2BA8D82E10F448540AE03",
+      "failed": 0
+    },
+    {
+      "passed": 37,
+      "report": "UnlockedCoop/coop-host.json",
+      "sha256": "B29CD6D0CE31437DCC944A646B532729D9DB5774F55A1AC66575514789E53049",
+      "failed": 0
+    },
+    {
+      "passed": 18,
+      "report": "Upstairs/upstairs-smoke.json",
+      "sha256": "900C157FB5BFE6B3F42AD579D5A641D3471F98E8754D516F6028298D693B982A",
+      "failed": 0
+    },
+    {
+      "passed": 16,
+      "report": "World/world-smoke.json",
+      "sha256": "D25CFA11CFCE8DFC32589B9076DC1B53D8ED9698DDAED3BBDEFA33B7CAAA78B7",
+      "failed": 0
+    }
+  ],
+  "branch": "codex/controller-buttons",
+  "activation": {
+    "desktopShortcutUpdated": true,
+    "archiveFiles": 2920.0,
+    "archiveCount": 38,
+    "allArchivePayloadsVerified": true,
+    "mainJunctionsUpdated": 2,
+    "previousVersionRetained": true,
+    "physicalSignalsObserved": 14,
+    "version": "Unified-0.14.1",
+    "physicalGameplayVerified": false,
+    "copied": [
+      {
+        "relativePath": "Windows/CheweenieUE5Lab/Saved/SaveGames/CheweenieAdventureV1.sav",
+        "hashMatched": true
+      },
+      {
+        "relativePath": "Windows/CheweenieUE5Lab/Saved/Config/Windows/GameUserSettings.ini",
+        "hashMatched": true
+      },
+      {
+        "relativePath": "LocalGameData/streets.json",
+        "hashMatched": true
+      },
+      {
+        "relativePath": "LocalGameData/NeighbourDogs.json",
+        "hashMatched": true
+      },
+      {
+        "relativePath": "LocalGameData/ArchiveBuilds.json",
+        "hashMatched": true
+      },
+      {
+        "relativePath": "LocalGameData/ArchiveIndex.json",
+        "hashMatched": true
+      }
+    ]
+  },
+  "unity": "unchanged",
+  "archiveFixtureResolution": "Historical binary unchanged. Acceptance-only -NoGamepad and t.MaxFPS 60 isolate hardware and stabilise timing; all 18 final round-trip assertions passed. Ordinary archive and main play retain hardware input.",
+  "playStationHardwareVerified": false,
+  "physicalStandardButtonsObserved": 14,
+  "baseCommit": "fc43866a56259b048dd5565c732196fd748aec47",
+  "engine": "Unreal Engine 5.8.4",
+  "separateMachinesVerified": false,
+  "allPackagedSuiteAssertions": 927,
+  "date": "2026-11-04",
+  "version": "Unified-0.14.1",
+  "editorControllerAssertions": 57,
+  "controllerRawReports": {
+    "Coop/coop-guest.json": {
+      "passed": [
+        "Two separately possessed replicated pets exist",
+        "Players receive unique pets",
+        "Owner has correct network role",
+        "Host starts Marty and guest starts Lakitu",
+        "Owner lands on actual room floor",
+        "Retained Marty skeletal asset is available",
+        "Host unlock availability replicates to both peers",
+        "Locked Ratchet selection stays on the current pet",
+        "LAN costume defaults off for this player",
+        "Keyboard and gamepad costume choices reach both peers",
+        "Marty's hot dog is lengthwise on both the owner and remote peer",
+        "Marty ear and tail roots stay pinned on owner and remote peer",
+        "Nearby guest picks up shared toy; distant host cannot steal it",
+        "Guest drop is synchronized to both peers",
+        "Keyboard movement works on network owner",
+        "Remote movement reached this peer",
+        "Remote hurry speed reached this peer",
+        "Synthetic stick release stops owner",
+        "Synthetic right stick orbits owning camera",
+        "Controller camera binding works in co-op",
+        "Keyboard and controller jump enter replicated falling movement",
+        "Both pet voice events replicate",
+        "Occupied or invalid pet selection is rejected by server",
+        "Guest keyboard selection becomes the requested cat on both peers",
+        "Changing to Rio replaces the outfit with her bee costume on both peers",
+        "Guest controller can cycle away from the selected cat on both peers",
+        "Server rate limits repeated voice requests",
+        "Owner motor remains active",
+        "Costumes can be removed again on both network peers",
+        "Co-op stick idle noise does not creep",
+        "Co-op stick idle noise does not orbit",
+        "Co-op RB/R1 recenters the owner camera",
+        "Co-op Menu/Options opens the local menu",
+        "Co-op menu blocks gameplay buttons and movement",
+        "Co-op B/Circle closes the room menu"
+      ],
+      "failed": [],
+      "role": "remote-client",
+      "input": "Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"
+    },
+    "UnlockedCoop/coop-host.json": {
+      "passed": [
+        "Two separately possessed replicated pets exist",
+        "Players receive unique pets",
+        "Owner has correct network role",
+        "Host starts Marty and guest starts Lakitu",
+        "Owner lands on actual room floor",
+        "Retained Marty skeletal asset is available",
+        "Server admission rejects an occupied two-player room",
+        "Host unlock availability replicates to both peers",
+        "LAN costume defaults off for this player",
+        "Keyboard and gamepad costume choices reach both peers",
+        "Marty's hot dog is lengthwise on both the owner and remote peer",
+        "Marty ear and tail roots stay pinned on owner and remote peer",
+        "Nearby guest picks up shared toy; distant host cannot steal it",
+        "Guest drop is synchronized to both peers",
+        "Keyboard movement works on network owner",
+        "Remote movement reached this peer",
+        "Remote hurry speed reached this peer",
+        "Synthetic stick release stops owner",
+        "Synthetic right stick orbits owning camera",
+        "Controller camera binding works in co-op",
+        "Keyboard and controller jump enter replicated falling movement",
+        "Both pet voice events replicate",
+        "Occupied or invalid pet selection is rejected by server",
+        "Guest keyboard selection becomes the requested cat on both peers",
+        "Unlocked Ratchet identity and uncovered coat reach both peers",
+        "Guest controller can cycle away from the selected cat on both peers",
+        "Server rate limits repeated voice requests",
+        "Owner motor remains active",
+        "Costumes can be removed again on both network peers",
+        "Co-op stick idle noise does not creep",
+        "Co-op stick idle noise does not orbit",
+        "Co-op RB/R1 recenters the owner camera",
+        "Co-op Menu/Options opens the local menu",
+        "Co-op menu blocks gameplay buttons and movement",
+        "Co-op B/Circle closes the room menu",
+        "Guest disconnect removes the remote pawn",
+        "Disconnected pet becomes available again"
+      ],
+      "failed": [],
+      "role": "listen-server",
+      "input": "Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"
+    },
+    "Movement/movement-smoke.json": {
+      "engine": "5.8.4-58902052+++UE5+Release-5.8",
+      "scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+      "passed": [
+        "Spawn lands on room floor",
+        "W keyboard binding moves Marty",
+        "Keyboard release stops Marty",
+        "V switches camera distance",
+        "H returns Marty home",
+        "Synthetic left stick preserves analog walking",
+        "Stick release stops Marty",
+        "A/Cross enables hurry",
+        "R3 switches camera distance",
+        "A/Cross release restores walking",
+        "Menu/Options returns Marty home",
+        "Right stick orbits camera",
+        "Right stick up looks upward",
+        "RB/R1 recenters camera",
+        "Room boundaries block sustained movement without falling",
+        "Sofa blocks actual character movement"
+      ],
+      "failed": []
+    },
+    "UnlockedCoop/coop-guest.json": {
+      "passed": [
+        "Two separately possessed replicated pets exist",
+        "Players receive unique pets",
+        "Owner has correct network role",
+        "Host starts Marty and guest starts Lakitu",
+        "Owner lands on actual room floor",
+        "Retained Marty skeletal asset is available",
+        "Host unlock availability replicates to both peers",
+        "LAN costume defaults off for this player",
+        "Keyboard and gamepad costume choices reach both peers",
+        "Marty's hot dog is lengthwise on both the owner and remote peer",
+        "Marty ear and tail roots stay pinned on owner and remote peer",
+        "Nearby guest picks up shared toy; distant host cannot steal it",
+        "Guest drop is synchronized to both peers",
+        "Keyboard movement works on network owner",
+        "Remote movement reached this peer",
+        "Remote hurry speed reached this peer",
+        "Synthetic stick release stops owner",
+        "Synthetic right stick orbits owning camera",
+        "Controller camera binding works in co-op",
+        "Keyboard and controller jump enter replicated falling movement",
+        "Both pet voice events replicate",
+        "Occupied or invalid pet selection is rejected by server",
+        "Guest keyboard selection becomes the requested cat on both peers",
+        "Unlocked Ratchet identity and uncovered coat reach both peers",
+        "Guest controller can cycle away from the selected cat on both peers",
+        "Server rate limits repeated voice requests",
+        "Owner motor remains active",
+        "Costumes can be removed again on both network peers",
+        "Co-op stick idle noise does not creep",
+        "Co-op stick idle noise does not orbit",
+        "Co-op RB/R1 recenters the owner camera",
+        "Co-op Menu/Options opens the local menu",
+        "Co-op menu blocks gameplay buttons and movement",
+        "Co-op B/Circle closes the room menu"
+      ],
+      "failed": [],
+      "role": "remote-client",
+      "input": "Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"
+    },
+    "Coop/coop-host.json": {
+      "passed": [
+        "Two separately possessed replicated pets exist",
+        "Players receive unique pets",
+        "Owner has correct network role",
+        "Host starts Marty and guest starts Lakitu",
+        "Owner lands on actual room floor",
+        "Retained Marty skeletal asset is available",
+        "Server admission rejects an occupied two-player room",
+        "Host unlock availability replicates to both peers",
+        "Locked Ratchet selection stays on the current pet",
+        "LAN costume defaults off for this player",
+        "Keyboard and gamepad costume choices reach both peers",
+        "Marty's hot dog is lengthwise on both the owner and remote peer",
+        "Marty ear and tail roots stay pinned on owner and remote peer",
+        "Nearby guest picks up shared toy; distant host cannot steal it",
+        "Guest drop is synchronized to both peers",
+        "Keyboard movement works on network owner",
+        "Remote movement reached this peer",
+        "Remote hurry speed reached this peer",
+        "Synthetic stick release stops owner",
+        "Synthetic right stick orbits owning camera",
+        "Controller camera binding works in co-op",
+        "Keyboard and controller jump enter replicated falling movement",
+        "Both pet voice events replicate",
+        "Occupied or invalid pet selection is rejected by server",
+        "Guest keyboard selection becomes the requested cat on both peers",
+        "Changing to Rio replaces the outfit with her bee costume on both peers",
+        "Guest controller can cycle away from the selected cat on both peers",
+        "Server rate limits repeated voice requests",
+        "Owner motor remains active",
+        "Costumes can be removed again on both network peers",
+        "Co-op stick idle noise does not creep",
+        "Co-op stick idle noise does not orbit",
+        "Co-op RB/R1 recenters the owner camera",
+        "Co-op Menu/Options opens the local menu",
+        "Co-op menu blocks gameplay buttons and movement",
+        "Co-op B/Circle closes the room menu",
+        "Guest disconnect removes the remote pawn",
+        "Disconnected pet becomes available again"
+      ],
+      "failed": [],
+      "role": "listen-server",
+      "input": "Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"
+    },
+    "Modifier/trick-modifier.json": {
+      "scope": "Actual map with synthetic keyboard/gamepad events, save/position fixtures and rendered guide/poses when requested. Physical controllers unverified.",
+      "passed": [
+        "Modifier acceptance uses an isolated save",
+        "Holding L1-LB exposes direct tricks without opening a menu",
+        "A modifier hold does not bark",
+        "Movement remains active while the modifier guide is held",
+        "Right-stick camera remains active while holding the modifier",
+        "L1-LB plus A-Cross lies down directly",
+        "Lie chord suppresses sprint and menu confirm",
+        "Releasing a used modifier does not add a bark",
+        "The same lie chord gets Marty back up",
+        "L1-LB plus B-Circle rolls instead of opening Tricks",
+        "A busy trick consumes the chord without interacting or queueing",
+        "Direct roll finishes and restores control",
+        "L1-LB plus X-Square shakes without interaction",
+        "Direct shake raises the actual skinned paw",
+        "L1-LB plus Y-Triangle barks directly",
+        "Bark chord does not spend a jump",
+        "Finishing the bark chord does not bark again",
+        "A quick unmodified shoulder tap still barks once",
+        "Left Ctrl plus 1 offers the keyboard lie shortcut",
+        "Keyboard shortcut also toggles standing",
+        "Releasing keyboard Ctrl hides hints and never barks",
+        "Normal interaction still picks up the ball after the modifier releases",
+        "Normal jump still works after the modifier releases",
+        "Pause dismisses and disarms the modifier layer",
+        "A-Cross resumes a menu normally without a queued lie",
+        "Releasing a menu-disarmed hold never barks",
+        "Disabled tricks consume the roll chord without opening a menu",
+        "Disabled barking also consumes the chord without jumping",
+        "Same-frame shoulder and face presses resolve as a single chord",
+        "Unmodified A-Cross still requests hurry",
+        "Adding the modifier to an already held face button cancels hurry without firing a trick",
+        "Full chord sequence leaves gameplay active with no stray bark"
+      ],
+      "failed": []
+    },
+    "ControllerButtons/controller-buttons.json": {
+      "passed": [
+        "Button audit uses an isolated save",
+        "Ordinary game title and production bindings are active",
+        "A/Cross starts the game from the title",
+        "Releasing title confirm leaves hurry off",
+        "Holding A/Cross requests hurry in gameplay",
+        "Releasing A/Cross ends hurry",
+        "B/Circle opens Tricks during gameplay",
+        "B/Circle returns from Tricks",
+        "View/touchpad opens the backpack",
+        "View/touchpad closes the backpack",
+        "D-pad Up opens the map",
+        "D-pad Down navigates the map without opening crew",
+        "D-pad Up navigates back up the map",
+        "B/Circle closes the map",
+        "D-pad Down opens companions during gameplay",
+        "B/Circle closes companions",
+        "Menu/Options pauses without teleporting Marty",
+        "A/Cross resumes without leaking hurry into gameplay",
+        "Menu/Options can pause again after resume",
+        "A/Cross selects sound settings",
+        "D-pad Right increases the selected setting",
+        "D-pad Left decreases the selected setting",
+        "B/Circle returns to the pause menu",
+        "Menu/Options resumes gameplay",
+        "X/Square picks up the nearby ball",
+        "LT/L2 drops the carried toy",
+        "Y/Triangle jumps",
+        "Jump release returns Marty to grounded movement",
+        "A short LB/L1 tap barks exactly once",
+        "R3 advances the camera and wraps through all four release views",
+        "R3 advances the camera and wraps through all four release views",
+        "R3 advances the camera and wraps through all four release views",
+        "R3 advances the camera and wraps through all four release views",
+        "Unassigned L3 causes no unintended action",
+        "Left-stick cardinal direction moves Marty in the expected direction",
+        "Releasing each left-stick direction stops Marty",
+        "Left-stick cardinal direction moves Marty in the expected direction",
+        "Releasing each left-stick direction stops Marty",
+        "Left-stick cardinal direction moves Marty in the expected direction",
+        "Releasing each left-stick direction stops Marty",
+        "Left-stick cardinal direction moves Marty in the expected direction",
+        "Releasing each left-stick direction stops Marty",
+        "Right stick orbits and pitches in both directions",
+        "RB/R1 recenters the camera after orbiting",
+        "Right stick orbits and pitches in both directions",
+        "RB/R1 recenters the camera after orbiting",
+        "Diagonal resting-stick noise does not creep",
+        "Resting-stick noise does not rotate the camera",
+        "Diagonal resting-stick noise does not creep",
+        "Resting-stick noise does not rotate the camera",
+        "RT/R2 starts digging at a dig patch",
+        "A held/released trigger completes one dig without repeating",
+        "Pause blocks gameplay buttons, jumping, movement, barking and camera cycling",
+        "Pause blocks right-stick orbit",
+        "B/Circle resumes from pause",
+        "Hurry works again after menu testing",
+        "Input flush clears held hurry after focus loss"
+      ],
+      "failed": [],
+      "scope": "Real game map; normal Enhanced Input mappings; synthetic controller events, controlled positions and isolated save. Physical button presses and PlayStation driver mapping unverified."
+    }
+  },
+  "archiveFixtureFailures": [
+    {
+      "passed": 15,
+      "failed": [
+        "Keyboard release stops Marty"
+      ],
+      "attempt": "live hardware polling"
+    },
+    {
+      "passed": 15,
+      "failed": [
+        "W keyboard binding moves Marty"
+      ],
+      "attempt": "hardware isolated, uncapped"
+    }
+  ],
+  "sourceSha256": {
+    "ControllerButtonsSmoke.cpp": "4C3679E8095F767D940F3D7F5AD1E0BB9A599017B894E10FBE24CE79A2CA1DEE",
+    "MartyCharacter.h": "9C734CB49676371ABC7D2A53DC1EDFD586ECF7038790AE113B44F6A01EBD2CDF",
+    "CozyCoop.cpp": "702DA6069BC03F311EA3696E46BFA1B81DCD6F7B2EFDCAC70A921DE3A4721187",
+    "CoopSmoke.cpp": "9822A35F630B0AD9530D82C38D1B0307562A4500DBC0400622EB8A8DF184FC4A",
+    "MartyCharacter.cpp": "6ADD450A4A7D99148482362967F2151C55C3E3B0D1055D97627400470081B56E",
+    "MovementSmoke.cpp": "B65F96E4E416269F4100BC4CC07ECB3013D146A0328A324CADF4DD940AC3BE93",
+    "CozyAdventure.cpp": "5D94E37E210FFFE7D00C952C7B91F2544254313F9CBCECCE8F9605F73CD3A33F"
+  },
+  "portableZip": "not regenerated",
+  "ownerResourceFinalChecks": [
+    {
+      "matchesPriorMain": true,
+      "relativePath": "Windows/CheweenieUE5Lab/Saved/SaveGames/CheweenieAdventureV1.sav"
+    },
+    {
+      "matchesPriorMain": true,
+      "relativePath": "Windows/CheweenieUE5Lab/Saved/Config/Windows/GameUserSettings.ini"
+    },
+    {
+      "matchesPriorMain": true,
+      "relativePath": "LocalGameData/streets.json"
+    },
+    {
+      "matchesPriorMain": true,
+      "relativePath": "LocalGameData/NeighbourDogs.json"
+    }
+  ],
+  "archiveRoundTripAssertions": 18,
+  "requiredPackagedAssertions": 905,
+  "selectedAssertionExecutions": 1006,
+  "contentOnlyPreview": "unchanged",
+  "archiveRoundTrip": {
+    "return": {
+      "scope": "Actual map and map travel; synthetic input plus menu/progress fixtures. Physical controllers and separate PCs unverified.",
+      "passed": [
+        "Latest hub opens after the archived executable exits",
+        "Archive round trip retains latest progress and local detail"
+      ],
+      "failed": []
+    },
+    "movement": {
+      "engine": "5.8.4-58902052+++UE5+Release-5.8",
+      "scope": "Native gameplay with synthetic keyboard/gamepad events; physical hardware unverified",
+      "passed": [
+        "Spawn lands on room floor",
+        "W keyboard binding moves Marty",
+        "Keyboard release stops Marty",
+        "V switches camera distance",
+        "H returns Marty home",
+        "Synthetic left stick preserves analog walking",
+        "Stick release stops Marty",
+        "A/Cross enables hurry",
+        "R3 switches camera distance",
+        "A/Cross release restores walking",
+        "Menu/Options returns Marty home",
+        "Right stick orbits camera",
+        "Right stick up looks upward",
+        "RB/R1 recenters camera",
+        "Room boundaries block sustained movement without falling",
+        "Sofa blocks actual character movement"
+      ],
+      "failed": []
+    }
+  },
+  "visualCapturesReviewed": [
+    "ControllerButtonsGameplay.png",
+    "ControllerGuideXbox.png",
+    "TrickModifierGuide.png"
+  ],
+  "additionalPrivateMapAssertions": 4
+}

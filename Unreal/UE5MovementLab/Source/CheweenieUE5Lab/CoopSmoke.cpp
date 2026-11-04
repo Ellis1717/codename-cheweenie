@@ -56,19 +56,19 @@ void ACozyCoopController::TickAcceptance(float Delta)
         Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,false);if(StageTime<1)break;
         Check(P->WearingCostume&&Other->WearingCostume&&P->Costume->VisiblePieces()>0&&Other->Costume->VisiblePieces()>0,TEXT("Keyboard and gamepad costume choices reach both peers"));
         Check(CostumeAlignedWithMarty(Host?P:Other),TEXT("Marty's hot dog is lengthwise on both the owner and remote peer"));Check(MartyRootsPinned(Host?P:Other),TEXT("Marty ear and tail roots stay pinned on owner and remote peer"));
-        Key(EKeys::E,true);Next();break;
+        Key(Host?EKeys::E:EKeys::Gamepad_FaceButton_Left,true);Next();break;
     case 2:
-        Key(EKeys::E,false);if(StageTime<1)break;
+        Key(Host?EKeys::E:EKeys::Gamepad_FaceButton_Left,false);if(StageTime<1)break;
         Check(Toy->Carrier&&(Host?Toy->Carrier==Other:Toy->Carrier==P),TEXT("Nearby guest picks up shared toy; distant host cannot steal it"));
         Next();break;
     case 3:
-        if(!Host){if(First)Key(EKeys::Q,true);else if(StageTime>.2f)Key(EKeys::Q,false);}if(StageTime<1)break;
+        if(!Host){if(First)Key(EKeys::Gamepad_LeftTrigger,true);else if(StageTime>.2f)Key(EKeys::Gamepad_LeftTrigger,false);}if(StageTime<1)break;
         Check(!Toy->Carrier,TEXT("Guest drop is synchronized to both peers"));Key(EKeys::W,true);Next();break;
     case 4:
         if(StageTime<.75f)break;Key(EKeys::W,false);Check(FVector::Dist2D(OwnStart,P->GetActorLocation())>35,TEXT("Keyboard movement works on network owner"));
-        Key(EKeys::LeftShift,true);Next();break;
+        Key(Host?EKeys::LeftShift:EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
     case 5:
-        Axis(EKeys::Gamepad_LeftY,.7f);if(StageTime<1)break;Axis(EKeys::Gamepad_LeftY,0);Key(EKeys::LeftShift,false);Next();break;
+        Axis(EKeys::Gamepad_LeftY,.7f);if(StageTime<1)break;Axis(EKeys::Gamepad_LeftY,0);Key(Host?EKeys::LeftShift:EKeys::Gamepad_FaceButton_Bottom,false);Next();break;
     case 6:
         Axis(EKeys::Gamepad_LeftY,0);if(StageTime<1)break;
         Check(SawRemoteMove,TEXT("Remote movement reached this peer"));Check(SawRemoteRun,TEXT("Remote hurry speed reached this peer"));
@@ -77,11 +77,11 @@ void ACozyCoopController::TickAcceptance(float Delta)
     case 7:
         Axis(EKeys::Gamepad_RightX,.7f);if(StageTime<.6f)break;Axis(EKeys::Gamepad_RightX,0);
         Check(FMath::Abs(FRotator::NormalizeAxis(GetControlRotation().Yaw-OwnStart.X))>5,TEXT("Synthetic right stick orbits owning camera"));
-        Key(EKeys::Gamepad_RightThumbstick,true);Key(EKeys::SpaceBar,true);Key(Host?EKeys::B:EKeys::Gamepad_LeftShoulder,true);Next();break;
+        Key(EKeys::Gamepad_RightThumbstick,true);Key(Host?EKeys::SpaceBar:EKeys::Gamepad_FaceButton_Top,true);Key(Host?EKeys::B:EKeys::Gamepad_LeftShoulder,true);Next();break;
     case 8:
-        Key(EKeys::Gamepad_RightThumbstick,false);Key(EKeys::SpaceBar,false);Key(Host?EKeys::B:EKeys::Gamepad_LeftShoulder,false);
+        Key(EKeys::Gamepad_RightThumbstick,false);Key(Host?EKeys::SpaceBar:EKeys::Gamepad_FaceButton_Top,false);Key(Host?EKeys::B:EKeys::Gamepad_LeftShoulder,false);
         if(StageTime<.2f)break;
-        Check(P->CameraPreset==1,TEXT("Controller camera binding works in co-op"));Check(P->GetCharacterMovement()->IsFalling(),TEXT("Keyboard jump enters replicated falling movement"));Next();break;
+        Check(P->CameraPreset==1,TEXT("Controller camera binding works in co-op"));Check(P->GetCharacterMovement()->IsFalling(),TEXT("Keyboard and controller jump enter replicated falling movement"));Next();break;
     case 9:
         if(StageTime<1.5f)break;Check(P->VoiceCount>0&&SawVoice,TEXT("Both pet voice events replicate"));
         P->ServerVoice();P->ServerVoice(); // same-frame duplicate must be rate limited
@@ -107,6 +107,33 @@ void ACozyCoopController::TickAcceptance(float Delta)
         if(FApp::CanEverRender()){FString Out;FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Out);GetHighResScreenshotConfig().FilenameOverride=FPaths::Combine(Out,Host?TEXT("CoopHost.png"):TEXT("CoopGuest.png"));if(GEngine&&GEngine->GameViewport)GEngine->GameViewport->Viewport->TakeHighResScreenShot();}
         Next();break;
     case 14:
+        if(First){OwnStart=P->GetActorLocation();OtherStart=FVector(GetControlRotation().Yaw,FRotator::NormalizeAxis(GetControlRotation().Pitch),0);}
+        Axis(EKeys::Gamepad_LeftX,.19f);Axis(EKeys::Gamepad_LeftY,-.19f);Axis(EKeys::Gamepad_RightX,.19f);Axis(EKeys::Gamepad_RightY,-.19f);
+        if(StageTime<.8f)break;
+        Check(FVector::Dist2D(OwnStart,P->GetActorLocation())<.5f&&P->GetVelocity().Size2D()<.1f,TEXT("Co-op stick idle noise does not creep"));
+        Check(FMath::Abs(FRotator::NormalizeAxis(GetControlRotation().Yaw-OtherStart.X))<.1f&&FMath::Abs(FRotator::NormalizeAxis(GetControlRotation().Pitch-OtherStart.Y))<.1f,TEXT("Co-op stick idle noise does not orbit"));
+        Axis(EKeys::Gamepad_LeftX,0);Axis(EKeys::Gamepad_LeftY,0);Axis(EKeys::Gamepad_RightX,0);Axis(EKeys::Gamepad_RightY,0);
+        Key(EKeys::Gamepad_RightShoulder,true);Next();break;
+    case 15:
+        Key(EKeys::Gamepad_RightShoulder,false);if(StageTime<.3f)break;
+        Check(FMath::Abs(FRotator::NormalizeAxis(GetControlRotation().Yaw-P->GetActorRotation().Yaw))<1&&FMath::Abs(FRotator::NormalizeAxis(GetControlRotation().Pitch)+12)<1,TEXT("Co-op RB/R1 recenters the owner camera"));
+        Key(EKeys::Gamepad_Special_Right,true);Next();break;
+    case 16:
+        Key(EKeys::Gamepad_Special_Right,false);if(StageTime<.3f)break;
+        Check(MenuOpen,TEXT("Co-op Menu/Options opens the local menu"));
+        OwnStart=P->GetActorLocation();Key(EKeys::Gamepad_FaceButton_Top,true);Key(EKeys::Gamepad_LeftShoulder,true);
+        Key(EKeys::Gamepad_RightTrigger,true);Key(EKeys::Gamepad_LeftThumbstick,true);Next();break;
+    case 17:
+        Axis(EKeys::Gamepad_LeftX,.8f);Axis(EKeys::Gamepad_RightX,.8f);
+        Key(EKeys::Gamepad_FaceButton_Top,false);Key(EKeys::Gamepad_LeftShoulder,false);Key(EKeys::Gamepad_RightTrigger,false);Key(EKeys::Gamepad_LeftThumbstick,false);
+        if(StageTime<.5f)break;
+        Check(MenuOpen&&P->VoiceCount==2&&FVector::Dist2D(OwnStart,P->GetActorLocation())<.5f&&!P->GetCharacterMovement()->IsFalling(),TEXT("Co-op menu blocks gameplay buttons and movement"));
+        Axis(EKeys::Gamepad_LeftX,0);Axis(EKeys::Gamepad_RightX,0);Key(EKeys::Gamepad_FaceButton_Right,true);Next();break;
+    case 18:
+        Key(EKeys::Gamepad_FaceButton_Right,false);if(StageTime<.3f)break;
+        Check(!MenuOpen,TEXT("Co-op B/Circle closes the room menu"));
+        Next();break;
+    case 19:
         if(StageTime<(Host?6.f:2.f))break;
         if(Host){Check(Count==1,TEXT("Guest disconnect removes the remote pawn"));Check(P->PetAvailable(1),TEXT("Disconnected pet becomes available again"));}
         {FString Out;FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Out);auto J=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto S:Passed)Pass.Add(MakeShared<FJsonValueString>(S));for(auto S:Failed)Fail.Add(MakeShared<FJsonValueString>(S));J->SetArrayField(TEXT("passed"),Pass);J->SetArrayField(TEXT("failed"),Fail);J->SetStringField(TEXT("role"),Host?TEXT("listen-server"):TEXT("remote-client"));J->SetStringField(TEXT("input"),TEXT("Synthetic keyboard/gamepad; physical devices and separate-machine LAN unverified"));FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));FFileHelper::SaveStringToFile(Json,*FPaths::Combine(Out,Host?TEXT("coop-host.json"):TEXT("coop-guest.json")));FPlatformMisc::RequestExitWithStatus(false,Failed.IsEmpty()?0:1);Next();}break;
