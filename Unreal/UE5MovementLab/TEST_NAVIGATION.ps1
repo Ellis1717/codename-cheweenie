@@ -10,7 +10,7 @@ foreach($phase in $phases){
     $resume=if($phase -eq 'resume'){' -CheweenieNavigationResume'}elseif($MapFile){' -CheweenieNavigationPrivateAudit -CheweenieNeighbourhood="'+[IO.Path]::GetFullPath($MapFile)+'"'}else{''}
     $info.Arguments=$project+$rhi+' -CheweenieNavigationSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Navigation-'+$phase+'.log"'
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Navigation test timed out'}}
     if($process.ExitCode){throw ('Navigation process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($MapFile){'navigation-private.json'}elseif($phase -eq 'resume'){'navigation-resume.json'}else{'navigation-smoke.json'})

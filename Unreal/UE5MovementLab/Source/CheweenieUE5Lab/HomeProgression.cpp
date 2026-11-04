@@ -1,4 +1,5 @@
 #include "HomeProgression.h"
+#include "HouseUpstairs.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
 #include "MartyCharacter.h"
@@ -88,11 +89,11 @@ FVector UHomeProgression::TrainingGoal() const{return Training==2?Finish:Trainin
 FString UHomeProgression::Prompt() const
 {
     if(!Playing()||!Marty())return FString();const FVector P=Marty()->GetActorLocation();
-    if(InAnnex()&&FVector::Dist2D(P,Exit)<85)return TEXT("E / X-Square: return to headquarters");
-    if(!Mode()->Neighbourhood->Outside&&!InAnnex()&&FVector::Dist2D(P,Portal)<85)return TEXT("E / X-Square: enter the garage and gym");
+    if(InAnnex()&&CheweenieHouse::Near(P,Exit,85))return TEXT("E / X-Square: return to headquarters");
+    if(!Mode()->Neighbourhood->Outside&&!InAnnex()&&CheweenieHouse::Near(P,Portal,85))return TEXT("E / X-Square: enter the garage and gym");
     if(InAnnex()&&FVector::Dist2D(P,BumpTest)<85)return TEXT("E / X-Square: foam harness test (10 test damage, reduced by armor)");
     if(Training>=0)return TrainingObjective()+FString::Printf(TEXT(" | %.0fs"),TrainingRemaining);
-    int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&FVector::Dist2D(P,Bed)<85)Station=4;
+    int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&CheweenieHouse::Near(P,Bed,85))Station=4;
     if(InAnnex()){if(FVector::Dist2D(P,ArmorBench)<90)Station=3;for(int32 I=0;I<3;++I)if(FVector::Dist2D(P,Gym[I])<85)Station=I;}
     if(Station<0)return FString();if(!Enabled())return TEXT("Home upgrades are OFF. Enable Controls > Pet feature switches.");
     if(Station==4)return Resting?TEXT("Resting in Marty's bed | E or movement: get up"):TEXT("E / X-Square: rest in Marty's bed (energy + health)");
@@ -107,10 +108,10 @@ void UHomeProgression::Travel(bool Enter)
 bool UHomeProgression::Interact()
 {
     Initialize();if(!Playing()||!Ready||Marty()->Life->Busy())return false;auto* P=Marty();const FVector Here=P->GetActorLocation();
-    if(InAnnex()&&FVector::Dist2D(Here,Exit)<85){Travel(false);return true;}
-    if(!Mode()->Neighbourhood->Outside&&!InAnnex()&&FVector::Dist2D(Here,Portal)<85){Travel(true);return true;}
+    if(InAnnex()&&CheweenieHouse::Near(Here,Exit,85)){Travel(false);return true;}
+    if(!Mode()->Neighbourhood->Outside&&!InAnnex()&&CheweenieHouse::Near(Here,Portal,85)){Travel(true);return true;}
     if(InAnnex()&&FVector::Dist2D(Here,BumpTest)<85){if(!Enabled()||!Mode()->Adventure->Feature(ECozyFeature::Health)){Tell(TEXT("Enable home upgrades and health to try the foam safety test."));return true;}if(BumpCooldown>0){Tell(TEXT("The foam tester is resetting. No extra damage taken."));return true;}const float Before=Data()->PetHealth;P->TakeDamage(10,FDamageEvent(),nullptr,nullptr);BumpCooldown=6;Tell(FString::Printf(TEXT("Foam test: %.1f damage taken; shield blocked %.1f. Bed rest or food restores health."),Before-Data()->PetHealth,10-(Before-Data()->PetHealth)));return true;}
-    int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&FVector::Dist2D(Here,Bed)<85)Station=4;
+    int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&CheweenieHouse::Near(Here,Bed,85))Station=4;
     if(InAnnex()){if(FVector::Dist2D(Here,ArmorBench)<90)Station=3;for(int32 I=0;I<3;++I)if(FVector::Dist2D(Here,Gym[I])<85)Station=I;}
     if(Station<0)return false;if(!Enabled()){Tell(TEXT("Enable Home upgrades & reactions in Controls > Pet feature switches."));return true;}
     if(Station==4){if(P->GetCharacterMovement()->IsFalling())return true;P->Life->StopWatching();P->Life->Activity=EDogActivity::Lying;P->GetCharacterMovement()->StopMovementImmediately();Resting=true;RestTime=0;Tell(TEXT("Cheeween Cozy: a proper bed break. Rest three seconds for a Rested bonus."),TEXT("Cozy"));return true;}
@@ -144,7 +145,7 @@ void UHomeProgression::OnSkill(int32 Skill)
 {
     if(!Playing()||!Enabled()||Skill<0||Skill>3)return;
     auto* C=Mode()->Companions.Get();int32 Witness=-1;
-    if(C&&C->Enabled())for(int32 I=0;I<2;++I)if(C->Cats[I].Actor.IsValid()&&C->Outdoors(I)==Mode()->Neighbourhood->Outside&&FVector::Dist2D(Marty()->GetActorLocation(),C->Position(I))<180){Witness=I;break;}
+    if(C&&C->Enabled())for(int32 I=0;I<2;++I)if(C->Cats[I].Actor.IsValid()&&C->Outdoors(I)==Mode()->Neighbourhood->Outside&&CheweenieHouse::Near(Marty()->GetActorLocation(),C->Position(I),180)){Witness=I;break;}
     if(Witness<0&&InAnnex()&&Marty()->GetActorLocation().X>8320)Witness=2;
     if(Witness>=0)Praise(Witness,Skill);
     if(Training>=0&&Training<2&&Skill==(Training==0?2:1)&&FVector::Dist2D(Marty()->GetActorLocation(),Gym[Training])<160)FinishTraining();

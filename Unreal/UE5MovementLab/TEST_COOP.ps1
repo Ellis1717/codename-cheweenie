@@ -14,7 +14,7 @@ try {
         $info.Arguments=$project+$url+' -game '+$rhi+' -port='+$Port+' -CheweenieCoopSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/'+$role+'.log"'
         if($Ratchet){$info.Arguments+=' -CheweenieRatchetLan'}
         $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-        $processes+= [Diagnostics.Process]::Start($info)
+        $processes+= $( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
         if($role -eq 'host'){
             $deadline=[DateTime]::UtcNow.AddSeconds(60)
             while(!(Test-Path (Join-Path $OutputRoot 'host.log')) -or !(Select-String -LiteralPath (Join-Path $OutputRoot 'host.log') -Pattern 'IpNetDriver.*listening on port' -Quiet)) {

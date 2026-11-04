@@ -1,8 +1,15 @@
 #include "MartyCharacter.h"
 #include "DogLife.h"
+#include "DigVisuals.h"
+#include "RainbowGuy.h"
+#include "EngineUtils.h"
+#include "Engine/StaticMeshActor.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/HUD.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputKeyEventArgs.h"
 #include "Kismet/GameplayStatics.h"
@@ -19,6 +26,7 @@ void AMartyPlayMode::TickLifeSmoke(float Delta)
 {
     SmokeTime+=Delta;auto* PC=GetWorld()->GetFirstPlayerController();auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
     if(!P||!P->Life||!Adventure||!Adventure->Progress)return;auto* L=P->Life.Get();auto* D=Adventure->Progress.Get();
+    auto* DigArt=P->FindComponentByClass<UDigVisuals>();
     FString Root=FPaths::ProjectSavedDir();FParse::Value(FCommandLine::Get(),TEXT("CheweenieTestOutput="),Root);
     auto Key=[PC](FKey K,bool Down){PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
     auto Next=[this](){++SmokeStage;SmokeTime=0;};
@@ -39,7 +47,9 @@ void AMartyPlayMode::TickLifeSmoke(float Delta)
         {
             SmokeCheck(D->PetEnergy>40&&D->PetEnergy<45,TEXT("Energy reloads in a second process"));
             SmokeCheck(D->CarryItem==1&&D->ItemHoles[0]==0,TEXT("Carried pebble and buried ball reload without duplication"));
+            SmokeCheck(D->ItemHoles.Num()==CheweenieToyCount&&D->BagItems.Contains(RainbowGuyItem),TEXT("Rainbow Guy reloads in the backpack alongside the original treasures"));
             SmokeCheck(D->HoleDepths[0]==3&&D->PetTVOn,TEXT("Dug hole and TV state persist"));
+            SmokeCheck(DigArt&&DigArt->VisibleDepth(0)==3&&DigArt->Covered(0),TEXT("Deep hole graphics and the buried mound rebuild from the saved state"));
             SmokeCheck(L->Activity==EDogActivity::Idle&&Adventure->Screen==ECozyScreen::Title,TEXT("Transient actions do not resume on the title screen"));
             Key(EKeys::Enter,true);Next();
         }
@@ -61,7 +71,11 @@ void AMartyPlayMode::TickLifeSmoke(float Delta)
     case 3:
         if(SmokeTime>.4){SmokeCheck(L->Mood()==TEXT("Normal"),TEXT("Rested Marty has a normal mood"));Key(EKeys::Gamepad_FaceButton_Left,true);Next();}break;
     case 4:
-        if(SmokeTime>.2){Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(D->CarryItem==0&&L->Mood()==TEXT("Excited"),TEXT("Controller picks up the ball and makes Marty excited"));Neighbourhood->GoOutside(P);Place(L->Patches[0]+FVector(0,0,35));Next();}break;
+        if(SmokeTime>.2)
+        {
+            Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(D->CarryItem==0&&L->Mood()==TEXT("Excited"),TEXT("Controller picks up the ball and makes Marty excited"));Neighbourhood->GoOutside(P);Place(L->Patches[0]+FVector(-48,0,35));
+            auto* Camera=GetWorld()->SpawnActor<ACameraActor>(L->Patches[0]+FVector(-145,-175,145),(L->Patches[0]+FVector(0,0,12)-(L->Patches[0]+FVector(-145,-175,145))).Rotation());Camera->GetCameraComponent()->FieldOfView=60;PC->SetViewTarget(Camera);Next();
+        }break;
     case 5:
     case 7:
     case 9:
@@ -70,25 +84,36 @@ void AMartyPlayMode::TickLifeSmoke(float Delta)
     case 8:
     case 10:
         if(SmokeTime>.1)Key(EKeys::F,false);
-        if(SmokeStage==10&&SmokeTime>.3&&!SmokeMoving){Shot(TEXT("LifeDig.png"));SmokeMoving=true;}
+        if(SmokeStage==10&&SmokeTime>.3&&!SmokeMoving){SmokeCheck(DigArt&&DigArt->FlyingClods()==18&&DigArt->StrokeProgress()>0,TEXT("Animated soil clods and a progress gauge follow the timed paw action"));Shot(TEXT("LifeDig.png"));SmokeMoving=true;}
         if(SmokeTime>1.2)
         {
             const int32 Expected=(SmokeStage-4)/2;
             SmokeCheck(D->HoleDepths[0]==Expected,FString::Printf(TEXT("Timed digging advances hole to depth %d"),Expected));
+            SmokeCheck(DigArt&&DigArt->VisibleDepth(0)==Expected&&DigArt->BottomElevation(0)<L->Patches[0].Z-Expected*9,FString::Printf(TEXT("Depth %d lowers the bottom beneath the original ground surface"),Expected));
+            FHitResult PitFloor;FCollisionQueryParams PitQuery(SCENE_QUERY_STAT(DigDepthAcceptance),false,P);
+            const bool HitFloor=GetWorld()->LineTraceSingleByChannel(PitFloor,L->Patches[0]+FVector(0,0,100),L->Patches[0]-FVector(0,0,100),ECC_Visibility,PitQuery);
+            SmokeCheck(HitFloor&&PitFloor.ImpactPoint.Z<L->Patches[0].Z-Expected*9,FString::Printf(TEXT("Depth %d collision trace reaches the excavated floor below ground"),Expected));
+            Shot(Expected==1?TEXT("DigShallow.png"):Expected==2?TEXT("DigMedium.png"):TEXT("DigDeep.png"));
             if(SmokeStage==10){SmokeCheck(D->PetEnergy<66,TEXT("Digging consumes energy"));SmokeMoving=false;}
             Next();
         }break;
     case 11:
         if(SmokeTime>.2){Key(EKeys::E,true);Next();}break;
     case 12:
-        if(SmokeTime>.2){Key(EKeys::E,false);SmokeCheck(D->CarryItem==-1&&D->ItemHoles[0]==0,TEXT("Interact buries the carried ball in the open hole"));Key(EKeys::Gamepad_RightTrigger,true);Next();}break;
+        if(SmokeTime>.2){Key(EKeys::E,false);SmokeCheck(D->CarryItem==-1&&D->ItemHoles[0]==0,TEXT("Interact buries the carried ball in the open hole"));SmokeCheck(DigArt&&DigArt->Covered(0),TEXT("Burying the toy visibly covers the opening with a dirt mound"));Shot(TEXT("DigBuried.png"));Key(EKeys::Gamepad_RightTrigger,true);Next();}break;
     case 13:
         if(SmokeTime>.1)Key(EKeys::Gamepad_RightTrigger,false);
-        if(SmokeTime>1.2){SmokeCheck(D->ItemHoles[0]==-1,TEXT("Controller digging recovers buried treasure"));Key(EKeys::E,true);Next();}break;
+        if(SmokeTime>1.2){SmokeCheck(D->ItemHoles[0]==-1,TEXT("Controller digging recovers buried treasure"));SmokeCheck(DigArt&&!DigArt->Covered(0)&&DigArt->VisibleDepth(0)==3,TEXT("Recovery removes the filled mound and reopens the saved deep hole"));Place(L->Patches[0]+FVector(30,0,35));Key(EKeys::E,true);Next();}break;
     case 14:
-        if(SmokeTime>.2){Key(EKeys::E,false);SmokeCheck(D->CarryItem==0,TEXT("Recovered ball can be picked up again"));Key(EKeys::Q,true);Next();}break;
+        if(SmokeTime>.2){Key(EKeys::E,false);SmokeCheck(D->CarryItem==0,TEXT("Recovered ball can be picked up again"));Adventure->ToggleFeature(ECozyFeature::WorldLabels);Adventure->ToggleFeature(ECozyFeature::Dig);Key(EKeys::Q,true);Next();}break;
     case 15:
-        if(SmokeTime>.2){Key(EKeys::Q,false);SmokeCheck(D->CarryItem==-1&&D->ItemHoles[0]==-1,TEXT("Dropping releases the toy without burying or duplicating it"));Key(EKeys::E,true);Next();}break;
+        if(SmokeTime>.2)
+        {
+            Key(EKeys::Q,false);SmokeCheck(D->CarryItem==-1&&D->ItemHoles[0]==-1,TEXT("Dropping releases the toy without burying or duplicating it"));
+            SmokeCheck(DigArt&&!DigArt->WorldLabelVisible(0)&&DigArt->VisibleDepth(0)==3,TEXT("World-label feature hides the depth sign while retaining excavated geometry"));
+            L->Dig();SmokeCheck(L->Activity==EDogActivity::Idle&&DigArt&&DigArt->FlyingClods()==0,TEXT("Dig feature off prevents digging effects and preserves the idle pose"));
+            Adventure->ToggleFeature(ECozyFeature::WorldLabels);Adventure->ToggleFeature(ECozyFeature::Dig);Key(EKeys::E,true);Next();
+        }break;
     case 16:
         if(SmokeTime>.2){Key(EKeys::E,false);Next();}break;
     case 17:
@@ -132,6 +157,58 @@ void AMartyPlayMode::TickLifeSmoke(float Delta)
     case 33:
         if(SmokeTime>.2){Key(EKeys::E,false);SmokeCheck(D->CarryItem==1&&D->ItemHoles[0]==0,TEXT("Another item can be carried while the first stays buried"));D->PetEnergy=42;Adventure->Save();Next();}break;
     case 34:
-        if(SmokeTime>.2)Finish(false);break;
+        if(SmokeTime>.2){D->CarryItem=-1;P->ReturnHome();Place(FVector(70,-310,35));Key(EKeys::E,true);Next();}break;
+    case 35:
+        if(SmokeTime>.2)
+        {
+            Key(EKeys::E,false);
+            SmokeCheck(D->CarryItem==RainbowGuyItem&&L->Status().Contains(TEXT("Rainbow Guy")),TEXT("Keyboard picks up Rainbow Guy by name"));
+            L->Stow();SmokeCheck(D->BagItems.Contains(RainbowGuyItem)&&L->BackpackText().Contains(TEXT("Rainbow Guy")),TEXT("Rainbow Guy stows with the correct backpack name"));
+            L->Retrieve();SmokeCheck(D->CarryItem==RainbowGuyItem&&!D->BagItems.Contains(RainbowGuyItem),TEXT("Rainbow Guy retrieves without duplication"));
+            Key(EKeys::Gamepad_LeftTrigger,true);Next();
+        }break;
+    case 36:
+        if(SmokeTime>.2){Key(EKeys::Gamepad_LeftTrigger,false);SmokeCheck(D->CarryItem==-1&&D->ItemHoles[RainbowGuyItem]==-1,TEXT("Controller drops Rainbow Guy"));Key(EKeys::Gamepad_FaceButton_Left,true);Next();}break;
+    case 37:
+        if(SmokeTime>.2)
+        {
+            Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(D->CarryItem==RainbowGuyItem,TEXT("Controller picks Rainbow Guy back up"));
+            Neighbourhood->GoOutside(P);Place(L->Patches[1]+FVector(0,0,35));D->HoleDepths[1]=3;L->Interact();
+            SmokeCheck(D->ItemHoles[RainbowGuyItem]==1&&D->ItemHoles[0]==0&&D->CarryItem==-1,TEXT("Rainbow Guy buries independently of the saved ball"));
+            L->Dig();Next();
+        }break;
+    case 38:
+        if(SmokeTime>1.2){SmokeCheck(D->ItemHoles[RainbowGuyItem]==-1,TEXT("Digging recovers Rainbow Guy"));Place(L->Patches[1]+FVector(65,0,35));Key(EKeys::E,true);Next();}break;
+    case 39:
+        if(SmokeTime>.2)
+        {
+            Key(EKeys::E,false);SmokeCheck(D->CarryItem==RainbowGuyItem,TEXT("Recovered Rainbow Guy remains carryable"));L->Stow();
+            AStaticMeshActor* Toy=nullptr;for(TActorIterator<AStaticMeshActor> It(GetWorld());It;++It)if(It->ActorHasTag(TEXT("Rainbow Guy")))Toy=*It;
+            SmokeCheck(Toy&&Toy->IsHidden(),TEXT("Whole Rainbow Guy model hides in the backpack"));
+            L->Retrieve();L->Drop();
+            if(Toy)
+            {
+                const FVector Focus=Toy->GetActorLocation();auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Focus+FVector(-24,-32,85),(Focus-(Focus+FVector(-24,-32,85))).Rotation());
+                Camera->GetCameraComponent()->FieldOfView=55;PC->SetViewTarget(Camera);
+                if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;
+            }
+            Next();
+        }break;
+    case 40:
+        if(SmokeTime>2){Shot(TEXT("RainbowGuy.png"));Next();}break;
+    case 41:
+        if(SmokeTime>.5){L->Interact();L->Stow();D->CarryItem=1;D->PetEnergy=42;Adventure->Save();Neighbourhood->GoOutside(P);Place(L->Patches[1]+FVector(0,0,35));Next();}break;
+    case 42:
+        if(SmokeTime>1)
+        {
+            SmokeCheck(P->GetActorLocation().Z<L->Patches[1].Z+20&&P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Marty settles physically into the excavated pit below the surrounding lawn"));
+            PC->SetControlRotation(FRotator(-12,0,0));Key(EKeys::W,true);Next();
+        }break;
+    case 43:
+        if(SmokeTime>1.6)
+        {
+            Key(EKeys::W,false);SmokeCheck(P->GetActorLocation().X>L->Patches[1].X+70&&P->GetActorLocation().Z>L->Patches[1].Z+24&&P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Keyboard walks Marty out of the real pit onto the lawn without jumping"));
+            D->PetEnergy=42;Adventure->Save();Finish(false);
+        }break;
     }
 }

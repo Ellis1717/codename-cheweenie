@@ -1,0 +1,12 @@
+{
+	"passed": [
+		"Ratchet starts locked on a fresh checkpoint",
+		"Locked controller selection explains the Cozy Patrol requirement without travelling",
+		"Real final patrol interaction permanently unlocks Ratchet",
+		"Unlock presents the gentle welcome-home message",
+		"Earned unlock is written to the isolated checkpoint",
+		"Starting a new patrol preserves the earned character"
+	],
+	"failed": [],
+	"scope": "Actual map/travel with synthetic keyboard/gamepad and isolated completion/save fixtures. Static first-pass Ratchet model; physical controllers unverified."
+}

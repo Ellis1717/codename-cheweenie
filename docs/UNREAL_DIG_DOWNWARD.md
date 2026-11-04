@@ -1,0 +1,17 @@
+# Digging goes below ground
+
+The raised-soil prototype has been replaced: a dig now opens the ground and lowers the actual pit floor to approximately **10, 20 and 30 cm below the surrounding surface**. Only loose spoil remains above ground. Burial fills the opening; recovery opens it again. Existing hole stages and toy saves are retained.
+
+At runtime the three dig sites cut apertures through the broad ground slabs, park lawn and underlying visual backdrop. The retained source actors/assets stay intact. Rectangular ground pieces preserve the rest of each slab, and local procedural mesh collars close the openings around circular soil walls. Ground materials are reused. The pit walls and bottom have collision, with slopes intended for Marty to walk out without jumping.
+
+The implementation uses Unreal's bundled **ProceduralMeshComponent** plugin. It adds no paid dependency or third-party source. The standalone desktop package, Unity fallback, content-only preview and LAN room are unchanged.
+
+Native Editor compilation passed. Final-build acceptance passed **45 rendered life + seven restart + 14 rendered world + 12 outdoor + 16 movement assertions = 94**. Each depth has both a below-ground geometry check and an actual downward collision trace; Marty settles physically into the deep pit and walks out using keyboard movement without jumping. Digging/recovery also uses synthetic gamepad bindings. An additional **203 home/navigation/upstairs/overlay regression assertions** passed before the final lighting-flag and grass-collar polish, for **297 selected checks** overall.
+
+Five final captures were reviewed: [shallow](screenshots/ue5-dig-downward-shallow.png), [medium](screenshots/ue5-dig-downward-medium.png), [deep](screenshots/ue5-dig-downward-deep.png), [digging action](screenshots/ue5-dig-downward-action.png), and [buried toy](screenshots/ue5-dig-downward-buried.png). Replacement ground pieces inherit the original lighting flags, resolving a Lumen atlas warning visible during the initial pass. The final reviewed captures have no such warning. Selected final/current runtime logs contained zero Error/Fatal/material fallback/VSM overflow matches.
+
+The initial headless world run passed 12 checks and failed two texture checks; the rendered rerun passed all 14. Shared-engine compiles repeatedly held up SDK queries at test startup. After native compilation validated the SDK, movement/outdoor test launches use Unreal's supported `-Multiprocess` flag to avoid redundant SDK queries; both reruns passed. Normal-game launch arguments and SaveGame persistence are unchanged. Startup-only aborted/timed-out attempts are not counted as gameplay passes. See [initial results and retries](evidence/ue5-dig-downward-initial.json).
+
+Reproduce with `BUILD.ps1`, `TEST_LIFE.ps1 -Render -OutputRoot ./Unreal/UE5MovementLab/Saved/DigGraphics`, `TEST_WORLD.ps1 -Render`, `TEST_OUTSIDE.ps1`, and `TEST.ps1` under `Unreal/UE5MovementLab`. See [final life](evidence/ue5-dig-downward-life.json), [restart](evidence/ue5-dig-downward-resume.json), [world](evidence/ue5-dig-downward-world.json), [outdoor](evidence/ue5-dig-downward-outside.json), and [full results/source hashes](evidence/ue5-dig-downward-build.json).
+
+Input was synthetic keyboard/gamepad with position/energy fixtures. Physical controllers, comparative performance and a new desktop package remain unverified. The mixed checkout and concurrent external builds were retained; no PR was opened from this checkout.

@@ -8,7 +8,7 @@ import wave
 
 root = pathlib.Path(sys.argv[1])
 report = {}
-for name in ('Barks', 'Music', 'Muted'):
+for name in ('Barks', 'Music', 'Muted', 'RainbowSqueak'):
     with wave.open(str(root / (name + '.wav')), 'rb') as wav:
         assert wav.getsampwidth() == 2, 'Expected 16-bit master capture'
         samples = array.array('h', wav.readframes(wav.getnframes()))

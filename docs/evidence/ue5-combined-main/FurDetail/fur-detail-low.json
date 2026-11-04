@@ -1,0 +1,10 @@
+{
+	"scope": "Real map; synthetic keyboard/gamepad with menu-selection and progress fixtures; three-process isolated save checks. Physical controllers unverified.",
+	"passed": [
+		"Low setting reloads while remembering the preferred enabled coat",
+		"Low reload selects the actual smooth coat",
+		"Legacy coat-on switch restores Medium with a valid rig",
+		"Quality switches retain existing patrol and sound state"
+	],
+	"failed": []
+}

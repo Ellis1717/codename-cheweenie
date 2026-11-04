@@ -13,7 +13,7 @@ try {
         if($ArchiveIndex){$info.Arguments+=' -CheweenieArchiveIndex="'+$ArchiveIndex+'"'}
         if($Lan){$info.Arguments+=' -CheweenieHubLan'};if($role-eq 'guest'){$info.Arguments+=' -CheweenieHubGuest'}
         $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']='D:/CheweenieValidation/UE5Cache'
-        $processes+=[Diagnostics.Process]::Start($info)
+        $processes+=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
         if($role-eq 'host'){
             $deadline=[DateTime]::UtcNow.AddMinutes(6)
             while(!(Test-Path -LiteralPath (Join-Path $OutputRoot 'host.log')) -or !(Select-String -LiteralPath (Join-Path $OutputRoot 'host.log') -Pattern ('IpNetDriver.*listening on port '+$Port) -Quiet)){

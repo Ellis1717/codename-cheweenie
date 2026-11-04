@@ -7,7 +7,7 @@ $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.upro
 $rhi=if($Render){'-dx12 -RenderOffscreen -windowed -ForceRes -ResX=1280 -ResY=720'}else{'-nullrhi'}
 $info.Arguments=$project+$rhi+' -CheweenieTricksSmoke -CheweenieTrickModifierSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -AbsLog="'+$OutputRoot+'/Modifier.log"'
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']='D:/CheweenieValidation/UE5Cache'
-$started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+$started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
 while(!$process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes-gt 10){$process.Kill();throw 'Modifier acceptance timed out.'}}
 $path=Join-Path $OutputRoot 'trick-modifier.json'
 if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $started){throw 'Modifier report missing or stale.'}

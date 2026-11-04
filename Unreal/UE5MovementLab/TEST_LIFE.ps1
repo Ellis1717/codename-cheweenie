@@ -9,13 +9,13 @@ foreach($phase in @('play','resume')){
     $resume=if($phase -eq 'resume'){' -CheweenieLifeResume'}else{''}
     $info.Arguments=$project+$rhi+' -CheweenieLifeSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Life-'+$phase+'.log"'
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Pet life test timed out'}}
     if($process.ExitCode){throw ('Pet life process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'life-resume.json'}else{'life-smoke.json'})
     if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Pet life report missing/stale'}
-    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){5}else{23}
+    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){7}else{45}
     if($result.failed.Count -or $result.passed.Count -lt $minimum){throw ('Pet life checks failed: '+$phase)}
-    if($Render -and $phase -eq 'play'){foreach($name in @('LifeDig.png','LifeKitchen.png','LifeJump.png','LifeCouchTV.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
+    if($Render -and $phase -eq 'play'){foreach($name in @('LifeDig.png','DigShallow.png','DigMedium.png','DigDeep.png','DigBuried.png','LifeKitchen.png','LifeJump.png','LifeCouchTV.png','RainbowGuy.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
     $phase+': '+$result.passed.Count+' passes'
 }

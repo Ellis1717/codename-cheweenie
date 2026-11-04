@@ -8,7 +8,7 @@ $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.upro
 $rhi=if($Render){"-dx12 -RenderOffscreen -ForceRes -windowed -ResX=$Width -ResY=$Height"}else{'-nullrhi'}
 $info.Arguments=$project+$rhi+' -CheweenieGaitSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Gait.log"'
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-$started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+$started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
 while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Gait test timed out'}}
 if($process.ExitCode){throw ('Gait test failed: '+$process.ExitCode)}
 $report=Join-Path $OutputRoot 'marty-gait.json'

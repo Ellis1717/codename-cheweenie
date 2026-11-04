@@ -7,8 +7,8 @@ $ZipPath=[IO.Path]::GetFullPath($ZipPath)
 $partial=$ZipPath+'.partial'
 if((Test-Path -LiteralPath $ZipPath) -or (Test-Path -LiteralPath $partial)){throw 'Archive destination already exists; choose a new name.'}
 $gate=Get-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json') -Raw|ConvertFrom-Json
-$minimum=if($gate.overlaysVerified){689}else{607}
-if($gate.version -ne 'Unified-0.13.1' -or !$gate.rendered -or $gate.checks -lt $minimum -or !$gate.files.Count){throw 'A validated 0.13.1 distribution is required.'}
+$minimum=if($gate.version -eq 'Unified-0.14.0'){824}elseif($gate.overlaysVerified){689}else{607}
+if($gate.version -notin @('Unified-0.13.1','Unified-0.14.0') -or !$gate.rendered -or $gate.checks -lt $minimum -or !$gate.files.Count){throw 'A validated cumulative distribution is required.'}
 $windows=[IO.Path]::GetFullPath((Join-Path $PackageRoot 'Windows')).TrimEnd('\','/')
 $entries=@()
 foreach($file in $gate.files){

@@ -1,0 +1,97 @@
+{
+  "scope": "Successful downward-pit physics run before the final terrain lighting-flag/collar polish",
+  "editor_dll_sha256": "2D99018B2591ADA4117A78FC6125CCEE918E4A3839116C712DF08745E128B617",
+  "life": {
+    "scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+    "passed": [
+      "Three dig patches and compatible default energy initialize",
+      "Low energy makes Marty tired and slows his walk",
+      "Tired Marty cannot hurry",
+      "Rested Marty has a normal mood",
+      "Controller picks up the ball and makes Marty excited",
+      "Timed digging advances hole to depth 1",
+      "Depth 1 lowers the bottom beneath the original ground surface",
+      "Depth 1 collision trace reaches the excavated floor below ground",
+      "Timed digging advances hole to depth 2",
+      "Depth 2 lowers the bottom beneath the original ground surface",
+      "Depth 2 collision trace reaches the excavated floor below ground",
+      "Animated soil clods and a progress gauge follow the timed paw action",
+      "Timed digging advances hole to depth 3",
+      "Depth 3 lowers the bottom beneath the original ground surface",
+      "Depth 3 collision trace reaches the excavated floor below ground",
+      "Digging consumes energy",
+      "Interact buries the carried ball in the open hole",
+      "Burying the toy visibly covers the opening with a dirt mound",
+      "Controller digging recovers buried treasure",
+      "Recovery removes the filled mound and reopens the saved deep hole",
+      "Recovered ball can be picked up again",
+      "Dropping releases the toy without burying or duplicating it",
+      "World-label feature hides the depth sign while retaining excavated geometry",
+      "Dig feature off prevents digging effects and preserves the idle pose",
+      "Dropped toy can be picked up and buried again",
+      "Eating kitchen food restores energy and excitement",
+      "Food cooldown prevents instant repeated meals",
+      "Space performs a real physics jump",
+      "Jumping spends energy",
+      "Assisted controller hop lands on the real sofa collider",
+      "Watching original TV on the couch restores energy",
+      "Pause freezes pet energy and action timers",
+      "Walking away stops TV rest",
+      "Another item can be carried while the first stays buried",
+      "Keyboard picks up Rainbow Guy by name",
+      "Rainbow Guy stows with the correct backpack name",
+      "Rainbow Guy retrieves without duplication",
+      "Controller drops Rainbow Guy",
+      "Controller picks Rainbow Guy back up",
+      "Rainbow Guy buries independently of the saved ball",
+      "Digging recovers Rainbow Guy",
+      "Recovered Rainbow Guy remains carryable",
+      "Whole Rainbow Guy model hides in the backpack",
+      "Marty settles physically into the excavated pit below the surrounding lawn",
+      "Keyboard walks Marty out of the real pit onto the lawn without jumping"
+    ],
+    "failed": []
+  },
+  "resume": {
+    "scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+    "passed": [
+      "Energy reloads in a second process",
+      "Carried pebble and buried ball reload without duplication",
+      "Rainbow Guy reloads in the backpack alongside the original treasures",
+      "Dug hole and TV state persist",
+      "Deep hole graphics and the buried mound rebuild from the saved state",
+      "Transient actions do not resume on the title screen",
+      "Continue keeps the carried item at home"
+    ],
+    "failed": []
+  },
+  "headless_world": {
+    "passed": [
+      "Marty remains grounded on the retained room floor",
+      "Seven detailed room mesh batches are present",
+      "Detailed room surfaces retain existing collision via visual-only overlays",
+      "FBX handedness correction aligns sofa with tested gameplay coordinates",
+      "Original leafy park trees and bench replace primitive silhouettes",
+      "Brick roughness map uses linear data",
+      "Keyboard movement traverses the detailed room",
+      "Headquarters door travel still reaches the neighbourhood",
+      "Grass batch has no collision or actor tick",
+      "Park grass is drawn in one 640-instance batch",
+      "Return-home recovery restores the detailed indoor room",
+      "Synthetic controller camera switching remains available"
+    ],
+    "failed": [
+      "Oak uses a 2K colour-managed base map",
+      "Fabric normal map uses linear normal data"
+    ],
+    "input": "Synthetic keyboard/gamepad; physical hardware unverified",
+    "frame_scope": "Offscreen DX12 frame intervals on this machine; not GPU timings, a baseline comparison or a playable-frame-rate benchmark"
+  },
+  "notes": [
+    "45 rendered life assertions and seven restart assertions passed.",
+    "The headless world run passed 12 checks and failed two texture-dimension/format checks; a rendered rerun is required.",
+    "Two earlier validation launches were stopped before gameplay to correct triangle winding.",
+    "First header rebuild failed on stale generated Rings metadata; regeneration and native builds passed.",
+    "Concurrent external-checkout Unreal builds held the shared build lock; those processes were retained."
+  ]
+}

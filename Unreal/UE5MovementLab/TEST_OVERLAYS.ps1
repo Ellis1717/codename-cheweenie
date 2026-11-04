@@ -11,7 +11,7 @@ foreach($phase in @('main','resume')){
     if($phase-eq 'resume'){$info.Arguments+=' -CheweenieOverlayResume'}
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true
     $info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     try{while(!$process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes-gt 8){throw 'Overlay acceptance timed out.'}}}
     finally{if(!$process.HasExited){$process.Kill()}}
     $path=Join-Path $root 'overlay-smoke.json'

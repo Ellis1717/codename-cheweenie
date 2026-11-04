@@ -9,7 +9,7 @@ foreach($phase in @('play','resume')){
     $resume=if($phase -eq 'resume'){' -CheweenieCompanionResume'}else{''}
     $info.Arguments=$project+$rhi+' -CheweenieCompanionSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Companion-'+$phase+'.log"'
     if($MapFile){$info.Arguments+=' -CheweenieNeighbourhood="'+[IO.Path]::GetFullPath($MapFile)+'"'};$info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Companion test timed out'}}
     if($process.ExitCode){throw ('Companion process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'companions-resume.json'}else{'companions-smoke.json'})

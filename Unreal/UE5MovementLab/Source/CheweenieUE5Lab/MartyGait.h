@@ -33,6 +33,7 @@ public:
     static FVector SolveKnee(FVector Hip,FVector Foot,float Upper,float Lower,float BendDirection);
     void ResetContacts();
     FVector MouthWorld() const;
+    float DigStrokePhase() const { return Time*18; }
 private:
     UPROPERTY() TObjectPtr<USkinnedAsset> BoundRig;
     void RefreshRig();

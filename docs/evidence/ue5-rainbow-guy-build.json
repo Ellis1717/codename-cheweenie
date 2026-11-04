@@ -1,0 +1,22 @@
+{
+  "engine": "Unreal Engine 5.8.4",
+  "scope": "Native solo adventure; original stylized primitive model guided by owner photograph",
+  "editor_build": "passed",
+  "life_rendered_passed": 32,
+  "life_restart_passed": 6,
+  "movement_passed": 16,
+  "input": "Synthetic keyboard and gamepad; teleported location and needs fixtures",
+  "physical_controllers": "unverified",
+  "desktop_package": "unchanged",
+  "unity": "unchanged",
+  "notes": [
+    "First sandbox runtime could not start Zen asset cache; elevated run passed.",
+    "Existing NaturalPetAudio includes moved below matching headers in CozyAdventure.cpp and CozyCoop.cpp to satisfy native build order.",
+    "Mixed pre-existing checkout retained; no PR opened."
+  ],
+  "reports": [
+    "ue5-rainbow-guy-life.json",
+    "ue5-rainbow-guy-resume.json",
+    "ue5-rainbow-guy-movement.json"
+  ]
+}

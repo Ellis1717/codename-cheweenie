@@ -10,7 +10,7 @@ $rhi=if($Render -and $phase -eq 'play'){"-dx12 -RenderOffscreen -ForceRes -windo
 $flag=if($phase-eq 'medium'){' -CheweenieFurDetailMedium'}elseif($phase-eq 'low'){' -CheweenieFurDetailLow'}else{''}
 $info.Arguments=$project+$rhi+' -CheweenieFurDetailSmoke'+$flag+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/FurDetail-'+$phase+'.log"'
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-$started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+$started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
 while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes-gt 10){$process.Kill();throw 'Fur detail test timed out'}}
 if($process.ExitCode){throw ('Fur detail test failed: '+$process.ExitCode)}
 $name=if($phase-eq 'play'){'fur-detail.json'}else{'fur-detail-'+$phase+'.json'}

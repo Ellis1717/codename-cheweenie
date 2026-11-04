@@ -1,4 +1,7 @@
 #include "DogLife.h"
+#include "DigVisuals.h"
+#include "HouseUpstairs.h"
+#include "RainbowGuy.h"
 #include "HomeProgression.h"
 #include "MartyCharacter.h"
 #include "MartyGait.h"
@@ -25,12 +28,12 @@ bool UDogLife::Allows(ECozyFeature Id) const{return !Session()||Session()->Featu
 bool UDogLife::Busy() const{return Activity==EDogActivity::Digging||Activity==EDogActivity::Eating||Activity==EDogActivity::CouchHop||Activity==EDogActivity::Rolling||Activity==EDogActivity::Shaking;}
 bool UDogLife::OnCouch() const
 {
-    const FVector P=Pawn()->GetActorLocation();return P.X>250&&P.X<385&&P.Y> -220&&P.Y<205&&P.Z>90&&Pawn()->GetCharacterMovement()->IsMovingOnGround();
+    const FVector P=Pawn()->GetActorLocation();return P.X>250&&P.X<385&&P.Y> -220&&P.Y<205&&P.Z>90&&P.Z<180&&Pawn()->GetCharacterMovement()->IsMovingOnGround();
 }
 FString UDogLife::Mood() const{return Energy()<25?TEXT("Tired"):Excitement>0?TEXT("Excited"):TEXT("Normal");}
 FString UDogLife::Status() const
 {
-    const auto* D=Data();FString Carry=D&&D->CarryItem>=0?(D->CarryItem==0?TEXT("tennis ball"):TEXT("treasure pebble")):TEXT("nothing");
+    const auto* D=Data();FString Carry=CheweenieToyName(D?D->CarryItem:-1);
     return (Allows(ECozyFeature::Energy)?FString::Printf(TEXT("Energy %d / 100"),FMath::RoundToInt(Energy())):FString(TEXT("Energy: OFF")))+FString::Printf(TEXT(" | %s | %s | Mouth: %s"),*Mood(),*PaceName(),*Carry);
 }
 void UDogLife::Tell(const FString& Text,const FString& Sound){if(auto* S=Session()){S->Message=Text;S->HoldMessage(5);S->ActionCue(Sound);}}
@@ -47,16 +50,17 @@ void UDogLife::Initialize()
     D->PetEnergy=FMath::IsFinite(D->PetEnergy)?FMath::Clamp(D->PetEnergy,0.f,100.f):80.f;
     D->PetHealth=FMath::IsFinite(D->PetHealth)?FMath::Clamp(D->PetHealth,0.f,100.f):100.f;
     D->PetPace=FMath::Clamp(D->PetPace,0,2);
-    D->CarryItem=D->CarryItem>=0&&D->CarryItem<2?D->CarryItem:-1;
+    D->CarryItem=D->CarryItem>=0&&D->CarryItem<CheweenieToyCount?D->CarryItem:-1;
     if(D->HoleDepths.Num()!=3)D->HoleDepths={0,0,0};
-    if(D->ItemHoles.Num()!=2)D->ItemHoles={-1,-1};
+    while(D->ItemHoles.Num()<CheweenieToyCount)D->ItemHoles.Add(-1);
+    D->ItemHoles.SetNum(CheweenieToyCount);
     for(auto& Depth:D->HoleDepths)Depth=FMath::Clamp(Depth,0,3);
-    int32 Used=0;for(int32 I=0;I<2;++I)
+    int32 Used=0;for(int32 I=0;I<CheweenieToyCount;++I)
     {
         int32& H=D->ItemHoles[I];if(H<0||H>2||I==D->CarryItem||(H>=0&&(Used&(1<<H))))H=-1;
         if(H>=0){Used|=1<<H;D->HoleDepths[H]=3;}
     }
-    TArray<int32> CleanBag;for(int32 I:D->BagItems)if(I>=0&&I<2&&I!=D->CarryItem&&D->ItemHoles[I]<0&&!CleanBag.Contains(I)&&CleanBag.Num()<4)CleanBag.Add(I);D->BagItems=CleanBag;
+    TArray<int32> CleanBag;for(int32 I:D->BagItems)if(I>=0&&I<CheweenieToyCount&&I!=D->CarryItem&&D->ItemHoles[I]<0&&!CleanBag.Contains(I)&&CleanBag.Num()<4)CleanBag.Add(I);D->BagItems=CleanBag;
     Build();SyncItems();SyncHoles();
 }
 AStaticMeshActor* UDogLife::Prop(FString Name,FVector P,FVector Size,int32 Color,const TCHAR* Shape,bool Solid)
@@ -81,10 +85,11 @@ void UDogLife::Build()
     {auto* M=UMaterialInstanceDynamic::Create(Base,this);M->SetVectorParameterValue(TEXT("Color"),C);Materials.Add(M);}
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>();if(!Mode||!Mode->Neighbourhood)return;auto* N=Mode->Neighbourhood.Get();
     Patches={N->Entrance+FVector(-400,-600,-28),N->Park+FVector(-300,200,0),N->Park+FVector(300,200,0)};
-    for(auto P:Patches){Prop(TEXT("Dig patch rim"),P+FVector(0,0,2),FVector(110,95,4),1,TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));Holes.Add(Prop(TEXT("Dig hole"),P+FVector(0,0,4),FVector(20,20,2),0,TEXT("/Engine/BasicShapes/Cylinder.Cylinder")));}
-    LooseLocations={FVector(0,-230,12),N->Entrance+FVector(450,-300,-16)};
+    auto* DigArt=NewObject<UDigVisuals>(GetOwner());GetOwner()->AddInstanceComponent(DigArt);DigArt->RegisterComponent();DigArt->Initialize(this);
+    LooseLocations={FVector(0,-230,12),N->Entrance+FVector(450,-300,-16),FVector(70,-310,7)};
     Items.Add(Prop(TEXT("Carryable tennis ball"),LooseLocations[0],FVector(13,13,13),2));
     Items.Add(Prop(TEXT("Carryable treasure pebble"),LooseLocations[1],FVector(15,10,8),4));
+    Items.Add(SpawnRainbowGuy(GetWorld(),LooseLocations[RainbowGuyItem]));
     Prop(TEXT("Kitchen food bowl"),Bowl+FVector(0,0,5),FVector(32,32,8),5,TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     Prop(TEXT("Dog food"),Bowl+FVector(0,0,10),FVector(25,25,3),1,TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     Prop(TEXT("Kitchen counter"),FVector(-250,425,42),FVector(145,65,84),4,TEXT("/Engine/BasicShapes/Cube.Cube"),true);
@@ -97,15 +102,14 @@ void UDogLife::Build()
 }
 void UDogLife::SyncItems()
 {
-    auto* D=Data();if(!D||Items.Num()!=2)return;
-    for(int32 I=0;I<2;++I){Items[I]->SetActorHiddenInGame(D->ItemHoles[I]>=0||D->BagItems.Contains(I));if(D->CarryItem!=I)Items[I]->SetActorLocation(LooseLocations[I]);}
+    auto* D=Data();if(!D||Items.Num()!=CheweenieToyCount)return;
+    for(int32 I=0;I<Items.Num();++I){Items[I]->SetActorHiddenInGame(D->ItemHoles[I]>=0||D->BagItems.Contains(I));if(D->CarryItem!=I)Items[I]->SetActorLocation(LooseLocations[I]);}
 }
 void UDogLife::SyncHoles()
 {
-    auto* D=Data();if(!D||Holes.Num()!=3)return;
-    for(int32 I=0;I<3;++I){Holes[I]->SetActorHiddenInGame(D->HoleDepths[I]==0);Holes[I]->SetActorScale3D(FVector((25+D->HoleDepths[I]*19)/100.f,(25+D->HoleDepths[I]*17)/100.f,.025f));}
+    if(auto* V=GetOwner()->FindComponentByClass<UDigVisuals>())V->Refresh();
 }
-int32 UDogLife::NearPatch() const{for(int32 I=0;I<Patches.Num();++I)if(FVector::Dist2D(Pawn()->GetActorLocation(),Patches[I])<105)return I;return INDEX_NONE;}
+int32 UDogLife::NearPatch() const{for(int32 I=0;I<Patches.Num();++I)if(CheweenieHouse::Near(Pawn()->GetActorLocation(),Patches[I],105))return I;return INDEX_NONE;}
 FString UDogLife::Prompt() const
 {
     if(!Playing())return FString();if(Busy())return Activity==EDogActivity::Rolling?TEXT("Rolling over..."):Activity==EDogActivity::Shaking?TEXT("Shake a paw!"):Activity==EDogActivity::Digging?TEXT("Digging with both front paws..."):Activity==EDogActivity::Eating?TEXT("Crunch crunch..."):TEXT("Hopping onto the couch...");
@@ -113,12 +117,12 @@ FString UDogLife::Prompt() const
     if(Activity==EDogActivity::WatchingTV)return TEXT("Watching Paw TV and resting | E to stop, or walk away");
     auto* D=Data();const int32 H=NearPatch();
     if(Allows(ECozyFeature::Dig)&&H>=0&&D->CarryItem>=0&&D->HoleDepths[H]==3)return TEXT("E / X-Square: bury carried item | F / RT: dig");
-    if(Allows(ECozyFeature::Carry)&&D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&FVector::Dist2D(Pawn()->GetActorLocation(),Items[I]->GetActorLocation())<70)return TEXT("E / X-Square: pick up this toy");
+    if(Allows(ECozyFeature::Carry)&&D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Items[I]->GetActorLocation(),70))return FString::Printf(TEXT("E / X-Square: pick up %s"),CheweenieToyName(I));
     if(Allows(ECozyFeature::Dig)&&H>=0)return TEXT("F / RT: dig here (three digs open a hole; dig again to recover treasure)");
-    if(Allows(ECozyFeature::Food)&&FVector::Dist2D(Pawn()->GetActorLocation(),Bowl)<80)return TEXT("E / X-Square: eat kitchen food and restore energy");
+    if(Allows(ECozyFeature::Food)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Bowl,80))return TEXT("E / X-Square: eat kitchen food and restore energy");
     if(Allows(ECozyFeature::TV)&&OnCouch())return TEXT("E / X-Square: watch TV and rest");
-    const FVector P=Pawn()->GetActorLocation();if(Allows(ECozyFeature::Jump)&&P.X>135&&P.X<250&&P.Y> -205&&P.Y<180)return TEXT("E / X-Square: hop onto couch | Space / Y-Triangle: jump");
-    if(Allows(ECozyFeature::Carry)&&D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&FVector::Dist2D(P,Items[I]->GetActorLocation())<70)return TEXT("E / X-Square: pick up this toy");
+    const FVector P=Pawn()->GetActorLocation();if(P.Z<180&&Allows(ECozyFeature::Jump)&&P.X>135&&P.X<250&&P.Y> -205&&P.Y<180)return TEXT("E / X-Square: hop onto couch | Space / Y-Triangle: jump");
+    if(Allows(ECozyFeature::Carry)&&D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&CheweenieHouse::Near(P,Items[I]->GetActorLocation(),70))return FString::Printf(TEXT("E / X-Square: pick up %s"),CheweenieToyName(I));
     return FString();
 }
 void UDogLife::Dig()
@@ -126,6 +130,7 @@ void UDogLife::Dig()
     if(!Playing()||Busy()||!Allows(ECozyFeature::Dig))return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}
     const float Cost=CheweenieHome(this)?CheweenieHome(this)->DigCost():6;
     if(Energy()<Cost){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
+    Pawn()->GetCharacterMovement()->StopMovementImmediately();FVector Toward=Patches[H]-Pawn()->GetActorLocation();Toward.Z=0;if(!Toward.IsNearlyZero())Pawn()->SetActorRotation(FRotator(0,Toward.Rotation().Yaw,0));
     if(Allows(ECozyFeature::Energy))Data()->PetEnergy-=Cost;PendingPatch=H;Activity=EDogActivity::Digging;ActionTime=CheweenieHome(this)?CheweenieHome(this)->DigDuration():.9f;Save();Tell(TEXT("Marty's front paws go scritch, scritch!"),TEXT("Dig"));
 }
 void UDogLife::Bark()
@@ -161,9 +166,9 @@ bool UDogLife::Interact()
         D->ItemHoles[D->CarryItem]=H;D->CarryItem=-1;Excitement=15;SyncItems();Save();Tell(TEXT("Buried treasure! Marty looks extremely pleased with himself."),TEXT("Dig"));return true;
     }
     if(Allows(ECozyFeature::Carry)&&D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)
-        if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&FVector::Dist2D(Pawn()->GetActorLocation(),Items[I]->GetActorLocation())<70)
-        {D->CarryItem=I;Excitement=12;Save();Tell(TEXT("Marty carries his treasure in his mouth. Q / LT drops it; E buries it at an open hole."),TEXT("Toy"));return true;}
-    if(Allows(ECozyFeature::Food)&&FVector::Dist2D(Pawn()->GetActorLocation(),Bowl)<80)
+        if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Items[I]->GetActorLocation(),70))
+        {D->CarryItem=I;Excitement=12;Save();Tell(I==RainbowGuyItem?TEXT("Squeak! Marty bites down on Rainbow Guy, his favorite toy. Q / LT drops it; E buries it at an open hole."):TEXT("Marty carries his treasure in his mouth. Q / LT drops it; E buries it at an open hole."),I==RainbowGuyItem?TEXT("RainbowSqueak"):TEXT("Toy"));return true;}
+    if(Allows(ECozyFeature::Food)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Bowl,80))
     {
         if(FoodCooldown>0){Tell(TEXT("The bowl will refill soon. Marty can rest in the meantime."));return true;}
         Activity=EDogActivity::Eating;ActionTime=1.5f;Pawn()->GetCharacterMovement()->StopMovementImmediately();Pawn()->SetActorRotation(FRotator(0,(Bowl-Pawn()->GetActorLocation()).Rotation().Yaw,0));
@@ -177,7 +182,7 @@ bool UDogLife::Interact()
         return true;
     }
     const FVector P=Pawn()->GetActorLocation();
-    if(Allows(ECozyFeature::Jump)&&P.X>135&&P.X<250&&P.Y> -205&&P.Y<180&&!Pawn()->GetCharacterMovement()->IsFalling())
+    if(P.Z<180&&Allows(ECozyFeature::Jump)&&P.X>135&&P.X<250&&P.Y> -205&&P.Y<180&&!Pawn()->GetCharacterMovement()->IsFalling())
     {
         if(!PayJump())return true;Activity=EDogActivity::CouchHop;ActionTime=1.7f;HopDelay=.22f;
         Pawn()->SetActorRotation(FRotator::ZeroRotator);Pawn()->LaunchCharacter(FVector(0,0,520),true,true);Tell(TEXT("Up we go! Marty hops onto the couch."));return true;

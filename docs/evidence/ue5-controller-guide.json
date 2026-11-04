@@ -1,0 +1,20 @@
+{
+	"passed": [
+		"XInput is identified as Xbox",
+		"DualSense is identified as PlayStation",
+		"DualShock is identified as PlayStation",
+		"Unknown hardware is not guessed as Xbox",
+		"Synthetic Slate Xbox event switches display",
+		"Xbox legend matches gameplay face mapping",
+		"Synthetic hot swap switches to PlayStation",
+		"PlayStation legend matches gameplay face mapping",
+		"Resting stick noise leaves device display stable",
+		"Synthetic keyboard input restores keyboard guide",
+		"Unknown controller gets positional face labels",
+		"Keyboard selects manual Xbox display in real controls menu",
+		"Manual override survives conflicting detected hardware",
+		"PlayStation gameplay hints use matching button names"
+	],
+	"failed": [],
+	"scope": "Real game map, simulated device descriptors and Slate events, synthetic keyboard menu selection. Physical controller identification and handling unverified."
+}

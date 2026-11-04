@@ -1,4 +1,5 @@
 #include "CozyNavigation.h"
+#include "HouseUpstairs.h"
 #include "HomeProgression.h"
 #include "HalloweenSpecial.h"
 #include "CozyAdventure.h"
@@ -22,20 +23,33 @@ TArray<FCozyLandmark> UCozyNavigation::Landmarks() const
     if(M->Festival&&M->Festival->Active())Objective={M->Festival->Objective(),M->Festival->GoalPosition(),M->Festival->NextPorch()>=0||N->Outside};
     TArray<FCozyLandmark> Result={Objective,{TEXT("Home / headquarters"),FVector(-200,-200,28),false},{TEXT("Park"),N->Park,true},{TEXT("Glen Dhu school"),N->School,true},{TEXT("Kitchen bowl"),FVector(-180,320,0),false}};
     for(const auto& V:S->Mission->Visits)Result.Add({V.Label,S->StopPosition(V),S->StopOutdoors(V)});
-    for(const auto& D:N->Dogs)Result.Add({D.Name,D.Position,true});if(M->HomeProgression){const auto* H=M->HomeProgression.Get();Result.Add({TEXT("Marty bed"),H->Bed,false});Result.Add({TEXT("Garage + gym door"),H->Portal,false});Result.Add({TEXT("Padded harness workshop"),H->ArmorBench,false});Result.Add({TEXT("Strength training"),H->Gym[0],false});Result.Add({TEXT("Agility training"),H->Gym[1],false});Result.Add({TEXT("Speed training"),H->Gym[2],false});Result.Add({TEXT("Annex return door"),H->Exit,false});}return Result;
+    for(const auto& D:N->Dogs)Result.Add({D.Name,D.Position,true});if(M->HomeProgression){const auto* H=M->HomeProgression.Get();Result.Add({TEXT("Marty bed"),H->Bed,false});Result.Add({TEXT("Garage + gym door"),H->Portal,false});Result.Add({TEXT("Padded harness workshop"),H->ArmorBench,false});Result.Add({TEXT("Strength training"),H->Gym[0],false});Result.Add({TEXT("Agility training"),H->Gym[1],false});Result.Add({TEXT("Speed training"),H->Gym[2],false});Result.Add({TEXT("Annex return door"),H->Exit,false});}
+    Result.Add({TEXT("Stairs / upstairs"),CheweenieHouse::StairBottom(),false});
+    Result.Add({TEXT("Main bedroom"),FVector(-220,0,408),false});
+    Result.Add({TEXT("Guest bedroom"),FVector(220,0,408),false});
+    Result.Add({TEXT("Upstairs bathroom"),FVector(0,365,408),false});
+    Result.Add({TEXT("Upstairs pet nook"),FVector(-270,-245,408),false});return Result;
 }
 FCozyLandmark UCozyNavigation::Goal() const
 {
     const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto Stops=Landmarks();if(Stops.IsEmpty())return {};
     if(M->HomeProgression&&M->HomeProgression->Training>=0)return {M->HomeProgression->TrainingObjective(),M->HomeProgression->TrainingGoal(),false};
     const int32 Choice=FMath::Clamp(M->Adventure->Progress->NavTarget,0,Stops.Num()-1);auto G=Stops[Choice];
-    if(G.Outdoors!=M->Neighbourhood->Outside){G.Label=TEXT("Door to ")+G.Label;G.Position=M->Neighbourhood->Outside?M->Neighbourhood->Entrance:FVector(-425,-200,28);G.Outdoors=M->Neighbourhood->Outside;}if(M->HomeProgression&&!G.Outdoors){const auto* H=M->HomeProgression.Get();if(H->InAnnex()&&!UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Return via headquarters: ")+Stops[Choice].Label;G.Position=H->Exit;}else if(!H->InAnnex()&&!M->Neighbourhood->Outside&&UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Garage door to ")+G.Label;G.Position=H->Portal;}}return G;
+    if(G.Outdoors!=M->Neighbourhood->Outside){G.Label=TEXT("Door to ")+G.Label;G.Position=M->Neighbourhood->Outside?M->Neighbourhood->Entrance:FVector(-425,-200,28);G.Outdoors=M->Neighbourhood->Outside;}if(M->HomeProgression&&!G.Outdoors){const auto* H=M->HomeProgression.Get();if(H->InAnnex()&&!UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Return via headquarters: ")+Stops[Choice].Label;G.Position=H->Exit;}else if(!H->InAnnex()&&!M->Neighbourhood->Outside&&UHomeProgression::PointInAnnex(G.Position)){G.Label=TEXT("Garage door to ")+G.Label;G.Position=H->Portal;}}if(!G.Outdoors&&!M->Neighbourhood->Outside&&!UHomeProgression::PointInAnnex(G.Position))
+    {
+        const auto* PC=GetWorld()->GetFirstPlayerController();const FVector P=PC&&PC->GetPawn()?PC->GetPawn()->GetActorLocation():FVector::ZeroVector;
+        if(G.Position.Z>=CheweenieHouse::UpperFloor&&!CheweenieHouse::Upstairs(P))
+        {G.Label=TEXT("Walk upstairs to ")+G.Label;G.Position=P.Y< -330?CheweenieHouse::StairTop():CheweenieHouse::StairBottom();}
+        else if(G.Position.Z<CheweenieHouse::UpperFloor&&P.Z>150&&FMath::Abs(P.X)<510&&FMath::Abs(P.Y)<510)
+        {G.Label=TEXT("Walk downstairs to ")+G.Label;G.Position=P.Y< -330?CheweenieHouse::StairBottom():CheweenieHouse::StairTop();}
+    }
+    return G;
 }
 FString UCozyNavigation::Location() const
 {
     const auto* M=Cast<AMartyPlayMode>(GetOwner());const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;if(!M||!P)return TEXT("Locating Marty...");
     const FVector Pos=P->GetActorLocation();if(M->HomeProgression&&M->HomeProgression->InAnnex())return Pos.X<8300?TEXT("Headquarters / garage workshop"):TEXT("Headquarters / gym");
-    if(!M->Neighbourhood->Outside){if(Pos.Y>240&&Pos.X<0)return TEXT("Headquarters / kitchen");if(Pos.X>130)return TEXT("Headquarters / sofa corner");return TEXT("Headquarters / cozy room");}
+    if(!M->Neighbourhood->Outside){if(CheweenieHouse::Upstairs(Pos)||(Pos.Y< -330&&Pos.Z>80))return CheweenieHouse::Location(Pos);if(Pos.Y>240&&Pos.X<0)return TEXT("Headquarters / kitchen");if(Pos.X>130)return TEXT("Headquarters / sofa corner");return TEXT("Headquarters / cozy room");}
     auto* N=M->Neighbourhood.Get();if(FVector::Dist2D(Pos,N->Entrance)<900)return TEXT("Headquarters / front garden");
     if(FVector::Dist2D(Pos,N->Park)<1100)return TEXT("Park");if(FVector::Dist2D(Pos,N->School)<1000)return TEXT("Glen Dhu school approach");
     double Best=2000000;FString Name=TEXT("Neighbourhood walk");for(const auto& L:N->NamedStreets){FVector Flat=Pos;Flat.Z=0;const double D=FMath::PointDistToSegment(Flat,L.A,L.B);if(D<Best){Best=D;Name=L.Name;}}return Name;
@@ -43,7 +57,7 @@ FString UCozyNavigation::Location() const
 FString UCozyNavigation::Guidance() const
 {
     const auto* PC=GetWorld()->GetFirstPlayerController();const APawn* P=PC?PC->GetPawn():nullptr;if(!P)return FString();const auto G=Goal();const FVector Delta=G.Position-P->GetActorLocation();
-    const float Distance=Delta.Size2D()/100;if(Distance<1.2f)return G.Label+TEXT(" | Arrived - look for the interaction prompt");
+    const float Distance=Delta.Size2D()/100;if(Distance<1.2f&&FMath::Abs(Delta.Z)<120)return G.Label+TEXT(" | Arrived - look for the interaction prompt");
     FVector Direction=Delta;if(StreetRoute)for(int32 I=1;I<Route.Num();++I)if(FVector::Dist2D(P->GetActorLocation(),Route[I])>150){Direction=Route[I]-P->GetActorLocation();break;}
     const float Turn=RelativeTurn(Direction,P->GetActorRotation().Yaw);
     const FString TurnText=FMath::Abs(Turn)<20?TEXT("Ahead"):FMath::Abs(Turn)>150?TEXT("Turn around"):Turn>0?TEXT("Turn right"):TEXT("Turn left");

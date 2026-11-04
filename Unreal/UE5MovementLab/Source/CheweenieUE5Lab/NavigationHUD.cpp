@@ -1,4 +1,5 @@
 #include "MartyCharacter.h"
+#include "HouseUpstairs.h"
 #include "CozyHUDStyle.h"
 #include "CozyAdventure.h"
 #include "CozyModeHub.h"
@@ -29,14 +30,14 @@ void AMartyHUD::DrawNavigation(bool Full)
         const float Size=Full?FMath::Max(180.f,FMath::Min(W-525,H-255)):250.f;
         const float X=Full?28:W-278,Y=Full?105:135;
         CozyDrawRect(this,FLinearColor(.025f,.065f,.075f,.96f),X,Y,Size,Size);
-        const bool Annex=M->HomeProgression&&M->HomeProgression->InAnnex();auto SameRegion=[&](FVector V){return M->Neighbourhood->Outside||UHomeProgression::PointInAnnex(V)==Annex;};FVector Center=P->GetActorLocation();float Span=Annex?1600:M->Neighbourhood->Outside?7000:1200;
+        const bool Annex=M->HomeProgression&&M->HomeProgression->InAnnex();auto SameRegion=[&](FVector V){return M->Neighbourhood->Outside||(UHomeProgression::PointInAnnex(V)==Annex&&(Annex||CheweenieHouse::SameFloor(V,P->GetActorLocation())));};FVector Center=P->GetActorLocation();float Span=Annex?1600:M->Neighbourhood->Outside?7000:1200;
         const auto Stops=N->Landmarks();const auto& Roads=M->Neighbourhood->Streets();
         if(Full){FBox Bounds(ForceInit);Bounds+=Center;Bounds+=Goal.Position;for(const auto& L:Stops)if(L.Outdoors==M->Neighbourhood->Outside&&SameRegion(L.Position))Bounds+=L.Position;
             if(M->Neighbourhood->Outside){for(const auto& E:Roads){Bounds+=E.Key;Bounds+=E.Value;}}else{Bounds+=Annex?FVector(7600,-400,0):FVector(-500,-500,0);Bounds+=Annex?FVector(9000,400,0):FVector(500,500,0);}Center=Bounds.GetCenter();const auto Ext=Bounds.GetSize();Span=FMath::Max(Ext.X,Ext.Y)*1.16f;Span=FMath::Max(Span,1200.f);}
         const float Scale=(Size-40)/Span;const FVector2D Min(X+10,Y+25),Max(X+Size-10,Y+Size-20);
         auto Point=[&](FVector V){return FVector2D(X+Size/2+(V.X-Center.X)*Scale,Y+Size/2+(V.Y-Center.Y)*Scale);};
         auto Line=[&](FVector A,FVector B,FLinearColor C,float Thickness){auto U=Point(A),V=Point(B);if(ClipLine(U,V,Min,Max))CozyDrawLine(this,U.X,U.Y,V.X,V.Y,C,Thickness);};
-        CozyDrawText(this,Full?TEXT("AREA MAP - NORTH UP"):TEXT("LOCAL MAP - NORTH UP"),FLinearColor(.9f,.85f,.65f),X+12,Y+7);
+        CozyDrawText(this,Full?TEXT("AREA MAP - NORTH UP"):(CheweenieHouse::Upstairs(P->GetActorLocation())?TEXT("UPSTAIRS MAP - NORTH UP"):TEXT("LOCAL MAP - NORTH UP")),FLinearColor(.9f,.85f,.65f),X+12,Y+7);
         if(M->Neighbourhood->Outside){for(const auto& E:Roads)Line(E.Key,E.Value,FLinearColor(.3f,.4f,.44f),Full?3:5);}
         else{const FVector Corners[]={Annex?FVector(7600,-400,0):FVector(-480,-480,0),Annex?FVector(9000,-400,0):FVector(480,-480,0),Annex?FVector(9000,400,0):FVector(480,480,0),Annex?FVector(7600,400,0):FVector(-480,480,0)};for(int32 I=0;I<4;++I)Line(Corners[I],Corners[(I+1)%4],FLinearColor(.3f,.4f,.44f),3);}
         if(S->Feature(ECozyFeature::Route))for(int32 I=1;I<N->Route.Num();++I)Line(N->Route[I-1],N->Route[I],N->StreetRoute?FLinearColor(.3f,1,.7f):FLinearColor(.55f,.65f,.65f),2);

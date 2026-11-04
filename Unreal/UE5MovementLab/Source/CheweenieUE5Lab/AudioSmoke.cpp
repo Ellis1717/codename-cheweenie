@@ -1,5 +1,6 @@
 #include "MartyCharacter.h"
 #include "NaturalPetAudio.h"
+#include "RainbowGuy.h"
 #include "DogLife.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
@@ -54,6 +55,28 @@ void AMartyPlayMode::TickAudioSmoke(float Delta)
     case 12:
         if(SmokeTime>.2){Key(EKeys::B,false);SmokeCheck(L->BarkCount==SmokeYaw,TEXT("Pause suppresses bark input"));Next();}break;
     case 13:
+        if(SmokeTime>.5)
+        {
+            S->Screen=ECozyScreen::Playing;D->Music=0;D->Effects=.6f;S->UpdateMusic();
+            P->ReturnHome();P->TeleportTo(FVector(70,-310,35),FRotator::ZeroRotator);Next();
+        }break;
+    case 14:
+        if(SmokeTime>1){Record();SmokeYaw=S->AudibleCueCount;Key(EKeys::E,true);Next();}break;
+    case 15:
+        if(SmokeTime>.1){Key(EKeys::E,false);SmokeCheck(D->CarryItem==RainbowGuyItem&&S->LastCue==TEXT("RainbowSqueak")&&S->AudibleCueCount==SmokeYaw+1,TEXT("Biting Rainbow Guy on keyboard pickup plays one squeak"));Next();}break;
+    case 16:
+        if(SmokeTime>.8)
+        {
+            Stop(TEXT("RainbowSqueak"));L->Stow();SmokeYaw=S->AudibleCueCount;L->Retrieve();
+            SmokeCheck(D->CarryItem==RainbowGuyItem&&S->LastCue==TEXT("RainbowSqueak")&&S->AudibleCueCount==SmokeYaw+1,TEXT("Taking Rainbow Guy from the backpack squeaks in Marty's mouth"));
+            L->Drop();SmokeCheck(S->LastCue==TEXT("Toy"),TEXT("Dropping Rainbow Guy uses the ordinary toy cue without a bite squeak"));
+            D->Effects=0;SmokeYaw=S->AudibleCueCount;L->Interact();
+            SmokeCheck(D->CarryItem==RainbowGuyItem&&S->AudibleCueCount==SmokeYaw,TEXT("Effects volume zero mutes Rainbow Guy's bite squeak"));
+            L->Stow();D->Effects=.6f;S->ToggleFeature(ECozyFeature::Effects);SmokeYaw=S->AudibleCueCount;L->Retrieve();
+            SmokeCheck(D->CarryItem==RainbowGuyItem&&S->AudibleCueCount==SmokeYaw,TEXT("Effects feature off suppresses Rainbow Guy's bite squeak"));
+            S->ToggleFeature(ECozyFeature::Effects);Next();
+        }break;
+    case 17:
         if(SmokeTime>3)
         {
             auto O=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto& V:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(V));for(auto& V:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(V));

@@ -1,0 +1,227 @@
+{
+    "archives":  [
+                     {
+                         "label":  "Unity / VisualLab (legacy snapshot)",
+                         "verified":  true,
+                         "files":  139,
+                         "id":  "9616d9963674b3c2f9151435bfafc1f4f4c1f24e4d58d79d2b8886d4134d77f9"
+                     },
+                     {
+                         "label":  "Unreal / UnrealWorld-0.10.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "34c29a8f13f0ad4a1cd1c80d0f1ac41a85f11a0d32c79d62d12ccb01519f4e38"
+                     },
+                     {
+                         "label":  "Unreal / UnrealRatchet-0.10.2 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "eeea63a90e1ee94a9d6bfaea9fbe9692319783de6794c9da4d97f89d9e9476d8"
+                     },
+                     {
+                         "label":  "Unreal / UnrealMartyHairPreview-0.11.6 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "7e1292e6bfd4dcd003a88365a8e4766d74e1ea45e4afc318486ba8a225fea088"
+                     },
+                     {
+                         "label":  "Unreal / UnrealMain-0.10.2-merged (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "1daaf9f02ebac1890aa5bfc085d2173e5323ee4cb3546df4c45619682743c07c"
+                     },
+                     {
+                         "label":  "Unreal / UnrealHalloween-0.10.1 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "77262f3e2f2cf21dfe4f4ab24e0e409f4c6d601edf1d0f3418cec86da663419f"
+                     },
+                     {
+                         "label":  "Unreal / UnrealCore-0.13.1 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "d7a9a6a669ecdf740b3eae50ef509ad12c024fca5c9ac294bc3c098358bba88e"
+                     },
+                     {
+                         "label":  "Unreal / UnrealCore-0.13.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "6a4d3d3fd71f9773503f5b0b38febd07f1c6ba039a1a33a3b23ea878ab8a72ca"
+                     },
+                     {
+                         "label":  "Unreal / UnrealCore-0.12.1 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "c5f855681351f3f9e9d708a3526d699e34bf1023a42f19b86472f635ec492e3a"
+                     },
+                     {
+                         "label":  "Unreal / UnrealCore-0.12.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "c6e12a8d7ed2fb85450baa31a0c952c3e8c57166be5162bc9754f50ab31e25e6"
+                     },
+                     {
+                         "label":  "Unreal / UnrealCoop-0.1.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "45f8468614cc2da07a36e51692e6a3a208af579c81f4ce2f332e56473a25064c"
+                     },
+                     {
+                         "label":  "Unreal / UnrealBorkOrTreat-0.11.5 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "1822cd5323947d2c80ceedcc3b593bdcf70f311832693fc31a3a40b1b3f63be9"
+                     },
+                     {
+                         "label":  "Unreal / UnrealBorkOrTreat-0.11.4 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "6706737af9816c849754375714036f8cf7f401a37ce9862ea7205778978bc361"
+                     },
+                     {
+                         "label":  "Unreal / UnrealBorkOrTreat-0.11.3 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "7a256a00f5673ff3473e4dbddfe630329de5aa7a52fad98d1c72536c715aa8bd"
+                     },
+                     {
+                         "label":  "Unreal / UnrealBorkOrTreat-0.11.2 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "be65a27a947e8da3f07cf720a2bbfe9ec6fc96d4f0e36a892609151528b87ff7"
+                     },
+                     {
+                         "label":  "Unreal / UnrealBorkOrTreat-0.11.1 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "ab289bd0c351ae9b94f5105ff80bdfc2bc1dd71674dc4c5794dd99021e4166bf"
+                     },
+                     {
+                         "label":  "Unreal / UnrealBorkOrTreat-0.11.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "ffb8aeccf032f461987343fb736d28d7c147732ba8ec7a73cb468a7a6fd15384"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-main-validation (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "8473c41d336810add8f73e62002d6bcef9b138c74e1d2043141a568742640c35"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.9.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "c45913d19e0aaf9c7cf91a0e1cd05d6abacce2fd5dc1c09ef7db4dc57734c0a4"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.8.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "c4f6960634545ebdc174f9dafb2006c3b5f134856acd4569340e98ae1a9e7f9f"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.7.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "898645ca87ac9e97a9cf98ce5b5fba93c1547622f31adc011789dc562ff38ebd"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.6.1 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "8f5f849d45c7f750d66baef713a3d57e4958a1e1c9c3a72249d59ffa211abef9"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.6.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "5a723038213fb39fbf38efcf245431922b27a339979d61cb527744240b82a37d"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.5.0 (retained release)",
+                         "verified":  true,
+                         "files":  43,
+                         "id":  "be4865573e396372ac29ecc89e277c164429323cff543b2134d8e5fa192c0531"
+                     },
+                     {
+                         "label":  "Unreal / UnrealAdventure-0.4.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  49,
+                         "id":  "1720ed5815fb3ee19cf712f4bf3501de05443c9fe736824c8495a9becbe8f12d"
+                     },
+                     {
+                         "label":  "Unity / Windows (legacy snapshot)",
+                         "verified":  true,
+                         "files":  140,
+                         "id":  "8acc9b895b1b3d1c0e72adddfb6741d0cc6ead22158dabaa5123b029a1b06a79"
+                     },
+                     {
+                         "label":  "Unity / NeighbourhoodWindows (legacy snapshot)",
+                         "verified":  true,
+                         "files":  140,
+                         "id":  "6db8f60b69ec7cbbc32597698f0796ce5959260acbf4a6f7d96032e8a34c77e9"
+                     },
+                     {
+                         "label":  "Unity / MartyWindows-0.6.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "c94e3fcb222bfeec7b487762bd3259bf321d5ebb7f6d12c00c74c490efa2e78f"
+                     },
+                     {
+                         "label":  "Unity / MartyExplorerWindows-0.6.1 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "4baa47869f04288b2beeb83f478937e8c5dfd71d0aa1665802e5b62c4ec20d1f"
+                     },
+                     {
+                         "label":  "Unity / LocalMapWindows-0.3.1 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "3ddd096c831b8ec3a56a0d6b3d0938d800923b1e9716f77d89b457510145f36e"
+                     },
+                     {
+                         "label":  "Unity / LocalMapWindows (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "959fec0e4f0a6ecf04b6f38a226d7b8571e8906642a76f745500ce4d4286f9da"
+                     },
+                     {
+                         "label":  "Unity / FieldGuideWindows-0.9.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "ddae244e599ca1cf3a80b3de4285cd7f2bf0512c4377b6bab5666fbf2457b6ca"
+                     },
+                     {
+                         "label":  "Unity / FamilyWindows-0.5.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "4e76a01480f9f757d96734580183fac2771625b1a40f4964fb158c57073ed12a"
+                     },
+                     {
+                         "label":  "Unity / FamilyCameosWindows-0.8.1 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "4df118371e3f62d94dd63af31596b02e51f36e02908dbaf383204e94ff82ede0"
+                     },
+                     {
+                         "label":  "Unity / Current-before-family-cameos-0.8.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "e412430a7ff0bad094e5d8416e2d267dfe26e79ffbedabdf42a57f95ee5fcedb"
+                     },
+                     {
+                         "label":  "Unity / Current-before-camera-motion-0.7.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "54ed208d0120308dab7050c06acdd7b38e0647c40c3dfbf4d9d09b14b7ff49ae"
+                     },
+                     {
+                         "label":  "Unity / CatReferenceWindows-0.4.0 (legacy snapshot)",
+                         "verified":  true,
+                         "files":  142,
+                         "id":  "13c361992036f24ec2783838bd493d84d60852164a716165f966c73b42593a75"
+                     }
+                 ],
+    "scope":  "Payload integrity only; not a new gameplay test of every historical build"
+}

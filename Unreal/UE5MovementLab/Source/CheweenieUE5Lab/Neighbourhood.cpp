@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "HouseUpstairs.h"
 #include "HalloweenSpecial.h"
 #include "WorldRealism.h"
 #include "CatCompanions.h"
@@ -281,7 +282,7 @@ void UCheweenieNeighbourhood::GoInside(AMartyCharacter* Pawn)
 }
 FString UCheweenieNeighbourhood::Prompt(const AMartyCharacter* Pawn) const
 {
-    if(!Outside)return FVector::Dist2D(Pawn->GetActorLocation(),IndoorDoor)<130?TEXT("E / X / Square: open the door and go outside"):TEXT("Headquarters door: near the blue OUTSIDE sign");
+    if(!Outside)return CheweenieHouse::Near(Pawn->GetActorLocation(),IndoorDoor,130)?TEXT("E / X / Square: open the door and go outside"):TEXT("Headquarters door: near the blue OUTSIDE sign");
     const FVector P=Pawn->GetActorLocation();
     if(FVector::Dist2D(P,Entrance)<120)return TEXT("E / X / Square: return inside");
     if(FVector::Dist2D(P,Entrance+FVector(160,0,0))<120||FVector::Dist2D(P,Park+FVector(300,0,0))<120||FVector::Dist2D(P,School-FVector(300,0,0))<120)return TEXT("E / X / Square: visit next landmark on walking tour");
@@ -291,7 +292,7 @@ FString UCheweenieNeighbourhood::Prompt(const AMartyCharacter* Pawn) const
 bool UCheweenieNeighbourhood::Interact(AMartyCharacter* Pawn)
 {
     const FVector P=Pawn->GetActorLocation();
-    if(!Outside){if(FVector::Dist2D(P,IndoorDoor)<130){GoOutside(Pawn);return true;}return false;}
+    if(!Outside){if(CheweenieHouse::Near(P,IndoorDoor,130)){GoOutside(Pawn);return true;}return false;}
     if(FVector::Dist2D(P,Entrance)<120){GoInside(Pawn);return true;}
     if(FVector::Dist2D(P,Entrance+FVector(160,0,0))<120||FVector::Dist2D(P,Park+FVector(300,0,0))<120||FVector::Dist2D(P,School-FVector(300,0,0))<120)
     {

@@ -77,7 +77,7 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
         S->Start(false);S->Pause();S->Selection=2;S->Confirm();S->Selection=5;Key(EKeys::Enter,true);Next();break;
     case 1:
         Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
-        SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==4,TEXT("Keyboard opens the three-pet wardrobe from Controls"));
+        SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==5,TEXT("Keyboard opens the wardrobe with three pet costumes and a Marty jacket selector"));
         Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
     case 2:
         Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
@@ -180,7 +180,7 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
     case 49:
         Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
         SmokeCheck(S->Screen==ECozyScreen::Wardrobe,TEXT("Controller reopens clothing directly from the backpack"));
-        S->Selection=3;Key(EKeys::Enter,true);Next();break;
+        S->Selection=S->Menu().Num()-1;Key(EKeys::Enter,true);Next();break;
     case 50:
         Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
         SmokeCheck(S->Screen==ECozyScreen::Backpack&&S->Selection==2,TEXT("Back to backpack row returns without closing the bag"));
