@@ -1,4 +1,5 @@
 #include "CozyHUDStyle.h"
+#include "ControllerGuide.h"
 #include "CozyModeHub.h"
 #include "GameFramework/HUD.h"
 #include "Engine/GameInstance.h"
@@ -21,8 +22,11 @@ static FCozyPalette Palette(int32 Id)
     if(Id==2)return {FLinearColor(.045f,.025f,.12f),FLinearColor(.25f,.08f,.34f),FLinearColor(.97f,.95f,1),FLinearColor(1,.42f,.76f),FLinearColor(.73f,.72f,.91f),FLinearColor(.4f,1,.77f),FLinearColor(1,.42f,.38f),FLinearColor(.015f,.008f,.035f),1.f,true};
     return {FLinearColor(.025f,.035f,.045f),FLinearColor(.12f,.20f,.25f),FLinearColor(.95f,.98f,1),FLinearColor(.35f,.86f,1),FLinearColor(.73f,.82f,.87f),FLinearColor(.52f,.94f,.66f),FLinearColor(1,.43f,.4f),FLinearColor(.005f,.01f,.015f),.86f,false};
 }
-void CozyDrawText(AHUD* HUD,const FString& Text,FLinearColor Color,float X,float Y,UFont* Font,float Scale,bool ScalePosition)
+void CozyDrawText(AHUD* HUD,const FString& SourceText,FLinearColor Color,float X,float Y,UFont* Font,float Scale,bool ScalePosition)
 {
+    const auto* GI=HUD&&HUD->GetWorld()?HUD->GetWorld()->GetGameInstance():nullptr;
+    const auto* Guide=GI?GI->GetSubsystem<UControllerGuide>():nullptr;
+    const FString Text=Guide?Guide->Format(SourceText):SourceText;
     const int32 Id=Style(HUD);if(!Id){HUD->DrawText(Text,Color,X,Y,Font,Scale,ScalePosition);return;}
     const auto P=Palette(Id);const float Alpha=Color.A;
     if(Color.R>Color.G*1.3f&&Color.R>Color.B*1.3f)Color=P.Danger;

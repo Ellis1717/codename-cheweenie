@@ -1,3 +1,4 @@
+#include "ControllerGuide.h"
 #include "MartyCharacter.h"
 #include "CozyHUDStyle.h"
 #include "HalloweenSpecial.h"
@@ -35,16 +36,20 @@ bool AMartyHUD::DrawAdventureHUD()
         }
         CozyDrawRect(this,FLinearColor(.015f,.03f,.045f,(Title||HalloweenPage||Modes)?.12f:.64f),0,0,Width,Height);
         const bool Map=Session->Screen==ECozyScreen::Map;
-        const float PanelWidth=SeasonalArt?FMath::Min(560.f,Width*.44f):Title?500.f:Map?460.f:680.f;
-        const float X=SeasonalArt?24.f:Title?32.f:Map?Width-484:FMath::Max(12.f,(Width-680)*.5f), Y=FMath::Max(12.f,(Height-480)*.5f);
-        CozyDrawRect(this,Seasonal?FLinearColor(.055f,.018f,.085f,.94f):FLinearColor(.035f,.09f,.12f,.96f),X,Y,PanelWidth,480);
+        const bool Controls=Session->Screen==ECozyScreen::Controls;
+        const float ControlWidth=FMath::Min(1040.f,Width-24.f);
+        const float PanelWidth=SeasonalArt?FMath::Min(560.f,Width*.44f):Title?500.f:Map?460.f:Controls?ControlWidth:680.f;
+        const float X=SeasonalArt?24.f:Title?32.f:Map?Width-484:Controls?(Width-ControlWidth)*.5f:FMath::Max(12.f,(Width-680)*.5f), Y=FMath::Max(12.f,(Height-(Controls?620:480))*.5f);
+        CozyDrawRect(this,Seasonal?FLinearColor(.055f,.018f,.085f,.94f):FLinearColor(.035f,.09f,.12f,.96f),X,Y,PanelWidth,Controls?620:480);
         CozyDrawText(this,Session->Heading(),FLinearColor(1,.83f,.48f),X+24,Y+24,nullptr,1.65f);
         CozyDrawText(this,SeasonalArt?FString(TEXT("BORK OR TREAT / HALLOWEEN SPECIAL")):Session->Screen==ECozyScreen::Companions&&Mode->Companions?Mode->Companions->Status():Modes?FString(TEXT("One adventure | Play, settings, multiplayer & older versions")):FString(TEXT("Marty, Lakitu & Rio  |  The Great Cozy Patrol")),FLinearColor::White,X+24,Y+62);
         if(HalloweenPage)CozyDrawText(this,FString::Printf(TEXT("PAW-PASS %d / 8 | %s"),Mode->Festival?Mode->Festival->StampCount():0,Session->Progress->HalloweenBadge?TEXT("PUMPKIN PAL EARNED"):TEXT("8 PORCHES / 1 COZY FINALE")),FLinearColor(1,.72f,.35f),X+24,Y+90,nullptr,.9f);
         if(Session->Screen == ECozyScreen::Controls)
         {
-            const TArray<FString> Lines={TEXT("Move: WASD / LS | Look: mouse / RS | Hurry: Shift / A-Cross"),TEXT("Interact: E / X-Square | Jump: Space / Y-Triangle | Bark: B / tap LB"),TEXT("Hold L1/LB + Cross/A: lie | Circle/B: roll | Square/X: shake | Triangle/Y: bark"),TEXT("Keyboard direct tricks: hold Left Ctrl + 1 lie / 2 roll / 3 shake / 4 bark"),TEXT("Dig: F / RT | Drop: Q / LT | Camera: V / R3 | Recenter: R / RB"),TEXT("Map: M / D-pad Up | Tricks: C / B-Circle | Bag: Tab / View"),TEXT("Crew: K / D-pad Down | Pause: Esc / Options | Home: H"),TEXT("Home: bed rest | kitchen fuel | garage shield | gym training | tricks earn stars")};
-            for(int32 I=0;I<Lines.Num();++I) CozyDrawText(this,Lines[I],FLinearColor::White,X+24,Y+95+I*18);
+            auto* Guide=GetWorld()->GetGameInstance()->GetSubsystem<UControllerGuide>();
+            Guide->Draw(this,X+24,Y+95);
+            const auto Lines=Guide->Controls();
+            for(int32 I=0;I<Lines.Num();++I) CozyDrawText(this,Lines[I],FLinearColor::White,X+410,Y+100+I*23,nullptr,.85f);
         }
         const auto Items=Session->Menu();
         if(Session->Screen==ECozyScreen::Backpack)
@@ -53,7 +58,7 @@ bool AMartyHUD::DrawAdventureHUD()
             if(P&&P->Life){CozyDrawText(this,P->Life->BackpackText(),FLinearColor::White,X+24,Y+105);CozyDrawText(this,P->Life->Status(),FLinearColor(.7f,1,.7f),X+24,Y+140);}
             CozyDrawText(this,TEXT("Carry in mouth, stow safely, retrieve, drop or bury."),FLinearColor::White,X+24,Y+180);
         }
-        const float First=Session->Screen==ECozyScreen::Controls ? Y+245 : Session->Screen==ECozyScreen::Backpack?Y+225:Y+115;
+        const float First=Session->Screen==ECozyScreen::Controls ? Y+310 : Session->Screen==ECozyScreen::Backpack?Y+225:Y+115;
         const int32 Visible=Session->Screen==ECozyScreen::Controls?4:Session->Screen==ECozyScreen::Backpack?4:7;
         const int32 Begin=FMath::Clamp(Session->Selection-Visible+1,0,FMath::Max(0,Items.Num()-Visible));
         for(int32 I=Begin;I<FMath::Min(Begin+Visible,Items.Num());++I)
@@ -69,7 +74,7 @@ bool AMartyHUD::DrawAdventureHUD()
                 CozyDrawText(this,TEXT("-       +"),FLinearColor::White,X+565,Row+10);
             }
         }
-        CozyDrawText(this,Session->Screen==ECozyScreen::Features?FString(TEXT("Arrows / D-pad: choose & adjust | Enter / A-Cross: next | B-Circle: back")):FString::Printf(TEXT("%d / %d | D-pad choose | A select | B back"),Session->Selection+1,Items.Num()),FLinearColor(.75f,.85f,.86f),X+24,Y+435);
+        CozyDrawText(this,Session->Screen==ECozyScreen::Features?FString(TEXT("Arrows / D-pad: choose & adjust | Enter / A-Cross: next | B-Circle: back")):FString::Printf(TEXT("%d / %d | D-pad choose | A select | B back"),Session->Selection+1,Items.Num()),FLinearColor(.75f,.85f,.86f),X+24,Y+(Controls?589:435));
         if(Modes)CozyDrawText(this,Hub->Hint(),FLinearColor(1,.88f,.65f),20,Height-48,nullptr,.95f);
         if(Map)DrawNavigation(true);
         if(Title||HalloweenPage||Modes) CozyDrawText(this,TEXT("Illustration. Gameplay uses stylized 3D pets."),FLinearColor(.85f,.9f,.9f),Width-410,Height-28);

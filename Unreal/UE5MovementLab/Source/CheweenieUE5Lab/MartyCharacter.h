@@ -112,6 +112,7 @@ public:
 private:
     void SmokeCheck(bool Passed, const FString& Name);
     void TickAdventureSmoke(float Delta);
+    void TickControllerGuideSmoke(float Delta);
     void TickGaitSmoke(float Delta);
     void TickFurDetailSmoke(float Delta);
     void TickOutsideSmoke(float Delta);
