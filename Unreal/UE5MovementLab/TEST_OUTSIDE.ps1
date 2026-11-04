@@ -4,12 +4,13 @@ if(!$OutputRoot){$OutputRoot=Join-Path $PSScriptRoot 'Saved\Outside'}
 $OutputRoot=[IO.Path]::GetFullPath($OutputRoot);New-Item -ItemType Directory -Path $OutputRoot -Force | Out-Null
 $info=[Diagnostics.ProcessStartInfo]::new()
 $info.FileName=if($GameExe){[IO.Path]::GetFullPath($GameExe)}else{Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor.exe'}
-$project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '}
+# SDK setup is checked by BUILD.ps1; avoid a redundant shared build-tool query at runtime.
+$project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game -Multiprocess '}
 $rhi=if($Render){'-dx12 -RenderOffscreen -ForceRes -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
 $info.Arguments=$project+$rhi+' -CheweenieOutsideSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Outside.log"'
 if($MapFile){if($Render){throw 'Private map audit is headless; no private-layout screenshots are exported'};$info.Arguments+=' -CheweenieOutsideMapAudit -CheweenieNeighbourhood="'+[IO.Path]::GetFullPath($MapFile)+'"'}
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-$started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+$started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
 while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Outside test timed out'}}
 if($process.ExitCode){throw ('Outside test failed: '+$process.ExitCode)}
 $report=Join-Path $OutputRoot $(if($MapFile){'outside-map-audit.json'}else{'outside-smoke.json'})

@@ -19,6 +19,7 @@ class UCozyNavigation;
 class UCatCompanions;
 class UHalloweenSpecial;
 class UHalloweenCostume;
+class UDogJackets;
 class UHomeProgression;
 struct FInputActionValue;
 
@@ -39,6 +40,7 @@ public:
     bool TrickModifierVisible() const;
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenCostume> Costume;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UDogJackets> Jackets;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UMartyGait> Gait;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UPoseableMeshComponent> Skin;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UDogLife> Life;
@@ -112,6 +114,7 @@ public:
 private:
     void SmokeCheck(bool Passed, const FString& Name);
     void TickAdventureSmoke(float Delta);
+    void TickControllerGuideSmoke(float Delta);
     void TickGaitSmoke(float Delta);
     void TickFurDetailSmoke(float Delta);
     void TickOutsideSmoke(float Delta);
@@ -120,10 +123,12 @@ private:
     void TickTricksSmoke(float Delta);
     void TickTrickModifierSmoke(float Delta);
     void TickHomeProgressionSmoke(float Delta);
+    void TickUpstairsSmoke(float Delta);
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
     void TickWorldSmoke(float Delta);
     void TickCostumeSmoke(float Delta);
+    void TickJacketSmoke(float Delta);
     void TickRatchetSmoke(float Delta);
     void TickFestivalSmoke(float Delta);
     int32 SmokeStage = 0;

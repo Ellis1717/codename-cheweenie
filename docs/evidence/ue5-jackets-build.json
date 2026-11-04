@@ -1,0 +1,157 @@
+{
+  "project": "Codename .... Cheweenie",
+  "engine": "Unreal Engine 5.8.4",
+  "date": "2026-11-03",
+  "branch": "codex/marty-coats-and-jackets",
+  "integration_base": "3658cd6",
+  "native_editor_build": {
+    "toolchain": "MSVC 14.44.35229 / Windows SDK 10.0.22621.0",
+    "status": "passed",
+    "incremental_confirmation_seconds": 3.55,
+    "full_build_seconds": 273.25
+  },
+  "implementation": "Original procedural geometry and existing tint material. External Amazon photos informed generic cuts and colors; no seller artwork or logos imported.",
+  "corrected_findings": [
+    "Initial acceptance helper const mismatch corrected before successful native compilation.",
+    "Visual QA found reversed triangle winding and deferred screenshots displaying later state. Corrected clockwise front faces and separated capture/state transitions.",
+    "Shared taper, curved hems and rising collar replaced per-piece taper seam spikes.",
+    "Integrated main backpack return behavior and updated acceptance Back selection to the last row.",
+    "Reordered existing natural audio includes after their matching headers in CozyAdventure.cpp and CozyCoop.cpp; final incremental build emitted no header-order errors.",
+    "Sparse-checkout update removed unmodified shared Content through a validation junction; failed runtime attempt reported missing skeleton. Restored 184 missing tracked files from original root HEAD, each hash verified. The three pre-existing modified Marty assets were preserved; no sparse changes after recovery.",
+    "An additional 13 missing current-main material/reference assets were recovered from origin/main without overwriting any existing file; each copied hash verified. A gray fur screenshot and missing brick warning prompted the final complete-content rerun."
+  ],
+  "limitations": [
+    "Rigid spine cosmetic prototypes; collars and saddle-like silhouettes need further art refinement.",
+    "New jackets are solo only; existing LAN costumes unchanged.",
+    "Physical controllers and cloth deformation unverified.",
+    "Standalone Game compilation, packaging and desktop launcher deployment not performed."
+  ],
+  "source_hashes": [
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogJackets.cpp",
+      "sha256": "6E5217E477DB9C6C32AF24DF0AC3568C7C6DBEEA931F67E6F0C1479C82D6FAB2"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/DogJackets.h",
+      "sha256": "16D7FD157957D75AFC7E8BA44DD705E032E6ADC2B4325C8155805A4A37639242"
+    },
+    {
+      "path": "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/JacketSmoke.cpp",
+      "sha256": "2A26E8CE879A132F01026C0B98E7CE0B4056269345CC5698A8EC3B7C330CEF89"
+    }
+  ],
+  "captures": [
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-yellow.png",
+      "sha256": "069816E05819904DAEA704CBA6B1CAF77F5F1478E5945AF88420089C5847A60F"
+    },
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-fleece.png",
+      "sha256": "4360179D41F9D2B23BE1B33FF9DF400BDE8E17C392F87AA89882B6BFDE11DE97"
+    },
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-navy.png",
+      "sha256": "86148106CDA0E7196CA805C6E8C9FD47AFDC93F99720CEAA6C04DBDE45900AD0"
+    },
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-pink.png",
+      "sha256": "0A36C72CB5B4C5F800F1C4D0436E64D3D3CE6044720556171E266CE8000D1AF7"
+    },
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-pinklow.png",
+      "sha256": "449F5E5A8CCDD1F97139C8145A80B1F9D755AB85E50F635CF52BEE4722E27B35"
+    },
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-lying.png",
+      "sha256": "68EA46A4890D3B46EB3A25E3C66C871BB998BBDB2C3983968D357948F9EAD35A"
+    },
+    {
+      "reviewed": "All seven prototype views inspected during geometry QA; final integrated yellow capture rechecked after complete content recovery.",
+      "path": "docs/screenshots/ue5-jacket-rolling.png",
+      "sha256": "805C388529150357A80161A0334FC9B4E06A9DAF02AC4AB3D70D42BBF861B4D1"
+    }
+  ],
+  "content_recovery": {
+    "method": "Copy only absent paths from retained Git revisions; verify each recovered hash; preserve all existing files",
+    "root_tracked_deletions_after_recovery": 0,
+    "original_missing_files_restored": 184,
+    "additional_current_main_files_restored": 13,
+    "original_base_hashes": "184 of 187 match original root HEAD; three existing modified Marty skeletal assets preserved"
+  },
+  "final_acceptance": {
+    "content": "Complete recovered local content; seven fresh rendered captures; final yellow capture rechecked",
+    "suites": [
+      {
+        "report_sha256": "A4C8C59C0395715AEA2F334700D10BD7A6715687FE5BDE18CC69540EEA560FE2",
+        "report": "docs/evidence/ue5-jackets-jackets.json",
+        "passed": 21,
+        "suite": "jackets",
+        "failed": 0
+      },
+      {
+        "report_sha256": "425467C460CFA9A9389E0729A8C1B0F05A61B7141AE71791061A23E6F794CEF8",
+        "report": "docs/evidence/ue5-jackets-jacket_restart.json",
+        "passed": 3,
+        "suite": "jacket_restart",
+        "failed": 0
+      },
+      {
+        "report_sha256": "FCDBAF77E316C028CDB97178E485C3F0746AE967F869C79971A8306961BC1535",
+        "report": "docs/evidence/ue5-jackets-costumes_backpack.json",
+        "passed": 44,
+        "suite": "costumes_backpack",
+        "failed": 0
+      },
+      {
+        "report_sha256": "410B13D868DD915C93966767359FE78FC334343CB7155112F5DE46A2AAA5912E",
+        "report": "docs/evidence/ue5-jackets-costume_restart.json",
+        "passed": 2,
+        "suite": "costume_restart",
+        "failed": 0
+      },
+      {
+        "report_sha256": "1391BF022D62BD4C376FCB5808B87140C4D757161740FCAFDD8DDDE90637D0D6",
+        "report": "docs/evidence/ue5-jackets-movement.json",
+        "passed": 16,
+        "suite": "movement",
+        "failed": 0
+      }
+    ],
+    "passed": 86,
+    "input": "Synthetic keyboard/gamepad/mouse HUD hitboxes",
+    "failed": 0
+  },
+  "final_runtime_scan": [
+    {
+      "log": "Jacket-play.log",
+      "sha256": "A5A1E4919A91CB9B965B79BA6555C3BDB2371B55A31405FFA00C04622C9934F7",
+      "matches": 0
+    },
+    {
+      "log": "Jacket-resume.log",
+      "sha256": "C1FED975C49D45E047739413CB46891FA882A8D7D2D15B3649B3A4E4618258DA",
+      "matches": 0
+    },
+    {
+      "log": "Costume-play.log",
+      "sha256": "EB0A9701B2F69001332B1DC9D0D9380C6A576DC910B887A012F403DCF84621DA",
+      "matches": 0
+    },
+    {
+      "log": "Costume-resume.log",
+      "sha256": "798C010B49F1700578D01B4A11341AD9041597B578A79DCA7FEE6D1714E8D537",
+      "matches": 0
+    },
+    {
+      "log": "MovementSmoke.log",
+      "sha256": "15C83585D36844A64504F003C33F3488D70D6EC0983F1E6763F55599C0E92A96",
+      "matches": 0
+    }
+  ]
+}

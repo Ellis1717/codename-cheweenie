@@ -1,0 +1,25 @@
+{
+	"scope": "Synthetic keyboard/gamepad and real audio-device master-submix recordings. Physical controls and subjective listening unverified.",
+	"passed": [
+		"All fourteen music/effect assets load from the real map",
+		"Both recorded cat voices load",
+		"Four recorded small-dog bark takes load",
+		"Home music plays on the actual audio device",
+		"Keyboard B triggers the bark cue",
+		"Keyboard bark uses a recorded take",
+		"Bark cooldown prevents button spam",
+		"Controller LB tap-release triggers the same bark cue",
+		"Consecutive keyboard/controller barks select different recordings",
+		"Outdoor travel selects looping backyard music",
+		"Effects volume zero suppresses bark playback",
+		"Return home restores the home music track",
+		"All pet action and companion cues spawn on the audio device",
+		"Pause suppresses bark input",
+		"Biting Rainbow Guy on keyboard pickup plays one squeak",
+		"Taking Rainbow Guy from the backpack squeaks in Marty's mouth",
+		"Dropping Rainbow Guy uses the ordinary toy cue without a bite squeak",
+		"Effects volume zero mutes Rainbow Guy's bite squeak",
+		"Effects feature off suppresses Rainbow Guy's bite squeak"
+	],
+	"failed": []
+}

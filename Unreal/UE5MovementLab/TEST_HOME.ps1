@@ -9,7 +9,7 @@ foreach($phase in @('play','resume')){
     $info.Arguments=$project+$rhi+' -CheweenieHomeSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -AbsLog="'+$OutputRoot+'/'+$phase+'.log"'
     if($phase-eq 'resume'){$info.Arguments+=' -CheweenieHomeResume'}elseif($LegacySave){$info.Arguments+=' -CheweenieHomeLegacySave="'+[IO.Path]::GetFullPath($LegacySave)+'"'}
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']='D:/CheweenieValidation/UE5Cache'
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(!$process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes-gt 10){$process.Kill();throw 'Home acceptance timed out.'}}
     $path=Join-Path $OutputRoot $(if($phase-eq 'resume'){'home-resume.json'}else{'home-progression.json'})
     if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $started){throw 'Home report missing or stale.'}

@@ -1,4 +1,5 @@
 #include "DogLife.h"
+#include "RainbowGuy.h"
 #include "HomeProgression.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
@@ -26,7 +27,7 @@ FString UDogLife::BackpackText() const
 {
     if(!Data()||Data()->BagItems.IsEmpty())return TEXT("Backpack 0 / 4: empty");
     FString Result=FString::Printf(TEXT("Backpack %d / 4: "),Data()->BagItems.Num());
-    for(int32 I:Data()->BagItems)Result+=(I==0?TEXT("tennis ball  "):TEXT("treasure pebble  "));return Result;
+    for(int32 I:Data()->BagItems)Result+=FString(CheweenieToyName(I))+TEXT("  ");return Result;
 }
 void UDogLife::Stow()
 {
@@ -40,7 +41,7 @@ void UDogLife::Retrieve()
     if(!Playing()||Busy()||!Allows(ECozyFeature::Backpack))return;auto* D=Data();
     if(D->CarryItem>=0){Tell(TEXT("Marty's mouth is full. Drop or bury that toy first."));return;}
     if(D->BagItems.IsEmpty()){Tell(TEXT("The backpack is empty."));return;}
-    D->CarryItem=D->BagItems[0];D->BagItems.RemoveAt(0);SyncItems();Save();Tell(TEXT("Marty takes a treasure out of his backpack."),TEXT("Toy"));
+    D->CarryItem=D->BagItems[0];D->BagItems.RemoveAt(0);SyncItems();Save();Tell(D->CarryItem==RainbowGuyItem?TEXT("Squeak! Marty takes Rainbow Guy in his mouth."):TEXT("Marty takes a treasure out of his backpack."),D->CarryItem==RainbowGuyItem?TEXT("RainbowSqueak"):TEXT("Toy"));
 }
 void UDogLife::StandUp(){if(Activity==EDogActivity::Lying){Activity=EDogActivity::Idle;if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);}}
 void UDogLife::LieDown()

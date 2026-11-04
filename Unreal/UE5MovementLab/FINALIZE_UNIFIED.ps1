@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$PackageRoot,[Parameter(Mandatory)][string]$TestRoot,[ValidateSet('Unified-0.13.0','Unified-0.13.1')][string]$ReleaseVersion='Unified-0.13.0')
+param([Parameter(Mandatory)][string]$PackageRoot,[Parameter(Mandatory)][string]$TestRoot,[ValidateSet('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0')][string]$ReleaseVersion='Unified-0.13.0')
 $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot);$TestRoot=[IO.Path]::GetFullPath($TestRoot)
 $windows=Join-Path $PackageRoot 'Windows'
@@ -14,7 +14,7 @@ foreach($entry in @(@('Home/home-progression.json',34),@('Home/home-resume.json'
 }
 Add-Type -AssemblyName System.Drawing
 $hasOverlays=Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')
-if($ReleaseVersion -eq 'Unified-0.13.1'){
+if($ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0')){
     $brickProbePath=Join-Path $TestRoot 'World/brick-render.json'
     if(!(Test-Path -LiteralPath $brickProbePath) -or (Get-Item -LiteralPath $brickProbePath).LastWriteTimeUtc -lt $newest){throw 'Fresh brick pixel verification missing.'}
     $brickProbe=Get-Content -LiteralPath $brickProbePath -Raw|ConvertFrom-Json
@@ -47,11 +47,26 @@ $wavePath=Join-Path $TestRoot 'Audio/audio-waveforms.json'
 if(!(Test-Path -LiteralPath $wavePath) -or (Get-Item -LiteralPath $wavePath).LastWriteTimeUtc-lt $newest){throw 'Audio waveform verification missing or stale'}
 $wave=Get-Content -LiteralPath $wavePath -Raw|ConvertFrom-Json
 foreach($name in @('Barks','Music','Muted')){ $clip=$wave.$name;if(!$clip -or $clip.seconds-le .5 -or $clip.peak-ge .999 -or ($name-ne 'Muted' -and $clip.rms-le .0002) -or ($name-eq 'Muted' -and $clip.rms-ge .0002)){throw ('Audio waveform check failed: '+$name)} }
+if($ReleaseVersion -eq 'Unified-0.14.0'){
+    foreach($entry in @(@('Life/life-smoke.json',45),@('Life/life-resume.json',7),@('Audio/audio-smoke.json',19),@('Costumes/costumes-smoke.json',44),@('Jackets/jackets-smoke.json',21),@('Jackets/jackets-resume.json',3),@('Upstairs/upstairs-smoke.json',18),@('ControllerGuide/controller-guide-smoke.json',14),@('OverlayStyles/main/overlay-styles.json',11),@('OverlayStyles/resume/overlay-styles.json',4))){
+        $path=Join-Path $TestRoot $entry[0]
+        if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale combined-game report: '+$entry[0])}
+        $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
+        if($report.failed.Count -or $report.passed.Count -lt $entry[1]){throw ('Failed combined-game report: '+$entry[0])}
+        if($entry[0] -like 'Jackets/*' -or $entry[0] -like 'Upstairs/*' -or $entry[0] -like 'ControllerGuide/*' -or $entry[0] -like 'OverlayStyles/*'){$checks+=$report.passed.Count}
+    }
+    $squeak=$wave.RainbowSqueak
+    if(!$squeak -or $squeak.seconds -le .1 -or $squeak.rms -le .0002 -or $squeak.peak -ge .999){throw 'Rainbow Guy bite squeak waveform verification failed'}
+    foreach($name in @('Jackets/JacketPink.png','Life/DigDeep.png','Life/RainbowGuy.png','Upstairs/UpstairsGameplay.png','ControllerGuide/ControllerGuideXbox.png','ControllerGuide/ControllerGuidePlayStation.png','ControllerGuide/ControllerGuideKeyboard.png','OverlayStyles/main/Style3Menu.png')){
+        $path=Join-Path $TestRoot $name
+        if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale combined-game capture: '+$name)}
+    }
+}
 $bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used|\[VSM\].*overflow')
 if($bad.Count){throw 'Final runtime logs contain errors, material fallbacks or VSM overflows'}
 $files=@($payload|ForEach-Object {@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
-if($ReleaseVersion -eq 'Unified-0.13.1'){Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PORTABLE_README.txt') -Destination (Join-Path $PackageRoot 'README.txt')}
-@{version=$ReleaseVersion;checks=$checks;rendered=$true;overlaysVerified=($hasOverlays -and $ReleaseVersion -eq 'Unified-0.13.1');physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
+if($ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PORTABLE_README.txt') -Destination (Join-Path $PackageRoot 'README.txt')}
+@{version=$ReleaseVersion;checks=$checks;rendered=$true;overlaysVerified=($hasOverlays -and $ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0'));combinedGameVerified=($ReleaseVersion -eq 'Unified-0.14.0');physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PLAY_GAME.ps1') -Destination (Join-Path $PackageRoot 'PLAY_GAME.ps1')
 '@echo off','powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0PLAY_GAME.ps1" %*','if errorlevel 1 pause'|Set-Content -LiteralPath (Join-Path $PackageRoot 'PLAY_GAME.cmd')
 'Unified adventure enabled: '+$checks+' packaged checks, '+$files.Count+' payload hashes and fresh seasonal captures. Visual inspection and physical controllers are separate checks.'

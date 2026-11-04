@@ -9,7 +9,7 @@ foreach($phase in @('play','resume')){
     $resume=if($phase -eq 'resume'){' -CheweenieFestivalResume -CheweenieHalloweenSpecial'}else{''}
     $info.Arguments=$project+$rhi+' -CheweenieFestivalSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Festival-'+$phase+'.log"'
     if($MapFile){$info.Arguments+=' -CheweenieNeighbourhood="'+[IO.Path]::GetFullPath($MapFile)+'"'};$info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Festival test timed out'}}
     if($process.ExitCode){throw ('Festival process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'festival-resume.json'}else{'festival-smoke.json'})

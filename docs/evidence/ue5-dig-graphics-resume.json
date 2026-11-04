@@ -1,0 +1,13 @@
+{
+	"scope": "Actual synthetic action bindings, timed pet actions and physics couch hop; teleported location/energy fixtures. Physical devices unverified.",
+	"passed": [
+		"Energy reloads in a second process",
+		"Carried pebble and buried ball reload without duplication",
+		"Rainbow Guy reloads in the backpack alongside the original treasures",
+		"Dug hole and TV state persist",
+		"Deep hole graphics and the buried mound rebuild from the saved state",
+		"Transient actions do not resume on the title screen",
+		"Continue keeps the carried item at home"
+	],
+	"failed": []
+}

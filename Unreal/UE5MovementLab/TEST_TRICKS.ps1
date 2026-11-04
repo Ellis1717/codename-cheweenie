@@ -9,7 +9,7 @@ foreach($phase in @('play','resume')){
     $resume=if($phase -eq 'resume'){' -CheweenieTricksResume'}else{''}
     $info.Arguments=$project+$rhi+' -CheweenieTricksSmoke'+$resume+' -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosound -nosplash -NoVSync -AbsLog="'+$OutputRoot+'/Tricks-'+$phase+'.log"'
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-    $started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+    $started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'Pet life test timed out'}}
     if($process.ExitCode){throw ('Pet life process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'tricks-resume.json'}else{'tricks-smoke.json'})

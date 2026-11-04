@@ -4,12 +4,14 @@ if(-not(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'Binaries\Win64\UnrealEd
 $info=[Diagnostics.ProcessStartInfo]::new()
 $info.FileName=Join-Path $EngineRoot 'Engine\Binaries\Win64\UnrealEditor.exe'
 $backend=if($Render){'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720'}else{'-nullrhi'}
-$info.Arguments='"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game '+$backend+' -CheweenieSmoke -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $PSScriptRoot 'Saved\MovementSmoke.log')+'"'
+# The native build validates SDKs; runtime acceptance must not queue another build-tool
+# SDK query behind a different checkout's compilation (TargetPlatformManager's supported flag).
+$info.Arguments='"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game -Multiprocess '+$backend+' -CheweenieSmoke -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $PSScriptRoot 'Saved\MovementSmoke.log')+'"'
 $info.UseShellExecute=$false
 $info.CreateNoWindow=$true
 $info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
 $startedAt=[DateTime]::UtcNow
-$process=[Diagnostics.Process]::Start($info)
+$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
 while(-not $process.WaitForExit(1000)) {
     if(([DateTime]::UtcNow-$startedAt).TotalMinutes -gt 10){$process.Kill(); throw 'Native runtime smoke test timed out.'}
 }

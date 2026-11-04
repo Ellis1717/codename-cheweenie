@@ -14,7 +14,7 @@ foreach($phase in @('patrol','resume')) {
     $info.CreateNoWindow=$true
     $info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
     $startedAt=[DateTime]::UtcNow
-    $process=[Diagnostics.Process]::Start($info)
+    $process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
     while(-not $process.WaitForExit(1000)) {
         if(([DateTime]::UtcNow-$startedAt).TotalMinutes -gt 10){$process.Kill();throw ('Adventure acceptance timed out: '+$phase)}
     }

@@ -1,4 +1,5 @@
 #include "CatCompanions.h"
+#include "HouseUpstairs.h"
 #include "HalloweenCostume.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
@@ -63,15 +64,15 @@ void UCatCompanions::SendHome(){auto* M=Cast<AMartyPlayMode>(GetOwner());if(!M||
 bool UCatCompanions::Pet(int32 I)
 {
     Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(!Enabled()||!Ready||!P||I<0||I>1)return false;
-    if(Cats[I].Outdoors!=M->Neighbourhood->Outside||FVector::Dist2D(P->GetActorLocation(),Position(I))>130){Tell(FString(TEXT("Come closer to "))+CatName(I)+TEXT(" for a friendly head bump."));return false;}
+    if(Cats[I].Outdoors!=M->Neighbourhood->Outside||!CheweenieHouse::Near(P->GetActorLocation(),Position(I),130)){Tell(FString(TEXT("Come closer to "))+CatName(I)+TEXT(" for a friendly head bump."));return false;}
     if(Cats[I].PetCooldown>0){Tell(FString(CatName(I))+TEXT(" is still enjoying that head bump."));return true;}
     auto* D=M->Adventure->Progress.Get();int32& Bond=I==0?D->LakituBond:D->RioBond;Bond=FMath::Min(10,Bond+1);Cats[I].PetCooldown=6;Cats[I].Happy=5;
     Tell(D->LakituBond>=3&&D->RioBond>=3?TEXT("Leo Ellis reports: Best Buddies badge earned. Extremely official cat business."):FString(CatName(I))+TEXT(" leans in for a head bump. Friendship grows!"),I);M->Adventure->Save();return true;
 }
-bool UCatCompanions::PetNearby(){const auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(!Enabled()||!P||!M)return false;for(int32 I=0;I<2;++I)if(Cats[I].Outdoors==M->Neighbourhood->Outside&&FVector::Dist2D(P->GetActorLocation(),Position(I))<110)return Pet(I);return false;}
+bool UCatCompanions::PetNearby(){const auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(!Enabled()||!P||!M)return false;for(int32 I=0;I<2;++I)if(Cats[I].Outdoors==M->Neighbourhood->Outside&&CheweenieHouse::Near(P->GetActorLocation(),Position(I),110))return Pet(I);return false;}
 FString UCatCompanions::Prompt() const
 {
-    const auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(!Enabled()||!P||!M)return FString();for(int32 I=0;I<2;++I)if(Cats[I].Outdoors==M->Neighbourhood->Outside&&FVector::Dist2D(P->GetActorLocation(),Position(I))<110)return FString(TEXT("E / X-Square: head bump with "))+CatName(I)+TEXT(" | K / D-pad Down: crew commands");return FString();
+    const auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(!Enabled()||!P||!M)return FString();for(int32 I=0;I<2;++I)if(Cats[I].Outdoors==M->Neighbourhood->Outside&&CheweenieHouse::Near(P->GetActorLocation(),Position(I),110))return FString(TEXT("E / X-Square: head bump with "))+CatName(I)+TEXT(" | K / D-pad Down: crew commands");return FString();
 }
 void UCatCompanions::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {

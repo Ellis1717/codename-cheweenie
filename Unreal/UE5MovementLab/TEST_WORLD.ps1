@@ -8,7 +8,7 @@ $rhi=if($Render){'-dx12 -RenderOffscreen -windowed -ForceRes -ResX=1920 -ResY=10
 $info.Arguments=$project+' -game '+$rhi+' -CheweenieWorldSmoke -CheweenieTestOutput="'+$OutputRoot+'" -unattended -nosplash -nosound -AbsLog="'+$OutputRoot+'/World.log"'
 if($ReadableBrick){$info.Arguments+=' -CheweenieReadableBrickSmoke'}
 $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
-$started=[DateTime]::UtcNow;$process=[Diagnostics.Process]::Start($info)
+$started=[DateTime]::UtcNow;$process=$( $info.EnvironmentVariables['UE_SKIP_UBT_SDK_SETUP']='1'; [Diagnostics.Process]::Start($info) )
 while(!$process.WaitForExit(1000)){if(([DateTime]::UtcNow-$started).TotalMinutes -gt 10){$process.Kill();throw 'World test timed out'}}
 if($process.ExitCode){throw 'World runtime failed; inspect report and World.log'}
 $report=Join-Path $OutputRoot 'world-smoke.json'
