@@ -1,4 +1,5 @@
 #include "DogLife.h"
+#include "MartyStance.h"
 #include "DigVisuals.h"
 #include "HouseUpstairs.h"
 #include "RainbowGuy.h"
@@ -127,7 +128,7 @@ FString UDogLife::Prompt() const
 }
 void UDogLife::Dig()
 {
-    if(!Playing()||Busy()||!Allows(ECozyFeature::Dig))return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}
+    if(!Playing()||Busy()||!Allows(ECozyFeature::Dig))return;const int32 H=NearPatch();if(H<0){Tell(TEXT("Find a brown DIG PATCH in the front garden or park."));return;}if(!Pawn()->Stances->PrepareRun())return;
     const float Cost=CheweenieHome(this)?CheweenieHome(this)->DigCost():6;
     if(Energy()<Cost){Tell(TEXT("Marty is tired. Rest or visit his kitchen bowl first."));return;}
     Pawn()->GetCharacterMovement()->StopMovementImmediately();FVector Toward=Patches[H]-Pawn()->GetActorLocation();Toward.Z=0;if(!Toward.IsNearlyZero())Pawn()->SetActorRotation(FRotator(0,Toward.Rotation().Yaw,0));
@@ -171,12 +172,14 @@ bool UDogLife::Interact()
     if(Allows(ECozyFeature::Food)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Bowl,80))
     {
         if(FoodCooldown>0){Tell(TEXT("The bowl will refill soon. Marty can rest in the meantime."));return true;}
+        if(!Pawn()->Stances->PrepareRun())return true;
         Activity=EDogActivity::Eating;ActionTime=1.5f;Pawn()->GetCharacterMovement()->StopMovementImmediately();Pawn()->SetActorRotation(FRotator(0,(Bowl-Pawn()->GetActorLocation()).Rotation().Yaw,0));
         if(Allows(ECozyFeature::ActionViews)&&TVCamera){TVCamera->GetCameraComponent()->FieldOfView=95;const FVector View=Bowl+FVector(180,-220,135);TVCamera->SetActorLocationAndRotation(View,(Bowl+FVector(0,0,20)-View).Rotation());if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(TVCamera,.2f);}
         Tell(TEXT("Kitchen snack time. Crunch, crunch!"),TEXT("Crunch"));return true;
     }
     if(Allows(ECozyFeature::TV)&&OnCouch())
     {
+        if(!Pawn()->Stances->PrepareRun())return true;
         if(Activity==EDogActivity::WatchingTV){StopWatching();Tell(TEXT("Marty is ready to explore again."));}
         else {Activity=EDogActivity::WatchingTV;D->PetTVOn=true;Pawn()->GetCharacterMovement()->StopMovementImmediately();Pawn()->SetActorRotation(FRotator(0,180,0));if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))if(Allows(ECozyFeature::ActionViews)&&TVCamera){TVCamera->GetCameraComponent()->FieldOfView=95;const FVector View(0,-460,250);TVCamera->SetActorLocationAndRotation(View,(FVector(0,20,140)-View).Rotation());PC->SetViewTargetWithBlend(TVCamera,.3f);}Tell(TEXT("Marty watches Paw TV and recharges on the couch."));Save();}
         return true;

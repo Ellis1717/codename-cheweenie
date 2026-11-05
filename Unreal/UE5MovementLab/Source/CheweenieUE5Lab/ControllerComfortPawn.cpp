@@ -4,6 +4,7 @@
 #include "CozyCoop.h"
 #include "CozyModeHub.h"
 #include "DogLife.h"
+#include "MartyStance.h"
 #include "Engine/GameInstance.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
@@ -38,15 +39,18 @@ void AMartyCharacter::RefreshControllerHurry()
 }
 void AMartyCharacter::SetControllerHurryHeld(bool Active)
 {
+    if(Active&&!ControllerMenuOpen()&&!TrickModifierDown()&&Stances&&!Stances->PrepareRun())return;
     if(!Active){HurryHeld=false;SuppressHurryUntilRelease=false;}
     else HurryHeld=CanPlay()&&!ControllerMenuOpen()&&!SuppressHurryUntilRelease&&!TrickModifierDown();
     RefreshControllerHurry();
 }
 void AMartyCharacter::ControllerHurryPress()
 {
+    if(TryMovementShortcut(false))return;
     if(ControllerMenuOpen()||!CanPlay()||TrickModifierDown())return;
     const auto* S=Adventure();if(S&&!S->Feature(ECozyFeature::Hurry))return;
     const int32 Mode=GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode;
+    if(Mode&&Stances&&!Stances->PrepareRun())return;
     if(Mode==2)HurryLatched=!HurryLatched;else if(Mode==1)HurryL3Held=true;
     RefreshControllerHurry();
 }
@@ -54,6 +58,7 @@ void AMartyCharacter::ControllerHurryRelease(){HurryL3Held=false;RefreshControll
 void AMartyCharacter::ClearControllerHurry(){HurryHeld=HurryL3Held=HurryLatched=false;RefreshControllerHurry();}
 void AMartyCharacter::ClearControllerInput()
 {
+    if(Stances)Stances->CancelJump();
     ClearControllerHurry();
     if(const auto* PC=Cast<APlayerController>(Controller))
     {

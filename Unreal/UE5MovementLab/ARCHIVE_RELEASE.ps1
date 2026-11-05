@@ -7,10 +7,11 @@ $ZipPath=[IO.Path]::GetFullPath($ZipPath)
 $partial=$ZipPath+'.partial'
 if((Test-Path -LiteralPath $ZipPath) -or (Test-Path -LiteralPath $partial)){throw 'Archive destination already exists; choose a new name.'}
 $gate=Get-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json') -Raw|ConvertFrom-Json
-$minimum=if($gate.version -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2')){824}elseif($gate.overlaysVerified){689}else{607}
+$minimum=if($gate.version -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0')){824}elseif($gate.overlaysVerified){689}else{607}
 if($gate.version -eq 'Unified-0.14.1'){if(!$gate.controllerButtonsVerified){throw 'Controller-button checks missing'};$minimum=874}
-if($gate.version -eq 'Unified-0.14.2'){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimum=950}
-if($gate.version -notin @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2') -or !$gate.rendered -or $gate.checks -lt $minimum -or !$gate.files.Count){throw 'A validated cumulative distribution is required.'}
+if($gate.version -in @('Unified-0.14.2','Unified-0.15.0')){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimum=950}
+if($gate.version -eq 'Unified-0.15.0'){if(!$gate.movementStancesVerified){throw 'Movement stance checks missing'};$minimum=1030}
+if($gate.version -notin @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0') -or !$gate.rendered -or $gate.checks -lt $minimum -or !$gate.files.Count){throw 'A validated cumulative distribution is required.'}
 $windows=[IO.Path]::GetFullPath((Join-Path $PackageRoot 'Windows')).TrimEnd('\','/')
 $entries=@()
 foreach($file in $gate.files){

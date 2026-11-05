@@ -2,6 +2,7 @@
 #include "RainbowGuy.h"
 #include "HomeProgression.h"
 #include "MartyCharacter.h"
+#include "MartyStance.h"
 #include "CozyAdventure.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -21,8 +22,8 @@ static void ShowTrickView(AMartyCharacter* P,ACameraActor* Camera)
 
 float UDogLife::Health() const{return Data()?Data()->PetHealth:100;}
 float UDogLife::ActionProgress() const{return FMath::Clamp(1-ActionTime/TrickDuration,0.f,1.f);}
-FString UDogLife::PaceName() const{return !Allows(ECozyFeature::Hurry)?TEXT("Walk (hurry off)"):!Data()||Data()->PetPace==0?TEXT("Walk"):Data()->PetPace==1?TEXT("Jog"):TEXT("Run");}
-float UDogLife::WalkSpeed() const{return Energy()<25?70:(CheweenieHome(this)?CheweenieHome(this)->SpeedMultiplier():1)*((Allows(ECozyFeature::Hurry)&&(SprintRequested||(Data()&&Data()->PetPace==2)))?230:Allows(ECozyFeature::Hurry)&&Data()&&Data()->PetPace==1?155:100);}
+FString UDogLife::PaceName() const{if(Pawn()->Stances&&Pawn()->Stances->Active!=EMartyStance::FourPaws)return Pawn()->Stances->Label();return !Allows(ECozyFeature::Hurry)?TEXT("Walk (hurry off)"):!Data()||Data()->PetPace==0?TEXT("Walk"):Data()->PetPace==1?TEXT("Jog"):TEXT("Run");}
+float UDogLife::WalkSpeed() const{const float Speed=Energy()<25?70:(CheweenieHome(this)?CheweenieHome(this)->SpeedMultiplier():1)*((Allows(ECozyFeature::Hurry)&&(SprintRequested||(Data()&&Data()->PetPace==2)))?230:Allows(ECozyFeature::Hurry)&&Data()&&Data()->PetPace==1?155:100);return Pawn()->Stances?FMath::Min(Speed,Pawn()->Stances->SpeedLimit()):Speed;}
 FString UDogLife::BackpackText() const
 {
     if(!Data()||Data()->BagItems.IsEmpty())return TEXT("Backpack 0 / 4: empty");
@@ -48,16 +49,19 @@ void UDogLife::LieDown()
 {
     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Tricks))return;
     if(Activity==EDogActivity::Lying){StandUp();Tell(TEXT("Up we get. Adventure awaits!"));return;}
+    if(!Pawn()->Stances->PrepareRun())return;
     StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Lying;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Marty settles down. E or movement gets him back up."),TEXT("Cozy"));if(auto* H=CheweenieHome(this))H->OnSkill(0);
 }
 void UDogLife::RollOver()
 {
     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Tricks))return;
+    if(!Pawn()->Stances->PrepareRun())return;
     StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Rolling;TrickDuration=ActionTime=2.4f;Excitement=8;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Marty Party: one extremely important barrel roll!"),TEXT("Cozy"));
 }
 void UDogLife::ShakePaw()
 {
     if(!Playing()||Busy()||Pawn()->GetCharacterMovement()->IsFalling()||!Allows(ECozyFeature::Tricks))return;
+    if(!Pawn()->Stances->PrepareRun())return;
     StopWatching();Pawn()->GetCharacterMovement()->StopMovementImmediately();Activity=EDogActivity::Shaking;TrickDuration=ActionTime=1.8f;Excitement=8;ShowTrickView(Pawn(),TVCamera);Tell(TEXT("Mr. Marty offers his paw. Very professional."),TEXT("Cozy"));
 }
 void UDogLife::CyclePace()
