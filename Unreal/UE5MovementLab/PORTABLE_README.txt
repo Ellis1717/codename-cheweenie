@@ -1,4 +1,4 @@
-Codename .... Cheweenie — Windows core adventure 0.14.2
+Codename .... Cheweenie — Windows core adventure 0.15.1
 
 Double-click PLAY_GAME.cmd to start. Keep the entire Windows folder beside it.
 Choose Play / continue adventure to explore the house and neighbourhood.
@@ -16,3 +16,5 @@ The portable ZIP excludes the owner's private map, saved progress and archive pa
 Physical controller handling and separate-PC LAN require human checks.
 
 Controller comfort: click L3 to toggle hurry; A still works as hold-to-hurry. Use the left stick in menus. D-pad left/right zooms in solo; hold RB with D-pad left/right to zoom in rooms. Controls > Controller comfort setup saves camera speed/response, separate stick dead zones and L3 mode.
+
+Community sports park: visit the park and follow its sports sign. E / X / Square kicks the soccer ball, bats from the baseball tee, or shoots the basketball. Hurry with Shift / L3 around bases 1, 2, 3 and HOME within 25 seconds. Ball-reset bollards retain session scores. These are solo practice games; sport scores reset when the game closes.

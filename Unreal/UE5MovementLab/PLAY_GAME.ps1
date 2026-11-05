@@ -1,4 +1,4 @@
-param([string]$PackageRoot=$PSScriptRoot,[switch]$ArchiveAcceptance,[string]$TestOutput,[switch]$VerifyArchives)
+param([string]$PackageRoot=$PSScriptRoot,[switch]$ArchiveAcceptance,[string]$TestOutput,[switch]$VerifyArchives,[string]$TestArchiveId)
 $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot)
 $local=Join-Path $PackageRoot 'LocalGameData'
@@ -36,14 +36,23 @@ function Get-VerifiedArchiveExe($archive){
 $marker=Join-Path $PackageRoot 'validated-unified.json'
 if(!(Test-Path -LiteralPath $marker)){throw 'Validated unified package missing; run the release checks first.'}
 $gate=Get-Content -LiteralPath $marker -Raw|ConvertFrom-Json
-$minimumChecks=if($gate.version-in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2')){if(!$gate.combinedGameVerified){throw 'Combined-game checks missing'};824}elseif($gate.version-eq 'Unified-0.13.1'){if($gate.overlaysVerified){689}else{607}}else{605}
+$minimumChecks=if($gate.version-in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.1')){if(!$gate.combinedGameVerified){throw 'Combined-game checks missing'};824}elseif($gate.version-eq 'Unified-0.13.1'){if($gate.overlaysVerified){689}else{607}}else{605}
 if($gate.version-eq 'Unified-0.14.1'){if(!$gate.controllerButtonsVerified){throw 'Controller-button checks missing'};$minimumChecks=874}
-if($gate.version-eq 'Unified-0.14.2'){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimumChecks=950}
-if($gate.version-notin @('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2') -or $gate.checks-lt $minimumChecks -or !$gate.rendered){throw 'Unified build validation incomplete.'}
+if($gate.version-in @('Unified-0.14.2','Unified-0.15.1')){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimumChecks=950}
+if($gate.version-notin @('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.1') -or $gate.checks-lt $minimumChecks -or !$gate.rendered){throw 'Unified build validation incomplete.'}
+if($gate.version-eq 'Unified-0.15.1'){if(!$gate.sportsParkVerified){throw 'Sports park checks missing'};$minimumChecks=988;if($gate.checks-lt $minimumChecks){throw 'Sports park validation incomplete'}}
 Assert-Payload (Join-Path $PackageRoot 'Windows') @($gate.files)
 $catalog=Join-Path $local 'ArchiveBuilds.json'
 $returned=$false;$errorFlag=$false;$archives=@()
 try{if(Test-Path -LiteralPath $catalog){$archives=@((Get-Content -LiteralPath $catalog -Raw|ConvertFrom-Json).entries)}}catch{$errorFlag=$true;$_|Out-String|Set-Content -LiteralPath (Join-Path $saved 'ArchiveError.txt')}
+if($TestArchiveId-and !$ArchiveAcceptance){throw 'TestArchiveId requires unattended archive acceptance'}
+if($ArchiveAcceptance-and $TestArchiveId){
+    if(!$TestOutput){throw 'Archive fixture requires TestOutput'}
+    $fixture=@($archives|Where-Object id -eq $TestArchiveId)
+    if($fixture.Count-ne 1-or $fixture[0].engine-ne 'Unreal'){throw 'Exactly one retained Unreal fixture is required'}
+    New-Item -ItemType Directory -Path $TestOutput -Force|Out-Null
+    @{entries=@(@{id=$fixture[0].id;label=$fixture[0].label})}|ConvertTo-Json -Depth 4|Set-Content -LiteralPath (Join-Path $TestOutput 'ArchiveFixtureIndex.json')
+}
 if($VerifyArchives){
     if($errorFlag -or !$archives.Count){throw 'Archive catalog is missing or invalid.'}
     $results=@(foreach($archive in $archives){
@@ -65,6 +74,8 @@ do {
         if(!$TestOutput){throw 'Archive acceptance needs -TestOutput.'}
         New-Item -ItemType Directory -Path $TestOutput -Force|Out-Null
         $argsList=@($argsList|Where-Object {$_-notmatch '^-dx12$'})+@('-nullrhi','-nosound','-unattended','-CheweenieHubArchiveSmoke',('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/latest-'+[int]$returned+'.log"'))
+        $argsList+=('-UserDir="'+(Join-Path $TestOutput 'CurrentUser')+'"')
+        if($TestArchiveId){$argsList=@($argsList|Where-Object {$_-notmatch '^-CheweenieArchiveIndex='})+('-CheweenieArchiveIndex="'+(Join-Path $TestOutput 'ArchiveFixtureIndex.json')+'"')}
         if($returned){$argsList+='-CheweenieArchiveReturned'}
     }
     $latestStarted=[DateTime]::UtcNow
@@ -94,11 +105,12 @@ do {
             # recenter probe needs 120 Hz to keep its pending look below one degree.
             # Ordinary main/archive play keeps the owner's frame and input settings.
             $oldArgs+=@('-nullrhi','-NoGamepad','-ExecCmds="t.MaxFPS 120"','-unattended','-nosound','-CheweenieSmoke',('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/archive.log"'))
+            $oldArgs+=('-UserDir="'+(Join-Path $TestOutput 'ArchiveUser')+'"')
         }
         $archiveStarted=[DateTime]::UtcNow
         Run-Game $exe $oldArgs
         if($ArchiveAcceptance){
-            $report=Join-Path $base 'CheweenieUE5Lab/Saved/movement-smoke.json'
+            $report=Join-Path $TestOutput 'ArchiveUser/Saved/movement-smoke.json'
             if(!(Test-Path -LiteralPath $report) -or (Get-Item -LiteralPath $report).LastWriteTimeUtc-lt $archiveStarted){throw 'Archived executable report missing or stale.'}
             $checks=Get-Content -LiteralPath $report -Raw|ConvertFrom-Json
             if($checks.failed.Count -or $checks.passed.Count-lt 16){throw 'Archived movement acceptance failed.'}

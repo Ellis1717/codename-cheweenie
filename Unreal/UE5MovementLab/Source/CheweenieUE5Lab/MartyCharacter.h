@@ -134,6 +134,7 @@ public:
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCatCompanions> Companions;
 private:
     void SmokeCheck(bool Passed, const FString& Name);
+    void TickParkSportsSmoke(float Delta);
     void TickAdventureSmoke(float Delta);
     void TickControllerGuideSmoke(float Delta);
     void TickControllerButtonsSmoke(float Delta);

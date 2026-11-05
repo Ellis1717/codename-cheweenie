@@ -79,6 +79,7 @@ void UCozyAdventure::BeginPlay()
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))){Slot=TEXT("CheweenieHomeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieJacketSmoke"))){Slot=TEXT("CheweenieJacketAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieJacketResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     Mission = NewObject<UCozyMissionDefinition>(this);
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieParkSportsSmoke"))){Slot=TEXT("CheweenieParkSportsAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     FString AssetPath;
     if (!FParse::Param(FCommandLine::Get(),TEXT("CheweenieAdventureSmoke")) && GConfig->GetString(TEXT("Cheweenie.Adventure"), TEXT("MissionAsset"), AssetPath, GGameIni) && !AssetPath.IsEmpty())
         if (auto* Asset = LoadObject<UCozyMissionDefinition>(nullptr, *AssetPath)) Mission = Asset;

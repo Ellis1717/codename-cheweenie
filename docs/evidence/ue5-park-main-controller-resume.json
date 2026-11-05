@@ -1,0 +1,15 @@
+{
+	"passed": [
+		"Comfort audit has an isolated adventure save",
+		"Separate stick dead zones reload in another process",
+		"Camera speed, linear response and L3 hold reload",
+		"Per-view zoom reloads",
+		"Hurry latch never persists across restart",
+		"Production confirm enters gameplay",
+		"Reloaded dead zones govern actual movement and look mappings",
+		"Reloaded L3 hold starts hurry",
+		"Reloaded L3 hold stops on release"
+	],
+	"failed": [],
+	"scope": "Real map with synthetic ordinary Enhanced Input, local profile/position/menu fixtures, simulated deactivation and disconnect events. Separate process verifies persisted preferences. Physical comfort and new physical gameplay checks unverified."
+}

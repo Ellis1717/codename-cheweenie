@@ -1,15 +1,19 @@
-param([Parameter(Mandatory)][string]$GameExe,[Parameter(Mandatory)][string]$OutputRoot,[string]$LegacySave,[string]$MapFile,[int]$Port=19140,[ValidateSet('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2')][string]$ReleaseVersion='Unified-0.14.2',[switch]$ResumeAfterControllerAudit)
+param([Parameter(Mandatory)][string]$GameExe,[Parameter(Mandatory)][string]$OutputRoot,[string]$LegacySave,[string]$MapFile,[int]$Port=19140,[ValidateSet('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.1')][string]$ReleaseVersion='Unified-0.15.1',[switch]$ResumeAfterControllerAudit)
 $ErrorActionPreference='Stop'
 $GameExe=[IO.Path]::GetFullPath($GameExe);$OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
 if(!(Test-Path -LiteralPath $GameExe)){throw 'Release executable missing'}
 New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
 # The finalizer still requires fresh passing controller reports for this exact payload.
 if(!$ResumeAfterControllerAudit){
-    if($ReleaseVersion -eq 'Unified-0.14.2'){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_COMFORT.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerComfort')}
-    if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_BUTTONS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerButtons')}
+    if($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.1')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_COMFORT.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerComfort')}
+    if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.1')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_BUTTONS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerButtons')}
 }
 & (Join-Path $PSScriptRoot 'TEST.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Movement')
 # Suites are sequential: they intentionally exercise persisted preferences and unlocks.
+if($ReleaseVersion -eq 'Unified-0.15.1'){
+    & (Join-Path $PSScriptRoot 'TEST_PARK_SPORTS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ParkSports')
+    & (Join-Path $PSScriptRoot 'TEST_OUTSIDE.ps1') -GameExe $GameExe -OutputRoot (Join-Path $OutputRoot 'Outside')
+}
 foreach($suite in @(@('NAVIGATION','Navigation'),@('COMPANIONS','Companions'),@('ADVENTURE','Adventure'))){
     & (Join-Path $PSScriptRoot ('TEST_'+$suite[0]+'.ps1')) -GameExe $GameExe -OutputRoot (Join-Path $OutputRoot $suite[1])
 }
@@ -22,7 +26,8 @@ foreach($suite in @(@('NAVIGATION','Navigation'),@('COMPANIONS','Companions'),@(
 $homeChecks=@{GameExe=$GameExe;Render=$true;OutputRoot=(Join-Path $OutputRoot 'Home')}
 if($LegacySave){$homeChecks.LegacySave=$LegacySave}
 & (Join-Path $PSScriptRoot 'TEST_HOME.ps1') @homeChecks
-foreach($suite in @(@('MODE_HUB','Hub'),@('TRICK_MODIFIER','Modifier'),@('TRICKS','Tricks'),@('GAIT','Gait'),@('FUR_DETAIL','FurDetail'),@('COSTUMES','Costumes'),@('FESTIVAL','Festival'))){
+& (Join-Path $PSScriptRoot 'TEST_MODE_HUB.ps1') -GameExe $GameExe -Render -Port ($Port+10) -OutputRoot (Join-Path $OutputRoot 'Hub')
+foreach($suite in @(@('TRICK_MODIFIER','Modifier'),@('TRICKS','Tricks'),@('GAIT','Gait'),@('FUR_DETAIL','FurDetail'),@('COSTUMES','Costumes'),@('FESTIVAL','Festival'))){
     & (Join-Path $PSScriptRoot ('TEST_'+$suite[0]+'.ps1')) -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot $suite[1])
 }
 if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')){& (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Overlays')}
