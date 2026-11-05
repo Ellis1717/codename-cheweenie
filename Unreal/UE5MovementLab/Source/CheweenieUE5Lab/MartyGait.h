@@ -35,6 +35,8 @@ public:
     FVector MouthWorld() const;
     float DigStrokePhase() const { return Time*18; }
 private:
+    void ApplyMovementStance(float Delta);
+    float UprightBlend=0;
     UPROPERTY() TObjectPtr<USkinnedAsset> BoundRig;
     void RefreshRig();
     float RestLowering=0;

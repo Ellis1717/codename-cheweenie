@@ -17,4 +17,6 @@ Physical controller handling and separate-PC LAN require human checks.
 
 Controller comfort: click L3 to toggle hurry; A still works as hold-to-hurry. Use the left stick in menus. D-pad left/right zooms in solo; hold RB with D-pad left/right to zoom in rooms. Controls > Controller comfort setup saves camera speed/response, separate stick dead zones and L3 mode.
 
-Community sports park: visit the park and follow its sports sign. E / X / Square kicks the soccer ball, bats from the baseball tee, or shoots the basketball. Hurry with Shift / L3 around bases 1, 2, 3 and HOME within 25 seconds. Ball-reset bollards retain session scores. These are solo practice games; sport scores reset when the game closes.
+Solo Marty movement: Y/Triangle or Space jumps while moving/running. Hold LB/L1 + L3 to toggle crawl, or + R3 to toggle two-leg walking. Keyboard Z/U offers the same stances; they are also in the Tricks menu. Run returns to four paws when headroom permits. Crawl uses a lower collision capsule; blocked stand-up/jump attempts stay low. These transient solo stances reset at home/restart; LAN retains its existing pet-room controls.
+
+Community sports park: visit the park and follow the sports sign. E / X / Square kicks, tee-bats or shoots. Hurry with Shift / L3 through bases 1, 2, 3 and HOME within 25 seconds. Reset bollards retain temporary scores. These are solo practice games.

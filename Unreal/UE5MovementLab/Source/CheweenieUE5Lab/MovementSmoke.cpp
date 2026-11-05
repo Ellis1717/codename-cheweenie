@@ -26,6 +26,7 @@ void AMartyPlayMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieParkSportsSmoke"))){TickParkSportsSmoke(DeltaSeconds);return;}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieStanceSmoke"))){TickStanceSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerComfortSmoke"))){TickControllerComfortSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerButtonsSmoke"))){TickControllerButtonsSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerGuideSmoke"))){TickControllerGuideSmoke(DeltaSeconds);return;}

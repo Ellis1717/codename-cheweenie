@@ -1,4 +1,5 @@
 #include "CozyAdventure.h"
+#include "MartyStance.h"
 #include "ControllerComfort.h"
 #include "NaturalPetAudio.h"
 #include "ControllerGuide.h"
@@ -58,6 +59,7 @@ void UCozyAdventure::BeginPlay()
     if (!Enabled) { SetComponentTickEnabled(false); return; }
     Slot = FParse::Param(FCommandLine::Get(),TEXT("CheweenieGaitSmoke")) ? TEXT("CheweenieGaitAcceptance") : FParse::Param(FCommandLine::Get(), TEXT("CheweenieAdventureSmoke")) ? TEXT("CheweenieAdventureAcceptance") : TEXT("CheweenieAdventureV1");
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerGuideSmoke")))Slot=TEXT("CheweenieControllerGuideAcceptance");
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieStanceSmoke"))){Slot=TEXT("CheweenieStanceAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOutsideSmoke"))){Slot=TEXT("CheweenieOutsideAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeSmoke"))){Slot=TEXT("CheweenieLifeAcceptance");if(!FParse::Param(FCommandLine::Get(),TEXT("CheweenieLifeResume")))UGameplayStatics::DeleteGameInSlot(Slot,0);}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAudioSmoke"))){Slot=TEXT("CheweenieAudioAcceptance");UGameplayStatics::DeleteGameInSlot(Slot,0);}
@@ -196,7 +198,7 @@ void UCozyAdventure::Confirm()
         if(Current==ECozyScreen::Backpack&&Selection==2){WardrobeReturn=ECozyScreen::Backpack;SetScreen(ECozyScreen::Wardrobe);return;}
         const int32 Choice=Selection;SetScreen(ECozyScreen::Playing);auto* L=Marty()?Marty()->Life.Get():nullptr;if(!L)return;
         if(Current==ECozyScreen::Backpack){if(Choice==0)L->Stow();else if(Choice==1)L->Retrieve();}
-        else {if(Choice==0)L->LieDown();else if(Choice==1)L->RollOver();else if(Choice==2)L->ShakePaw();else if(Choice==3)L->Bark();else if(Choice==4)L->CyclePace();else if(Choice==5)L->ToggleBodyControls();}return;
+        else {if(Choice==0)L->LieDown();else if(Choice==1)L->RollOver();else if(Choice==2)L->ShakePaw();else if(Choice==3)L->Bark();else if(Choice==4)L->CyclePace();else if(Choice==5)L->ToggleBodyControls();else if(Choice==6)Marty()->ToggleCrawl();else if(Choice==7)Marty()->ToggleUpright();else if(Choice==8)Marty()->Stances->Set(EMartyStance::FourPaws);}return;
     }
     if((Current==ECozyScreen::Title||Current==ECozyScreen::Pause)&&Selection==6){VisitRatchet();return;}
     if (Current == ECozyScreen::Title)
@@ -317,7 +319,7 @@ TArray<FString> UCozyAdventure::Menu() const
     case ECozyScreen::Title: return {TEXT("Continue / start patrol"),TEXT("New patrol"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Explore the neighbourhood"),TEXT("Quit"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock"),TEXT("Halloween activities / Bork or Treat"),TEXT("Game & versions")};
     case ECozyScreen::Pause: return {TEXT("Resume patrol"),TEXT("Return Marty home"),TEXT("Controls & cameras"),TEXT("Sound settings"),TEXT("Title screen"),TEXT("Cat companions"),Progress->RatchetUnlocked?TEXT("Ratchet: welcome home (memory walk)"):TEXT("Ratchet: finish the Cozy Patrol to unlock"),TEXT("Halloween activities / Bork or Treat"),TEXT("Game & versions")};
     case ECozyScreen::Backpack: return {TEXT("Stow the toy in Marty's mouth"),TEXT("Take a toy from the backpack"),TEXT("Clothes on / off"),TEXT("Close backpack")};
-    case ECozyScreen::Tricks: return {TEXT("Lie down / get up"),TEXT("Roll over"),TEXT("Shake a paw"),TEXT("Bork!"),TEXT("Change pace: walk / jog / run"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try two-stick body sway)"),TEXT("Back to exploring")};
+    case ECozyScreen::Tricks: return {TEXT("Lie down / get up"),TEXT("Roll over"),TEXT("Shake a paw"),TEXT("Bork!"),TEXT("Change pace: walk / jog / run"),Progress->BodyControls?TEXT("Controls: body sway (switch to standard)"):TEXT("Controls: standard (try two-stick body sway)"),TEXT("Toggle crawling"),TEXT("Toggle two-leg walking"),TEXT("Return to four paws"),TEXT("Back to exploring")};
     case ECozyScreen::Settings: return {FString::Printf(TEXT("Music: %d%%"),FMath::RoundToInt(Progress->Music*100)),FString::Printf(TEXT("Effects: %d%%"),FMath::RoundToInt(Progress->Effects*100)),TEXT("Back")};
     case ECozyScreen::Restart: return {TEXT("Keep current patrol"),TEXT("Start fresh patrol")};
     case ECozyScreen::Complete: return {TEXT("Keep exploring"),TEXT("Play another patrol")};

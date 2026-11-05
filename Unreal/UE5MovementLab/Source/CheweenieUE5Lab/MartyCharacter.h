@@ -21,6 +21,7 @@ class UHalloweenSpecial;
 class UHalloweenCostume;
 class UDogJackets;
 class UHomeProgression;
+class UMartyStance;
 struct FInputActionValue;
 
 UCLASS()
@@ -28,6 +29,7 @@ class AMartyCharacter : public ACharacter
 {
     GENERATED_BODY()
 public:
+    friend class UMartyStance;
     AMartyCharacter();
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
@@ -47,6 +49,9 @@ public:
     void ControllerHurryRelease();
     void ZoomCamera(float Amount);
     void RefreshControllerZoom();
+    void ToggleCrawl();
+    void ToggleUpright();
+    UPROPERTY(VisibleAnywhere,BlueprintReadOnly) TObjectPtr<UMartyStance> Stances;
     int32 CameraPreset = 0;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenCostume> Costume;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UDogJackets> Jackets;
@@ -93,6 +98,7 @@ private:
     void Crew();
     bool TrickModifierDown() const;
     bool TryTrickShortcut(int32 Trick);
+    bool TryMovementShortcut(bool Upright);
     void BeginTrickModifier();
     void EndTrickModifier();
     void CancelTrickModifier();
@@ -137,6 +143,7 @@ private:
     void TickParkSportsSmoke(float Delta);
     void TickAdventureSmoke(float Delta);
     void TickControllerGuideSmoke(float Delta);
+    void TickStanceSmoke(float Delta);
     void TickControllerButtonsSmoke(float Delta);
     void TickControllerComfortSmoke(float Delta);
     void TickGaitSmoke(float Delta);

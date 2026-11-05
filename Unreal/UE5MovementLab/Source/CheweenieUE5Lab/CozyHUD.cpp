@@ -164,6 +164,7 @@ bool AMartyHUD::DrawAdventureHUD()
         if(Show(ECozyOverlay::Prompts)&&Pawn){const FString HomePrompt=Mode->HomeProgression?Mode->HomeProgression->Prompt():FString();const FString LifePrompt=!HomePrompt.IsEmpty()?HomePrompt:Pawn->Life?Pawn->Life->Prompt():FString();const FString CatPrompt=Mode->Companions?Mode->Companions->Prompt():FString();const FString AreaPrompt=Mode->HomeProgression&&Mode->HomeProgression->InAnnex()?TEXT("Garage + gym: use E / X-Square at a station or the return door"):Mode->Neighbourhood->Prompt(Pawn);CozyDrawText(this,!Session->Prompt().IsEmpty()?FString():!LifePrompt.IsEmpty()?LifePrompt:(AreaPrompt.StartsWith(TEXT("E /"))||AreaPrompt.StartsWith(TEXT("Baseball:")))?AreaPrompt:!CatPrompt.IsEmpty()?CatPrompt:AreaPrompt,FLinearColor(.8f,1,.8f),28,Height-90,nullptr,1.1f);}
         if(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints)&&(!Show(ECozyOverlay::TrickGuide)||!Pawn||!Pawn->TrickModifierVisible())){CozyDrawText(this,TEXT("Space / Y-Triangle: jump | F / RT: dig | Q / LT: drop | B / tap LB: bark"),FLinearColor(.8f,.9f,1),28,Height-145);
         CozyDrawText(this,TEXT("Map: M / D-pad Up | Crew: K / D-pad Down | Hold L1/LB: direct tricks | C: trick menu"),FLinearColor(.8f,.9f,1),28,Height-170);}
+        if(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints)&&(!Pawn||!Pawn->TrickModifierVisible()))CozyDrawText(this,TEXT("Crawl: Z / LB-L3 | Two legs: U / LB-R3 | Solo Marty"),FLinearColor(.8f,.9f,1),28,Height-120);
     }
     if(Show(ECozyOverlay::Festival)&&Seasonal&&Session->Screen==ECozyScreen::Playing&&Mode->Festival){
         CozyDrawRect(this,FLinearColor(.055f,.018f,.085f,.94f),18,Height-245,510,52);
@@ -173,11 +174,12 @@ bool AMartyHUD::DrawAdventureHUD()
     const auto* TrickPC=GetWorld()->GetFirstPlayerController();const auto* TrickPet=TrickPC?Cast<AMartyCharacter>(TrickPC->GetPawn()):nullptr;
     if(Show(ECozyOverlay::TrickGuide)&&TrickPet&&TrickPet->TrickModifierVisible())
     {
-        const float X=Width-500,Y=Height-190;CozyDrawRect(this,FLinearColor(.025f,.055f,.07f,.94f),X,Y,484,104);
+        const float X=Width-500,Y=Height-214;CozyDrawRect(this,FLinearColor(.025f,.055f,.07f,.94f),X,Y,484,128);
         CozyDrawText(this,TEXT("DIRECT TRICKS | Hold L1 / LB or Left Ctrl"),FLinearColor(1,.86f,.5f),X+12,Y+10);
         CozyDrawText(this,Session->Feature(ECozyFeature::Tricks)?TEXT("Cross / A: lie or stand     Circle / B: roll over"):TEXT("Dog tricks are OFF in Controls > Pet feature switches"),FLinearColor::White,X+12,Y+34);
         CozyDrawText(this,Session->Feature(ECozyFeature::Tricks)?TEXT("Square / X: shake paw     Triangle / Y: bork!"):TEXT("Triangle / Y: bork (when Barking is enabled)"),FLinearColor::White,X+12,Y+56);
         CozyDrawText(this,TEXT("Keyboard: 1 lie / stand | 2 roll | 3 shake | 4 bark"),FLinearColor(.75f,.85f,.86f),X+12,Y+78);
+        CozyDrawText(this,TEXT("L3: crawl | R3: two legs | Z / U on keyboard"),FLinearColor(.75f,.85f,.86f),X+12,Y+100);
     }
     if(Show(ECozyOverlay::Messages)&&!Modes&&!Session->Message.IsEmpty()) { CozyDrawRect(this,FLinearColor(.025f,.055f,.07f,.9f),16,Height-65,Width-32,48); CozyDrawText(this,Session->Message,FLinearColor::White,28,Height-49,nullptr,1.1f); }
     return true;

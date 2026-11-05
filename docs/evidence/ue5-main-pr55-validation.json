@@ -1,0 +1,21 @@
+{
+  "mergedPullRequest": 55,
+  "desktopShortcutVerified": true,
+  "mergedMain": "25901d4cd253ab1920f31a29eb19623378d087bc",
+  "recordedUtc": "2026-11-05T11:57:13.5718793Z",
+  "testedUnrealTreeMatches": true,
+  "selectedFinalPackagedExecutions": 1087,
+  "installedVersion": "Unified-0.15.0",
+  "cleanLocalMain": "D:/CheweenieValidation/GameplayFurWorktree",
+  "validatedPackagedAssertions": 1043,
+  "previousMainPayloadHashesVerified": 43,
+  "newPhysicalGameplayVerified": false,
+  "archiveBaselineReused": 39,
+  "archiveFiles": 3006,
+  "mainLaunchJunctionsVerified": 3,
+  "archiveCount": 40,
+  "sportsParkScope": "Uncommitted work remains under active validation in its separate checkout; excluded from this merged release",
+  "currentPayloadHashesVerified": 43,
+  "ownerCheckpointPreferencesAndPrivateFilesMatched": true,
+  "originalMixedNativeSourcePreserved": true
+}

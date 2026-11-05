@@ -1,0 +1,87 @@
+{
+  "captureScope": "Real game map; temporary spawned platform/beam. First four use portrait cameras; the two follow captures use the default gameplay camera.",
+  "screenshotsReviewed": [
+    "ue5-stances-running-jump.png",
+    "ue5-stances-two-leg-walk.png",
+    "ue5-stances-crawl-beam.png",
+    "ue5-stances-two-leg-jacket.png",
+    "ue5-stances-two-leg-follow.png",
+    "ue5-stances-crawl-follow.png",
+    "ue5-stances-controller-guide.png"
+  ],
+  "additionalUnlockSeedAssertions": 22,
+  "runtimeErrorFatalMaterialFallbackVsmOverflowMatches": 0,
+  "fullCookStageArchivePassed": true,
+  "finalEditorRedundantRuntime": "Stopped during startup before gameplay; final 50-check audit ran in the package instead",
+  "movementStanceAssertions": 50,
+  "originalMixedNativeSourcePreserved": true,
+  "comparativePerformanceVerified": false,
+  "recordedUtc": "2026-11-05T11:55:23.9258606Z",
+  "selectedFinalPackagedAssertionExecutions": 1087,
+  "standardDigitalSignalsObservedPreviously": 14,
+  "audioWaveformChecksPassed": 4,
+  "version": "Unified-0.15.0",
+  "privateMapAssertions": 4,
+  "initialFixturePassed": 39,
+  "earlierEditorRevision": "Before final follow-camera checks and jacket capture delay",
+  "testedUnrealTreeMatchesMergedMain": true,
+  "sourceBranch": "codex/marty-movement-stances",
+  "mergedMain": "25901d4cd253ab1920f31a29eb19623378d087bc",
+  "requiredPackagedAssertions": 1043,
+  "comfortAssertions": 54,
+  "nativeEditorBuild": "Succeeded",
+  "sourceBase": "fa992fbb20d5e070139869628bb5d5a5cc0ed759",
+  "inputScope": "Synthetic production keyboard/gamepad input. Earlier physical signal sweeps are separate.",
+  "newPortableZipCreated": false,
+  "desktopActivated": true,
+  "initialFixtureFailed": 5,
+  "separatePcLanVerified": false,
+  "payloadHashesVerified": 43,
+  "ownerResources": [
+    {
+      "relativePath": "Windows/CheweenieUE5Lab/Saved/SaveGames/CheweenieAdventureV1.sav",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "Windows/CheweenieUE5Lab/Saved/Config/Windows/GameUserSettings.ini",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/streets.json",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/NeighbourDogs.json",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/ArchiveBuilds.json",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/ArchiveIndex.json",
+      "hashMatched": true
+    }
+  ],
+  "project": "Codename .... Cheweenie",
+  "archives": {
+    "count": 40,
+    "verificationBaseline": "0.14.2: 39 archives / 2963 files; reused, not all rehashed this milestone",
+    "newlyRehashedPreviousMainFiles": 43,
+    "priorEntriesAndManifestsMatched": true,
+    "payloadFiles": 3006,
+    "catalogRestored": true,
+    "roundTripFixture": "0.14.2, synthetic 120 Hz, isolated UserDir"
+  },
+  "nativeGameBuild": "Succeeded",
+  "earlierEditorRenderedAssertions": 48,
+  "productionButtonAssertions": 59,
+  "initialFixtureFix": "Wait for the teleported pawn to land before the first crawl toggle",
+  "playStationHardwareVerified": false,
+  "mergedPullRequest": 55,
+  "desktopVersion": "0.15.0",
+  "brickPixelProbePassed": true,
+  "archiveRoundTripAssertions": 18,
+  "activationPendingReason": null,
+  "physicalGameplayVerified": false
+}
