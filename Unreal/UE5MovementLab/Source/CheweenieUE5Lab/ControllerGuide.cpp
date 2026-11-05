@@ -79,9 +79,9 @@ TArray<FString> UControllerGuide::Controls() const
     const int32 Mode=GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode;
     const FString L3=Mode==2?TEXT(" | L3: toggle hurry"):Mode==1?TEXT(" | L3: hold hurry"):TEXT(" | L3: off");
     if(Family()==ECozyInputFamily::Keyboard)return {
-        TEXT("WASD: move | Mouse: look | Shift: hurry"),TEXT("E: interact | Space: jump | B: bark"),TEXT("F: dig | Q: drop | Tab: backpack"),TEXT("V: camera | R: recenter | H: home | +/-: zoom"),TEXT("M: map | K: crew | C: trick menu"),TEXT("Hold Left Ctrl + 1/2/3/4: lie/roll/shake/bark"),TEXT("Arrows: menu | Enter: select | Backspace: back"),TEXT("Esc: pause | Connect a pad and press a button")};
+        TEXT("WASD: move | Mouse: look | Shift: hurry"),TEXT("E: interact | Space: jump | B: bark"),TEXT("F: dig | Q: drop | Tab: backpack"),TEXT("V: camera | R: recenter | H: home | +/-: zoom"),TEXT("M: map | K: crew | C: trick menu"),TEXT("Hold Left Ctrl + 1/2/3/4: lie/roll/shake/bark"),TEXT("Arrows: menu | Enter: select | Backspace: back"),TEXT("Esc: pause | Z: crawl | U: two legs (solo Marty)")};
     if(Family()==ECozyInputFamily::Generic)return {
-        FString(TEXT("LS: move/menu | RS: look | Bottom: hurry"))+L3,TEXT("Left face: interact | Top face: jump"),TEXT("Right face: trick menu | Tap LB: bark"),TEXT("RT: dig | LT: drop | Left special: bag"),TEXT("R3: camera | RB: recenter | Right special: pause"),TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),TEXT("Hold LB + Bottom/Right/Left/Top: tricks"),TEXT("Choose Xbox or PlayStation display below if needed")};
+        FString(TEXT("LS: move/menu | RS: look | Bottom: hurry"))+L3,TEXT("Left face: interact | Top face: jump"),TEXT("Right face: trick menu | Tap LB: bark"),TEXT("RT: dig | LT: drop | Left special: bag"),TEXT("R3: camera | RB: recenter | Right special: pause"),TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),TEXT("Hold LB + Bottom/Right/Left/Top: tricks"),TEXT("Hold LB + L3: crawl | + R3: two legs (solo Marty)")};
     return {
         FString(PS?TEXT("LS: move/menu | RS: look | Cross: hurry"):TEXT("LS: move/menu | RS: look | A: hurry"))+L3,
         PS?TEXT("Square: interact | Triangle: jump"):TEXT("X: interact | Y: jump"),
@@ -90,7 +90,8 @@ TArray<FString> UControllerGuide::Controls() const
         PS?TEXT("R3: camera | R1: recenter | Options: pause"):TEXT("R3: camera | RB: recenter | Menu: pause"),
         TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),
         PS?TEXT("Hold L1 + Cross/Circle/Square/Triangle: tricks"):TEXT("Hold LB + A/B/X/Y: lie/roll/shake/bark"),
-        PS?TEXT("Menus: LS / D-pad | Cross: select | Circle: back"):TEXT("Menus: LS / D-pad | A: select | B: back")};
+        PS?TEXT("Menus: LS / D-pad | Cross: select | Circle: back"):TEXT("Menus: LS / D-pad | A: select | B: back"),
+        PS?TEXT("Hold L1 + L3: crawl | + R3: two legs (solo Marty)"):TEXT("Hold LB + L3: crawl | + R3: two legs (solo Marty)")};
 }
 FString UControllerGuide::Format(const FString& Text) const
 {
@@ -99,6 +100,8 @@ FString UControllerGuide::Format(const FString& Text) const
     // Match complete input phrases before individual glyph names. Leave ordinary
     // slashes (scores, place names and menu titles) untouched.
     const TCHAR* Phrases[][5]={
+        {TEXT("Z / LB-L3"),TEXT("Z"),TEXT("LB + L3"),TEXT("L1 + L3"),TEXT("LB + L3")},
+        {TEXT("U / LB-R3"),TEXT("U"),TEXT("LB + R3"),TEXT("L1 + R3"),TEXT("LB + R3")},
         {TEXT("WASD / left stick"),TEXT("WASD"),TEXT("left stick"),TEXT("left stick"),TEXT("left stick")},
         {TEXT("mouse / right stick"),TEXT("mouse"),TEXT("right stick"),TEXT("right stick"),TEXT("right stick")},
         {TEXT("E / X-Square"),TEXT("E"),TEXT("X"),TEXT("Square"),TEXT("left face")},

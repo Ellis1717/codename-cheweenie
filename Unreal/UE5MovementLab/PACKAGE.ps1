@@ -9,7 +9,7 @@ if(-not(Test-Path -LiteralPath $uat)){throw 'Unreal Automation Tool missing; sup
 [Environment]::SetEnvironmentVariable('UE-LocalDataCachePath',$CacheRoot,'Process')
 $project=Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject'
 $prepare=if($StageOnly){@('-skipbuild','-skipcook')}else{@('-build','-cook')}
-& $uat BuildCookRun "-project=$project" -nop4 -platform=Win64 -clientconfig=Development @prepare -stage -pak -archive -prereqs -nodebuginfo "-archivedirectory=$OutputRoot" -unattended -utf8output '-ubtargs=-NoXGE -NoUBA -MaxParallelActions=1 -gather'
+& $uat -WaitForUATMutex BuildCookRun "-project=$project" -nop4 -platform=Win64 -clientconfig=Development @prepare -stage -pak -archive -prereqs -nodebuginfo "-archivedirectory=$OutputRoot" -unattended -utf8output '-ubtargs=-NoXGE -NoUBA -MaxParallelActions=1 -gather'
 if($LASTEXITCODE -ne 0){throw ('Windows packaging failed: '+$LASTEXITCODE)}
 $game=Join-Path $OutputRoot 'Windows\CheweenieUE5Lab.exe'
 if(-not(Test-Path -LiteralPath $game)){throw 'Packaged game launcher missing after archive.'}

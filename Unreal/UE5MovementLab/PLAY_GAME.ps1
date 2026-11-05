@@ -36,10 +36,11 @@ function Get-VerifiedArchiveExe($archive){
 $marker=Join-Path $PackageRoot 'validated-unified.json'
 if(!(Test-Path -LiteralPath $marker)){throw 'Validated unified package missing; run the release checks first.'}
 $gate=Get-Content -LiteralPath $marker -Raw|ConvertFrom-Json
-$minimumChecks=if($gate.version-in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2')){if(!$gate.combinedGameVerified){throw 'Combined-game checks missing'};824}elseif($gate.version-eq 'Unified-0.13.1'){if($gate.overlaysVerified){689}else{607}}else{605}
+$minimumChecks=if($gate.version-in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0')){if(!$gate.combinedGameVerified){throw 'Combined-game checks missing'};824}elseif($gate.version-eq 'Unified-0.13.1'){if($gate.overlaysVerified){689}else{607}}else{605}
 if($gate.version-eq 'Unified-0.14.1'){if(!$gate.controllerButtonsVerified){throw 'Controller-button checks missing'};$minimumChecks=874}
-if($gate.version-eq 'Unified-0.14.2'){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimumChecks=950}
-if($gate.version-notin @('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2') -or $gate.checks-lt $minimumChecks -or !$gate.rendered){throw 'Unified build validation incomplete.'}
+if($gate.version-in @('Unified-0.14.2','Unified-0.15.0')){if(!$gate.controllerButtonsVerified-or !$gate.controllerComfortVerified){throw 'Controller comfort checks missing'};$minimumChecks=950}
+if($gate.version-eq 'Unified-0.15.0'){if(!$gate.movementStancesVerified){throw 'Movement stance checks missing'};$minimumChecks=1030}
+if($gate.version-notin @('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0') -or $gate.checks-lt $minimumChecks -or !$gate.rendered){throw 'Unified build validation incomplete.'}
 Assert-Payload (Join-Path $PackageRoot 'Windows') @($gate.files)
 $catalog=Join-Path $local 'ArchiveBuilds.json'
 $returned=$false;$errorFlag=$false;$archives=@()
@@ -64,7 +65,7 @@ do {
     if($ArchiveAcceptance){
         if(!$TestOutput){throw 'Archive acceptance needs -TestOutput.'}
         New-Item -ItemType Directory -Path $TestOutput -Force|Out-Null
-        $argsList=@($argsList|Where-Object {$_-notmatch '^-dx12$'})+@('-nullrhi','-nosound','-unattended','-CheweenieHubArchiveSmoke',('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/latest-'+[int]$returned+'.log"'))
+        $argsList=@($argsList|Where-Object {$_-notmatch '^-dx12$'})+@('-nullrhi','-nosound','-unattended','-CheweenieHubArchiveSmoke',('-UserDir="'+(Join-Path $TestOutput 'CurrentUser')+'"'),('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/latest-'+[int]$returned+'.log"'))
         if($returned){$argsList+='-CheweenieArchiveReturned'}
     }
     $latestStarted=[DateTime]::UtcNow
@@ -93,12 +94,12 @@ do {
             # Isolate synthetic input from hardware polling. The retained one-frame
             # recenter probe needs 120 Hz to keep its pending look below one degree.
             # Ordinary main/archive play keeps the owner's frame and input settings.
-            $oldArgs+=@('-nullrhi','-NoGamepad','-ExecCmds="t.MaxFPS 120"','-unattended','-nosound','-CheweenieSmoke',('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/archive.log"'))
+            $oldArgs+=@('-nullrhi','-NoGamepad','-ExecCmds="t.MaxFPS 120"','-unattended','-nosound','-CheweenieSmoke',('-UserDir="'+(Join-Path $TestOutput 'ArchivedUser')+'"'),('-CheweenieTestOutput="'+$TestOutput+'"'),('-AbsLog="'+$TestOutput+'/archive.log"'))
         }
         $archiveStarted=[DateTime]::UtcNow
         Run-Game $exe $oldArgs
         if($ArchiveAcceptance){
-            $report=Join-Path $base 'CheweenieUE5Lab/Saved/movement-smoke.json'
+            $report=Join-Path $TestOutput 'ArchivedUser/Saved/movement-smoke.json'
             if(!(Test-Path -LiteralPath $report) -or (Get-Item -LiteralPath $report).LastWriteTimeUtc-lt $archiveStarted){throw 'Archived executable report missing or stale.'}
             $checks=Get-Content -LiteralPath $report -Raw|ConvertFrom-Json
             if($checks.failed.Count -or $checks.passed.Count-lt 16){throw 'Archived movement acceptance failed.'}

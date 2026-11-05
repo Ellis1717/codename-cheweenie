@@ -11,6 +11,7 @@
 #include "CatCompanions.h"
 #include "CozyNavigation.h"
 #include "MartyGait.h"
+#include "MartyStance.h"
 #include "DogLife.h"
 #include "HomeProgression.h"
 #include "HouseUpstairs.h"
@@ -58,6 +59,7 @@ AMartyCharacter::AMartyCharacter()
     Costume=CreateDefaultSubobject<UHalloweenCostume>(TEXT("OptionalHalloweenCostume"));
     Jackets=CreateDefaultSubobject<UDogJackets>(TEXT("OptionalDogJacket"));
     Life=CreateDefaultSubobject<UDogLife>(TEXT("DogNeedsAndCozyActions"));
+    Stances=CreateDefaultSubobject<UMartyStance>(TEXT("MartyMovementStances"));
     Visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RetainedMarty"));
     Visual->SetupAttachment(GetRootComponent());
     Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -126,6 +128,7 @@ void AMartyCharacter::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
     TickControllerComfort(DeltaSeconds);
     UpdateTrickModifier();
+    Stances->UpdateJump(DeltaSeconds);
     if(auto* Hub=GetGameInstance()->GetSubsystem<UCozyModeHub>()){const int32 Detail=FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"))?0:Hub->FurDetail();if(LastFurDetail!=Detail){LastFurDetail=Detail;const TCHAR* Coats[]={TEXT("/Game/Adventure/MartyPhotoSmooth/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat")};if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Coats[Detail])){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
     if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
     if(UsesAdventureHome())if(auto* S=Adventure())if(S->Progress)Jackets->SetJacket(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),S->Progress->MartyJacket);
@@ -218,6 +221,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Enhanced->BindAction(Modifier,ETriggerEvent::Completed,this,&AMartyCharacter::EndTrickModifier);
         Enhanced->BindAction(Modifier,ETriggerEvent::Canceled,this,&AMartyCharacter::CancelTrickModifier);
         Button(EKeys::One,EKeys::Invalid,&AMartyCharacter::ShortcutLie);Button(EKeys::Two,EKeys::Invalid,&AMartyCharacter::ShortcutRoll);
+        Button(EKeys::Z,EKeys::Invalid,&AMartyCharacter::ToggleCrawl);Button(EKeys::U,EKeys::Invalid,&AMartyCharacter::ToggleUpright);
         Button(EKeys::Three,EKeys::Invalid,&AMartyCharacter::ShortcutShake);Button(EKeys::Four,EKeys::Invalid,&AMartyCharacter::ShortcutBark);
         Button(EKeys::Tab,EKeys::Gamepad_Special_Left,&AMartyCharacter::Backpack);
         Button(EKeys::M,EKeys::Invalid,&AMartyCharacter::Map);
@@ -276,7 +280,7 @@ UCozyAdventure* AMartyCharacter::Adventure() const
     auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>(); return Mode ? Mode->Adventure.Get() : nullptr;
 }
 bool AMartyCharacter::CanPlay() const { const auto* Session=Adventure(); return (!Session || Session->AllowsMovement())&&(!Life||!Life->Busy()); }
-void AMartyCharacter::PetJump(){if(TryTrickShortcut(3))return;if(CanPlay()&&Life&&Life->PayJump())Jump();}
+void AMartyCharacter::PetJump(){if(TryTrickShortcut(3))return;Stances->RequestJump();}
 void AMartyCharacter::Dig(){if(Life)Life->Dig();}
 void AMartyCharacter::DropToy(){if(Life)Life->Drop();}
 void AMartyCharacter::Bark(){if(Life)Life->Bark();}
@@ -300,12 +304,12 @@ void AMartyCharacter::ZoomIn(){ZoomCamera(30);}void AMartyCharacter::ZoomOut(){Z
 void AMartyCharacter::Interact() { if(TryTrickShortcut(2))return;if(auto* Session=Adventure()) Session->Interact(); }
 void AMartyCharacter::CycleCamera()
 {
+    if(TryMovementShortcut(true))return;
     if (ControllerMenuOpen()||!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))) return;
     CameraPreset = (CameraPreset + 1) % 4;
-    const float Heights[] = {35, 0, 0, 0};
     Boom->TargetArmLength=GetGameInstance()->GetSubsystem<UControllerComfort>()->CameraDistances[CameraPreset];
     ZoomInterpolating=false;
-    Boom->SocketOffset.Z = Heights[CameraPreset];
+    Boom->SocketOffset.Z=CameraPreset==0?(Stances->Active==EMartyStance::Crawl?0:Stances->Active==EMartyStance::Upright?15:35):0;
 }
 void AMartyCharacter::Recenter()
 {
@@ -319,6 +323,7 @@ void AMartyCharacter::ReturnHome()
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
     GetCharacterMovement()->StopMovementImmediately();
     TeleportTo(Home, FRotator::ZeroRotator);
+    Stances->Set(EMartyStance::FourPaws,true);
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->OnPlayerTravel(false);
     Recenter();
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();

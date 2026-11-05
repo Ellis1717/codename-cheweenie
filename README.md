@@ -1,5 +1,13 @@
 # Codename .... Cheweenie 🐾
 
+<!-- movement-stances-release:start -->
+
+**Movement controls candidate 0.15.0 (2026-11-04):** validated and ready. Desktop main remains **0.14.2** while the older game is open; the final owner save/preferences copy and launcher activation are pending. Run with L3 toggle (or hold A), jump while moving with Y, crawl with LB + L3 and walk on two legs with LB + R3. Keyboard: Shift / Space / Z / U. Comfortable exploration keeps precise camera response and familiar face buttons. New stances apply to solo skeletal Marty and respect headroom.
+
+Native Editor/Game builds and full cook/stage/archive passed: **1,043 required packaged assertions**, plus 22 seed, four private-map and 18 archive-return assertions (**1,087 final packaged executions**). All 43 current payload hashes passed; seven captures were reviewed. The candidate retains 40 archives / 3,006 files, reusing the prior 39-archive verification baseline and rehashing the newly archived 0.14.2 payload. Earlier Editor checks are reported separately. Input was synthetic; new physical gameplay, PlayStation hardware and separate-PC LAN remain unverified. [Controls, actual evidence and activation status](docs/UNREAL_MOVEMENT_STANCES.md).
+
+<!-- movement-stances-release:end -->
+
 **Controller comfort in main 0.14.2 (2026-11-04):** restart **Play Cheweenie**, then choose **Play / continue adventure**. L3 toggles hurry, the left stick navigates menus, D-pad left/right zooms in solo, and rooms use RB + D-pad for zoom. Independent dead zones, precise/linear camera response, camera speed, L3 mode and per-view zoom are saved locally. Open **Controls → Controller comfort setup**.
 
 Native Editor/Game compilation, full cooking/archive and final restaging passed. **993 required packaged assertions** and supporting Editor/map/archive checks passed: **1,180 selected assertion executions**. Three final captures were reviewed; all 43 current payload hashes verified. Checkpoint/preferences/private files match the prior main. All 39 archives remain; verification reuses the earlier 38-archive baseline and rehashes the newly archived 0.14.1 payload. Input was synthetic; the earlier physical signal sweep is separate. New human physical gameplay, PlayStation hardware, separate PCs and comparative performance remain unverified. [Controls, evidence and historical fixture limits](docs/UNREAL_CONTROLLER_COMFORT.md).

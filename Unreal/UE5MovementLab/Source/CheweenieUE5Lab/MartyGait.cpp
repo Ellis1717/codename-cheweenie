@@ -2,6 +2,7 @@
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "DogLife.h"
+#include "MartyStance.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -88,7 +89,9 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     Trot=FMath::FInterpTo(Trot,SmoothedSpeed>120?1.f:0.f,Delta,4);
     const float Run=FMath::Clamp((SmoothedSpeed-165)/60,0.f,1.f);
     const float StanceScale=FMath::Clamp(Rest[TEXT("spine")].GetLocation().Z/24.f,.6f,1.f);
-    const float Stride=StanceScale*FMath::Lerp(FMath::Lerp(WalkStride,TrotStride,Trot),56.f,Run);
+    const bool Special=Pawn->Stances&&Pawn->Stances->Active!=EMartyStance::FourPaws;
+    const bool Crawl=Pawn->Stances&&Pawn->Stances->Active==EMartyStance::Crawl;
+    const float Stride=StanceScale*(Special?18.f:FMath::Lerp(FMath::Lerp(WalkStride,TrotStride,Trot),56.f,Run));
     const bool Air=Pawn->GetCharacterMovement()->IsFalling();
     const bool Digging=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Digging;
     const bool Eating=Pawn->Life&&Pawn->Life->Activity==EDogActivity::Eating;
@@ -100,7 +103,7 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
     const bool Excited=Pawn->Life&&Pawn->Life->Mood()==TEXT("Excited");
     Cycle=FMath::Fmod(Cycle+(Air?0:Distance)/FMath::Max(Stride,1.f),1.f);
     const float Moving=FMath::Clamp(SmoothedSpeed/25.f,0.f,1.f);
-    RestLowering=FMath::FInterpTo(RestLowering,StanceScale*(Lying?18.f:Rolling?9.f:Shaking?5.f:Watching?5.f:Eating?6.f:Tired?1.f:0.f),Delta,8);
+    RestLowering=FMath::FInterpTo(RestLowering,StanceScale*(Lying?18.f:Rolling?9.f:Shaking?5.f:Watching?5.f:Eating?6.f:Crawl?8.f:Tired?1.f:0.f),Delta,8);
     const float Bob=FMath::Sin(Cycle*UE_TWO_PI*2)*(.45f+Run*.5f)*Moving+FMath::Sin(Time*2.1f)*.16f*(1-Moving)-RestLowering;
     Skin->SetBoneTransformByName(TEXT("root"),Rest[TEXT("root")],EBoneSpaces::ComponentSpace);
     const FQuat Lean=Pawn->Life&&!Rolling&&!Shaking?FQuat(FVector(1,0,0),FMath::DegreesToRadians(Pawn->Life->BodyRoll))*FQuat(FVector(0,1,0),FMath::DegreesToRadians(Pawn->Life->BodyPitch)):FQuat::Identity;
@@ -172,5 +175,6 @@ void UMartyGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFu
         for(int32 I=0;I<Pose.Num();++I){FTransform B=Pose[I];B.SetLocation(Pivot+Roll.RotateVector(B.GetLocation()-Pivot));B.SetRotation(Roll*B.GetRotation());Skin->SetBoneTransformByName(Skin->GetBoneName(I),B,EBoneSpaces::ComponentSpace);}
     }
     if(Rolling)PlantedPaws=0;else if(Shaking)PlantedPaws=FMath::Max(0,PlantedPaws-1);
+    ApplyMovementStance(Delta);
     Skin->RefreshBoneTransforms();
 }
