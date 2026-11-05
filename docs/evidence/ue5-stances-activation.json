@@ -1,0 +1,40 @@
+{
+  "archiveBaselineReused": 39,
+  "previousVersionRetained": true,
+  "copied": [
+    {
+      "relativePath": "Windows/CheweenieUE5Lab/Saved/SaveGames/CheweenieAdventureV1.sav",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "Windows/CheweenieUE5Lab/Saved/Config/Windows/GameUserSettings.ini",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/streets.json",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/NeighbourDogs.json",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/ArchiveBuilds.json",
+      "hashMatched": true
+    },
+    {
+      "relativePath": "LocalGameData/ArchiveIndex.json",
+      "hashMatched": true
+    }
+  ],
+  "newlyHashedArchiveFiles": 43,
+  "currentPayloadFiles": 43,
+  "physicalSignalsObservedPreviously": 14,
+  "desktopShortcutUpdated": true,
+  "mainJunctionsUpdated": 2,
+  "archiveFiles": 3006.0,
+  "archiveBaselineVersion": "Unified-0.14.2",
+  "archiveCount": 40,
+  "version": "Unified-0.15.0",
+  "newPhysicalGameplayVerified": false
+}

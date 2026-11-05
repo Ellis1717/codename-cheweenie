@@ -2,9 +2,9 @@
 
 <!-- movement-stances-release:start -->
 
-**Movement controls candidate 0.15.0 (2026-11-04):** validated and ready. Desktop main remains **0.14.2** while the older game is open; the final owner save/preferences copy and launcher activation are pending. Run with L3 toggle (or hold A), jump while moving with Y, crawl with LB + L3 and walk on two legs with LB + R3. Keyboard: Shift / Space / Z / U. Comfortable exploration keeps precise camera response and familiar face buttons. New stances apply to solo skeletal Marty and respect headroom.
+**Movement controls in desktop main 0.15.0 (2026-11-05):** restart **Play Cheweenie**, then choose **Play / continue adventure**. Run with L3 toggle (or hold A), jump while moving with Y, crawl with LB + L3 and walk on two legs with LB + R3. Keyboard: Shift / Space / Z / U. Comfortable exploration keeps precise camera response and familiar face buttons. New stances apply to solo skeletal Marty and respect headroom.
 
-Native Editor/Game builds and full cook/stage/archive passed: **1,043 required packaged assertions**, plus 22 seed, four private-map and 18 archive-return assertions (**1,087 final packaged executions**). All 43 current payload hashes passed; seven captures were reviewed. The candidate retains 40 archives / 3,006 files, reusing the prior 39-archive verification baseline and rehashing the newly archived 0.14.2 payload. Earlier Editor checks are reported separately. Input was synthetic; new physical gameplay, PlayStation hardware and separate-PC LAN remain unverified. [Controls, actual evidence and activation status](UNREAL_MOVEMENT_STANCES.md).
+Native Editor/Game builds and full cook/stage/archive passed: **1,043 required packaged assertions**, plus 22 seed, four private-map and 18 archive-return assertions (**1,087 final packaged executions**). All 43 current payload hashes passed; seven captures were reviewed. The release retains 40 archives / 3,006 files, reusing the prior 39-archive verification baseline and rehashing the newly archived 0.14.2 payload. Earlier Editor checks are reported separately. Input was synthetic; new physical gameplay, PlayStation hardware and separate-PC LAN remain unverified. [Controls, actual evidence and activation status](UNREAL_MOVEMENT_STANCES.md).
 
 <!-- movement-stances-release:end -->
 

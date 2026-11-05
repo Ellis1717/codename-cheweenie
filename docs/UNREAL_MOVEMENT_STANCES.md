@@ -1,6 +1,6 @@
 # Codename .... Cheweenie — moving jumps, crawl and two-leg walking
 
-The standalone **0.15.0 candidate** passed its complete release gate. Desktop main remains **0.14.2** while the older game is open; importing the final owner save/preferences and activating the launcher are pending.
+The validated **0.15.0 desktop main** includes these transient movement stances for **solo skeletal Marty**. Restart **Play Cheweenie**, then choose **Play / continue adventure**.
 
 | Action | Xbox / PlayStation | Keyboard |
 |---|---|---|
@@ -27,11 +27,11 @@ Native Editor and Game compilation and full cook/stage/archive passed. The final
 
 The earlier rendered Editor revision passed 48 checks. Its first fixture attempt had five cascading failures because a crawl toggle occurred before the teleported pawn landed; a grounded wait fixed the sequence. Capture review then revealed that the jacket was removed before its requested frame rendered. The final capture delay fixes that timing, and final packaged images visibly show the outfit. A redundant final Editor runtime was stopped during startup before gameplay; the final 50-check audit ran in the standalone package instead. These earlier runs are separate from the 1,087 final packaged executions.
 
-The candidate catalog retains all 39 previous entries/manifests and adds the verified 43-file 0.14.2 payload: **40 archives / 3,006 files**. Verification reuses the prior 39-archive baseline; it does not claim a new full rehash of every archive. The round trip uses the immutable 0.14.2 executable at synthetic 120 Hz with isolated current/archive profiles. Ordinary frame settings and owner preferences are unchanged by that acceptance run. The complete catalog was restored afterward.
+The local catalog retains all 39 previous entries/manifests and adds the verified 43-file 0.14.2 payload: **40 archives / 3,006 files**. Verification reuses the prior 39-archive baseline; it does not claim a new full rehash of every archive. The round trip uses the immutable 0.14.2 executable at synthetic 120 Hz with isolated current/archive profiles. Ordinary frame settings and owner preferences are unchanged by that acceptance run. The complete catalog was restored afterward.
 
 Synthetic input and spawned collision fixtures are separate from a human physical controller playtest. Physical feel, PlayStation hardware, separate-PC LAN, broad performance and subjective final animation approval remain unverified. Earlier physical signal sweeps observed all 14 standard digital controls; this milestone did not reset or reprogram the controller.
 
-Source is isolated on `codex/marty-movement-stances` from cumulative main `fa992fb`; the original mixed native checkout, Unity fallback and content-only comparison preview are preserved.
+[PR #55](https://github.com/Ellis1717/codename-cheweenie/pull/55) is merged into main at `25901d4`. Its Unreal tree matches the validated build source. The clean local main checkout is `D:/CheweenieValidation/GameplayFurWorktree`; its launcher and the original workspace launcher select the validated 0.15.0 package. The original mixed native checkout, Unity fallback and content-only comparison preview are preserved. Sports-park development remains uncommitted and under validation in its separate checkout; it is not included in 0.15.0. Its eventual integration must retain these merged movement and controller improvements.
 
 ## Actual packaged captures
 
