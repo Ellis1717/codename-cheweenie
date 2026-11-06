@@ -89,13 +89,13 @@ if($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1')){
     foreach($name in @('MartyRunningJump.png','MartyTwoLegWalk.png','MartyCrawlingUnderBeam.png','MartyTwoLegJacket.png','MartyTwoLegFollow.png','MartyCrawlFollow.png')){$capture=Join-Path $TestRoot ('MovementStances/'+$name);if(!(Test-Path -LiteralPath $capture)-or(Get-Item -LiteralPath $capture).LastWriteTimeUtc-lt $newest){throw ('Fresh movement capture missing: '+$name)}}
 }
 if($ReleaseVersion -eq 'Unified-0.15.1'){
-    foreach($entry in @(@('ParkSports/park-sports-smoke.json',26),@('Outside/outside-smoke.json',12))){
+    foreach($entry in @(@('ParkSports/park-sports-smoke.json',35),@('Outside/outside-smoke.json',12))){
         $path=Join-Path $TestRoot $entry[0]
         if(!(Test-Path -LiteralPath $path)-or(Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $newest){throw ('Missing/stale sports park report: '+$entry[0])}
         $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
         if($report.failed.Count-or $report.passed.Count-lt $entry[1]){throw ('Sports park acceptance failed: '+$entry[0])};$checks+=$report.passed.Count
     }
-    foreach($name in @('ParkSoccer.png','ParkBaseball.png','ParkBasketball.png')){
+    foreach($name in @('ParkSoccer.png','ParkBaseball.png','ParkBasketball.png','ParkTerrain.png','ParkHillFollow.png')){
         $path=Join-Path $TestRoot ('ParkSports/'+$name)
         if(!(Test-Path -LiteralPath $path)-or(Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $newest){throw ('Missing/stale park capture: '+$name)}
         $image=[Drawing.Bitmap]::new($path)

@@ -29,6 +29,7 @@ void AMartyPlayMode::TickParkSportsSmoke(float Delta)
     auto Place=[&](FVector Pos,float Yaw){P->GetCharacterMovement()->StopMovementImmediately();P->TeleportTo(Pos+FVector(0,0,45),FRotator(0,Yaw,0));PC->SetControlRotation(FRotator(-12,Yaw,0));PC->SetViewTarget(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=true;};
     auto View=[&](FVector Center){auto* C=GetWorld()->SpawnActor<ACameraActor>(Center+FVector(0,-1700,1900),FRotator(-48,90,0));PC->SetViewTarget(C);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;};
     auto Shot=[&](const TCHAR* N){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/N,true,false);};
+    if(SmokeStage==38)PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,EKeys::Gamepad_LeftY,1.f,Delta,1,FPlatformTime::Cycles64()));
     if(SmokeStage==32&&S->NextBase>=0)PC->SetControlRotation(FRotator(-12,(S->Base(S->NextBase)-P->GetActorLocation()).Rotation().Yaw,0));
     switch(SmokeStage)
     {
@@ -38,15 +39,26 @@ void AMartyPlayMode::TickParkSportsSmoke(float Delta)
             if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieParkPrivateAudit")))SmokeCheck(Neighbourhood->PrivateMapLoaded,TEXT("Retained private map loads its park anchor without exporting coordinates"));
             SmokeCheck(S->SoccerBall&&S->Baseball&&S->Basketball,TEXT("Cumulative real-map neighbourhood contains all three sports"));
             SmokeCheck(Navigation->Landmarks().Last().Label.Contains(TEXT("basketball")),TEXT("Sports destinations append after existing saved map indices"));
+            SmokeCheck(S->GroundHeight(S->Soccer)>S->GroundHeight(S->Soccer+FVector(1000,0,0))+5,TEXT("Soccer field has a gentle crown instead of a flat slab"));
+            SmokeCheck(S->GroundHeight(S->Diamond+FVector(0,-100,0))>S->Base(1).Z+20,TEXT("Baseball mound rises smoothly above the base-running circuit"));
+            SmokeCheck(S->Court.Z>Neighbourhood->Park.Z+80&&FMath::Abs(S->GroundHeight(S->Court+FVector(700,600,0))-S->Court.Z)<.1f,TEXT("Basketball terrace stays level above its sloping approach"));
+            bool Grounded=true;
+            for(FVector Offset:{FVector(-2400,5500,0),FVector(2300,5850,0),FVector(600,5000,0),FVector(1700,3300,0)})
+            {
+                const FVector At=S->GroundPoint(Neighbourhood->Park+Offset);FHitResult Hit;
+                Grounded&=GetWorld()->LineTraceSingleByChannel(Hit,At+FVector(0,0,500),At-FVector(0,0,30),ECC_Visibility)&&FMath::Abs(Hit.ImpactPoint.Z-At.Z)<2&&Hit.ImpactNormal.Z>.75f;
+            }
+            SmokeCheck(Grounded,TEXT("Hills mound and ramp have walkable collision matching the sampled surface"));
             Place(Neighbourhood->Park+FVector(0,1000,0),90);SmokePosition=P->GetActorLocation();Key(EKeys::W,true);Next();
         }break;
     case 1:if(SmokeTime>12)
         {
+            UE_LOG(LogTemp,Display,TEXT("PARK_APPROACH distance=%.2f heightGain=%.2f mode=%d"),FVector::Dist2D(SmokePosition,P->GetActorLocation()),P->GetActorLocation().Z-SmokePosition.Z,int(P->GetCharacterMovement()->MovementMode));
             Key(EKeys::W,false);SmokeCheck(P->GetActorLocation().Y>SmokePosition.Y+900&&P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Keyboard walks continuously from original park through old boundary into sports park"));
             Place(S->Soccer-FVector(70,0,0),0);Next();
         }break;
     case 2:if(SmokeTime>.5){SmokeCheck(Neighbourhood->Prompt(P).Contains(TEXT("kick")),TEXT("Approaching soccer ball displays kick controls"));Tap(EKeys::E);Next();}break;
-    case 3:if(SmokeTime>.3){Adventure->Pause();SmokePosition=S->SoccerBall->GetActorLocation();Next();}break;
+    case 3:if(SmokeTime>.3){SmokeCheck(FMath::Abs(S->SoccerBall->GetActorLocation().Z-S->GroundHeight(S->SoccerBall->GetActorLocation())-16)<.1f,TEXT("Moving soccer ball follows the field crown without floating or burying"));Adventure->Pause();SmokePosition=S->SoccerBall->GetActorLocation();Next();}break;
     case 4:if(SmokeTime>.6){SmokeCheck(S->SoccerBall->GetActorLocation().Equals(SmokePosition,.01),TEXT("Pause freezes live soccer motion"));Adventure->Back();Next();}break;
     case 5:if(SmokeTime>2)
         {
@@ -57,6 +69,7 @@ void AMartyPlayMode::TickParkSportsSmoke(float Delta)
     case 7:if(SmokeTime>2)
         {
             SmokeCheck(S->Goals[0]==1&&S->Goals[1]==1,TEXT("Synthetic X/Square kick scores through opposite goal"));
+            SmokeCheck(FMath::Abs(S->SoccerBall->GetActorLocation().Z-S->GroundHeight(S->SoccerBall->GetActorLocation())-16)<.1f,TEXT("Soccer ball rests on contoured ground after scoring"));
             S->SoccerBall->SetActorLocation(S->Soccer+FVector(0,1050,16));Place(S->Soccer+FVector(0,990,0),90);Next();
         }break;
     case 8:if(SmokeTime>.4){Tap(EKeys::E);Next();}break;
@@ -136,10 +149,36 @@ void AMartyPlayMode::TickParkSportsSmoke(float Delta)
         }break;
     case 34:if(SmokeTime>.3)
         {
+            Place(S->GroundPoint(Neighbourhood->Park+FVector(-2400,5000,0)),90);SmokePosition=P->GetActorLocation();Key(EKeys::W,true);Next();
+        }break;
+    case 35:if(SmokeTime>6)
+        {
+            UE_LOG(LogTemp,Display,TEXT("PARK_UPHILL distance=%.2f heightGain=%.2f mode=%d"),FVector::Dist2D(SmokePosition,P->GetActorLocation()),P->GetActorLocation().Z-SmokePosition.Z,int(P->GetCharacterMovement()->MovementMode));
+            Key(EKeys::W,false);SmokeCheck(P->GetActorLocation().Z>SmokePosition.Z+65&&P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Keyboard walks uphill with actual collision and gains elevation"));
+            SmokePosition=P->GetActorLocation();PC->SetControlRotation(FRotator(-12,270,0));Key(EKeys::W,true);Next();
+        }break;
+    case 36:if(SmokeTime>6)
+        {
+            Key(EKeys::W,false);SmokeCheck(P->GetActorLocation().Z<SmokePosition.Z-65&&P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Keyboard descends the hill without falling through terrain"));
+            Place(S->GroundPoint(Neighbourhood->Park+FVector(0,4800,0)),90);Next();
+        }break;
+    case 37:if(SmokeTime>.5){SmokePosition=P->GetActorLocation();Next();}break;
+    case 38:if(SmokeTime>7)
+        {
+            PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,EKeys::Gamepad_LeftY,0.f,Delta,1,FPlatformTime::Cycles64()));
+            SmokeCheck(P->GetActorLocation().Z>SmokePosition.Z+50&&P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Synthetic left stick climbs the continuous court approach"));
+            auto* C=GetWorld()->SpawnActor<ACameraActor>();const FVector Eye=Neighbourhood->Park+FVector(-4500,4300,1000),Target=Neighbourhood->Park+FVector(0,5400,90);
+            C->SetActorLocationAndRotation(Eye,(Target-Eye).Rotation());PC->SetViewTarget(C);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;Next();
+        }break;
+    case 39:if(SmokeTime>2){Shot(TEXT("ParkTerrain.png"));Next();}break;
+    case 40:if(SmokeTime>.7){Place(S->GroundPoint(Neighbourhood->Park+FVector(-2300,5700,0)),-70);Next();}break;
+    case 41:if(SmokeTime>2){Shot(TEXT("ParkHillFollow.png"));Next();}break;
+    case 42:if(SmokeTime>.7)
+        {
             SmokeCheck(Adventure->Progress->SnackMask==0&&Adventure->Progress->VisitIndex==0,TEXT("Sports preserve indoor patrol progress"));
             P->ReturnHome();SmokeCheck(!Neighbourhood->Outside&&P->GetActorLocation().Z<200,TEXT("Return-home recovery works from sports park"));
             auto O=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto& C:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(C));for(auto& C:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(C));
-            O->SetStringField(TEXT("scope"),TEXT("Real game map; synthetic keyboard/gamepad; fixture teleports for individual cases; real movement for park approach and a complete timed baseball circuit, with camera steering toward each base; elevated HUD-free field captures; physical hardware unverified"));
+            O->SetStringField(TEXT("scope"),TEXT("Real game map; synthetic keyboard/gamepad; fixture teleports for individual cases; real movement for park approach, hills, court ramp and a complete timed baseball circuit; camera steering toward each base; elevated HUD-free field captures and actual hill follow camera; physical hardware unverified"));
             O->SetBoolField(TEXT("rendered"),FApp::CanEverRender());O->SetBoolField(TEXT("privateMap"),Neighbourhood->PrivateMapLoaded);
             O->SetArrayField(TEXT("passed"),Pass);O->SetArrayField(TEXT("failed"),Fail);FString Json;FJsonSerializer::Serialize(O,TJsonWriterFactory<>::Create(&Json));
             bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/TEXT("park-sports-smoke.json")));FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);SmokeStage=1000;
