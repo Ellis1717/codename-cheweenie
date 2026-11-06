@@ -66,6 +66,9 @@ private:
     void Sign(const FString& Text,FVector P,float Size=20);
     UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Palette;
     UPROPERTY() TArray<TObjectPtr<UTextRenderComponent>> ReactionLabels;
+    UPROPERTY() TArray<TObjectPtr<UTextRenderComponent>> InputSigns;
+    TArray<FString> InputSignSources;
+    int32 SignFamily=-1;
     UPROPERTY() TObjectPtr<AActor> Gear;
     UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> GearPieces;
     bool Ready=false;

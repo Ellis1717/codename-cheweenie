@@ -130,7 +130,12 @@ void AMartyPlayMode::Tick(float DeltaSeconds)
         Axis(EKeys::Gamepad_RightY, 0);
         SmokeCheck(FMath::Abs(FRotator::NormalizeAxis(PC->GetControlRotation().Yaw - SmokeYaw)) > 5, TEXT("Right stick orbits camera"));
         SmokeCheck(FRotator::NormalizeAxis(PC->GetControlRotation().Pitch) > SmokePitch + 5, TEXT("Right stick up looks upward"));
-        Key(EKeys::Gamepad_RightShoulder, true); Next(); break;
+        // Let the injected neutral stick reach Enhanced Input before recentering.
+        SmokeStage=140;SmokeTime=0;break;
+    case 140:
+        Axis(EKeys::Gamepad_RightX,0);Axis(EKeys::Gamepad_RightY,0);
+        if(SmokeTime<.15f)break;
+        Key(EKeys::Gamepad_RightShoulder,true);SmokeStage=15;SmokeTime=0;break;
     case 15:
         Axis(EKeys::Gamepad_RightX, 0);
         Axis(EKeys::Gamepad_RightY, 0);

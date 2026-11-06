@@ -15,7 +15,7 @@ public:
     explicit FCozyDeviceObserver(UControllerGuide* InGuide):Guide(InGuide){}
     virtual void Tick(float, FSlateApplication&, TSharedRef<ICursor>) override {}
     virtual bool HandleKeyDownEvent(FSlateApplication&,const FKeyEvent& E) override
-    { if(Guide.IsValid())Guide->Observe(E.GetKey(),E.GetInputDeviceId());return false; }
+    { if(Guide.IsValid()&&!E.IsCommandDown())Guide->Observe(E.GetKey(),E.GetInputDeviceId());return false; }
     virtual bool HandleAnalogInputEvent(FSlateApplication&,const FAnalogInputEvent& E) override
     { if(Guide.IsValid())Guide->Observe(E.GetKey(),E.GetInputDeviceId(),E.GetAnalogValue());return false; }
     virtual bool HandleMouseButtonDownEvent(FSlateApplication&,const FPointerEvent& E) override
@@ -48,6 +48,8 @@ ECozyInputFamily UControllerGuide::Classify(const FString& Name)
 }
 void UControllerGuide::Observe(FKey Key,FInputDeviceId Device,float Amount)
 {
+    // Unmapped keys (including Print Screen) and OS shortcuts are not gameplay input.
+    if(!Key.IsValid()||Key==EKeys::LeftCommand||Key==EKeys::RightCommand)return;
     // Ignore resting stick noise and released trigger events.
     if(FMath::Abs(Amount)<.25f)return;
     if(!Key.IsGamepadKey()){Detected=ECozyInputFamily::Keyboard;return;}
@@ -95,11 +97,20 @@ TArray<FString> UControllerGuide::Controls() const
 }
 FString UControllerGuide::Format(const FString& Text) const
 {
-    FString Result=Text;
+    FString Result;
     const int32 Column=Family()==ECozyInputFamily::Keyboard?1:Family()==ECozyInputFamily::Xbox?2:Family()==ECozyInputFamily::PlayStation?3:4;
     // Match complete input phrases before individual glyph names. Leave ordinary
     // slashes (scores, place names and menu titles) untouched.
     const TCHAR* Phrases[][5]={
+        {TEXT("brackets / D-pad left-right"),TEXT("brackets"),TEXT("D-pad left/right"),TEXT("D-pad left/right"),TEXT("D-pad left/right")},
+        {TEXT("Wheel / +/-: zoom | Z: reset zoom"),TEXT("Wheel / +/-: zoom | Z: reset zoom"),TEXT("Zoom: Controls & cameras"),TEXT("Zoom: Controls & cameras"),TEXT("Zoom: Controls & cameras")},
+        {TEXT("Arrows choose | Enter select | Backspace back"),TEXT("Arrows choose | Enter select | Backspace back"),TEXT("LS/D-pad choose | A select | B back"),TEXT("LS/D-pad choose | Cross select | Circle back"),TEXT("LS/D-pad choose | Bottom select | Right back")},
+        {TEXT("C: trick menu"),TEXT("C: trick menu"),TEXT("B: trick menu"),TEXT("Circle: trick menu"),TEXT("right face: trick menu")},
+        {TEXT("Keyboard: 1 lie / stand | 2 roll | 3 shake | 4 bark"),TEXT("Keyboard: 1 lie / stand | 2 roll | 3 shake | 4 bark"),TEXT("Hold LB while choosing a trick"),TEXT("Hold L1 while choosing a trick"),TEXT("Hold LB while choosing a trick")},
+        {TEXT("WASD / LS"),TEXT("WASD"),TEXT("LS"),TEXT("LS"),TEXT("LS")},
+        {TEXT("mouse / RS"),TEXT("mouse"),TEXT("RS"),TEXT("RS"),TEXT("RS")},
+        {TEXT("B / LB-L1"),TEXT("B"),TEXT("LB"),TEXT("L1"),TEXT("LB")},
+        {TEXT("R / RB-R1"),TEXT("R"),TEXT("RB"),TEXT("R1"),TEXT("RB")},
         {TEXT("Z / LB-L3"),TEXT("Z"),TEXT("LB + L3"),TEXT("L1 + L3"),TEXT("LB + L3")},
         {TEXT("U / LB-R3"),TEXT("U"),TEXT("LB + R3"),TEXT("L1 + R3"),TEXT("LB + R3")},
         {TEXT("WASD / left stick"),TEXT("WASD"),TEXT("left stick"),TEXT("left stick"),TEXT("left stick")},
@@ -133,7 +144,20 @@ FString UControllerGuide::Format(const FString& Text) const
         {TEXT("L1/LB"),TEXT("Left Ctrl"),TEXT("LB"),TEXT("L1"),TEXT("LB")},
         {TEXT("D-pad choose | A select | B back"),TEXT("Arrows choose | Enter select | Backspace back"),TEXT("LS/D-pad choose | A select | B back"),TEXT("LS/D-pad choose | Cross select | Circle back"),TEXT("LS/D-pad choose | Bottom select | Right back")}
     };
-    for(const auto& Phrase:Phrases)Result.ReplaceInline(Phrase[0],Phrase[Column],ESearchCase::CaseSensitive);
+    // Scan the original text once; a replacement must never become another match.
+    for(int32 At=0;At<Text.Len();)
+    {
+        bool Matched=false;
+        for(const auto& Phrase:Phrases)
+        {
+            const int32 Length=FCString::Strlen(Phrase[0]);
+            if(At+Length<=Text.Len()&&FCString::Strncmp(*Text+At,Phrase[0],Length)==0)
+            {
+                Result+=Phrase[Column];At+=Length;Matched=true;break;
+            }
+        }
+        if(!Matched)Result.AppendChar(Text[At++]);
+    }
     return Result;
 }
 void UControllerGuide::Draw(AHUD* HUD,float X,float Y) const
