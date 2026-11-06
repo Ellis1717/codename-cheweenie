@@ -12,7 +12,7 @@ $backend=if($Render){'-dx12 -RenderOffscreen -windowed -ResX=1280 -ResY=720'}els
 # The native build validates SDKs; runtime acceptance must not queue another build-tool
 # SDK query behind a different checkout's compilation (TargetPlatformManager's supported flag).
 $project=if($GameExe){''}else{'"'+(Join-Path $PSScriptRoot 'CheweenieUE5Lab.uproject')+'" -game -Multiprocess '}
-$info.Arguments=$project+$backend+' -CheweenieSmoke -UserDir="'+$testUser+'" -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $OutputRoot 'MovementSmoke.log')+'"'
+$info.Arguments=$project+$backend+' -CheweenieSmoke -NoGamepad -UserDir="'+$testUser+'" -unattended -nosplash -nosound -NoVSync -AbsLog="'+(Join-Path $OutputRoot 'MovementSmoke.log')+'"'
 $info.UseShellExecute=$false
 $info.CreateNoWindow=$true
 $info.EnvironmentVariables['UE-LocalDataCachePath']=$CacheRoot
