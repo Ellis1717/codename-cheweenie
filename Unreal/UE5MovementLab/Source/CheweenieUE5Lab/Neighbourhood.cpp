@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "ParkSports.h"
 #include "HouseUpstairs.h"
 #include "HalloweenSpecial.h"
 #include "WorldRealism.h"
@@ -190,11 +191,11 @@ void UCheweenieNeighbourhood::Build()
     if(!PrivateMapLoaded)
     {
         Tour.Empty();Park=Origin+FVector(3500,2400,0);School=Origin+FVector(8200,1800,0);
-        Shape(TEXT("Neighbourhood ground"),Origin+FVector(3500,0,-20),FVector(12000,8000,40),0);
+        Shape(TEXT("Neighbourhood ground"),Origin+FVector(3500,3500,-20),FVector(12000,15000,40),0);
         for(int32 Side:{-1,1})
         {
-            Shape(TEXT("Neighbourhood edge hedge"),Origin+FVector(3500+Side*6000,0,100),FVector(60,8000,200),0);
-            Shape(TEXT("Neighbourhood edge hedge"),Origin+FVector(3500,Side*4000,100),FVector(12000,60,200),0);
+            Shape(TEXT("Neighbourhood edge hedge"),Origin+FVector(3500+Side*6000,3500,100),FVector(60,15000,200),0);
+            Shape(TEXT("Neighbourhood edge hedge"),Origin+FVector(3500,Side<0?-4000:11000,100),FVector(12000,60,200),0);
         }
         const FVector Points[]={Origin+FVector(500,-600,0),Origin+FVector(2300,0,0),Origin+FVector(5600,0,0),Origin+FVector(7600,600,0),Origin+FVector(8500,1800,0)};
         for(int32 I=1;I<5;++I){Path(Points[I-1],Points[I],1100,1);Path(Points[I-1],Points[I],700,2);}
@@ -227,6 +228,7 @@ void UCheweenieNeighbourhood::Build()
     Sign(TEXT("PARK\nSniff, explore and meet your neighbours"),Park+FVector(-300,-300,180),30,90);
     for(int32 I=0;I<6;++I)
     {
+        if(I==4)continue; // Leave an opening in the original trees for the sports park path.
         const FVector P=Park+FVector((I%3-1)*650,(I/3==0?-1:1)*650,0);
         Shape(TEXT("Tree trunk"),P+FVector(0,0,180),FVector(50,50,360),5,true,TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
         Shape(TEXT("Tree crown"),P+FVector(0,0,470),FVector(420,420,540),0,false,TEXT("/Engine/BasicShapes/Sphere.Sphere"));
@@ -253,6 +255,12 @@ void UCheweenieNeighbourhood::Build()
         Actor->SetActorLocationAndRotation(Origin+FVector(0,0,1000),FRotator(-55,Yaw,0));OutdoorFill.Add(Fill);
     }
     UpgradeCheweenieNeighbourhood(GetWorld(),Park);
+    Sports=NewObject<UParkSports>(GetOwner());Sports->RegisterComponent();Sports->Build(Park);
+    NavigationEdges.Add({Park,Park+FVector(0,1900,0)});
+    NavigationEdges.Add({Park+FVector(0,1900,0),Park+FVector(0,3500,0)});
+    NavigationEdges.Add({Park+FVector(0,3500,0),Park+FVector(0,6400,0)});
+    NavigationEdges.Add({Park+FVector(0,3500,0),Sports->Soccer});
+    NavigationEdges.Add({Park+FVector(0,3500,0),Sports->Diamond});
 }
 void UCheweenieNeighbourhood::SetOutdoorLighting(bool Active)
 {
@@ -284,6 +292,7 @@ FString UCheweenieNeighbourhood::Prompt(const AMartyCharacter* Pawn) const
 {
     if(!Outside)return CheweenieHouse::Near(Pawn->GetActorLocation(),IndoorDoor,130)?TEXT("E / X / Square: open the door and go outside"):TEXT("Headquarters door: near the blue OUTSIDE sign");
     const FVector P=Pawn->GetActorLocation();
+    if(Sports){const FString S=Sports->Prompt(Pawn);if(!S.IsEmpty())return S;}
     if(FVector::Dist2D(P,Entrance)<120)return TEXT("E / X / Square: return inside");
     if(FVector::Dist2D(P,Entrance+FVector(160,0,0))<120||FVector::Dist2D(P,Park+FVector(300,0,0))<120||FVector::Dist2D(P,School-FVector(300,0,0))<120)return TEXT("E / X / Square: visit next landmark on walking tour");
     for(const auto& D:Dogs)if(FVector::Dist2D(P,D.Position)<135)return FString(TEXT("E / X / Square: say hello to "))+D.Name;
@@ -293,6 +302,7 @@ bool UCheweenieNeighbourhood::Interact(AMartyCharacter* Pawn)
 {
     const FVector P=Pawn->GetActorLocation();
     if(!Outside){if(CheweenieHouse::Near(P,IndoorDoor,130)){GoOutside(Pawn);return true;}return false;}
+    if(Sports&&Sports->Interact(Pawn))return true;
     if(FVector::Dist2D(P,Entrance)<120){GoInside(Pawn);return true;}
     if(FVector::Dist2D(P,Entrance+FVector(160,0,0))<120||FVector::Dist2D(P,Park+FVector(300,0,0))<120||FVector::Dist2D(P,School-FVector(300,0,0))<120)
     {

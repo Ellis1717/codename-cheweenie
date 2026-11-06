@@ -1,0 +1,8 @@
+{
+	"scope": "Actual map and map travel; synthetic input plus menu/progress fixtures. Physical controllers and separate PCs unverified.",
+	"passed": [
+		"Latest hub opens after the archived executable exits",
+		"Archive round trip retains latest progress and local detail"
+	],
+	"failed": []
+}

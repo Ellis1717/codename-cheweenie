@@ -4,6 +4,7 @@
 #include "HalloweenSpecial.h"
 #include "CozyAdventure.h"
 #include "Neighbourhood.h"
+#include "ParkSports.h"
 #include "MartyCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include <queue>
@@ -28,7 +29,8 @@ TArray<FCozyLandmark> UCozyNavigation::Landmarks() const
     Result.Add({TEXT("Main bedroom"),FVector(-220,0,408),false});
     Result.Add({TEXT("Guest bedroom"),FVector(220,0,408),false});
     Result.Add({TEXT("Upstairs bathroom"),FVector(0,365,408),false});
-    Result.Add({TEXT("Upstairs pet nook"),FVector(-270,-245,408),false});return Result;
+    Result.Add({TEXT("Upstairs pet nook"),FVector(-270,-245,408),false});
+    if(N->Sports){Result.Add({TEXT("Park soccer pitch"),N->Sports->Soccer,true});Result.Add({TEXT("Park baseball diamond"),N->Sports->Base(0),true});Result.Add({TEXT("Park basketball court"),N->Sports->Court,true});}return Result;
 }
 FCozyLandmark UCozyNavigation::Goal() const
 {
@@ -51,6 +53,7 @@ FString UCozyNavigation::Location() const
     const FVector Pos=P->GetActorLocation();if(M->HomeProgression&&M->HomeProgression->InAnnex())return Pos.X<8300?TEXT("Headquarters / garage workshop"):TEXT("Headquarters / gym");
     if(!M->Neighbourhood->Outside){if(CheweenieHouse::Upstairs(Pos)||(Pos.Y< -330&&Pos.Z>80))return CheweenieHouse::Location(Pos);if(Pos.Y>240&&Pos.X<0)return TEXT("Headquarters / kitchen");if(Pos.X>130)return TEXT("Headquarters / sofa corner");return TEXT("Headquarters / cozy room");}
     auto* N=M->Neighbourhood.Get();if(FVector::Dist2D(Pos,N->Entrance)<900)return TEXT("Headquarters / front garden");
+    if(N->Sports){const FString Sport=N->Sports->Location(Pos);if(!Sport.IsEmpty())return Sport;}
     if(FVector::Dist2D(Pos,N->Park)<1100)return TEXT("Park");if(FVector::Dist2D(Pos,N->School)<1000)return TEXT("Glen Dhu school approach");
     double Best=2000000;FString Name=TEXT("Neighbourhood walk");for(const auto& L:N->NamedStreets){FVector Flat=Pos;Flat.Z=0;const double D=FMath::PointDistToSegment(Flat,L.A,L.B);if(D<Best){Best=D;Name=L.Name;}}return Name;
 }

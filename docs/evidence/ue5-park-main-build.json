@@ -1,0 +1,61 @@
+{
+  "version": "Unified-0.15.1",
+  "activatedDate": "2026-11-06",
+  "nativeSourceCommit": "212c91d",
+  "integratedMainCommit": "0d0f304",
+  "engine": "5.8.4",
+  "editorBuildPassed": true,
+  "gameBuildPassed": true,
+  "fullCookStageArchivePassed": true,
+  "cookedPackages": 771,
+  "requiredPackagedAssertions": 1081,
+  "extraSeedAssertions": 22,
+  "privateMapAssertions": 4,
+  "privateSportsAssertions": 26,
+  "archiveRoundTripAssertions": 18,
+  "finalPackagedAssertionExecutions": 1151,
+  "editorAssertions": 130,
+  "selectedAssertionExecutions": 1281,
+  "editorBreakdown": {
+    "stances": 50,
+    "controllerComfort": 45,
+    "controllerComfortResume": 9,
+    "sports": 26
+  },
+  "finalCapturesReviewed": [
+    "soccer",
+    "baseball",
+    "basketball",
+    "two-leg jacket",
+    "crawl follow camera",
+    "Xbox controller guide"
+  ],
+  "audioWaveformsVerified": [
+    "Barks",
+    "Music",
+    "Muted",
+    "RainbowSqueak"
+  ],
+  "brickPixelAndCoatChecksPassed": true,
+  "finalRuntimeLogScanPassed": true,
+  "currentPayloadHashes": 43,
+  "newlyArchivedPayloadHashes": 43,
+  "retainedArchives": 41,
+  "catalogPayloadFiles": 3049,
+  "archiveVerification": "Reused prior 40-archive baseline; preserved all prior entries exactly and freshly hashed the newly archived 0.15.0 payload. No full rehash of all older archives.",
+  "ownerFilesMatched": 4,
+  "mainJunctionsVerified": 3,
+  "desktopShortcutVerified": true,
+  "previousReleaseRetained": true,
+  "fixtureFinding": "Initial home fixture used an already-upgraded save: 23 checks passed and 11 failed. No gameplay change was needed. Replaced the read-only fixture with retained pre-0.13 save, then 34 home and 5 restart checks passed. Resumed at Home against unchanged payload; earlier passing reports retained and finalizer freshness checks passed.",
+  "publicationFixtureChecks": [
+    "active-game guard",
+    "successful copy and activation",
+    "junction failure rollback"
+  ],
+  "physicalControllersVerified": false,
+  "separatePCsVerified": false,
+  "comparativePerformanceVerified": false,
+  "portableZipGenerated": false,
+  "scope": "Synthetic keyboard/gamepad input in the real game map; solo practice sports. No team AI or outdoor multiplayer. No Unity edits."
+}
