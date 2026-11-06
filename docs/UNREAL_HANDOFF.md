@@ -1,5 +1,11 @@
 # Codename .... Cheweenie — Unreal development handoff
 
+<!-- park-terrain-development:start -->
+
+**Hills and contoured sports fields (development source, 2026-11-06):** the cumulative sports integration now has grassy viewing hills, gentle field crowns, a walkable baseball mound and a raised level basketball court with sloping approaches. Markings, sports props and ball motion follow ground height. Native Editor compilation and **63 final real-map assertions** passed; five captures were reviewed. Input was synthetic; physical controllers and performance remain unverified. **Desktop main 0.15.1 is unchanged.** [Terrain guide and actual evidence](UNREAL_PARK_TERRAIN.md).
+
+<!-- park-terrain-development:end -->
+
 <!-- sports-park-release:start -->
 
 **Sports park in desktop main 0.15.1 (2026-11-06):** restart **Play Cheweenie**, continue the adventure and follow the park sports path. Play soccer, tee baseball with a timed base circuit, and basketball shooting. Interact with **E / Xbox X / PlayStation Square**. Moving jumps, crawl, two-leg walking and controller comfort from 0.15.0 remain included.

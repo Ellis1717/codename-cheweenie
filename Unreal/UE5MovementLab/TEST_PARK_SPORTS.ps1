@@ -19,6 +19,6 @@ if($process.ExitCode){throw 'Park sports test failed; inspect ParkSports.log'}
 $path=Join-Path $OutputRoot 'park-sports-smoke.json'
 if(!(Test-Path $path) -or (Get-Item $path).LastWriteTimeUtc -lt $started){throw 'Park sports report missing/stale'}
 $report=Get-Content $path -Raw|ConvertFrom-Json
-if($report.failed.Count -or $report.passed.Count -lt 26){throw 'Park sports assertions failed'}
-if($Render){foreach($name in @('ParkSoccer.png','ParkBaseball.png','ParkBasketball.png')){if(!(Test-Path (Join-Path $OutputRoot $name)) -or (Get-Item (Join-Path $OutputRoot $name)).LastWriteTimeUtc -lt $started){throw ('Missing/stale capture '+$name)}}}
+if($report.failed.Count -or $report.passed.Count -lt 35){throw 'Park sports assertions failed'}
+if($Render){foreach($name in @('ParkSoccer.png','ParkBaseball.png','ParkBasketball.png','ParkTerrain.png','ParkHillFollow.png')){if(!(Test-Path (Join-Path $OutputRoot $name)) -or (Get-Item (Join-Path $OutputRoot $name)).LastWriteTimeUtc -lt $started){throw ('Missing/stale capture '+$name)}}}
 'Park sports: '+$report.passed.Count+' assertions passed'

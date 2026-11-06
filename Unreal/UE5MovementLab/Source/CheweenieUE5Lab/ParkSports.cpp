@@ -6,6 +6,7 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/PlayerController.h"
@@ -30,50 +31,60 @@ UTextRenderComponent* UParkSports::Label(FString Text,FVector P,float Size)
 }
 void UParkSports::Line(FVector A,FVector B,float Width)
 {
-    auto* L=Shape(TEXT("Sports field marking"),(A+B)*.5+FVector(0,0,2),FVector(FVector::Dist2D(A,B),Width,2),White);
-    L->SetActorRotation(FRotator(0,(B-A).Rotation().Yaw,0));
+    if(!FieldMarkings)
+    {
+        auto* Actor=GetWorld()->SpawnActor<AActor>();Actor->Tags.Add(TEXT("Sports field markings"));
+        FieldMarkings=NewObject<UInstancedStaticMeshComponent>(Actor);Actor->SetRootComponent(FieldMarkings);
+        FieldMarkings->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,TEXT("/Engine/BasicShapes/Cube.Cube")));
+        auto* M=UMaterialInstanceDynamic::Create(LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/World/NeighbourhoodSurface.NeighbourhoodSurface")),Actor);
+        M->SetVectorParameterValue(TEXT("Color"),White);FieldMarkings->SetMaterial(0,M);
+        FieldMarkings->SetCollisionEnabled(ECollisionEnabled::NoCollision);FieldMarkings->SetCastShadow(false);
+        FieldMarkings->RegisterComponent();Actor->SetActorLocation(TerrainOrigin);
+    }
+    const int Segments=FMath::Max(1,FMath::CeilToInt(FVector::Dist2D(A,B)/40));
+    for(int I=0;I<Segments;++I)
+    {
+        const FVector Start=GroundPoint(FMath::Lerp(A,B,float(I)/Segments)),End=GroundPoint(FMath::Lerp(A,B,float(I+1)/Segments));
+        FieldMarkings->AddInstance(FTransform((End-Start).Rotation(),(Start+End)*.5+FVector(0,0,2.5)-TerrainOrigin,FVector(FVector::Dist(Start,End)+.4f,Width,1)/100));
+    }
 }
 FVector UParkSports::Base(int32 I) const
 {
     const FVector Bases[]={FVector(0,-750,0),FVector(-650,-100,0),FVector(0,550,0),FVector(650,-100,0)};
-    return Diamond+Bases[I%4];
+    return GroundPoint(Diamond+Bases[I%4]);
 }
 FVector UParkSports::ResetPoint(int32 Sport) const
 {
-    return Sport==0?Soccer+FVector(0,-1100,0):Sport==1?Diamond+FVector(-350,-900,0):Court+FVector(-500,-650,0);
+    return GroundPoint(Sport==0?Soccer+FVector(0,-1100,0):Sport==1?Diamond+FVector(-350,-900,0):Court+FVector(-500,-650,0));
 }
 void UParkSports::Build(FVector Park)
 {
-    Soccer=Park+FVector(-1600,3500,0);Diamond=Park+FVector(1700,3500,0);Court=Park+FVector(0,6400,0);
-    // One centimetre above the existing neighbourhood/private-map ground avoids coplanar grass.
-    Shape(TEXT("Sports park ground"),Park+FVector(0,4300,-19),FVector(7000,7000,40),Grass,true);
+    TerrainOrigin=Park;
+    Soccer=GroundPoint(Park+FVector(-1600,3500,0));Diamond=GroundPoint(Park+FVector(1700,3500,0));Court=GroundPoint(Park+FVector(0,6400,0));
+    BuildTerrain();
     Label(TEXT("COMMUNITY SPORTS PARK\nSoccer / Baseball / Basketball\nFollow the path to the fields"),Park+FVector(0,850,190),32);
-    Shape(TEXT("Park sports path"),Park+FVector(0,3500,1),FVector(260,5000,2),FLinearColor(.48f,.44f,.34f));
     // Dog-sized practice pitch, two goals and continuous touchlines.
-    Shape(TEXT("Soccer pitch"),Soccer+FVector(0,0,1),FVector(2200,1800,2),FLinearColor(.09f,.25f,.08f));
     for(int S:{-1,1})
     {
         Line(Soccer+FVector(S*1100,-900,0),Soccer+FVector(S*1100,900,0));
         Line(Soccer+FVector(-1100,S*900,0),Soccer+FVector(1100,S*900,0));
-        for(int Y:{-1,1})Shape(TEXT("Soccer goal post"),Soccer+FVector(S*1130,Y*240,100),FVector(10,10,200),White,true);
-        Shape(TEXT("Soccer crossbar"),Soccer+FVector(S*1130,0,200),FVector(10,490,10),White,true);
-        for(int I=-4;I<=4;++I)Shape(TEXT("Soccer net"),Soccer+FVector(S*1250,I*60,100),FVector(4,3,200),White);
-        for(int I=0;I<=4;++I)Shape(TEXT("Soccer net"),Soccer+FVector(S*1250,0,I*50),FVector(4,480,3),White);
+        const FVector Goal=GroundPoint(Soccer+FVector(S*1130,0,0));
+        for(int Y:{-1,1})Shape(TEXT("Soccer goal post"),GroundPoint(Goal+FVector(0,Y*240,0))+FVector(0,0,100),FVector(10,10,200),White,true);
+        Shape(TEXT("Soccer crossbar"),Goal+FVector(0,0,200),FVector(10,490,10),White,true);
+        for(int I=-4;I<=4;++I)Shape(TEXT("Soccer net"),GroundPoint(Goal+FVector(S*120,I*60,0))+FVector(0,0,100),FVector(4,3,200),White);
+        for(int I=0;I<=4;++I)Shape(TEXT("Soccer net"),GroundPoint(Goal+FVector(S*120,0,0))+FVector(0,0,I*50),FVector(4,480,3),White);
     }
     Line(Soccer+FVector(0,-900,0),Soccer+FVector(0,900,0));
     for(int I=0;I<32;++I){const float A=I*2*PI/32,B=(I+1)*2*PI/32;Line(Soccer+FVector(220*FMath::Cos(A),220*FMath::Sin(A),0),Soccer+FVector(220*FMath::Cos(B),220*FMath::Sin(B),0));}
     Label(TEXT("SOCCER\nFace either goal. E / X / Square: kick"),Soccer+FVector(0,1100,180));
     SoccerBall=Shape(TEXT("Park soccer ball"),Soccer+FVector(0,0,16),FVector(32),White,false,true);
     // Diamond, four visible bases, mound and open outfield.
-    Shape(TEXT("Baseball infield"),Diamond+FVector(0,-100,1),FVector(1500,1500,2),Clay)->SetActorRotation(FRotator(0,45,0));
     for(int I=0;I<4;++I){Line(Base(I),Base(I+1));Shape(TEXT("Baseball base"),Base(I)+FVector(0,0,4),FVector(55,55,8),White);Label(I==0?TEXT("HOME"):FString::FromInt(I),Base(I)+FVector(0,40,35),21);}
     Line(Base(0),Diamond+FVector(1300,550,0));Line(Base(0),Diamond+FVector(-1300,550,0));
-    Shape(TEXT("Pitcher mound"),Diamond+FVector(0,-100,4),FVector(140,140,8),Clay);
     Shape(TEXT("Batting tee"),Base(0)+FVector(0,0,18),FVector(9,9,36),Blue);
     Baseball=Shape(TEXT("Park baseball"),Base(0)+FVector(0,0,42),FVector(18),White,false,true);
     Label(TEXT("BASEBALL\nE / X / Square at tee: bat\nRun 1 > 2 > 3 > HOME in 25 seconds\nHurry: Shift / L3"),Diamond+FVector(0,1200,210));
     // A half-court with a backboard, rim and a marked shooting spot.
-    Shape(TEXT("Basketball half court"),Court+FVector(0,0,1),FVector(1800,1600,2),Blue);
     for(int S:{-1,1}){Line(Court+FVector(S*900,-800,0),Court+FVector(S*900,800,0));Line(Court+FVector(-900,S*800,0),Court+FVector(900,S*800,0));}
     Shape(TEXT("Basketball post"),Court+FVector(0,730,180),FVector(18,18,360),White,true);
     Shape(TEXT("Basketball backboard"),Court+FVector(0,680,320),FVector(180,12,115),White,true);
@@ -118,7 +129,7 @@ bool UParkSports::Interact(AMartyCharacter* P)
     if(NextBase<0&&FVector::Dist2D(Pos,Base(0))<150){NextBase=1;BatTime=0;BatVelocity=FVector(Aim.X*.6,FMath::Max(.4,Aim.Y),0).GetSafeNormal()*800+FVector(0,0,600);Tell(TEXT("Hit! Run first, second, third, then home!"));return true;}
     if(ShotTime<0&&FVector::Dist2D(Pos,Basketball->GetActorLocation())<145){ShotStart=Basketball->GetActorLocation();ShotTime=0;
         // Flight retains the player's aim. Only a close, well-directed shot crosses the rim.
-        ShotStart.Z=22;Basketball->SetActorRotation(FRotator(0,Aim.Rotation().Yaw,0));Tell(TEXT("Basketball shot! Face the hoop for a clean basket."));return true;}
+        Basketball->SetActorRotation(FRotator(0,Aim.Rotation().Yaw,0));Tell(TEXT("Basketball shot! Face the hoop for a clean basket."));return true;}
     return true;
 }
 void UParkSports::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
@@ -133,18 +144,24 @@ void UParkSports::TickComponent(float Delta,ELevelTick Type,FActorComponentTickF
         const float Crossing=FMath::Lerp(Previous.Y,Next.Y,(FMath::Sign(Next.X)*1130-Previous.X)/(Next.X-Previous.X));
         if(FMath::Abs(Crossing)<224){++Goals[Next.X>0?0:1];Reset(0);UpdateScore();Tell(FString::Printf(TEXT("GOAL! Soccer %d : %d. Ball back at centre."),Goals[0],Goals[1]));Next=SoccerBall->GetActorLocation()-Soccer;}
     }
-    SoccerBall->SetActorLocation(Soccer+Next);SoccerVelocity*=FMath::Exp(-.38f*Dt);
+    SoccerBall->SetActorLocation(GroundPoint(Soccer+Next)+FVector(0,0,16));
+    // Gravity projected along the local slope, with rolling resistance. Deadband prevents jitter.
+    const FVector At=SoccerBall->GetActorLocation();
+    FVector Slope((GroundHeight(At+FVector(20,0,0))-GroundHeight(At-FVector(20,0,0)))/40,
+                  (GroundHeight(At+FVector(0,20,0))-GroundHeight(At-FVector(0,20,0)))/40,0);
+    if(SoccerVelocity.Size2D()>3)SoccerVelocity-=Slope*980*Dt;
+    SoccerVelocity*=FMath::Exp(-.38f*Dt);
     if(FMath::Abs(Next.X)>1380||FMath::Abs(Next.Y)>1100){Reset(0);Tell(TEXT("Soccer ball out of bounds. Restart at centre."));}
     if(NextBase>=0)
     {
-        BatTime+=Dt;if(BatTime<2){BatVelocity.Z-=700*Dt;FVector B=Baseball->GetActorLocation()+BatVelocity*Dt;B.Z=FMath::Max(10.,B.Z);Baseball->SetActorLocation(B);}
+        BatTime+=Dt;if(BatTime<2){BatVelocity.Z-=700*Dt;FVector B=Baseball->GetActorLocation()+BatVelocity*Dt;const float Floor=GroundHeight(B)+10;B.Z=FMath::Max(double(Floor),B.Z);if(B.Z<=Floor)BatVelocity.Z=0;Baseball->SetActorLocation(B);}
         if(FVector::Dist2D(P->GetActorLocation(),Base(NextBase))<115&&FMath::Abs(P->GetActorLocation().Z-Base(NextBase).Z)<110)
         {if(NextBase==0){++Runs;Reset(1);UpdateScore();Tell(FString::Printf(TEXT("Safe at home! Baseball runs: %d."),Runs));}else{NextBase=(NextBase+1)%4;Tell(NextBase==0?TEXT("Third base! Head HOME!"):TEXT("Safe! Keep running to the next numbered base."));}}
         if(BatTime>=25){Reset(1);Tell(TEXT("Time's up! Try another hit and run the bases."));}
     }
     if(ShotTime>=0)
     {
-        ShotTime+=Dt;const float T=FMath::Min(ShotTime/1.2f,1.f);FVector Aim=Basketball->GetActorForwardVector();FVector End=ShotStart+Aim*1070;End.Z=290;
+        ShotTime+=Dt;const float T=FMath::Min(ShotTime/1.2f,1.f);FVector Aim=Basketball->GetActorForwardVector();FVector End=ShotStart+Aim*1070;End.Z=Court.Z+290;
         Basketball->SetActorLocation(FMath::Lerp(ShotStart,End,T)+FVector(0,0,460*FMath::Sin(PI*T)));
         if(T>=1){const bool Scored=FVector::Dist2D(End,Court+FVector(0,620,290))<32;if(Scored){++Baskets;UpdateScore();}Reset(2);Tell(Scored?FString::Printf(TEXT("Swish! Baskets: %d. Shoot again!"),Baskets):TEXT("Miss! Face the hoop from the ball and try again."));}
     }
