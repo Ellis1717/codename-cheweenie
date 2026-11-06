@@ -1,0 +1,41 @@
+{
+	"scope": "Actual home/annex map, synthetic keyboard/gamepad, real station/trick actions; position, currency, cooldown and legacy-save fixtures. Physical controllers unverified.",
+	"passed": [
+		"Home acceptance uses an isolated slot",
+		"Home progression defaults on without hijacking the spawn interaction",
+		"Cat response activates visible happy feedback",
+		"Bed interaction starts actual rest without a trick menu",
+		"Bed restores needs and grants the Rested bonus after three seconds",
+		"Movement gets Marty out of bed normally",
+		"The real kitchen meal grants extra energy and the food bonus",
+		"Food and Rested bonuses combine with a bounded energy-drain reduction",
+		"Pause freezes home bonus timers",
+		"Controller interaction enters the real garage/gym annex",
+		"The annex has a real walkable floor",
+		"Garage spends the shown star cost for a saved armor tier",
+		"The padded harness is actually visible on Marty",
+		"Foam safety test demonstrates real armor damage mitigation",
+		"Speed training temporarily guides the player to its finish",
+		"Running through the actual finish earns the speed tier",
+		"Speed tier changes the real movement speed",
+		"Disabling progression removes perk effects without deleting levels",
+		"The return door works even with progression disabled",
+		"Insufficient funds cannot buy or overdraw an upgrade",
+		"Maximum-tier interaction never spends more stars",
+		"Home recovery safely cancels unfinished station training",
+		"Home progression preserves existing patrol and sound preferences"
+	],
+	"failed": [
+		"Older saves acquire compatible starter stars and zero upgrade tiers",
+		"A real nearby bark earns a named cat reaction and a praise star",
+		"Repeating the same trick cannot farm praise stars",
+		"Direct lie receives its own contextual reaction",
+		"A completed roll receives praise after its animation",
+		"Four varied tricks complete a round with a bounded two-star bonus",
+		"Strength requires an actual training task before an upgrade",
+		"Completing the shake earns the strength tier",
+		"Strength changes actual digging energy cost and duration",
+		"Completing the roll earns a real jump-height upgrade",
+		"Disabled progression preserves purchased upgrades"
+	]
+}
