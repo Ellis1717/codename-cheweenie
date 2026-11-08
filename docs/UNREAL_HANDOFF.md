@@ -1,5 +1,15 @@
 # Codename .... Cheweenie — Unreal development handoff
 
+<!-- unified016-release:start -->
+
+**Cumulative 0.16.0 source and validated candidate (2026-11-08):** one native game now combines the sports park and contoured terrain, active-input directions, six saved camera views/zoom, crew bios, optional fantasy clothing, Lakitu's Hockey Bag Surprise and saved feature switches. Released stances, controller comfort, jackets, upstairs, cozy progression, audio, overlays and indoor LAN remain included. [Feature/configuration inventory and actual results](UNREAL_UNIFIED_0160.md).
+
+Native Editor/Game compilation and packaging passed. The exact final package passed **1,205 required assertions / 43 payload hashes**, plus 79 extra packaged assertions; eight final captures were reviewed. The retained-version round trip and private-data-free portable ZIP passed. **Desktop main remains 0.15.1 because its game is still open.** Guarded activation stopped before changes; all four owner files and all three main links remain intact. Close the running game before activating 0.16.0. Physical controllers, separate-PC networking and measured performance remain unverified. The version 1 roadmap still includes unfinished campaign/character/outdoor co-op work.
+
+Historical milestone records follow; their older package statements describe their original dates.
+
+<!-- unified016-release:end -->
+
 <!-- park-terrain-development:start -->
 
 **Hills and contoured sports fields (development source, 2026-11-06):** the cumulative sports integration now has grassy viewing hills, gentle field crowns, a walkable baseball mound and a raised level basketball court with sloping approaches. Markings, sports props and ball motion follow ground height. Native Editor compilation and **63 final real-map assertions** passed; five captures were reviewed. Input was synthetic; physical controllers and performance remain unverified. **Desktop main 0.15.1 is unchanged.** [Terrain guide and actual evidence](UNREAL_PARK_TERRAIN.md).

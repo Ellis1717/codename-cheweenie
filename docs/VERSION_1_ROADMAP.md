@@ -2,6 +2,8 @@
 
 Planning baseline: **2026-11-06**, desktop main **0.15.1**, Unreal Engine **5.8.4**. A version 1 release candidate is a complete, polished build that could become version 1 unchanged if final testing finds no blockers. More features and a higher automated test count alone do not establish readiness.
 
+**2026-11-08 consolidation:** cumulative native 0.16.0 passed its combined package gate (1,205 required checks); core features and configuration are inventoried in [the integration guide](UNREAL_UNIFIED_0160.md). Desktop activation is pending closure of the running 0.15.1 game. This integration does not close the remaining version 1 scope, character, campaign, outdoor co-op or hardware gates.
+
 The recommended route is to finish the existing neighbourhood adventure in stages: qualify the current game, finish the crew, prove one complete outing, extend co-op, finish the campaign, then freeze and qualify the release. These are proposed gates; none is marked complete by this roadmap.
 
 ## Build one connected game

@@ -1,6 +1,6 @@
 # Codename .... Cheweenie cumulative game 0.16.0
 
-This integration combines sports PR #56, input-aware directions PR #57 and terrain PR #58 with the compatible native features retained in the development checkout. The candidate remains separate from desktop main 0.15.1 until combined packaging and acceptance pass. Source and original resources remain preserved.
+This integration combines sports PR #56, input-aware directions PR #57 and terrain PR #58 with the compatible native features retained in the development checkout. The 0.16.0 candidate passed combined packaging and acceptance. Desktop main remains 0.15.1 while its game process is open; the guarded activation is pending its closure. Source and original resources remain preserved.
 
 ## Features and configuration
 
@@ -34,4 +34,16 @@ This work does not complete the planned campaign, articulated cats, outdoor co-o
 
 ## Actual results
 
-Combined validation and publication are in progress. This section will be replaced with the actual results and release status.
+On **2026-11-08**, native UE 5.8.4 Editor and Game compilation passed. Full cook/stage/archive passed; subsequent test-fixture corrections were rebuilt and restaged without changing cooked content. The staged Game executable matches the final native binary byte for byte. Original hockey prop float-literal conversion warnings were nonfatal.
+
+The final payload passed **1,205 required packaged assertions** and **43 payload hashes**, with fresh rendered captures and runtime-log/material checks. Additional final-package runs passed **79 assertions**: private-map traversal 4, private sports 35, headless Ratchet 22, retained 0.15.1 movement 16 and return-to-current-hub 2. Eight final public captures were retained and reviewed, alongside the costume and camera inspections. Bark/music/mute/Rainbow Guy squeak waveforms, coat pixels and readable-brick pixels passed their probes. Earlier selected Editor suites passed 132 assertions across integration revisions; they are separate from the exact final package gate.
+
+Initial audit failures are retained in the evidence. Corrections covered wheel direction changes, six-view input wording, a consistent configuration fixture, hockey input/audio/screenshot timing, four-to-six camera-cycle assumptions, an accidentally expanded cardinal-direction test loop, the moved jacket mouse hitbox and the nine-row hub expectation. The final fresh suite passed all of them.
+
+The retained 0.15.1 executable launched and returned to 0.16.0 through the real archive launcher. The catalog retains **42 entries / 3,092 payload files**. Older archive entries keep the prior verification baseline; the previous main and new main payloads were rehashed. The portable Windows ZIP passed all **47 entry hashes / 43 payload hashes**, excluding saved progress, private maps, rosters and local archive catalogs.
+
+**Desktop activation is pending:** the current 0.15.1 game remains open. The publisher rejected activation before changing files or links, preserving all four owner checkpoint/settings/map/roster files and keeping all three main junctions on 0.15.1. Close that game, then run the retained guarded publication step; copy the latest owner data and verify the shortcut/junctions before claiming desktop 0.16.0. The validated candidate and portable ZIP already exist separately. The rollback/active-game fixture tests passed.
+
+Physical Xbox/PlayStation gameplay, separate-PC networking, measured performance, final pet likeness and version 1 completion remain unverified or unfinished. Unity and the independent content-only preview remain intact.
+
+Evidence: [release summary](evidence/ue5-unified016-release.json), [exact payload gate](evidence/ue5-unified016-validated.json), [source/binary match](evidence/ue5-unified016-source-payload.json), [packaged reports](evidence/ue5-unified016-packaged), [portable archive](evidence/ue5-unified016-portable.json), [publication status](evidence/ue5-unified016-publication.json), [Editor build/results](evidence/ue5-unified016-editor-build.json).

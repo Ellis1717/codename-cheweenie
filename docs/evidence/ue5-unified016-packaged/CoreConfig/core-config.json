@@ -1,0 +1,21 @@
+{
+	"scope": "Real combined game map; synthetic keyboard/gamepad menu events and isolated save/preferences; physical hardware unverified",
+	"passed": [
+		"Combined settings acceptance uses an isolated save",
+		"Older default feature bits enable newly integrated options",
+		"Pet settings expose both optional activities through existing controls",
+		"Disabled sports reject interaction while the park remains walkable",
+		"Re-enabling sports restores nearby ball interaction without rebuilding the park",
+		"Disabled hockey story cannot replace the current adventure",
+		"Enabled hockey story starts inside the cumulative game",
+		"Disabling an active optional story safely returns Marty home",
+		"One wardrobe contains all pet outfit styles and existing jackets",
+		"Configured original fantasy overlays coexist with independent clothing toggles",
+		"Jacket selector retains cat choices and avoids stacking Marty garments",
+		"Combined controls retain the released controller comfort setup",
+		"Menu artwork is configurable through graphics and sound switches",
+		"Combined configuration saves additively without replacing existing progress",
+		"Additional camera presets use the existing saved zoom configuration"
+	],
+	"failed": []
+}

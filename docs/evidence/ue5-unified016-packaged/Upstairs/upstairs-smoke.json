@@ -1,0 +1,24 @@
+{
+	"scope": "Real-map collision and synthetic keyboard/gamepad traversal. Teleported starting fixtures. Physical devices unverified. Overview ceiling hidden for review only.",
+	"passed": [
+		"Real map contains a 38-step staircase and two furnished bedrooms",
+		"Bedroom guidance leads downstairs Marty to the stairs",
+		"Keyboard walks the entire staircase up without jumping or teleporting",
+		"Gamepad stick turns off the stairs onto the upstairs landing",
+		"Keyboard crosses the landing to the main bedroom approach",
+		"Main bedroom has a walkable floor and correct location label",
+		"Guest bedroom has a solid floor and correct location label",
+		"Bathroom doorway is physically walkable",
+		"Upstairs Marty cannot use the downstairs dog bed through the floor",
+		"Upstairs Marty cannot eat from the downstairs bowl",
+		"Upstairs Marty cannot pick up Rainbow Guy through the floor",
+		"Upstairs Marty cannot activate the downstairs outside door",
+		"Upstairs Marty cannot activate the garage portal through the floor",
+		"Upstairs movement does not collect downstairs snacks",
+		"Ground-floor guidance routes upstairs Marty back to the staircase",
+		"Bedroom partition blocks Marty outside its open doorway",
+		"Keyboard walks back down all stairs onto the original ground floor",
+		"Return-home binding safely recovers Marty from upstairs"
+	],
+	"failed": []
+}

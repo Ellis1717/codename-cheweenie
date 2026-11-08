@@ -1,0 +1,12 @@
+{
+  "candidateVersion": "Unified-0.16.0",
+  "status": "pending",
+  "reason": "Close the running main game before publishing so its latest checkpoint can be preserved",
+  "previousOwnerFilesUnchanged": 4,
+  "mainTargets": [
+    "UnrealCore-0.15.1",
+    "UnrealCore-0.15.1",
+    "UnrealCore-0.15.1"
+  ],
+  "checkedUtc": "2026-11-08T06:05:02.4942897Z"
+}

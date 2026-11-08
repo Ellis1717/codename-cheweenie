@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-08",
+  "version": "Unified-0.16.0",
+  "engine": "5.8.4",
+  "sourceGameplayCommit": "5012030",
+  "nativeEditorBuildPassed": true,
+  "nativeGameBuildPassed": true,
+  "fullCookStageArchivePassed": true,
+  "finalFixtureBinariesRestaged": true,
+  "requiredPackagedAssertions": 1205,
+  "payloadFilesHashed": 43,
+  "extraFinalPackagedAssertions": {
+    "privateMap": 4,
+    "privateSports": 35,
+    "headlessRatchet": 22,
+    "archiveMovement": 16,
+    "archiveReturn": 2,
+    "total": 79
+  },
+  "selectedEditorAssertions": 132,
+  "editorScope": "Across integration revisions; final package gate is separate.",
+  "archives": {
+    "entries": 42,
+    "payloadFiles": 3092,
+    "priorEntriesPreserved": true,
+    "olderVerificationBaselineReused": true,
+    "previousMainPayloadRehashed": 43
+  },
+  "portable": {
+    "entries": 47,
+    "payloadFiles": 43,
+    "privateDataExcluded": true,
+    "roundTripHashesVerified": true
+  },
+  "desktop": {
+    "status": "pending",
+    "reason": "Current 0.15.1 main game remains running; activation guard stopped before mutation.",
+    "mainLinksStillOn0151": 3,
+    "ownerFilesUnchanged": 4
+  },
+  "physicalControllersVerified": false,
+  "separatePCsVerified": false,
+  "performanceQualified": false,
+  "unityChecks": "Not rerun; no Unity source, assets or settings changed."
+}

@@ -1,0 +1,20 @@
+{
+	"passed": [
+		"Main mode menu exposes Hockey Bag Surprise",
+		"Mode menu starts the playable truck scene",
+		"Home Lakitu hidden while story Lakitu is in the bag",
+		"Bag interaction requires approaching the truck",
+		"Keyboard and synthetic stick move Marty on the truck loading platform",
+		"Truck bag prompt becomes available at close range",
+		"Keyboard E carries story into Leo's dressing room",
+		"Synthetic X/Square unzips bag and reveals Lakitu with Leo's reaction",
+		"Reveal triggers Lakitu's meow cue",
+		"Story does not advance main patrol progress",
+		"Pause retains hockey story stage",
+		"Greeting awards the story's honorary mascot finale",
+		"Final bag interaction returns Marty and Lakitu home",
+		"Completed story can be replayed from its beginning",
+		"Return-home recovery cancels the mode safely"
+	],
+	"failed": []
+}
