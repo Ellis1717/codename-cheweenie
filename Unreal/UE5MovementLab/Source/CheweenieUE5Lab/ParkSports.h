@@ -5,6 +5,7 @@
 class AMartyCharacter;
 class AStaticMeshActor;
 class UTextRenderComponent;
+class UInstancedStaticMeshComponent;
 
 // Small, replayable solo park games. Session scores never alter adventure saves.
 UCLASS()
@@ -21,14 +22,22 @@ public:
     FVector Soccer, Diamond, Court;
     FVector Base(int32 Index) const;
     FVector ResetPoint(int32 Sport) const;
+    // Uses the same triangles as the colliding terrain, including on raised approaches.
+    float GroundHeight(FVector Position) const;
+    FVector GroundPoint(FVector Position) const;
     int32 Goals[2]={0,0}, Runs=0, Baskets=0, NextBase=-1;
     UPROPERTY() TObjectPtr<AStaticMeshActor> SoccerBall;
     UPROPERTY() TObjectPtr<AStaticMeshActor> Baseball;
     UPROPERTY() TObjectPtr<AStaticMeshActor> Basketball;
 private:
+    FVector TerrainOrigin;
+    float TerrainVertex(float X,float Y) const;
+    void BuildTerrain();
+    void Surface(FString Name,FVector Center,FVector2D Size,FLinearColor Color,float Yaw=0,float Lift=0);
     FVector SoccerVelocity, BatVelocity, ShotStart;
     float ShotTime=-1, BatTime=0, KickCooldown=0;
     UPROPERTY() TObjectPtr<UTextRenderComponent> Score;
+    UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> FieldMarkings;
     AStaticMeshActor* Shape(FString Name,FVector P,FVector Size,FLinearColor Color,bool Solid=false,bool Ball=false);
     UTextRenderComponent* Label(FString Text,FVector P,float Size=30);
     void Line(FVector A,FVector B,float Width=5);
