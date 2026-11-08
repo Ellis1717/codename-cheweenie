@@ -1,0 +1,30 @@
+{
+  "dateUtc": "2026-11-08T04:28:57.3802018Z",
+  "sourceCommit": "4be73f0c5f383b12e8d6dd6f2870bbef464ddb3a",
+  "engine": "Unreal Engine 5.8.4",
+  "editorCompile": {
+    "passed": true,
+    "fullActions": 59,
+    "seconds": 445.48,
+    "finalFixtureRebuildSeconds": 14.94,
+    "warnings": "Nonfatal float-literal conversion warnings in original hockey prop colours."
+  },
+  "selectedEditor": {
+    "configuration": 15,
+    "configurationRestart": 4,
+    "cameras": 18,
+    "crewMenus": 29,
+    "inputGuide": 31,
+    "movement": 20,
+    "hockey": 15,
+    "total": 132
+  },
+  "scope": "Selected Editor suites run across integration revisions; the complete final packaged regression is required separately. All keyboard/controller input is automated; physical hardware is unverified.",
+  "correctedFindings": [
+    "Configuration fixture now uses a consistent completed-snack checkpoint and allows isolated Editor config writes.",
+    "Mouse-wheel up/down use separate Enhanced Input actions so direction changes work.",
+    "Six-view help text uses active controller directions.",
+    "Hockey approach allows grounded traversal time; audio mixer enabled, successful per-cue counts prevent footsteps overwriting evidence.",
+    "Hockey screenshot precedes pause; fixture input is flushed at the scene cut and resume gets a frame before interaction."
+  ]
+}
