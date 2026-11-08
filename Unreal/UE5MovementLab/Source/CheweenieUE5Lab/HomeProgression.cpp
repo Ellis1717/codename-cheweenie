@@ -1,4 +1,5 @@
 #include "HomeProgression.h"
+#include "ControllerGuide.h"
 #include "HouseUpstairs.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
@@ -57,6 +58,7 @@ AActor* UHomeProgression::Shape(const TCHAR* Tag,FVector P,FVector Size,int32 Co
 void UHomeProgression::Sign(const FString& Text,FVector P,float Size)
 {
     auto* A=GetWorld()->SpawnActor<AActor>();auto* C=NewObject<UTextRenderComponent>(A);A->SetRootComponent(C);C->RegisterComponent();C->SetText(FText::FromString(Text));C->SetWorldSize(Size);C->SetTextRenderColor(FColor(255,229,163));C->SetHorizontalAlignment(EHTA_Center);C->SetCollisionEnabled(ECollisionEnabled::NoCollision);A->SetActorLocationAndRotation(P,FRotator(0,180,0));
+    if(Text.Contains(TEXT("E / X-Square"))){InputSigns.Add(C);InputSignSources.Add(Text);SignFamily=-1;}
 }
 void UHomeProgression::Build()
 {
@@ -73,7 +75,7 @@ void UHomeProgression::Build()
     for(float Y:{-50.f,50.f})Shape(TEXT("CozyHomeReturn"),Exit+FVector(-40,Y,40),FVector(6,8,140),1);Shape(TEXT("CozyHomeReturn"),Exit+FVector(-40,0,110),FVector(6,108,8),1);Sign(TEXT("BACK TO HEADQUARTERS\nE / X-Square"),Exit+FVector(-30,0,100),17);
     Shape(TEXT("CozyHomeArmorBench"),ArmorBench+FVector(0,0,24),FVector(110,70,48),2);Sign(TEXT("PADDED HARNESS\n15% protection / tier"),ArmorBench+FVector(0,0,95),17);
     Shape(TEXT("CozyHomeFoamTest"),BumpTest+FVector(0,0,38),FVector(55,55,75),4,false,TEXT("Sphere"));Sign(TEXT("FOAM SAFETY TEST\n10 test damage; armor helps"),BumpTest+FVector(0,0,105),16);
-    const TCHAR* Names[]={TEXT("STRENGTH\nE then shake a paw"),TEXT("AGILITY\nE then roll over"),TEXT("SPEED\nE then run to the gold finish")};
+    const TCHAR* Names[]={TEXT("STRENGTH\nE / X-Square then shake a paw"),TEXT("AGILITY\nE / X-Square then roll over"),TEXT("SPEED\nE / X-Square then run to the gold finish")};
     for(int32 I=0;I<3;++I){Shape(TEXT("CozyHomeTrainingMat"),Gym[I]+FVector(0,0,2),FVector(130,100,4),1);Sign(Names[I],Gym[I]+FVector(0,0,90),17);}
     for(int32 I=0;I<9;++I)Shape(TEXT("CozyHomeRunLane"),FVector(8400+I*50,180,2),FVector(22,6,3),4);
     Shape(TEXT("CozyHomeFinish"),Finish-FVector(0,0,25),FVector(25,130,5),4);Sign(TEXT("FINISH\nRun through here"),Finish+FVector(15,0,70),17);
@@ -96,7 +98,7 @@ FString UHomeProgression::Prompt() const
     int32 Station=-1;if(!Mode()->Neighbourhood->Outside&&CheweenieHouse::Near(P,Bed,85))Station=4;
     if(InAnnex()){if(FVector::Dist2D(P,ArmorBench)<90)Station=3;for(int32 I=0;I<3;++I)if(FVector::Dist2D(P,Gym[I])<85)Station=I;}
     if(Station<0)return FString();if(!Enabled())return TEXT("Home upgrades are OFF. Enable Controls > Pet feature switches.");
-    if(Station==4)return Resting?TEXT("Resting in Marty's bed | E or movement: get up"):TEXT("E / X-Square: rest in Marty's bed (energy + health)");
+    if(Station==4)return Resting?TEXT("Resting in Marty's bed | E / X-Square or movement: get up"):TEXT("E / X-Square: rest in Marty's bed (energy + health)");
     const TCHAR* Names[]={TEXT("strength"),TEXT("agility"),TEXT("speed"),TEXT("padded harness")};
     return Level(Station)>=3?FString(Names[Station])+TEXT(": maximum tier 3 reached"):FString::Printf(TEXT("E / X-Square: %s %s tier %d | %d stars (you have %d)"),Station==3?TEXT("upgrade"):TEXT("train"),Names[Station],Level(Station)+1,UpgradeCost(Station),Data()->PraiseStars);
 }
@@ -163,7 +165,18 @@ void UHomeProgression::UpdateGear()
 }
 void UHomeProgression::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
-    Super::TickComponent(Delta,Type,Function);Initialize();if(!Ready)return;UpdateGear();if(!Playing())return;auto* D=Data();auto* P=Marty();
+    Super::TickComponent(Delta,Type,Function);Initialize();if(!Ready)return;
+    // Signs remain visible behind pause menus, so refresh them before the gameplay guard.
+    if(const auto* Guide=GetWorld()->GetGameInstance()->GetSubsystem<UControllerGuide>())
+    {
+        const int32 Family=int32(Guide->Family());
+        if(SignFamily!=Family)
+        {
+            for(int32 I=0;I<InputSigns.Num();++I)if(InputSigns[I])InputSigns[I]->SetText(FText::FromString(Guide->Format(InputSignSources[I])));
+            SignFamily=Family;
+        }
+    }
+    UpdateGear();if(!Playing())return;auto* D=Data();auto* P=Marty();
     if(!Enabled()){CancelActivities();for(const auto& T:ReactionLabels)if(T)T->SetVisibility(false);return;}
     BumpCooldown=FMath::Max(0.f,BumpCooldown-Delta);
     for(float* T:{&D->MealBonusRemaining,&D->RestBonusRemaining,&D->PraiseCooldownRemaining})*T=FMath::Max(0.f,*T-Delta);

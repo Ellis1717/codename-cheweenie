@@ -14,6 +14,10 @@ Native Editor/Game builds and full cook/stage/archive passed. **1,081 required p
 
 <!-- sports-park-release:end -->
 
+**Input-aware directions (Unreal development source, 2026-11-06):** with **Controls & cameras → Controller display → Auto**, gym/door signs now follow Xbox, PlayStation or keyboard input even while paused. Remaining menu, Help and trick hints use matching controls; unmapped screenshot keys and Windows-key shortcuts no longer select keyboard prompts. The desktop package has not been updated.
+
+Native UE 5.8.4 Editor builds passed. Final real-map checks passed: **31 rendered prompt + 16 headless movement assertions** on the main-based review branch, and **36 rendered prompt + 20 headless movement assertions** on the accumulated checkout. Input was synthetic; physical devices remain unverified. The initial development recenter-fixture failure and its correction are recorded in the [guide and evidence](UNREAL_INPUT_PROMPTS.md).
+
 <!-- movement-stances-release:start -->
 
 **Movement controls in desktop main 0.15.0 (2026-11-05):** restart **Play Cheweenie**, then choose **Play / continue adventure**. Run with L3 toggle (or hold A), jump while moving with Y, crawl with LB + L3 and walk on two legs with LB + R3. Keyboard: Shift / Space / Z / U. Comfortable exploration keeps precise camera response and familiar face buttons. New stances apply to solo skeletal Marty and respect headroom.
@@ -148,3 +152,4 @@ The standalone executable passed 25 full-patrol checks plus six cross-process pe
 ## Working rules
 
 Keep the exact title **Codename .... Cheweenie**, canon, aliases and user-owned art. Use self-contained, appropriately licensed resources and no paid dependencies. Never commit engine caches, build products, private references or secrets. Keep assumptions editable in docs/ASSUMPTIONS.md and report failed checks alongside passes. Use focused PRs; do not merge an uncompiled gameplay prototype as a verified release.
+
