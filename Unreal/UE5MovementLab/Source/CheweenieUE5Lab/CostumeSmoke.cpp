@@ -66,7 +66,7 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
     auto Finish=[&](bool Resume){auto J=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto V:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(V));for(auto V:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(V));J->SetArrayField(TEXT("passed"),Pass);J->SetArrayField(TEXT("failed"),Fail);J->SetStringField(TEXT("scope"),TEXT("Actual game map; synthetic keyboard/gamepad with menu/action fixtures. Physical controller and cloth simulation unverified."));FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));const bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/(Resume?TEXT("costumes-resume.json"):TEXT("costumes-smoke.json"))));if(Resume)UGameplayStatics::DeleteGameInSlot(TEXT("CheweenieCostumeAcceptance"),0);FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);SmokeStage=1000;};
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCostumeResume")))
     {
-        if(SmokeTime>3&&SmokeStage==0){SmokeCheck(D->CostumeMask==5,TEXT("Independent Marty/Rio on and Lakitu off choices survive a second process"));SmokeCheck(Outfits[0]->VisiblePieces()>0&&Outfits[1]->VisiblePieces()==0&&Outfits[2]->VisiblePieces()>0,TEXT("Reload applies only the saved costume choices"));Finish(true);}return;
+        if(SmokeTime>3&&SmokeStage==0){SmokeCheck(D->CostumeMask==5,TEXT("Independent Marty/Rio on and Lakitu off choices survive a second process"));SmokeCheck(Outfits[0]->VisiblePieces()>0&&Outfits[1]->VisiblePieces()==0&&Outfits[2]->VisiblePieces()>0,TEXT("Reload applies only the saved costume choices"));SmokeCheck(D->FantasyCostumeMask==7&&Outfits[0]->FantasyStyle&&Outfits[2]->FantasyStyle,TEXT("Fantasy styles survive restart independently of clothing toggles"));Finish(true);}return;
     }
     switch(SmokeStage)
     {
@@ -77,7 +77,7 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
         S->Start(false);S->Pause();S->Selection=2;S->Confirm();S->Selection=5;Key(EKeys::Enter,true);Next();break;
     case 1:
         Key(EKeys::Enter,false);if(SmokeTime<.3f)break;
-        SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==5,TEXT("Keyboard opens the wardrobe with three pet costumes and a Marty jacket selector"));
+        SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==8,TEXT("Keyboard opens the wardrobe with three pet costumes and a Marty jacket selector"));
         Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
     case 2:
         Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.3f)break;
@@ -203,6 +203,40 @@ void AMartyPlayMode::TickCostumeSmoke(float Delta)
         SmokeCheck(S->Screen==ECozyScreen::Playing&&D->CarryItem==0&&D->BagItems.IsEmpty()&&D->CostumeMask==5,TEXT("Controller backpack Retrieve keeps the toy unique and the clothing choices intact"));
         SmokeStage=15;SmokeTime=0;break;
     case 15:
-        if(SmokeTime<.3f)break;SmokeCheck(D->CostumeMask==5&&Outfits[1]->VisiblePieces()==0&&Outfits[0]->VisiblePieces()>0&&Outfits[2]->VisiblePieces()>0,TEXT("Lakitu outfit turns off without removing Marty or Rio outfits"));S->ToggleFeature(ECozyFeature::Companions);SmokeCheck(Outfits[2]->VisiblePieces()>0,TEXT("Costumes are independent of companion behaviour setting"));S->Save();Finish(false);break;
+        if(SmokeTime<.3f)break;SmokeCheck(D->CostumeMask==5&&Outfits[1]->VisiblePieces()==0&&Outfits[0]->VisiblePieces()>0&&Outfits[2]->VisiblePieces()>0,TEXT("Lakitu outfit turns off without removing Marty or Rio outfits"));S->ToggleFeature(ECozyFeature::Companions);SmokeCheck(Outfits[2]->VisiblePieces()>0,TEXT("Costumes are independent of companion behaviour setting"));S->Screen=ECozyScreen::Wardrobe;S->Selection=3;Key(EKeys::Enter,true);SmokeStage=60;SmokeTime=0;break;
+    case 60:
+        Key(EKeys::Enter,false);if(SmokeTime<.4f)break;
+        SmokeCheck(D->FantasyCostumeMask==1&&Outfits[0]->FantasyStyle&&Outfits[0]->VisiblePieces()==7,TEXT("Keyboard selects Link and replaces hot dog geometry"));
+        S->Selection=4;Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();break;
+    case 61:
+        Key(EKeys::Gamepad_FaceButton_Bottom,false);if(SmokeTime<.4f)break;
+        SmokeCheck(D->FantasyCostumeMask==3&&Outfits[1]->VisiblePieces()==0,TEXT("Controller selects Ganon without enabling Lakitu clothes"));
+        S->Selection=1;S->Confirm();S->Selection=5;S->Confirm();Next();break;
+    case 62:
+        if(SmokeTime<.5f)break;
+        for(int32 I=0;I<3;++I)SmokeCheck(Outfits[I]->FantasyStyle&&Outfits[I]->VisiblePieces()>0&&Outfits[I]->CollisionFree()&&Outfits[I]->MaterialsReady(),FString::Printf(TEXT("Fantasy pet %d has visible materials and no collision"),I));
+        Shot(TEXT("FantasyWardrobe.png"));Next();break;
+    case 63:
+        if(SmokeTime<1)break;BodyView(false);Next();break;
+    case 64:
+        if(SmokeTime<2)break;Shot(TEXT("FantasyMarty.png"));Next();break;
+    case 65:
+        if(SmokeTime<.5f)break;View(Companions->Position(0)+FVector(0,0,26));Next();break;
+    case 66:
+        if(SmokeTime<2)break;Shot(TEXT("FantasyLakitu.png"));Next();break;
+    case 67:
+        if(SmokeTime<.5f)break;View(Companions->Position(1)+FVector(0,0,26));Next();break;
+    case 68:
+        if(SmokeTime<2)break;Shot(TEXT("FantasyRio.png"));S->Selection=1;S->Confirm();S->Save();Next();break;
+    case 69:
+        if(SmokeTime<.5f)break;
+        S->Selection=3;S->Confirm();Next();break;
+    case 70:
+        if(SmokeTime<.5f)break;
+        SmokeCheck(!Outfits[0]->FantasyStyle&&CostumeAlignedWithMarty(P),TEXT("Switching back restores the fitted original hot dog without stacked pieces"));
+        S->Confirm();S->Back();S->Back();SmokePosition=P->GetActorLocation();Key(EKeys::W,true);Next();break;
+    case 71:
+        if(SmokeTime<.7f)break;Key(EKeys::W,false);
+        SmokeCheck(Outfits[0]->FantasyStyle&&FVector::Dist2D(P->GetActorLocation(),SmokePosition)>20,TEXT("Marty walks with Link outfit after live style changes"));S->Save();Finish(false);break;
     }
 }

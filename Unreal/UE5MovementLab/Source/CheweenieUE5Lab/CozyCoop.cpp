@@ -164,7 +164,7 @@ void ACozyCoopPet::Marty(){ServerChoosePet(0);}void ACozyCoopPet::Lakitu(){Serve
 void ACozyCoopPet::Ratchet(){ServerChoosePet(3);}
 void ACozyCoopPet::ReturnPatrol(){if(GetNetMode()==NM_Standalone)UGameplayStatics::OpenLevel(this,TEXT("/Game/VisualLab/Comparison"),true,TEXT("game=/Script/CheweenieUE5Lab.MartyPlayMode"));}
 void ACozyCoopPet::JumpCoop(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;Jump();}void ACozyCoopPet::Voice(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;ServerVoice();}void ACozyCoopPet::UseToy(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;ServerToy(false);}void ACozyCoopPet::DropToy(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen)return;ServerToy(true);}
-void ACozyCoopPet::RecenterCoop(){if(Controller)Controller->SetControlRotation(FRotator(-12,GetActorRotation().Yaw,0));}
+void ACozyCoopPet::RecenterCoop(){if(Controller)Controller->SetControlRotation(FRotator(CameraPreset==4?-50:CameraPreset==5?-5:-12,GetActorRotation().Yaw,0));}
 void ACozyCoopPet::ToggleCostume(){if(auto* PC=Cast<ACozyCoopController>(Controller))if(PC->MenuOpen){GetGameInstance()->GetSubsystem<UCozyModeHub>()->Navigate(-1);return;}ServerToggleCostume();}
 void ACozyCoopPet::ServerToggleCostume_Implementation(){if(PetId==3){TellPet(this,TEXT("Ratchet is keeping his own cozy coat today."));return;}WearingCostume=!WearingCostume;ApplyPet();ForceNetUpdate();}
 void ACozyCoopPet::ToggleMenu(){HurryOff();GetCharacterMovement()->StopMovementImmediately();if(auto* PC=Cast<ACozyCoopController>(Controller))PC->SetHubMenu(!PC->MenuOpen);}
@@ -184,6 +184,7 @@ void ACozyCoopPet::SetupPlayerInputComponent(UInputComponent* Input)
     auto* HurryClick=Button(EKeys::Invalid,EKeys::Gamepad_LeftThumbstick,&ACozyCoopPet::ControllerHurryPress);E->BindAction(HurryClick,ETriggerEvent::Completed,this,&ACozyCoopPet::ControllerHurryRelease);E->BindAction(HurryClick,ETriggerEvent::Canceled,this,&ACozyCoopPet::ControllerHurryRelease);
     auto* Hop=Button(EKeys::SpaceBar,EKeys::Gamepad_FaceButton_Top,&ACozyCoopPet::JumpCoop);E->BindAction(Hop,ETriggerEvent::Completed,this,&ACozyCoopPet::StopJumping);
     Button(EKeys::V,EKeys::Gamepad_RightThumbstick,&ACozyCoopPet::CycleCamera);Button(EKeys::R,EKeys::Gamepad_RightShoulder,&ACozyCoopPet::RecenterCoop);
+    SetupCameraZoom(E,CoopMapping);
     Button(EKeys::H,EKeys::Gamepad_DPad_Down,&ACozyCoopPet::ReturnHome);Button(EKeys::B,EKeys::Gamepad_LeftShoulder,&ACozyCoopPet::Voice);Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&ACozyCoopPet::UseToy);Button(EKeys::Q,EKeys::Gamepad_LeftTrigger,&ACozyCoopPet::DropToy);
     Button(EKeys::Enter,EKeys::Invalid,&ACozyCoopPet::HubConfirm);Button(EKeys::BackSpace,EKeys::Gamepad_FaceButton_Right,&ACozyCoopPet::HubBack);Button(EKeys::Up,EKeys::Invalid,&ACozyCoopPet::HubUp);Button(EKeys::Down,EKeys::Invalid,&ACozyCoopPet::HubDown);Button(EKeys::Left,EKeys::Invalid,&ACozyCoopPet::HubLeft);Button(EKeys::Right,EKeys::Invalid,&ACozyCoopPet::HubRight);
     Button(EKeys::Four,EKeys::Invalid,&ACozyCoopPet::Ratchet);Button(EKeys::F9,EKeys::Gamepad_Special_Left,&ACozyCoopPet::ReturnPatrol);

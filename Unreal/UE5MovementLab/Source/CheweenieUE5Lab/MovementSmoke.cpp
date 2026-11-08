@@ -25,10 +25,15 @@ void AMartyPlayMode::SmokeCheck(bool Passed, const FString& Name)
 void AMartyPlayMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCoreConfigSmoke"))){TickCoreConfigSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieParkSportsSmoke"))){TickParkSportsSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieStanceSmoke"))){TickStanceSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerComfortSmoke"))){TickControllerComfortSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerButtonsSmoke"))){TickControllerButtonsSmoke(DeltaSeconds);return;}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieTrailerCapture"))){TickTrailerCapture(DeltaSeconds);return;}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCrewMenuSmoke"))){TickCrewMenuSmoke(DeltaSeconds);return;}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCameraSmoke"))){TickCameraSmoke(DeltaSeconds);return;}
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHockeySmoke"))){TickHockeySmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieControllerGuideSmoke"))){TickControllerGuideSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieUpstairsSmoke"))){TickUpstairsSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieHomeSmoke"))){TickHomeProgressionSmoke(DeltaSeconds);return;}
@@ -172,6 +177,28 @@ void AMartyPlayMode::Tick(float DeltaSeconds)
         Marty->ReturnHome(); Next(); break;
     case 21:
         if (SmokeTime < 3) break;
+        SmokePosition = Marty->GetActorLocation();
+        SmokeYaw = PC->GetControlRotation().Yaw;
+        SmokePitch = FRotator::NormalizeAxis(PC->GetControlRotation().Pitch);
+        Next(); break;
+    case 22:
+    case 23:
+        {
+            const float Idle = SmokeStage == 22 ? .19f : -.19f;
+            Axis(EKeys::Gamepad_LeftX, Idle); Axis(EKeys::Gamepad_LeftY, -Idle);
+            Axis(EKeys::Gamepad_RightX, Idle); Axis(EKeys::Gamepad_RightY, -Idle);
+            if (SmokeTime < 1.5) break;
+            SmokeCheck(FVector::Dist2D(SmokePosition, Marty->GetActorLocation()) < .5f && Marty->GetVelocity().Size2D() < .1f,
+                SmokeStage == 22 ? TEXT("Positive idle stick noise does not creep") : TEXT("Negative idle stick noise does not creep"));
+            SmokeCheck(FMath::Abs(FRotator::NormalizeAxis(PC->GetControlRotation().Yaw-SmokeYaw)) < .1f &&
+                FMath::Abs(FRotator::NormalizeAxis(PC->GetControlRotation().Pitch-SmokePitch)) < .1f,
+                SmokeStage == 22 ? TEXT("Positive idle stick noise does not orbit") : TEXT("Negative idle stick noise does not orbit"));
+            Axis(EKeys::Gamepad_LeftX, 0); Axis(EKeys::Gamepad_LeftY, 0);
+            Axis(EKeys::Gamepad_RightX, 0); Axis(EKeys::Gamepad_RightY, 0);
+            Next(); break;
+        }
+    case 24:
+        if (SmokeTime < .2) break;
         {
             auto Report = MakeShared<FJsonObject>();
             auto Strings = [](const TArray<FString>& Values)

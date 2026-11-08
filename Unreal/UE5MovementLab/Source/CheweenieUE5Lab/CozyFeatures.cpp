@@ -1,4 +1,5 @@
 #include "CozyAdventure.h"
+#include "HockeySurprise.h"
 #include "CozyModeHub.h"
 #include "Engine/GameInstance.h"
 #include "CozyNavigation.h"
@@ -24,7 +25,7 @@ void UCozyAdventure::AdjustFurDetail(int32 Direction)
 TArray<ECozyFeature> UCozyAdventure::FeatureGroup() const
 {
     TArray<ECozyFeature> Result;const int32 First=FeaturePage==0?0:FeaturePage==1?6:17,Last=FeaturePage==0?6:FeaturePage==1?17:24;
-    for(int32 I=First;I<Last;++I)Result.Add(ECozyFeature(I));if(FeaturePage==1){Result.Add(ECozyFeature::Companions);Result.Add(ECozyFeature::HomeProgression);}return Result;
+    for(int32 I=First;I<Last;++I)Result.Add(ECozyFeature(I));if(FeaturePage==1){Result.Add(ECozyFeature::Companions);Result.Add(ECozyFeature::HomeProgression);Result.Add(ECozyFeature::ParkSports);Result.Add(ECozyFeature::HockeyStory);}if(FeaturePage==2)Result.Add(ECozyFeature::MenuArtwork);return Result;
 }
 void UCozyAdventure::ToggleFeature(ECozyFeature Id)
 {
@@ -33,6 +34,7 @@ void UCozyAdventure::ToggleFeature(ECozyFeature Id)
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Navigation)M->Navigation->RefreshRoute();
     if(Id==ECozyFeature::Companions)if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->ApplyFeature();
     if(Id==ECozyFeature::HomeProgression)if(auto* H=CheweenieHome(this))H->CancelActivities();
+    if(Id==ECozyFeature::HockeyStory&&!Feature(Id))if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Hockey&&M->Hockey->Active())M->Hockey->Finish();
     UpdateMusic();Save();
 }
 void UCozyAdventure::OpenMap(){if(Screen==ECozyScreen::Map){SetScreen(ECozyScreen::Playing);return;}if(Screen==ECozyScreen::Playing)SetScreen(ECozyScreen::Map);}
@@ -43,11 +45,15 @@ bool UCozyAdventure::StopOutdoors(const FCozyStop& Stop) const{const auto* M=Get
 // Saved feature IDs are append-only. Display labels can be changed independently.
 FString CozyFeatureLabel(ECozyFeature Id)
 {
-    static const TCHAR* Labels[]={TEXT("Map display"),TEXT("Compass / player heading"),TEXT("Destination guidance"),TEXT("Street route guide"),TEXT("World objective labels"),TEXT("Current location"),TEXT("Energy / tiredness"),TEXT("Health / damage"),TEXT("Backpack storage"),TEXT("Dog tricks"),TEXT("Jump / sofa hop"),TEXT("Dig / bury / recover"),TEXT("Pick up / carry toys"),TEXT("Kitchen meals"),TEXT("Watch TV"),TEXT("Barking"),TEXT("Jog / run / hurry"),TEXT("Mouse / stick camera orbit"),TEXT("Camera presets"),TEXT("Action camera views"),TEXT("Control hints"),TEXT("Detailed Marty coat"),TEXT("Music"),TEXT("Sound effects")};
+    static const TCHAR* Labels[]={TEXT("Map display"),TEXT("Compass / player heading"),TEXT("Destination guidance"),TEXT("Street route guide"),TEXT("World objective labels"),TEXT("Current location"),TEXT("Energy / tiredness"),TEXT("Health / damage"),TEXT("Backpack storage"),TEXT("Dog tricks"),TEXT("Jump / sofa hop"),TEXT("Dig / bury / recover"),TEXT("Pick up / carry toys"),TEXT("Kitchen meals"),TEXT("Watch TV"),TEXT("Barking"),TEXT("Jog / run / hurry"),TEXT("Mouse / stick camera orbit"),TEXT("Camera modes & zoom"),TEXT("Action camera views"),TEXT("Control hints"),TEXT("Detailed Marty coat"),TEXT("Music"),TEXT("Sound effects")};
+    if(Id==ECozyFeature::ParkSports)return TEXT("Park sports activities");
+    if(Id==ECozyFeature::HockeyStory)return TEXT("Hockey bag story");
+    if(Id==ECozyFeature::MenuArtwork)return TEXT("Illustrated menu backgrounds");
     if(Id==ECozyFeature::HomeProgression)return TEXT("Home upgrades & reactions");
     if(Id==ECozyFeature::Companions)return TEXT("Companion behaviour");return Labels[uint8(Id)];
 }
 
+void UCozyAdventure::OpenCrew(){OpenModes();GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->OpenCrew();Selection=0;}
 void UCozyAdventure::OpenModes(){if(!Progress)return;if(Screen!=ECozyScreen::Modes)ModesReturn=Screen;GetWorld()->GetGameInstance()->GetSubsystem<UCozyModeHub>()->Open();SetScreen(ECozyScreen::Modes);}
-void UCozyAdventure::CloseModes(){SetScreen(ModesReturn==ECozyScreen::Playing?ECozyScreen::Playing:ModesReturn==ECozyScreen::Pause?ECozyScreen::Pause:ModesReturn==ECozyScreen::Controls?ECozyScreen::Controls:ECozyScreen::Title);}
+void UCozyAdventure::CloseModes(){SetScreen(ModesReturn==ECozyScreen::Playing?ECozyScreen::Playing:ModesReturn==ECozyScreen::Pause?ECozyScreen::Pause:ModesReturn==ECozyScreen::Controls?ECozyScreen::Controls:ModesReturn==ECozyScreen::Companions?ECozyScreen::Companions:ECozyScreen::Title);}
 void UCozyAdventure::OpenControlsFromModes(){ReturnScreen=ECozyScreen::Modes;SetScreen(ECozyScreen::Controls);}

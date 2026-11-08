@@ -106,7 +106,7 @@ void UCozyModeHub::TickAcceptance(float Delta)
     case 0:
         if(TestTime<(FApp::CanEverRender()?25:3)||!S||!S->Progress)break;
         Check(S->Slot==TEXT("CheweenieHubAcceptance"),TEXT("Hub test uses isolated progress"));
-        Check(S->Screen==ECozyScreen::Modes&&Rows().Num()==7,TEXT("Unified startup shows the core adventure and utility choices"));
+        Check(S->Screen==ECozyScreen::Modes&&Rows().Num()==8,TEXT("Unified startup shows the core adventure and utility choices"));
         Check(!RatchetAvailable(),TEXT("Fresh profile keeps Ratchet gated"));
         if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/TEXT("ModeHub.png"),true,false);
         Request(TEXT("ratchet"));Check(S->Screen==ECozyScreen::Modes&&!Status.IsEmpty(),TEXT("Locked Ratchet choice stays in the hub"));

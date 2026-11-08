@@ -111,7 +111,7 @@ FString UParkSports::Location(FVector P) const
 }
 FString UParkSports::Prompt(const AMartyCharacter* P) const
 {
-    if(!P)return FString();const FVector Pos=P->GetActorLocation();
+    if(!P)return FString();if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Adventure&&!M->Adventure->Feature(ECozyFeature::ParkSports))return FString();const FVector Pos=P->GetActorLocation();
     auto Near=[&](FVector Target,float Range){return FVector::Dist2D(Pos,Target)<Range&&FMath::Abs(Pos.Z-Target.Z)<110;};
     for(int I=0;I<3;++I)if(Near(ResetPoint(I),130))return TEXT("E / X / Square: reset this sport's ball (scores kept)");
     if(Near(SoccerBall->GetActorLocation(),145))return TEXT("E / X / Square: kick soccer ball where Marty faces");
@@ -135,7 +135,7 @@ bool UParkSports::Interact(AMartyCharacter* P)
 void UParkSports::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
     Super::TickComponent(Delta,Type,Function);auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();
-    if(!SoccerBall||!M||!M->Adventure||!M->Neighbourhood->Outside||M->Adventure->Screen!=ECozyScreen::Playing)return;
+    if(!SoccerBall||!M||!M->Adventure||!M->Adventure->Feature(ECozyFeature::ParkSports)||!M->Neighbourhood->Outside||M->Adventure->Screen!=ECozyScreen::Playing)return;
     auto* PC=GetWorld()->GetFirstPlayerController();auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;if(!P)return;
     const float Dt=Delta;KickCooldown=FMath::Max(0.f,KickCooldown-Dt);
     FVector Previous=SoccerBall->GetActorLocation()-Soccer,Next=Previous+SoccerVelocity*Dt;

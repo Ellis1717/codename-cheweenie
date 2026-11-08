@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$GameExe,[Parameter(Mandatory)][string]$OutputRoot,[string]$LegacySave,[string]$MapFile,[int]$Port=19140,[ValidateSet('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')][string]$ReleaseVersion='Unified-0.15.1',[switch]$ResumeAfterControllerAudit,[ValidateSet('Start','Home')][string]$ResumeFrom='Start')
+param([Parameter(Mandatory)][string]$GameExe,[Parameter(Mandatory)][string]$OutputRoot,[string]$LegacySave,[string]$MapFile,[int]$Port=19140,[ValidateSet('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')][string]$ReleaseVersion='Unified-0.16.0',[switch]$ResumeAfterControllerAudit,[ValidateSet('Start','Home')][string]$ResumeFrom='Start')
 $ErrorActionPreference='Stop'
 $GameExe=[IO.Path]::GetFullPath($GameExe);$OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
 if(!(Test-Path -LiteralPath $GameExe)){throw 'Release executable missing'}
@@ -8,13 +8,18 @@ New-Item -ItemType Directory -Path $OutputRoot -Force|Out-Null
 if($ResumeFrom -eq 'Start'){
 # The finalizer still requires fresh passing controller reports for this exact payload.
 if(!$ResumeAfterControllerAudit){
-    if($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1')){& (Join-Path $PSScriptRoot 'TEST_STANCES.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'MovementStances')}
-    if($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_COMFORT.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerComfort')}
-    if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_BUTTONS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerButtons')}
+    if($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){& (Join-Path $PSScriptRoot 'TEST_STANCES.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'MovementStances')}
+    if($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_COMFORT.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerComfort')}
+    if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){& (Join-Path $PSScriptRoot 'TEST_CONTROLLER_BUTTONS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ControllerButtons')}
+}
+if($ReleaseVersion -eq 'Unified-0.16.0'){
+    foreach($suite in @('CoreConfig','Camera','CrewMenu','Hockey')){
+        & (Join-Path $PSScriptRoot 'TEST_ACTIVITY.ps1') -Suite $suite -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot $suite)
+    }
 }
 & (Join-Path $PSScriptRoot 'TEST.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Movement')
 # Suites are sequential: they intentionally exercise persisted preferences and unlocks.
-if($ReleaseVersion -eq 'Unified-0.15.1'){
+if($ReleaseVersion -in @('Unified-0.15.1','Unified-0.16.0')){
     & (Join-Path $PSScriptRoot 'TEST_PARK_SPORTS.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'ParkSports')
     & (Join-Path $PSScriptRoot 'TEST_OUTSIDE.ps1') -GameExe $GameExe -OutputRoot (Join-Path $OutputRoot 'Outside')
 }
@@ -44,5 +49,5 @@ if(Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')){& (Join
 & (Join-Path $PSScriptRoot 'TEST_RATCHET.ps1') -GameExe $GameExe -Render -OutputRoot (Join-Path $OutputRoot 'Ratchet')
 & (Join-Path $PSScriptRoot 'CHECK_COAT.ps1') -OutputRoot (Join-Path $OutputRoot 'Gait') -Width 1280 -Height 720
 if($MapFile){& (Join-Path $PSScriptRoot 'TEST_OUTSIDE.ps1') -GameExe $GameExe -MapFile $MapFile -OutputRoot (Join-Path $OutputRoot 'PrivateMap')}
-if($MapFile-and $ReleaseVersion-eq 'Unified-0.15.1'){& (Join-Path $PSScriptRoot 'TEST_PARK_SPORTS.ps1') -GameExe $GameExe -MapFile $MapFile -OutputRoot (Join-Path $OutputRoot 'PrivateSports')}
+if($MapFile-and $ReleaseVersion-in @('Unified-0.15.1','Unified-0.16.0')){& (Join-Path $PSScriptRoot 'TEST_PARK_SPORTS.ps1') -GameExe $GameExe -MapFile $MapFile -OutputRoot (Join-Path $OutputRoot 'PrivateSports')}
 & (Join-Path $PSScriptRoot 'FINALIZE_UNIFIED.ps1') -PackageRoot (Split-Path -Parent (Split-Path -Parent $GameExe)) -TestRoot $OutputRoot -ReleaseVersion $ReleaseVersion

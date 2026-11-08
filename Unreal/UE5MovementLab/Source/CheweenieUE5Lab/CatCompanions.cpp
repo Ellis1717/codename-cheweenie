@@ -1,4 +1,5 @@
 #include "CatCompanions.h"
+#include "HockeySurprise.h"
 #include "HouseUpstairs.h"
 #include "HalloweenCostume.h"
 #include "MartyCharacter.h"
@@ -13,7 +14,7 @@
 static const TCHAR* CatName(int32 I){return I==0?TEXT("Lakitu"):TEXT("Rio");}
 UCatCompanions::UCatCompanions(){PrimaryComponentTick.bCanEverTick=true;}
 AMartyCharacter* UCatCompanions::Marty() const{const auto* PC=GetWorld()->GetFirstPlayerController();return PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;}
-bool UCatCompanions::Enabled() const{const auto* M=Cast<AMartyPlayMode>(GetOwner());return M&&M->Adventure&&M->Adventure->Progress&&M->Adventure->Feature(ECozyFeature::Companions);}
+bool UCatCompanions::Enabled() const{const auto* M=Cast<AMartyPlayMode>(GetOwner());return M&&!(M->Hockey&&M->Hockey->Active())&&M->Adventure&&M->Adventure->Progress&&M->Adventure->Feature(ECozyFeature::Companions);}
 bool UCatCompanions::Following(int32 I) const{const auto* M=Cast<AMartyPlayMode>(GetOwner());return I>=0&&I<2&&M&&M->Adventure->Progress&&(M->Adventure->Progress->CatFollowMask&(1<<I));}
 int32 UCatCompanions::CatForStop(FName Id) const{return Id==TEXT("lakitu")?0:Id==TEXT("rio")?1:INDEX_NONE;}
 FVector UCatCompanions::Position(int32 I) const{return I>=0&&I<2&&Cats[I].Actor.IsValid()?Cats[I].Actor->GetActorLocation():FVector::ZeroVector;}
@@ -76,7 +77,7 @@ FString UCatCompanions::Prompt() const
 }
 void UCatCompanions::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
-    Super::TickComponent(Delta,Type,Function);Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(Ready&&M&&M->Adventure->Progress)for(int32 I=0;I<2;++I)if(auto* Outfit=Cats[I].Actor->FindComponentByClass<UHalloweenCostume>())Outfit->SetOutfit(Cats[I].Actor->GetStaticMeshComponent(),I+1,(M->Adventure->Progress->CostumeMask&(1<<(I+1)))!=0);
+    Super::TickComponent(Delta,Type,Function);Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(Ready&&M&&M->Adventure->Progress)for(int32 I=0;I<2;++I)if(auto* Outfit=Cats[I].Actor->FindComponentByClass<UHalloweenCostume>())Outfit->SetOutfit(Cats[I].Actor->GetStaticMeshComponent(),I+1,(M->Adventure->Progress->CostumeMask&(1<<(I+1)))!=0,(M->Adventure->Progress->FantasyCostumeMask&(1<<(I+1)))!=0);
     if(!Ready||!Enabled()||!P||M->Adventure->Screen!=ECozyScreen::Playing)return;
     const float Dt=FMath::Min(Delta,.05f);
     for(int32 I=0;I<2;++I){auto& C=Cats[I];C.Phase+=Dt;C.PetCooldown=FMath::Max(0.f,C.PetCooldown-Dt);C.Happy=FMath::Max(0.f,C.Happy-Dt);

@@ -14,11 +14,12 @@ class UHalloweenCostume : public UActorComponent
 public:
     UHalloweenCostume();
     virtual void TickComponent(float Delta, ELevelTick Type, FActorComponentTickFunction* Function) override;
-    void SetOutfit(USceneComponent* PetMesh, int32 Pet, bool Enabled);
+    void SetOutfit(USceneComponent* PetMesh, int32 Pet, bool Enabled, bool Fantasy = false);
     int32 VisiblePieces() const;
     bool CollisionFree() const;
     bool MaterialsReady() const;
     int32 OutfitPet = -1;
+    bool FantasyStyle = false;
 private:
     void Build();
     void Piece(const TCHAR* Shape, const TCHAR* Material, FVector Position, FVector Size, FRotator Rotation = FRotator::ZeroRotator);

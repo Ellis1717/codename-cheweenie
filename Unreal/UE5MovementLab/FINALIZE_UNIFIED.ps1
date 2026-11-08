@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][string]$PackageRoot,[Parameter(Mandatory)][string]$TestRoot,[ValidateSet('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')][string]$ReleaseVersion='Unified-0.13.0')
+param([Parameter(Mandatory)][string]$PackageRoot,[Parameter(Mandatory)][string]$TestRoot,[ValidateSet('Unified-0.13.0','Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')][string]$ReleaseVersion='Unified-0.13.0')
 $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath($PackageRoot);$TestRoot=[IO.Path]::GetFullPath($TestRoot)
 $windows=Join-Path $PackageRoot 'Windows'
@@ -14,7 +14,7 @@ foreach($entry in @(@('Home/home-progression.json',34),@('Home/home-resume.json'
 }
 Add-Type -AssemblyName System.Drawing
 $hasOverlays=Test-Path -LiteralPath (Join-Path $PSScriptRoot 'TEST_OVERLAYS.ps1')
-if($ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){
+if($ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){
     $brickProbePath=Join-Path $TestRoot 'World/brick-render.json'
     if(!(Test-Path -LiteralPath $brickProbePath) -or (Get-Item -LiteralPath $brickProbePath).LastWriteTimeUtc -lt $newest){throw 'Fresh brick pixel verification missing.'}
     $brickProbe=Get-Content -LiteralPath $brickProbePath -Raw|ConvertFrom-Json
@@ -47,7 +47,7 @@ $wavePath=Join-Path $TestRoot 'Audio/audio-waveforms.json'
 if(!(Test-Path -LiteralPath $wavePath) -or (Get-Item -LiteralPath $wavePath).LastWriteTimeUtc-lt $newest){throw 'Audio waveform verification missing or stale'}
 $wave=Get-Content -LiteralPath $wavePath -Raw|ConvertFrom-Json
 foreach($name in @('Barks','Music','Muted')){ $clip=$wave.$name;if(!$clip -or $clip.seconds-le .5 -or $clip.peak-ge .999 -or ($name-ne 'Muted' -and $clip.rms-le .0002) -or ($name-eq 'Muted' -and $clip.rms-ge .0002)){throw ('Audio waveform check failed: '+$name)} }
-if($ReleaseVersion -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){
+if($ReleaseVersion -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){
     foreach($entry in @(@('Movement/movement-smoke.json',16),@('Life/life-smoke.json',45),@('Life/life-resume.json',7),@('Audio/audio-smoke.json',19),@('Costumes/costumes-smoke.json',44),@('Jackets/jackets-smoke.json',21),@('Jackets/jackets-resume.json',3),@('Upstairs/upstairs-smoke.json',18),@('ControllerGuide/controller-guide-smoke.json',14),@('OverlayStyles/main/overlay-styles.json',11),@('OverlayStyles/resume/overlay-styles.json',4))){
         $path=Join-Path $TestRoot $entry[0]
         if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale combined-game report: '+$entry[0])}
@@ -62,7 +62,7 @@ if($ReleaseVersion -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Uni
         if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw ('Missing/stale combined-game capture: '+$name)}
     }
 }
-if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){
+if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){
     $path=Join-Path $TestRoot 'ControllerButtons/controller-buttons.json'
     if(!(Test-Path -LiteralPath $path) -or (Get-Item -LiteralPath $path).LastWriteTimeUtc -lt $newest){throw 'Fresh controller-button acceptance missing.'}
     $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
@@ -71,7 +71,7 @@ if($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Uni
     if(!(Test-Path -LiteralPath $capture) -or (Get-Item -LiteralPath $capture).LastWriteTimeUtc -lt $newest){throw 'Fresh rendered controller-button capture missing.'}
     $checks+=$report.passed.Count
 }
-if($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){
+if($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){
     foreach($entry in @(@('ControllerComfort/controller-comfort.json',45),@('ControllerComfort/controller-comfort-resume.json',9))){
         $path=Join-Path $TestRoot $entry[0]
         if(!(Test-Path -LiteralPath $path)-or(Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $newest){throw ('Missing/stale controller comfort report: '+$entry[0])}
@@ -81,14 +81,14 @@ if($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){
     $capture=Join-Path $TestRoot 'ControllerComfort/ControllerComfortSettings.png'
     if(!(Test-Path -LiteralPath $capture)-or(Get-Item -LiteralPath $capture).LastWriteTimeUtc-lt $newest){throw 'Fresh controller comfort capture missing'}
 }
-if($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1')){
+if($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){
     $path=Join-Path $TestRoot 'MovementStances/movement-stances.json'
     if(!(Test-Path -LiteralPath $path)-or(Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $newest){throw 'Fresh movement stance report missing'}
     $report=Get-Content -LiteralPath $path -Raw|ConvertFrom-Json
     if($report.failed.Count-or $report.passed.Count-lt 50){throw 'Movement stance checks failed'};$checks+=$report.passed.Count
     foreach($name in @('MartyRunningJump.png','MartyTwoLegWalk.png','MartyCrawlingUnderBeam.png','MartyTwoLegJacket.png','MartyTwoLegFollow.png','MartyCrawlFollow.png')){$capture=Join-Path $TestRoot ('MovementStances/'+$name);if(!(Test-Path -LiteralPath $capture)-or(Get-Item -LiteralPath $capture).LastWriteTimeUtc-lt $newest){throw ('Fresh movement capture missing: '+$name)}}
 }
-if($ReleaseVersion -eq 'Unified-0.15.1'){
+if($ReleaseVersion -in @('Unified-0.15.1','Unified-0.16.0')){
     foreach($entry in @(@('ParkSports/park-sports-smoke.json',35),@('Outside/outside-smoke.json',12))){
         $path=Join-Path $TestRoot $entry[0]
         if(!(Test-Path -LiteralPath $path)-or(Get-Item -LiteralPath $path).LastWriteTimeUtc-lt $newest){throw ('Missing/stale sports park report: '+$entry[0])}
@@ -102,11 +102,26 @@ if($ReleaseVersion -eq 'Unified-0.15.1'){
         try{if($image.Width-ne 1280-or $image.Height-ne 720){throw 'Park captures must be 1280x720'}}finally{$image.Dispose()}
     }
 }
+if($ReleaseVersion -eq 'Unified-0.16.0'){
+    foreach($entry in @(@('CoreConfig/core-config.json',10),@('CoreConfig/core-config-resume.json',4),@('Camera/camera-smoke.json',15),@('CrewMenu/crew-menu-smoke.json',18),@('Hockey/hockey-smoke.json',15))){
+        $path=Join-Path $TestRoot $entry[0]
+        if(!(Test-Path $path)-or(Get-Item $path).LastWriteTimeUtc-lt $newest){throw ('Missing/stale cumulative activity report: '+$entry[0])}
+        $report=Get-Content $path -Raw|ConvertFrom-Json
+        if($report.failed.Count-or $report.passed.Count-lt $entry[1]){throw ('Failed cumulative activity: '+$entry[0])};$checks+=$report.passed.Count
+    }
+    $guide=Get-Content (Join-Path $TestRoot 'ControllerGuide/controller-guide-smoke.json') -Raw|ConvertFrom-Json
+    if($guide.passed.Count-lt 31){throw 'Input-aware controller directions are incomplete'}
+    foreach($name in @('CoreConfig/CoreConfiguration.png','Camera/CameraOverview.png','Camera/CameraDogLevel.png','CrewMenu/CrewMarty.png','CrewMenu/CrewLakitu.png','CrewMenu/CrewRio.png','Hockey/HockeyTruck.png','Hockey/HockeyDressingRoom.png')){
+        $path=Join-Path $TestRoot $name
+        if(!(Test-Path $path)-or(Get-Item $path).LastWriteTimeUtc-lt $newest){throw ('Missing/stale cumulative activity capture: '+$name)}
+        $bitmap=[Drawing.Bitmap]::new($path);try{if($bitmap.Width-ne 1280-or $bitmap.Height-ne 720){throw ('Wrong capture dimensions: '+$name)}}finally{$bitmap.Dispose()}
+    }
+}
 $bad=@(Get-ChildItem -LiteralPath $TestRoot -Filter '*.log' -Recurse|Select-String -Pattern 'Log\w+: (Error|Fatal):|Failed to compile Material|Default Material will be used|\[VSM\].*overflow')
 if($bad.Count){throw 'Final runtime logs contain errors, material fallbacks or VSM overflows'}
 $files=@($payload|ForEach-Object {@{path=[IO.Path]::GetRelativePath($windows,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
-if($ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PORTABLE_README.txt') -Destination (Join-Path $PackageRoot 'README.txt')}
-@{version=$ReleaseVersion;checks=$checks;rendered=$true;overlaysVerified=($hasOverlays -and $ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1'));combinedGameVerified=($ReleaseVersion -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1'));controllerButtonsVerified=($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1'));controllerComfortVerified=($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1'));movementStancesVerified=($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1'));sportsParkVerified=($ReleaseVersion -eq 'Unified-0.15.1');physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
+if($ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PORTABLE_README.txt') -Destination (Join-Path $PackageRoot 'README.txt')}
+@{version=$ReleaseVersion;checks=$checks;rendered=$true;overlaysVerified=($hasOverlays -and $ReleaseVersion -in @('Unified-0.13.1','Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0'));combinedGameVerified=($ReleaseVersion -in @('Unified-0.14.0','Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0'));controllerButtonsVerified=($ReleaseVersion -in @('Unified-0.14.1','Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0'));controllerComfortVerified=($ReleaseVersion -in @('Unified-0.14.2','Unified-0.15.0','Unified-0.15.1','Unified-0.16.0'));movementStancesVerified=($ReleaseVersion -in @('Unified-0.15.0','Unified-0.15.1','Unified-0.16.0'));sportsParkVerified=($ReleaseVersion -in @('Unified-0.15.1','Unified-0.16.0'));coreIntegrationVerified=($ReleaseVersion -eq 'Unified-0.16.0');coreConfigVerified=($ReleaseVersion -eq 'Unified-0.16.0');physicalControllersVerified=$false;separateMachinesVerified=$false;files=$files}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $PackageRoot 'validated-unified.json')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'PLAY_GAME.ps1') -Destination (Join-Path $PackageRoot 'PLAY_GAME.ps1')
 '@echo off','powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0PLAY_GAME.ps1" %*','if errorlevel 1 pause'|Set-Content -LiteralPath (Join-Path $PackageRoot 'PLAY_GAME.cmd')
 'Unified adventure enabled: '+$checks+' packaged checks, '+$files.Count+' payload hashes and fresh seasonal captures. Visual inspection and physical controllers are separate checks.'

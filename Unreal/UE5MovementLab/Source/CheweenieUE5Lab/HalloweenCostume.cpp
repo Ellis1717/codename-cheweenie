@@ -33,6 +33,47 @@ void UHalloweenCostume::Piece(const TCHAR* Shape, const TCHAR* Material, FVector
 
 void UHalloweenCostume::Build()
 {
+    if (FantasyStyle)
+    {
+        // Original primitive cosplay overlays; no imported franchise artwork.
+        if (OutfitPet == 0)
+        {
+            Piece(TEXT("Sphere"),TEXT("Green"),FVector(-4,0,2),FVector(38,23,18));
+            Piece(TEXT("Sphere"),TEXT("Bun"),FVector(-6,0,2),FVector(4,24,19));
+            Piece(TEXT("Cube"),TEXT("Gold"),FVector(-6,-12,3),FVector(4,2,5));
+            Piece(TEXT("Cone"),TEXT("Green"),FVector(10,0,16),FVector(15,15,24),FRotator(0,0,-55));
+            Piece(TEXT("Sphere"),TEXT("Gold"),FVector(-9,12,8),FVector(19,3,22));
+            Piece(TEXT("Sphere"),TEXT("Green"),FVector(-9,13.6f,8),FVector(15,1,18));
+            Piece(TEXT("Cube"),TEXT("Gold"),FVector(-9,14.3f,8),FVector(2,1,11));
+        }
+        else if (OutfitPet == 1)
+        {
+            Piece(TEXT("Sphere"),TEXT("FestivalPlum"),FVector(-6,0,4),FVector(30,25,18));
+            Piece(TEXT("Sphere"),TEXT("Black"),FVector(-12,0,10),FVector(24,28,3));
+            for(float Side : {-1.f,1.f})
+            {
+                Piece(TEXT("Sphere"),TEXT("Gold"),FVector(5,Side*10,8),FVector(10,8,7));
+                Piece(TEXT("Cone"),TEXT("Gold"),FVector(11,Side*7,18),FVector(3,3,10),FRotator(0,0,Side*20));
+            }
+            for(int32 I=0;I<5;++I)
+                Piece(TEXT("Sphere"),TEXT("Red"),FVector(8-I*3,0,15),FVector(7,12,9));
+        }
+        else
+        {
+            Piece(TEXT("Sphere"),TEXT("Wing"),FVector(-3,0,2),FVector(30,25,20));
+            Piece(TEXT("Sphere"),TEXT("Gold"),FVector(-3,0,3),FVector(5,26,21));
+            for(float Side : {-1.f,1.f})
+            {
+                Piece(TEXT("Cube"),TEXT("FestivalPlum"),FVector(-6,Side*12,1),FVector(16,2,14));
+                Piece(TEXT("Sphere"),TEXT("Gold"),FVector(-6,Side*13,7),FVector(17,1,2));
+            }
+            Piece(TEXT("Sphere"),TEXT("Gold"),FVector(12,0,17),FVector(5,15,3));
+            for(float Side : {-1.f,0.f,1.f})
+                Piece(TEXT("Cone"),TEXT("Gold"),FVector(12,Side*5,20),FVector(3,3,7));
+            Piece(TEXT("Sphere"),TEXT("FestivalPlum"),FVector(14,0,19),FVector(2,4,4));
+        }
+        return;
+    }
     // Dimensions are gameplay centimetres. Faces, paws and tails remain exposed.
     if (OutfitPet == 0)
     {
@@ -71,7 +112,7 @@ void UHalloweenCostume::Build()
     }
 }
 
-void UHalloweenCostume::SetOutfit(USceneComponent* PetMesh, int32 Pet, bool Enabled)
+void UHalloweenCostume::SetOutfit(USceneComponent* PetMesh, int32 Pet, bool Enabled, bool Fantasy)
 {
     Enabled = Enabled && IsValid(PetMesh) && Pet>=0 && Pet<3;
     if (!Enabled)
@@ -81,18 +122,19 @@ void UHalloweenCostume::SetOutfit(USceneComponent* PetMesh, int32 Pet, bool Enab
         SetComponentTickEnabled(false);
         return;
     }
-    if (Wearing && Target==PetMesh && OutfitPet==Pet) return;
+    if (Wearing && Target==PetMesh && OutfitPet==Pet && FantasyStyle==Fantasy) return;
     if (!Anchor)
     {
         Anchor = NewObject<USceneComponent>(GetOwner());
         Anchor->SetupAttachment(GetOwner()->GetRootComponent());
         Anchor->RegisterComponent();
     }
-    if (OutfitPet != Pet)
+    if (OutfitPet != Pet || FantasyStyle != Fantasy)
     {
         for (const auto& C : Pieces) C->DestroyComponent();
         Pieces.Empty();
         OutfitPet = Pet;
+        FantasyStyle = Fantasy;
         Build();
     }
     Target = PetMesh;

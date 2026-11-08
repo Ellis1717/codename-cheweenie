@@ -5,6 +5,34 @@
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 
+void CozyMenuText(AHUD* HUD,const FString& Source,FLinearColor Color,float X,float Y,float Scale)
+{
+    const auto* GI=HUD->GetWorld()->GetGameInstance();
+    const auto* Guide=GI?GI->GetSubsystem<UControllerGuide>():nullptr;
+    const FString Text=Guide?Guide->Format(Source):Source;
+    HUD->DrawText(Text,FLinearColor(.012f,.009f,.006f,.95f),X+1,Y+2,nullptr,Scale);
+    HUD->DrawText(Text,Color,X,Y,nullptr,Scale);
+}
+void CozyMenuShade(AHUD* HUD,float X,float Y,float Width,float Height,float Opacity)
+{
+    for(int32 Strip=0;Strip<128;++Strip)
+    {
+        const float T=float(Strip)/128.f;
+        const int32 Start=FMath::FloorToInt(Width*T),End=FMath::FloorToInt(Width*(Strip+1)/128.f);
+        HUD->DrawRect(FLinearColor(.02f,.016f,.012f,Opacity*FMath::Pow(1.f-T,1.2f)),FMath::FloorToInt(X)+Start,Y,End-Start,Height);
+    }
+}
+void CozyMenuRow(AHUD* HUD,bool Selected,float X,float Y,float Width,float Height)
+{
+    if(!Selected)return;
+    for(int32 Strip=0;Strip<64;++Strip)
+    {
+        const int32 Start=FMath::FloorToInt(Width*Strip/64.f),End=FMath::FloorToInt(Width*(Strip+1)/64.f);
+        HUD->DrawRect(FLinearColor(1,.68f,.3f,.18f*(1.f-float(Strip)/64.f)),FMath::FloorToInt(X)+Start,Y,End-Start,Height);
+    }
+    HUD->DrawRect(FLinearColor(1,.79f,.43f,.92f),X,Y+6,2,FMath::Max(4.f,Height-12));
+}
+
 struct FCozyPalette
 {
     FLinearColor Panel,Selected,Ink,Accent,Muted,Success,Danger,Outline;
