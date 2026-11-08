@@ -53,7 +53,7 @@ void AMartyPlayMode::TickHockeySmoke(float Delta)
     case 4:if(SmokeTime>1)
         {
             SmokeCheck(Hockey->Stage==1&&Adventure->Objective().Contains(TEXT("Learn to Skate")),TEXT("Keyboard E carries story into Leo's dressing room"));
-            P->TeleportTo(FVector(-10,0,3040),FRotator::ZeroRotator);Next();
+            PC->FlushPressedKeys();P->GetCharacterMovement()->StopMovementImmediately();P->TeleportTo(FVector(-10,0,3040),FRotator::ZeroRotator);Next();
         }break;
     case 5:if(SmokeTime>1){SmokeYaw=Adventure->AudibleCueCounts.FindRef(TEXT("Lakitu"));Key(EKeys::Gamepad_FaceButton_Left,true);Key(EKeys::Gamepad_FaceButton_Left,false);Next();}break;
     case 6:if(SmokeTime>2)
@@ -65,13 +65,14 @@ void AMartyPlayMode::TickHockeySmoke(float Delta)
         }break;
     case 7:if(SmokeTime>.5&&Adventure->Screen==ECozyScreen::Playing)Adventure->Pause();if(SmokeTime>1)
         {
-            SmokeCheck(Hockey->Stage==2&&Adventure->Screen==ECozyScreen::Pause,TEXT("Pause retains hockey story stage"));Adventure->Back();Key(EKeys::E,true);Key(EKeys::E,false);Next();
+            SmokeCheck(Hockey->Stage==2&&Adventure->Screen==ECozyScreen::Pause,TEXT("Pause retains hockey story stage"));Adventure->Back();Next();
         }break;
-    case 8:if(SmokeTime>1)
+    case 8:if(SmokeTime>.5){Key(EKeys::E,true);Key(EKeys::E,false);Next();}break;
+    case 9:if(SmokeTime>1)
         {
             SmokeCheck(Hockey->Stage==3,TEXT("Greeting awards the story's honorary mascot finale"));Key(EKeys::E,true);Key(EKeys::E,false);Next();
         }break;
-    case 9:if(SmokeTime>1)
+    case 10:if(SmokeTime>1)
         {
             SmokeCheck(!Hockey->Active()&&P->GetActorLocation().Z<200&&!Companions->Cats[0].Actor->IsHidden(),TEXT("Final bag interaction returns Marty and Lakitu home"));
             Hockey->Start();SmokeCheck(Hockey->Stage==0,TEXT("Completed story can be replayed from its beginning"));P->ReturnHome();
