@@ -69,7 +69,7 @@ void AMartyPlayMode::TickJacketSmoke(float Delta)
         if(SmokeTime<1)break;SmokeCheck(J->Style==3&&JacketAligned(P)&&J->MaterialsReady(),TEXT("Navy winter coat has a fitted collar and loaded materials"));Shot(TEXT("JacketNavy.png"));SmokeStage=106;SmokeTime=0;break;
     case 106:Wardrobe();SmokeStage=7;SmokeTime=0;break;
     case 7:
-        CastChecked<AMartyHUD>(PC->GetHUD())->NotifyHitBoxClick(TEXT("CozyPlus_3"));SmokeCheck(D->MartyJacket==4,TEXT("Mouse plus hitbox selects pink quilted coat"));Resume();View();Next();break;
+        CastChecked<AMartyHUD>(PC->GetHUD())->NotifyHitBoxClick(TEXT("CozyPlus_6"));SmokeCheck(D->MartyJacket==4,TEXT("Mouse plus hitbox selects pink quilted coat"));Resume();View();Next();break;
     case 8:
         if(SmokeTime<1)break;SmokeCheck(J->Style==4&&JacketAligned(P)&&J->CollisionFree(),TEXT("Pink quilted coat stays aligned without blocking movement"));Shot(TEXT("JacketPink.png"));SmokeStage=108;SmokeTime=0;break;
     case 108:D->FurDetailPreference=1;SmokeStage=1008;SmokeTime=0;break;
