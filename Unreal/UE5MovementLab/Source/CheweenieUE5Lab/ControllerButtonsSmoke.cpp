@@ -94,7 +94,7 @@ void AMartyPlayMode::TickControllerButtonsSmoke(float Delta)
     Tap(EKeys::Gamepad_LeftThumbstick,[&](){Check(L->SprintRequested&&P->CameraPreset==Camera&&S->Screen==ECozyScreen::Playing&&FVector::Dist2D(Start,P->GetActorLocation())<.5f,TEXT("L3 toggles hurry without moving Marty or changing camera"));});
     Add(.2f,[&](){Check(L->SprintRequested,TEXT("L3 hurry remains active after release"));});
     Tap(EKeys::Gamepad_LeftThumbstick,[&](){Check(!L->SprintRequested,TEXT("Second L3 click restores walking"));});
-    for(int32 I=0;I<6;++I)
+    for(int32 I=0;I<4;++I)
     {
         Add(.3f,[&,I](){Place(FVector(-200,-200,35));Start=P->GetActorLocation();Axes=FVector4(I<2?(I==0?.6f:-.6f):0,I>=2?(I==2?.6f:-.6f):0,0,0);});
         Add(.65f,[&,I](){const auto Offset=P->GetActorLocation()-Start;Check((I<2?Offset.Y:Offset.X)*(I%2==0?1:-1)>8,TEXT("Left-stick cardinal direction moves Marty in the expected direction"));Axes=FVector4(0,0,0,0);});
