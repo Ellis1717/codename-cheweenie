@@ -7,7 +7,8 @@
 
 class UCozyAdventure;
 class UNetDriver;
-enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave, Overlays, ControllerSetup };
+class UTexture2D;
+enum class ECozyHubPage : uint8 { Modes, Host, Join, Archives, Graphics, Help, Leave, Overlays, ControllerSetup, Crew, Biography };
 // Append-only presentation IDs. These never change gameplay feature flags.
 enum class ECozyOverlay : uint8 { All, Objective, Hints, Status, Health, Energy, Backpack, Prompts, WorldLabels, LocalMap, Compass, Location, Guidance, Festival, TrickGuide, Messages, RoomStatus, PetNames, HomeStats, Reactions, Count };
 struct FCozyArchiveChoice { FString Id, Label; };
@@ -31,6 +32,10 @@ public:
     void Navigate(int32 Direction);
     void Adjust(int32 Direction);
     void Confirm();
+    void OpenCrew();
+    UTexture2D* MenuBackdrop();
+    UTexture2D* CrewPortrait();
+    int32 CrewIndex=0;
     TArray<FString> Rows() const;
     FString Heading() const;
     FString Hint() const;
@@ -58,6 +63,7 @@ public:
     FString Status;
     TArray<FCozyArchiveChoice> Archives;
 private:
+    UPROPERTY() TMap<FString,TObjectPtr<UTexture2D>> MenuArtwork;
     UCozyAdventure* Session() const;
     void NewPage(ECozyHubPage Next);
     void Execute(const FString& Mode);

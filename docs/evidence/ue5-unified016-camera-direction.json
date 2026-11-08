@@ -1,0 +1,25 @@
+{
+	"passed": [
+		"Default is cozy follow",
+		"Mouse wheel zooms in smoothly by 30 cm",
+		"Held plus continuously zooms in",
+		"Held minus continuously zooms out",
+		"Backslash restores this mode's default zoom",
+		"Controller D-pad right zooms in",
+		"Controller D-pad left zooms out",
+		"Close zoom clamps before entering Marty",
+		"Far zoom clamps at 650 cm",
+		"Wide follow preserves original preset",
+		"Close follow preserves original preset",
+		"Portrait preserves original preset",
+		"V selects pitched high overview",
+		"R3 selects low dog-level view",
+		"Six views wrap and remember each mode's zoom during play",
+		"Paused menu blocks zoom and cycling",
+		"Camera feature switch blocks zoom and cycling"
+	],
+	"failed": [
+		"Mouse wheel zooms out"
+	],
+	"scope": "Real game map with synthetic keyboard, mouse-wheel and gamepad events. Physical controllers and LAN zoom unverified."
+}

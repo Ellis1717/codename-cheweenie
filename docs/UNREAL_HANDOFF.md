@@ -1,5 +1,15 @@
 # Codename .... Cheweenie — Unreal development handoff
 
+<!-- unified016-release:start -->
+
+**Cumulative 0.16.0 source and validated candidate (2026-11-08):** one native game now combines the sports park and contoured terrain, active-input directions, six saved camera views/zoom, crew bios, optional fantasy clothing, Lakitu's Hockey Bag Surprise and saved feature switches. Released stances, controller comfort, jackets, upstairs, cozy progression, audio, overlays and indoor LAN remain included. [Feature/configuration inventory and actual results](UNREAL_UNIFIED_0160.md).
+
+Native Editor/Game compilation and packaging passed. The exact final package passed **1,205 required assertions / 43 payload hashes**, plus 79 extra packaged assertions; eight final captures were reviewed. The retained-version round trip and private-data-free portable ZIP passed. **Desktop main remains 0.15.1 because its game is still open.** Guarded activation stopped before changes; all four owner files and all three main links remain intact. Close the running game before activating 0.16.0. Physical controllers, separate-PC networking and measured performance remain unverified. The version 1 roadmap still includes unfinished campaign/character/outdoor co-op work.
+
+Historical milestone records follow; their older package statements describe their original dates.
+
+<!-- unified016-release:end -->
+
 <!-- park-terrain-development:start -->
 
 **Hills and contoured sports fields (development source, 2026-11-06):** the cumulative sports integration now has grassy viewing hills, gentle field crowns, a walkable baseball mound and a raised level basketball court with sloping approaches. Markings, sports props and ball motion follow ground height. Native Editor compilation and **63 final real-map assertions** passed; five captures were reviewed. Input was synthetic; physical controllers and performance remain unverified. **Desktop main 0.15.1 is unchanged.** [Terrain guide and actual evidence](UNREAL_PARK_TERRAIN.md).
@@ -13,6 +23,10 @@
 Native Editor/Game builds and full cook/stage/archive passed. **1,081 required packaged assertions**, 70 extra packaged assertions and 130 Editor assertions passed (**1,281 selected executions**). Six captures were reviewed and 43 current payload hashes verified. Checkpoint/settings/map/roster were preserved, all three main launchers and the desktop shortcut verified, and 41 archives retained. Older archives reuse the previous verification baseline. Input was synthetic; physical gameplay, PlayStation hardware and separate-PC LAN remain unverified. [Controls, scope and actual results](UNREAL_PARK_SPORTS.md).
 
 <!-- sports-park-release:end -->
+
+**Input-aware directions (Unreal development source, 2026-11-06):** with **Controls & cameras → Controller display → Auto**, gym/door signs now follow Xbox, PlayStation or keyboard input even while paused. Remaining menu, Help and trick hints use matching controls; unmapped screenshot keys and Windows-key shortcuts no longer select keyboard prompts. The desktop package has not been updated.
+
+Native UE 5.8.4 Editor builds passed. Final real-map checks passed: **31 rendered prompt + 16 headless movement assertions** on the main-based review branch, and **36 rendered prompt + 20 headless movement assertions** on the accumulated checkout. Input was synthetic; physical devices remain unverified. The initial development recenter-fixture failure and its correction are recorded in the [guide and evidence](UNREAL_INPUT_PROMPTS.md).
 
 <!-- movement-stances-release:start -->
 
@@ -148,3 +162,4 @@ The standalone executable passed 25 full-patrol checks plus six cross-process pe
 ## Working rules
 
 Keep the exact title **Codename .... Cheweenie**, canon, aliases and user-owned art. Use self-contained, appropriately licensed resources and no paid dependencies. Never commit engine caches, build products, private references or secrets. Keep assumptions editable in docs/ASSUMPTIONS.md and report failed checks alongside passes. Use focused PRs; do not merge an uncompiled gameplay prototype as a verified release.
+

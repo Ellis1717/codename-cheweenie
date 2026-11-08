@@ -1,0 +1,17 @@
+{
+	"passed": [
+		"Unlocked menu travels to the real map as playable Ratchet",
+		"Memory room recognises the saved unlock",
+		"Ratchet uses his distinct original fuller-coat mesh",
+		"Ratchet does not inherit visible dog anatomy or dog needs/tricks",
+		"Keyboard walks Ratchet",
+		"Synthetic controller stick walks Ratchet",
+		"Controller jump works for Ratchet",
+		"Ratchet keeps his own coat without an unrelated pet costume",
+		"Memory walk can switch back to Marty",
+		"Controller pet cycling reaches unlocked Ratchet",
+		"Synthetic stick release keeps Ratchet still for the portrait"
+	],
+	"failed": [],
+	"scope": "Actual map/travel with synthetic keyboard/gamepad and isolated completion/save fixtures. Static first-pass Ratchet model; physical controllers unverified."
+}

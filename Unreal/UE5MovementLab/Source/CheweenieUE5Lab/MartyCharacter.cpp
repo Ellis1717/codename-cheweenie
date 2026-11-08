@@ -1,8 +1,11 @@
 #include "MartyCharacter.h"
 #include "ControllerComfort.h"
 #include "CozyCoop.h"
+#include "HockeySurprise.h"
+
 #include "CozyHUDStyle.h"
 #include "CozyModeHub.h"
+#include "CozyCoop.h"
 #include "Engine/GameInstance.h"
 #include "HalloweenSpecial.h"
 #include "HalloweenCostume.h"
@@ -130,7 +133,7 @@ void AMartyCharacter::Tick(float DeltaSeconds)
     UpdateTrickModifier();
     Stances->UpdateJump(DeltaSeconds);
     if(auto* Hub=GetGameInstance()->GetSubsystem<UCozyModeHub>()){const int32 Detail=FParse::Param(FCommandLine::Get(),TEXT("CheweenieSmoothMarty"))?0:Hub->FurDetail();if(LastFurDetail!=Detail){LastFurDetail=Detail;const TCHAR* Coats[]={TEXT("/Game/Adventure/MartyPhotoSmooth/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat")};if(auto* CoatMesh=LoadObject<USkeletalMesh>(nullptr,Coats[Detail])){Skin->SetSkinnedAssetAndUpdate(CoatMesh);if(Gait)Gait->ResetContacts();}}}
-    if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0);
+    if(UsesAdventureHome()) if(auto* S=Adventure()) if(S->Progress) Costume->SetOutfit(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),0,(S->Progress->CostumeMask&1)!=0,(S->Progress->FantasyCostumeMask&1)!=0);
     if(UsesAdventureHome())if(auto* S=Adventure())if(S->Progress)Jackets->SetJacket(Skin->IsVisible()?static_cast<USceneComponent*>(Skin.Get()):Visual.Get(),S->Progress->MartyJacket);
     if(GetActorLocation().Z< -600)ReturnHome();
 }
@@ -156,6 +159,16 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     auto Axis = [this](UInputAction* Target, FKey Key, bool Y, bool Negative)
     {
         auto& Entry = Mapping->MapKey(Target, Key);
+        // Enhanced Input needs its own modifier; legacy AxisConfig is insufficient.
+        if (Key == EKeys::Gamepad_LeftX || Key == EKeys::Gamepad_LeftY ||
+            Key == EKeys::Gamepad_RightX || Key == EKeys::Gamepad_RightY)
+        {
+            auto* DeadZone = NewObject<UInputModifierDeadZone>(Mapping);
+            DeadZone->Type = EDeadZoneType::Axial;
+            DeadZone->LowerThreshold = .2f;
+            DeadZone->UpperThreshold = 1.f;
+            Entry.Modifiers.Add(DeadZone);
+        }
         if (Negative) Entry.Modifiers.Add(NewObject<UInputModifierNegate>(Mapping));
         if (Y)
         {
@@ -205,8 +218,6 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::Right,EKeys::Invalid,&AMartyCharacter::MenuRight);
         Button(EKeys::Invalid,EKeys::Gamepad_DPad_Left,&AMartyCharacter::PadLeft);
         Button(EKeys::Invalid,EKeys::Gamepad_DPad_Right,&AMartyCharacter::PadRight);
-        Button(EKeys::Equals,EKeys::Invalid,&AMartyCharacter::ZoomIn);
-        Button(EKeys::Hyphen,EKeys::Invalid,&AMartyCharacter::ZoomOut);
         Button(EKeys::E,EKeys::Gamepad_FaceButton_Left,&AMartyCharacter::Interact);
         auto* JumpAction=Action(EInputActionValueType::Boolean);MenuActions.Add(JumpAction);
         Mapping->MapKey(JumpAction,EKeys::SpaceBar);Mapping->MapKey(JumpAction,EKeys::Gamepad_FaceButton_Top);
@@ -226,6 +237,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::Tab,EKeys::Gamepad_Special_Left,&AMartyCharacter::Backpack);
         Button(EKeys::M,EKeys::Invalid,&AMartyCharacter::Map);
     }
+    SetupCameraZoom(Enhanced,Mapping);
     Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Move);
     Enhanced->BindAction(MouseAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Look);
     Enhanced->BindAction(StickAction, ETriggerEvent::Triggered, this, &AMartyCharacter::LookStick);
@@ -306,18 +318,21 @@ void AMartyCharacter::CycleCamera()
 {
     if(TryMovementShortcut(true))return;
     if (ControllerMenuOpen()||!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))) return;
-    CameraPreset = (CameraPreset + 1) % 4;
+    CameraPreset = (CameraPreset + 1) % 6;
     Boom->TargetArmLength=GetGameInstance()->GetSubsystem<UControllerComfort>()->CameraDistances[CameraPreset];
     ZoomInterpolating=false;
-    Boom->SocketOffset.Z=CameraPreset==0?(Stances->Active==EMartyStance::Crawl?0:Stances->Active==EMartyStance::Upright?15:35):0;
+    Boom->SocketOffset.Z=CameraPreset==0?(Stances->Active==EMartyStance::Crawl?0:Stances->Active==EMartyStance::Upright?15:35):CameraPreset==4?25:CameraPreset==5?-15:0;
+    if(Controller)Controller->SetControlRotation(FRotator(CameraPreset==4?-50:CameraPreset==5?-5:-12,Controller->GetControlRotation().Yaw,0));
 }
 void AMartyCharacter::Recenter()
 {
-    if (Controller) Controller->SetControlRotation(FRotator(-12, GetActorRotation().Yaw, 0));
+    const float Pitch=CameraPreset==4?-50.f:CameraPreset==5?-5.f:-12.f;
+    if (Controller) Controller->SetControlRotation(FRotator(Pitch, GetActorRotation().Yaw, 0));
 }
 void AMartyCharacter::ReturnHome()
 {
     ClearControllerInput();
+    if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Hockey&&M->Hockey->Active()){M->Hockey->Finish();return;}
     if(auto* H=CheweenieHome(this))H->CancelActivities();
     if(Life)Life->CancelAction();
     if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Neighbourhood){Mode->Neighbourhood->Outside=false;Mode->Neighbourhood->SetOutdoorLighting(false);}
@@ -337,6 +352,7 @@ AMartyPlayMode::AMartyPlayMode()
     Navigation=CreateDefaultSubobject<UCozyNavigation>(TEXT("Navigation"));
     Neighbourhood=CreateDefaultSubobject<UCheweenieNeighbourhood>(TEXT("Neighbourhood"));
     Festival=CreateDefaultSubobject<UHalloweenSpecial>(TEXT("OptionalHalloweenSpecial"));
+    Hockey=CreateDefaultSubobject<UHockeySurprise>(TEXT("HockeyBagSurprise"));
     HomeProgression=CreateDefaultSubobject<UHomeProgression>(TEXT("HomeUpgradesAndReactions"));
     DefaultPawnClass = AMartyCharacter::StaticClass();
     HUDClass = AMartyHUD::StaticClass();

@@ -1,4 +1,4 @@
-Codename .... Cheweenie — Windows core adventure 0.15.1
+Codename .... Cheweenie — Windows core adventure 0.16.0
 
 Double-click PLAY_GAME.cmd to start. Keep the entire Windows folder beside it.
 Choose Play / continue adventure to explore the house and neighbourhood.
@@ -20,3 +20,5 @@ Controller comfort: click L3 to toggle hurry; A still works as hold-to-hurry. Us
 Solo Marty movement: Y/Triangle or Space jumps while moving/running. Hold LB/L1 + L3 to toggle crawl, or + R3 to toggle two-leg walking. Keyboard Z/U offers the same stances; they are also in the Tricks menu. Run returns to four paws when headroom permits. Crawl uses a lower collision capsule; blocked stand-up/jump attempts stay low. These transient solo stances reset at home/restart; LAN retains its existing pet-room controls.
 
 Community sports park: visit the park and follow the sports sign. E / X / Square kicks, tee-bats or shoots. Hurry with Shift / L3 through bases 1, 2, 3 and HOME within 25 seconds. Reset bollards retain temporary scores. These are solo practice games.
+
+Cumulative 0.16.0 adds contoured sports terrain, input-aware directions, six saved camera views, character bios, optional illustrated menus, configurable solo outfit styles and Lakitu's Hockey Bag Surprise. Pet feature switches control park activities and the hockey story; Camera/graphics/sound includes menu artwork. Backslash resets zoom; Z/U retain movement stances. These options preserve prior saves, jackets and controller comfort.

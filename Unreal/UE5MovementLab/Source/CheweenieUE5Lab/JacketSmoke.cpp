@@ -34,7 +34,7 @@ void AMartyPlayMode::TickJacketSmoke(float Delta)
     auto Next=[&](){++SmokeStage;SmokeTime=0;};
     auto Key=[&](FKey K,bool Down){PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
     auto Shot=[&](const TCHAR* Name){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/Name,true,false);};
-    auto Wardrobe=[&](){PC->SetViewTarget(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=true;S->Pause();S->Selection=2;S->Confirm();S->Selection=5;S->Confirm();S->Selection=3;};
+    auto Wardrobe=[&](){PC->SetViewTarget(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=true;S->Pause();S->Selection=2;S->Confirm();S->Selection=5;S->Confirm();S->Selection=6;};
     auto Resume=[&](){S->Back();S->Back();S->Back();};
     auto View=[&](){const auto Mesh=P->Skin->GetComponentTransform();const FVector Target=Mesh.TransformPosition(FVector(-3,0,25));auto* Camera=GetWorld()->SpawnActor<ACameraActor>(Target+Mesh.TransformVectorNoScale(FVector(8,-150,38)),FRotator::ZeroRotator);Camera->SetActorRotation((Target-Camera->GetActorLocation()).Rotation());Camera->GetCameraComponent()->FieldOfView=42;PC->SetViewTarget(Camera);if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;};
     const bool Reload=FParse::Param(FCommandLine::Get(),TEXT("CheweenieJacketResume"));
@@ -53,7 +53,7 @@ void AMartyPlayMode::TickJacketSmoke(float Delta)
     case 0:
         if(SmokeTime<(FApp::CanEverRender()?25:3))break;
         SmokeCheck(S->Slot==TEXT("CheweenieJacketAcceptance"),TEXT("Jacket checks use an isolated save"));SmokeCheck(D->MartyJacket==0&&J->VisiblePieces()==0,TEXT("New profiles default to no jacket"));
-        S->Start(true);D->CostumeMask=6;Wardrobe();SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==5,TEXT("Wardrobe keeps three costumes and adds a jacket selector"));Key(EKeys::Right,true);Next();break;
+        S->Start(true);D->CostumeMask=6;Wardrobe();SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==8,TEXT("Wardrobe keeps three costumes and adds a jacket selector"));Key(EKeys::Right,true);Next();break;
     case 1:
         Key(EKeys::Right,false);SmokeCheck(D->MartyJacket==1&&D->CostumeMask==6,TEXT("Keyboard selects yellow raincoat without changing cat costumes"));SmokeCheck(J->VisiblePieces()>0&&J->CollisionFree()&&J->MaterialsReady(),TEXT("Raincoat has visible original geometry and valid non-colliding materials"));SmokeCheck(J->SurfaceFacesOutward(),TEXT("Garment surfaces use outward normals and Unreal clockwise front faces"));Resume();View();Next();break;
     case 2:
@@ -69,7 +69,7 @@ void AMartyPlayMode::TickJacketSmoke(float Delta)
         if(SmokeTime<1)break;SmokeCheck(J->Style==3&&JacketAligned(P)&&J->MaterialsReady(),TEXT("Navy winter coat has a fitted collar and loaded materials"));Shot(TEXT("JacketNavy.png"));SmokeStage=106;SmokeTime=0;break;
     case 106:Wardrobe();SmokeStage=7;SmokeTime=0;break;
     case 7:
-        CastChecked<AMartyHUD>(PC->GetHUD())->NotifyHitBoxClick(TEXT("CozyPlus_3"));SmokeCheck(D->MartyJacket==4,TEXT("Mouse plus hitbox selects pink quilted coat"));Resume();View();Next();break;
+        CastChecked<AMartyHUD>(PC->GetHUD())->NotifyHitBoxClick(TEXT("CozyPlus_6"));SmokeCheck(D->MartyJacket==4,TEXT("Mouse plus hitbox selects pink quilted coat"));Resume();View();Next();break;
     case 8:
         if(SmokeTime<1)break;SmokeCheck(J->Style==4&&JacketAligned(P)&&J->CollisionFree(),TEXT("Pink quilted coat stays aligned without blocking movement"));Shot(TEXT("JacketPink.png"));SmokeStage=108;SmokeTime=0;break;
     case 108:D->FurDetailPreference=1;SmokeStage=1008;SmokeTime=0;break;
@@ -87,7 +87,7 @@ void AMartyPlayMode::TickJacketSmoke(float Delta)
     case 13:
         if(SmokeTime<2.5)break;Wardrobe();S->Selection=0;S->Confirm();Next();break;
     case 14:
-        SmokeCheck(D->MartyJacket==0&&J->VisiblePieces()==0&&P->Costume->VisiblePieces()>0,TEXT("Existing hot-dog costume removes the jacket instead of stacking"));S->Selection=3;S->Adjust(-1);SmokeCheck(D->MartyJacket==4&&(D->CostumeMask&1)==0,TEXT("Backward cycling wraps to pink and removes the hot-dog costume"));Resume();PC->SetViewTarget(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=true;SmokePosition=P->GetActorLocation();Next();break;
+        SmokeCheck(D->MartyJacket==0&&J->VisiblePieces()==0&&P->Costume->VisiblePieces()>0,TEXT("Existing hot-dog costume removes the jacket instead of stacking"));S->Selection=6;S->Adjust(-1);SmokeCheck(D->MartyJacket==4&&(D->CostumeMask&1)==0,TEXT("Backward cycling wraps to pink and removes the hot-dog costume"));Resume();PC->SetViewTarget(P);if(PC->GetHUD())PC->GetHUD()->bShowHUD=true;SmokePosition=P->GetActorLocation();Next();break;
     case 15:
         if(SmokeTime<.6)break;SmokeCheck(FVector::Dist2D(P->GetActorLocation(),SmokePosition)>10,TEXT("Synthetic gamepad movement works while wearing the jacket"));Key(EKeys::W,true);SmokePosition=P->GetActorLocation();Next();break;
     case 16:

@@ -24,7 +24,7 @@ public:
     FString Label() const;
     TArray<FString> Controls() const;
     FString Format(const FString& Text) const;
-    void Draw(AHUD* HUD, float X, float Y) const;
+    void Draw(AHUD* HUD, float X, float Y, float Scale=1.f) const;
 private:
     ECozyInputFamily Detected=ECozyInputFamily::Keyboard;
     int32 Override=0; // Auto, Xbox, PlayStation, keyboard, generic.

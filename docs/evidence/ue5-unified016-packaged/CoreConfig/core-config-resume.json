@@ -1,0 +1,10 @@
+{
+	"scope": "Real combined game map; synthetic keyboard/gamepad menu events and isolated save/preferences; physical hardware unverified",
+	"passed": [
+		"New optional feature settings survive another process",
+		"Independent outfit styles cat clothing and Marty jacket reload together",
+		"Existing patrol progress survives the combined save schema",
+		"Sixth camera zoom reloads without disabling existing camera controls"
+	],
+	"failed": []
+}

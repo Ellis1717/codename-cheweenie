@@ -1,0 +1,9 @@
+{
+	"passed": [
+		"Jacket and independent cat choices survive another process",
+		"Reload restores only the selected Marty jacket",
+		"Reloaded jacket remains fitted, material-backed and collision-free"
+	],
+	"failed": [],
+	"scope": "Actual map; synthetic keyboard/gamepad/mouse hitboxes, menu/save/camera/action fixtures. Physical hardware and cloth simulation unverified."
+}

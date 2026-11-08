@@ -1,0 +1,14 @@
+{
+	"scope": "Actual map and map travel; synthetic input plus menu/progress fixtures. Physical controllers and separate PCs unverified.",
+	"passed": [
+		"LAN starts from the unified solo hub",
+		"Hub travel creates the expected actual network role",
+		"Two pets replicate with distinct selections",
+		"Each PC retains its independent fur detail",
+		"Host remains playable after guest leaves",
+		"Room departure returns to actual standalone world",
+		"LAN round trip preserves each checkpoint and detail",
+		"Confirmed mode resumes its intended screen"
+	],
+	"failed": []
+}

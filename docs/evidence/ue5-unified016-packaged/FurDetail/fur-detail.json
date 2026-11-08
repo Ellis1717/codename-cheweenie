@@ -1,0 +1,21 @@
+{
+	"scope": "Real map; synthetic keyboard/gamepad with menu-selection and progress fixtures; three-process isolated save checks. Physical controllers unverified.",
+	"passed": [
+		"Fresh saves default to High fur detail",
+		"High detail selects the new raised-hair mesh",
+		"Fur acceptance uses an isolated save slot",
+		"Keyboard starts the real game before adjusting detail",
+		"Keyboard opens Pause for fur controls",
+		"A-Cross opens Controls from Pause",
+		"Graphics controls display the current High fur level",
+		"Keyboard Left lowers High to Medium",
+		"Medium changes the actual mesh live and refreshes gait",
+		"D-pad Right restores High and the raised hairs",
+		"Keyboard Right wraps High to the smooth Low model",
+		"A-Cross cycles Low to Medium without leaving the menu",
+		"Enter cycles Medium to High live",
+		"Changing detail keeps Marty still and preserves patrol and sound state",
+		"The selected Medium quality is written to the save"
+	],
+	"failed": []
+}

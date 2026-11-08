@@ -6,6 +6,7 @@
 #include "MartyCharacter.generated.h"
 
 class UInputAction;
+class UEnhancedInputComponent;
 class UInputMappingContext;
 class USpringArmComponent;
 class UStaticMeshComponent;
@@ -36,6 +37,12 @@ public:
     virtual void PossessedBy(AController* NewController) override;
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
     void CycleCamera();
+    FString CameraName() const;
+    void ZoomCamera(float Amount);
+    void ResetCameraZoom();
+protected:
+    void SetupCameraZoom(UEnhancedInputComponent* Input, UInputMappingContext* Context);
+public:
     virtual void ReturnHome();
     virtual bool UsesAdventureHome() const { return true; }
     virtual float TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer) override;
@@ -47,7 +54,6 @@ public:
     void ClearControllerHurry();
     void ControllerHurryPress();
     void ControllerHurryRelease();
-    void ZoomCamera(float Amount);
     void RefreshControllerZoom();
     void ToggleCrawl();
     void ToggleUpright();
@@ -75,6 +81,10 @@ private:
     void Look(const FInputActionValue& Value);
     void LookStick(const FInputActionValue& Value);
     void Recenter();
+    bool CanAdjustCamera() const;
+    void ZoomWheel(const FInputActionValue& Value);
+    void ZoomHeld(const FInputActionValue& Value);
+    UPROPERTY() TArray<TObjectPtr<UInputAction>> ZoomActions;
     void SetSprint(bool Active);
     bool CanPlay() const;
     UCozyAdventure* Adventure() const;
@@ -121,6 +131,8 @@ private:
     FVector Home;
 };
 
+class UHockeySurprise;
+
 // Deterministic collision setup for the retained room, independently on each peer.
 void PrepareCheweenieRoom(UWorld* World, bool HideAllPets = false);
 
@@ -136,6 +148,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UCheweenieNeighbourhood> Neighbourhood;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCozyNavigation> Navigation;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHalloweenSpecial> Festival;
+    UPROPERTY(VisibleAnywhere) TObjectPtr<UHockeySurprise> Hockey;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UHomeProgression> HomeProgression;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UCatCompanions> Companions;
 private:
@@ -146,6 +159,11 @@ private:
     void TickStanceSmoke(float Delta);
     void TickControllerButtonsSmoke(float Delta);
     void TickControllerComfortSmoke(float Delta);
+    void TickCoreConfigSmoke(float Delta);
+    void TickCrewMenuSmoke(float Delta);
+    void TickTrailerCapture(float Delta);
+    void TickCameraSmoke(float Delta);
+
     void TickGaitSmoke(float Delta);
     void TickFurDetailSmoke(float Delta);
     void TickOutsideSmoke(float Delta);
@@ -155,6 +173,8 @@ private:
     void TickTrickModifierSmoke(float Delta);
     void TickHomeProgressionSmoke(float Delta);
     void TickUpstairsSmoke(float Delta);
+    void TickHockeySmoke(float Delta);
+
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
     void TickWorldSmoke(float Delta);

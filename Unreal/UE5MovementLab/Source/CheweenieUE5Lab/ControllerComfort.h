@@ -25,7 +25,7 @@ public:
     float LeftDeadZone=.2f,RightDeadZone=.2f,LookSpeed=1.f;
     bool PreciseLook=true;
     int32 L3Mode=2; // 0 off, 1 hold, 2 toggle. A/Cross remains hold-to-hurry.
-    float CameraDistances[4]={220,330,140,120};
+    float CameraDistances[6]={220,330,140,120,400,170};
 private:
     void DeviceConnectionChanged(EInputDeviceConnectionState State,FPlatformUserId User,FInputDeviceId Device);
 };

@@ -1,0 +1,8 @@
+{
+	"passed": [
+		"Completed legacy checkpoint migrates to permanent Ratchet unlock",
+		"Title advertises the unlocked memory walk"
+	],
+	"failed": [],
+	"scope": "Actual map/travel with synthetic keyboard/gamepad and isolated completion/save fixtures. Static first-pass Ratchet model; physical controllers unverified."
+}

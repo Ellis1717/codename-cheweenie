@@ -19,8 +19,8 @@ void UControllerComfort::Initialize(FSubsystemCollectionBase& Collection)
     LeftDeadZone=FMath::IsFinite(LeftDeadZone)?FMath::Clamp(LeftDeadZone,.15f,.35f):.2f;
     RightDeadZone=FMath::IsFinite(RightDeadZone)?FMath::Clamp(RightDeadZone,.15f,.35f):.2f;
     LookSpeed=FMath::IsFinite(LookSpeed)?FMath::Clamp(LookSpeed,.5f,2.f):1.f;L3Mode=FMath::Clamp(L3Mode,0,2);
-    const float Defaults[]={220,330,140,120};
-    for(int32 I=0;I<4;++I){GConfig->GetFloat(Section,*FString::Printf(TEXT("Zoom%d"),I),CameraDistances[I],GGameUserSettingsIni);CameraDistances[I]=FMath::IsFinite(CameraDistances[I])?FMath::Clamp(CameraDistances[I],80.f,650.f):Defaults[I];}
+    const float Defaults[]={220,330,140,120,400,170};
+    for(int32 I=0;I<6;++I){GConfig->GetFloat(Section,*FString::Printf(TEXT("Zoom%d"),I),CameraDistances[I],GGameUserSettingsIni);CameraDistances[I]=FMath::IsFinite(CameraDistances[I])?FMath::Clamp(CameraDistances[I],80.f,650.f):Defaults[I];}
     FCoreDelegates::ApplicationWillDeactivateDelegate.AddUObject(this,&UControllerComfort::ClearLocalInput);
     IPlatformInputDeviceMapper::Get().GetOnInputDeviceConnectionChange().AddUObject(this,&UControllerComfort::DeviceConnectionChanged);
 }
@@ -43,7 +43,7 @@ void UControllerComfort::Save()
     GConfig->SetFloat(Section,TEXT("LookSpeed"),LookSpeed,GGameUserSettingsIni);
     GConfig->SetBool(Section,TEXT("PreciseLook"),PreciseLook,GGameUserSettingsIni);
     GConfig->SetInt(Section,TEXT("L3Mode"),L3Mode,GGameUserSettingsIni);
-    for(int32 I=0;I<4;++I)GConfig->SetFloat(Section,*FString::Printf(TEXT("Zoom%d"),I),CameraDistances[I],GGameUserSettingsIni);
+    for(int32 I=0;I<6;++I)GConfig->SetFloat(Section,*FString::Printf(TEXT("Zoom%d"),I),CameraDistances[I],GGameUserSettingsIni);
     GConfig->Flush(false,GGameUserSettingsIni);
 }
 void UControllerComfort::ApplyPreset(bool Fast)
@@ -51,10 +51,10 @@ void UControllerComfort::ApplyPreset(bool Fast)
 void UControllerComfort::ResetDefaults(bool Persist)
 {
     LeftDeadZone=RightDeadZone=.2f;LookSpeed=1.f;PreciseLook=true;L3Mode=2;
-    const float Defaults[]={220,330,140,120};for(int I=0;I<4;++I)CameraDistances[I]=Defaults[I];
+    const float Defaults[]={220,330,140,120,400,170};for(int I=0;I<6;++I)CameraDistances[I]=Defaults[I];
     if(Persist){ClearLocalInput();ResetZoom();}
 }
-void UControllerComfort::ResetZoom(){const float D[]={220,330,140,120};for(int I=0;I<4;++I)CameraDistances[I]=D[I];if(auto* World=GetGameInstance()->GetWorld())for(TActorIterator<AMartyCharacter> It(World);It;++It)if(It->IsLocallyControlled())It->RefreshControllerZoom();Save();}
+void UControllerComfort::ResetZoom(){const float D[]={220,330,140,120,400,170};for(int I=0;I<6;++I)CameraDistances[I]=D[I];if(auto* World=GetGameInstance()->GetWorld())for(TActorIterator<AMartyCharacter> It(World);It;++It)if(It->IsLocallyControlled())It->RefreshControllerZoom();Save();}
 TArray<FString> UControllerComfort::Rows() const
 {
     const bool Zones=FMath::IsNearlyEqual(LeftDeadZone,.2f)&&FMath::IsNearlyEqual(RightDeadZone,.2f)&&L3Mode==2;

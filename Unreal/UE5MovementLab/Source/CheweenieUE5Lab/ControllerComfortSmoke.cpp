@@ -104,7 +104,7 @@ void AMartyPlayMode::TickControllerComfortSmoke(float Delta)
         Add(.5f,[&](){Check(FMath::IsNearlyEqual(Boom->TargetArmLength,220.f,1.f),TEXT("D-pad Left zooms out without changing preset"));});
         Tap(EKeys::Gamepad_DPad_Right,[](){});
         Add(.5f,[](){});
-        for(int I=0;I<4;++I)Tap(EKeys::Gamepad_RightThumbstick,[](){});
+        for(int I=0;I<6;++I)Tap(EKeys::Gamepad_RightThumbstick,[](){});
         Add(.3f,[&](){Check(P->CameraPreset==0&&FMath::IsNearlyEqual(Boom->TargetArmLength,190.f,1.f),TEXT("Camera cycling remembers each view's zoom"));OpenSetup();});
         Add(.2f,[&](){Check(S->Screen==ECozyScreen::ControllerSetup&&S->Menu().Num()==9,TEXT("Controller comfort settings are reachable from Controls"));S->Selection=3;});
         Tap(EKeys::Gamepad_DPad_Right,[&](){Check(FMath::IsNearlyEqual(Pref->LookSpeed,1.1f),TEXT("D-pad adjusts saved camera turn speed"));S->Selection=0;});

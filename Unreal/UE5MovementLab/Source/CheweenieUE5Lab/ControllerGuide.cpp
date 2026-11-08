@@ -1,4 +1,5 @@
 #include "ControllerGuide.h"
+#include "KeyboardGuide.h"
 #include "ControllerComfort.h"
 #include "Framework/Application/IInputProcessor.h"
 #include "Framework/Application/SlateApplication.h"
@@ -15,7 +16,7 @@ public:
     explicit FCozyDeviceObserver(UControllerGuide* InGuide):Guide(InGuide){}
     virtual void Tick(float, FSlateApplication&, TSharedRef<ICursor>) override {}
     virtual bool HandleKeyDownEvent(FSlateApplication&,const FKeyEvent& E) override
-    { if(Guide.IsValid())Guide->Observe(E.GetKey(),E.GetInputDeviceId());return false; }
+    { if(Guide.IsValid()&&!E.IsCommandDown())Guide->Observe(E.GetKey(),E.GetInputDeviceId());return false; }
     virtual bool HandleAnalogInputEvent(FSlateApplication&,const FAnalogInputEvent& E) override
     { if(Guide.IsValid())Guide->Observe(E.GetKey(),E.GetInputDeviceId(),E.GetAnalogValue());return false; }
     virtual bool HandleMouseButtonDownEvent(FSlateApplication&,const FPointerEvent& E) override
@@ -48,6 +49,8 @@ ECozyInputFamily UControllerGuide::Classify(const FString& Name)
 }
 void UControllerGuide::Observe(FKey Key,FInputDeviceId Device,float Amount)
 {
+    // Unmapped keys (including Print Screen) and OS shortcuts are not gameplay input.
+    if(!Key.IsValid()||Key==EKeys::LeftCommand||Key==EKeys::RightCommand)return;
     // Ignore resting stick noise and released trigger events.
     if(FMath::Abs(Amount)<.25f)return;
     if(!Key.IsGamepadKey()){Detected=ECozyInputFamily::Keyboard;return;}
@@ -75,6 +78,7 @@ FString UControllerGuide::PreferenceLabel() const
 }
 TArray<FString> UControllerGuide::Controls() const
 {
+    if(Family()==ECozyInputFamily::Keyboard)return CozyKeyboardControls(GetWorld());
     const bool PS=Family()==ECozyInputFamily::PlayStation;
     const int32 Mode=GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode;
     const FString L3=Mode==2?TEXT(" | L3: toggle hurry"):Mode==1?TEXT(" | L3: hold hurry"):TEXT(" | L3: off");
@@ -95,11 +99,21 @@ TArray<FString> UControllerGuide::Controls() const
 }
 FString UControllerGuide::Format(const FString& Text) const
 {
-    FString Result=Text;
+    FString Result;
     const int32 Column=Family()==ECozyInputFamily::Keyboard?1:Family()==ECozyInputFamily::Xbox?2:Family()==ECozyInputFamily::PlayStation?3:4;
     // Match complete input phrases before individual glyph names. Leave ordinary
     // slashes (scores, place names and menu titles) untouched.
     const TCHAR* Phrases[][5]={
+        {TEXT("V / R3: six views | Wheel / +/-: zoom | Backslash: reset zoom"),TEXT("V: six views | Wheel / +/-: zoom | Backslash: reset zoom"),TEXT("R3: six views | D-pad: zoom (hold RB in rooms)"),TEXT("R3: six views | D-pad: zoom (hold R1 in rooms)"),TEXT("Right-stick click: six views | D-pad: zoom")},
+        {TEXT("brackets / D-pad left-right"),TEXT("brackets"),TEXT("D-pad left/right"),TEXT("D-pad left/right"),TEXT("D-pad left/right")},
+        {TEXT("Wheel / +/-: zoom | Z: reset zoom"),TEXT("Wheel / +/-: zoom | Z: reset zoom"),TEXT("Zoom: Controls & cameras"),TEXT("Zoom: Controls & cameras"),TEXT("Zoom: Controls & cameras")},
+        {TEXT("Arrows choose | Enter select | Backspace back"),TEXT("Arrows choose | Enter select | Backspace back"),TEXT("LS/D-pad choose | A select | B back"),TEXT("LS/D-pad choose | Cross select | Circle back"),TEXT("LS/D-pad choose | Bottom select | Right back")},
+        {TEXT("C: trick menu"),TEXT("C: trick menu"),TEXT("B: trick menu"),TEXT("Circle: trick menu"),TEXT("right face: trick menu")},
+        {TEXT("Keyboard: 1 lie / stand | 2 roll | 3 shake | 4 bark"),TEXT("Keyboard: 1 lie / stand | 2 roll | 3 shake | 4 bark"),TEXT("Hold LB while choosing a trick"),TEXT("Hold L1 while choosing a trick"),TEXT("Hold LB while choosing a trick")},
+        {TEXT("WASD / LS"),TEXT("WASD"),TEXT("LS"),TEXT("LS"),TEXT("LS")},
+        {TEXT("mouse / RS"),TEXT("mouse"),TEXT("RS"),TEXT("RS"),TEXT("RS")},
+        {TEXT("B / LB-L1"),TEXT("B"),TEXT("LB"),TEXT("L1"),TEXT("LB")},
+        {TEXT("R / RB-R1"),TEXT("R"),TEXT("RB"),TEXT("R1"),TEXT("RB")},
         {TEXT("Z / LB-L3"),TEXT("Z"),TEXT("LB + L3"),TEXT("L1 + L3"),TEXT("LB + L3")},
         {TEXT("U / LB-R3"),TEXT("U"),TEXT("LB + R3"),TEXT("L1 + R3"),TEXT("LB + R3")},
         {TEXT("WASD / left stick"),TEXT("WASD"),TEXT("left stick"),TEXT("left stick"),TEXT("left stick")},
@@ -133,21 +147,33 @@ FString UControllerGuide::Format(const FString& Text) const
         {TEXT("L1/LB"),TEXT("Left Ctrl"),TEXT("LB"),TEXT("L1"),TEXT("LB")},
         {TEXT("D-pad choose | A select | B back"),TEXT("Arrows choose | Enter select | Backspace back"),TEXT("LS/D-pad choose | A select | B back"),TEXT("LS/D-pad choose | Cross select | Circle back"),TEXT("LS/D-pad choose | Bottom select | Right back")}
     };
-    for(const auto& Phrase:Phrases)Result.ReplaceInline(Phrase[0],Phrase[Column],ESearchCase::CaseSensitive);
+    // Scan the original text once; a replacement must never become another match.
+    for(int32 At=0;At<Text.Len();)
+    {
+        bool Matched=false;
+        for(const auto& Phrase:Phrases)
+        {
+            const int32 Length=FCString::Strlen(Phrase[0]);
+            if(At+Length<=Text.Len()&&FCString::Strncmp(*Text+At,Phrase[0],Length)==0)
+            {
+                Result+=Phrase[Column];At+=Length;Matched=true;break;
+            }
+        }
+        if(!Matched)Result.AppendChar(Text[At++]);
+    }
     return Result;
 }
-void UControllerGuide::Draw(AHUD* HUD,float X,float Y) const
+void UControllerGuide::Draw(AHUD* HUD,float X,float Y,float Scale) const
 {
     const auto White=FLinearColor(.9f,.94f,1),Edge=FLinearColor(.5f,.7f,.8f);
-    auto Text=[&](const FString& T,float A,float B){HUD->DrawText(T,White,X+A,Y+B,nullptr,.9f);};
-    auto Line=[&](float A,float B,float C,float D){HUD->DrawLine(X+A,Y+B,X+C,Y+D,Edge,3);};
+    auto Text=[&](const FString& T,float A,float B){HUD->DrawText(T,White,X+A*Scale,Y+B*Scale,nullptr,.9f*Scale);};
+    auto Line=[&](float A,float B,float C,float D){HUD->DrawLine(X+A*Scale,Y+B*Scale,X+C*Scale,Y+D*Scale,Edge,3*Scale);};
     auto Ring=[&](float A,float B,float R){for(int I=0;I<32;++I){float T=I*2*PI/32,U=(I+1)*2*PI/32;Line(A+R*FMath::Cos(T),B+R*FMath::Sin(T),A+R*FMath::Cos(U),B+R*FMath::Sin(U));}};
-    Text(Label(),0,0);
     if(Family()==ECozyInputFamily::Keyboard)
     {
-        for(int I=0;I<4;++I){float A=I==0?68.f:28.f+(I-1)*40,B=I==0?48.f:88.f;HUD->DrawRect(FLinearColor(.14f,.24f,.3f),X+A,Y+B,34,34);Text(FString::Chr(TEXT("WASD")[I]),A+12,B+8);}
-        Ring(265,92,38);Line(265,54,265,100);Text(TEXT("Mouse"),242,142);return;
+        CozyDrawKeyboard(HUD,X,Y,Scale);return;
     }
+    Text(Label(),0,0);
     const bool PS=Family()==ECozyInputFamily::PlayStation,Generic=Family()==ECozyInputFamily::Generic;
     // Original line illustration, drawn at native resolution; no external artwork.
     const FVector2D Outline[]={{55,49},{110,40},{135,58},{225,58},{250,40},{305,49},{335,163},{312,182},{269,136},{91,136},{48,182},{25,163},{55,49}};

@@ -85,10 +85,10 @@ void AMartyPlayMode::TickControllerButtonsSmoke(float Delta)
     Add(1.2f,[&](){Check(P->GetCharacterMovement()->IsMovingOnGround(),TEXT("Jump release returns Marty to grounded movement"));Barks=L->BarkCount;});
     Tap(LB,[](){},.12f);
     Add(.3f,[&](){Check(L->BarkCount==Barks+1,TEXT("A short LB/L1 tap barks exactly once"));});
-    for(int32 I=0;I<4;++I)
+    for(int32 I=0;I<6;++I)
     {
         Add(.3f,[&](){Camera=P->CameraPreset;});
-        Tap(EKeys::Gamepad_RightThumbstick,[&](){Check(P->CameraPreset==(Camera+1)%4,TEXT("R3 advances the camera and wraps through all four release views"));});
+        Tap(EKeys::Gamepad_RightThumbstick,[&](){Check(P->CameraPreset==(Camera+1)%6,TEXT("R3 advances the camera and wraps through all six release views"));});
     }
     Add(.2f,[&](){View=PC->GetControlRotation();Camera=P->CameraPreset;Start=P->GetActorLocation();});
     Tap(EKeys::Gamepad_LeftThumbstick,[&](){Check(L->SprintRequested&&P->CameraPreset==Camera&&S->Screen==ECozyScreen::Playing&&FVector::Dist2D(Start,P->GetActorLocation())<.5f,TEXT("L3 toggles hurry without moving Marty or changing camera"));});

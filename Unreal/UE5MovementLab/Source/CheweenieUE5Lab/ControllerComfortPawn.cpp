@@ -98,11 +98,11 @@ void AMartyCharacter::TickControllerComfort(float Delta)
     else if(auto* S=Adventure()){if(Y)S->Navigate(Y);else S->Adjust(X);}
 }
 void AMartyCharacter::RefreshControllerZoom()
-{ZoomTarget=GetGameInstance()->GetSubsystem<UControllerComfort>()->CameraDistances[FMath::Clamp(CameraPreset,0,3)];ZoomInterpolating=true;}
+{ZoomTarget=GetGameInstance()->GetSubsystem<UControllerComfort>()->CameraDistances[FMath::Clamp(CameraPreset,0,5)];ZoomInterpolating=true;}
 void AMartyCharacter::ZoomCamera(float Amount)
 {
     if(ControllerMenuOpen()||!CanPlay()||(Adventure()&&!Adventure()->Feature(ECozyFeature::Cameras))||!FMath::IsFinite(Amount))return;
     auto* PC=Cast<APlayerController>(Controller);if(!PC||PC->GetViewTarget()!=this)return;
     ZoomTarget=FMath::Clamp((ZoomInterpolating?ZoomTarget:Boom->TargetArmLength)-Amount,80.f,650.f);
-    auto* P=GetGameInstance()->GetSubsystem<UControllerComfort>();P->CameraDistances[FMath::Clamp(CameraPreset,0,3)]=ZoomTarget;P->Save();ZoomInterpolating=true;
+    auto* P=GetGameInstance()->GetSubsystem<UControllerComfort>();P->CameraDistances[FMath::Clamp(CameraPreset,0,5)]=ZoomTarget;P->Save();ZoomInterpolating=true;
 }
