@@ -7,6 +7,7 @@ class AStaticMeshActor;
 class AMartyCharacter;
 class UInstancedStaticMeshComponent;
 class UDirectionalLightComponent;
+class UParkSports;
 
 struct FNeighbourDog
 {
@@ -36,6 +37,7 @@ public:
     UPROPERTY(VisibleAnywhere,BlueprintReadOnly) int32 MetDogs=0;
     FVector Entrance=FVector(1000000,0,28);
     FVector Park, School;
+    UPROPERTY() TObjectPtr<UParkSports> Sports;
     TArray<FNeighbourDog> Dogs;
     const TArray<TPair<FVector,FVector>>& Streets() const { return NavigationEdges; }
     TArray<TPair<FVector,FString>> StreetLabels;

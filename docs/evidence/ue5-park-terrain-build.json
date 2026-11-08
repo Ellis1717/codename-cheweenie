@@ -1,0 +1,34 @@
+{
+  "editorCompiled": true,
+  "finalRenderedSportsAssertions": 35,
+  "initialFinding": {
+    "scope": "First rendered terrain build had reversed surface faces: invisible terrain and failed traversal. Corrected clockwise winding and recompiled before passing reruns.",
+    "passed": 30,
+    "failed": 5
+  },
+  "baseline": "69d9c12 (sports integration, PR 56)",
+  "engine": "5.8.4",
+  "reviewedFinalCaptures": 5,
+  "finalSelectedAssertions": 63,
+  "nativeSourceHashes": {
+    "ParkSportsSmoke.cpp": "D1771F9B48F896253755A3E53A8FA131F57F46DFCD2A90FC71AEEBF5E2D3DBE3",
+    "ParkSports.cpp": "63AB4204AEDFFC6EFFD1A5E1897EC7EE576071D03E8631F74B2758BC5BDF0950",
+    "ParkSports.h": "CAE02C04F52D0F24659002AC7CBB0E67A4C3B50BF9741386E54EECB83927A028",
+    "ParkTerrain.cpp": "BFCB927C519E8804392BFBAC52B4F8E3162C298DA0239E8B31BA7BCB5A44C9E7"
+  },
+  "performanceQualified": false,
+  "desktopUpdated": false,
+  "retained": "Original mixed source, desktop package, checkpoints, private map/roster, archives, Unity and comparison preview unchanged.",
+  "desktopVersion": "Unified-0.15.1",
+  "date": "2026-11-06",
+  "priorPrivateAudit": {
+    "scope": "Before final noncolliding field-skin cleanup and capture reframing. Ground collision and sport rules unchanged. No private captures exported; not included in the 63 final assertions.",
+    "passed": 35,
+    "failed": 0
+  },
+  "finalHeadlessNeighbourhoodAssertions": 12,
+  "finalHeadlessMovementAssertions": 16,
+  "developmentOnly": true,
+  "physicalControllersVerified": false,
+  "standalonePackaged": false
+}

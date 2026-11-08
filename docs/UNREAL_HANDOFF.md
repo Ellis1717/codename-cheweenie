@@ -1,5 +1,19 @@
 # Codename .... Cheweenie — Unreal development handoff
 
+<!-- park-terrain-development:start -->
+
+**Hills and contoured sports fields (development source, 2026-11-06):** the cumulative sports integration now has grassy viewing hills, gentle field crowns, a walkable baseball mound and a raised level basketball court with sloping approaches. Markings, sports props and ball motion follow ground height. Native Editor compilation and **63 final real-map assertions** passed; five captures were reviewed. Input was synthetic; physical controllers and performance remain unverified. **Desktop main 0.15.1 is unchanged.** [Terrain guide and actual evidence](UNREAL_PARK_TERRAIN.md).
+
+<!-- park-terrain-development:end -->
+
+<!-- sports-park-release:start -->
+
+**Sports park in desktop main 0.15.1 (2026-11-06):** restart **Play Cheweenie**, continue the adventure and follow the park sports path. Play soccer, tee baseball with a timed base circuit, and basketball shooting. Interact with **E / Xbox X / PlayStation Square**. Moving jumps, crawl, two-leg walking and controller comfort from 0.15.0 remain included.
+
+Native Editor/Game builds and full cook/stage/archive passed. **1,081 required packaged assertions**, 70 extra packaged assertions and 130 Editor assertions passed (**1,281 selected executions**). Six captures were reviewed and 43 current payload hashes verified. Checkpoint/settings/map/roster were preserved, all three main launchers and the desktop shortcut verified, and 41 archives retained. Older archives reuse the previous verification baseline. Input was synthetic; physical gameplay, PlayStation hardware and separate-PC LAN remain unverified. [Controls, scope and actual results](UNREAL_PARK_SPORTS.md).
+
+<!-- sports-park-release:end -->
+
 <!-- movement-stances-release:start -->
 
 **Movement controls in desktop main 0.15.0 (2026-11-05):** restart **Play Cheweenie**, then choose **Play / continue adventure**. Run with L3 toggle (or hold A), jump while moving with Y, crawl with LB + L3 and walk on two legs with LB + R3. Keyboard: Shift / Space / Z / U. Comfortable exploration keeps precise camera response and familiar face buttons. New stances apply to solo skeletal Marty and respect headroom.
