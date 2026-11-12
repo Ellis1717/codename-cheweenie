@@ -1,4 +1,5 @@
 #include "Neighbourhood.h"
+#include "AnimalGait.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "Engine/World.h"
@@ -19,46 +20,11 @@ FString UCheweenieNeighbourhood::DogAction(const FNeighbourDog& D) const
 }
 void UCheweenieNeighbourhood::Dog(FNeighbourDog& D,int32 Index)
 {
-    // Original schematic characters. Unconfirmed potcake coats remain neutral placeholders.
-    const int32 Color=Palette.Num();
-    auto* Mat=UMaterialInstanceDynamic::Create(LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/World/NeighbourhoodSurface.NeighbourhoodSurface")),this);
-    Mat->SetVectorParameterValue(TEXT("Color"),D.Coat);Palette.Add(Mat);
     auto* Root=GetWorld()->SpawnActor<AActor>();auto* Scene=NewObject<USceneComponent>(Root);
     Root->SetRootComponent(Scene);Scene->SetMobility(EComponentMobility::Movable);Scene->RegisterComponent();Root->SetActorLocation(D.Position);D.Body=Root;
-    const float Scale=Index==1?1.55f:Index==0?1.35f:1.f;
-    auto Part=[&](const TCHAR* Name,FVector P,FVector Size,int32 C)
-    {
-        auto* A=Shape(Name,D.Position+P,Size,C,false,TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-        A->AttachToActor(Root,FAttachmentTransformRules::KeepWorldTransform);return A;
-    };
-    Part(TEXT("Neighbour dog"),FVector(0,0,43),FVector(72,33,40),Color);
-    D.Head=Part(TEXT("Dog head"),FVector(-36,0,62),FVector(34,34,38),Color);
-    auto Face=[&](const TCHAR* Name,FVector P,FVector Size,int32 C){auto* A=Part(Name,P,Size,C);A->AttachToActor(D.Head.Get(),FAttachmentTransformRules::KeepWorldTransform);return A;};
-    Face(TEXT("Dog muzzle"),FVector(-53,0,56),FVector(28,23,20),Index==1?1:Color);
-    Face(TEXT("Dog nose"),FVector(-66,0,59),FVector(9,14,10),5);
-    for(int32 Side:{-1,1})
-    {
-        Face(TEXT("Dog ear"),FVector(-28,Side*21,55),FVector(17,10,32),Color);
-        Face(TEXT("Dog eye"),FVector(-48,Side*14,70),FVector(7,6,8),5);
-        Face(TEXT("Dog eye glint"),FVector(-50,Side*16,72),FVector(2,2,2),1);
-        for(int32 X:{-1,1})
-        {
-            auto* Leg=Part(TEXT("Dog leg"),FVector(X*24,Side*13,21),FVector(12,12,39),Color);D.Legs.Add(Leg);
-            auto* Paw=Part(TEXT("Dog paw"),FVector(X*24-4,Side*13,5),FVector(19,15,10),Index==1?1:Color);Paw->AttachToActor(Leg,FAttachmentTransformRules::KeepWorldTransform);
-        }
-    }
-    Part(TEXT("Dog collar"),FVector(-25,0,48),FVector(10,37,37),Index%2?6:4);
-    D.Tail=Part(TEXT("Dog tail"),FVector(43,0,55),FVector(35,12,16),Color);
-    if(Index<2)
-    {
-        // Tufts provide a fluffy silhouette without claiming Hank's exact breed.
-        for(int32 I=0;I<12;++I)
-        {
-            const float Angle=I*PI/6;Part(TEXT("Dog fluffy coat"),FVector(FMath::Cos(Angle)*28,FMath::Sin(Angle)*17,48+(I%3)*4),FVector(29,23,30),Index==1&&I%3==0?1:Color);
-        }
-        if(Index==1)Part(TEXT("Hank white chest"),FVector(-24,0,35),FVector(24,34,35),1);
-    }
-    Root->SetActorScale3D(FVector(Scale));
+    Root->SetActorScale3D(FVector(Index==1?1.55f:Index==0?1.35f:1.f));
+    auto* Gait=NewObject<UAnimalGait>(Root);Gait->RegisterComponent();
+    Gait->Initialize(Index==0?TEXT("Bauer"):Index==1?TEXT("Hank"):TEXT("Potcake"),false,Scene,FTransform(FRotator(0,180,0)));D.Gait=Gait;
     auto* LabelActor=GetWorld()->SpawnActor<AActor>();auto* T=NewObject<UTextRenderComponent>(LabelActor);
     LabelActor->SetRootComponent(T);T->SetMobility(EComponentMobility::Movable);T->RegisterComponent();
     T->SetWorldSize(21);T->SetTextRenderColor(FColor(245,235,200));T->SetHorizontalAlignment(EHTA_Center);T->SetCollisionEnabled(ECollisionEnabled::NoCollision);D.Label=T;
@@ -68,7 +34,7 @@ void UCheweenieNeighbourhood::ResetDogVisits()
     for(auto& D:Dogs)
     {
         D.Position=D.Home;D.Target=D.Home;D.Activity=ENeighbourActivity::Roam;D.Timer=1;D.Visit=0;D.Cooldown=0;D.Blocked=0;
-        if(D.Body.IsValid())D.Body->SetActorLocation(D.Home);
+        if(D.Body.IsValid())D.Body->SetActorLocation(D.Home);if(D.Gait.IsValid())D.Gait->ResetContacts();
     }
 }
 bool UCheweenieNeighbourhood::MoveDog(FNeighbourDog& D,FVector Target,float Delta)
@@ -144,10 +110,8 @@ void UCheweenieNeighbourhood::UpdateDogs(float Delta)
             }
             else Moving=MoveDog(D,D.Target,Delta);
         }
-        if(D.Body.IsValid())D.Body->SetActorLocationAndRotation(D.Position+FVector(0,0,Moving?FMath::Abs(FMath::Sin(D.Phase*9))*2:0),FRotator(0,D.Yaw,0));
-        for(int32 L=0;L<D.Legs.Num();++L)if(D.Legs[L].IsValid())D.Legs[L]->SetActorRelativeRotation(FRotator(Moving?FMath::Sin(D.Phase*10+(L==0||L==3?0:PI))*23:0,0,0));
-        if(D.Tail.IsValid())D.Tail->SetActorRelativeRotation(FRotator(-15,FMath::Sin(D.Phase*(Distance<210?12:5))*(Distance<210?35:12),0));
-        if(D.Head.IsValid())D.Head->SetActorRelativeRotation(FRotator(D.Activity==ENeighbourActivity::Sniff&&Distance>210?-20:D.Activity==ENeighbourActivity::Play?-12:0,0,0));
+        if(D.Body.IsValid())D.Body->SetActorLocationAndRotation(D.Position,FRotator(0,D.Yaw,0));
+        if(D.Gait.IsValid()){D.Gait->Happy=D.Activity==ENeighbourActivity::Play||Distance<210;D.Gait->Sniff=D.Activity==ENeighbourActivity::Sniff&&Distance>210;}
         if(D.Label.IsValid())
         {
             const TCHAR* State=D.Activity==ENeighbourActivity::Follow?TEXT("Walking buddy"):D.Activity==ENeighbourActivity::Return?TEXT("Heading home"):D.Activity==ENeighbourActivity::Play?TEXT("Play time!"):D.Activity==ENeighbourActivity::Sniff?TEXT("Sniffing"):TEXT("Exploring");

@@ -1,0 +1,117 @@
+#include "AnimalGait.h"
+#include "MartyGait.h"
+#include "MartyCharacter.h"
+#include "CozyAdventure.h"
+#include "Components/PoseableMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
+#include "Engine/World.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+UAnimalGait::UAnimalGait(){PrimaryComponentTick.bCanEverTick=true;PrimaryComponentTick.TickGroup=TG_PostPhysics;}
+bool UAnimalGait::Initialize(const FString& Profile,bool Cat,USceneComponent* Parent,FTransform Local)
+{
+    if(Ready&&BoundProfile==Profile)return true;
+    Ready=false;auto* Mesh=LoadObject<USkeletalMesh>(nullptr,*FString::Printf(TEXT("/Game/Adventure/CompanionRigs/%s_Rig.%s_Rig"),*Profile,*Profile));if(!Mesh||!Parent)return false;
+    if(!Skin)
+    {
+        Skin=NewObject<UPoseableMeshComponent>(GetOwner());Skin->SetupAttachment(Parent);Skin->SetMobility(EComponentMobility::Movable);
+        Skin->SetCollisionEnabled(ECollisionEnabled::NoCollision);Skin->SetCanEverAffectNavigation(false);
+        Skin->VisibilityBasedAnimTickOption=EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;Skin->RegisterComponent();
+    }
+    Skin->SetRelativeTransform(Local);Skin->SetSkinnedAssetAndUpdate(Mesh);Feline=Cat;BoundProfile=Profile;Rest.Empty();Legs.Empty();
+    const auto& Ref=Mesh->GetRefSkeleton();
+    for(int32 I=0;I<Ref.GetNum();++I)
+    {
+        FTransform B=Ref.GetRefBonePose()[I];for(int32 P=Ref.GetParentIndex(I);P!=INDEX_NONE;P=Ref.GetParentIndex(P))B=B*Ref.GetRefBonePose()[P];Rest.Add(Ref.GetBoneName(I),B);
+    }
+    for(const TCHAR* N:{TEXT("pelvis"),TEXT("spine"),TEXT("chest"),TEXT("neck"),TEXT("head"),TEXT("tail"),TEXT("tail_mid"),TEXT("tail_tip"),TEXT("ear_l"),TEXT("ear_r")})if(!Rest.Contains(N))return false;
+    for(int32 I=0;I<4;++I)
+    {
+        FString Key=FString(I<2?TEXT("front"):TEXT("hind"))+(I%2==0?TEXT("_l"):TEXT("_r"));FAnimalLeg L;
+        L.Upper=FName(Key+TEXT("_upper"));L.Lower=FName(Key+TEXT("_lower"));L.Hock=FName(Key+TEXT("_hock"));L.Paw=FName(Key+TEXT("_paw"));
+        for(FName N:{L.Upper,L.Lower,L.Hock,L.Paw})if(!Rest.Contains(N))return false;
+        L.Hip=Rest[L.Upper].GetLocation();L.Knee=Rest[L.Lower].GetLocation();L.Ankle=Rest[L.Hock].GetLocation();L.Toe=Rest[L.Paw].GetLocation();Legs.Add(L);
+    }
+    Ready=true;Time=Cycle=Speed=0;ResetContacts();return true;
+}
+FVector UAnimalGait::Ground(FVector Point) const
+{
+    FHitResult H;FCollisionQueryParams Q(SCENE_QUERY_STAT(AnimalPaw),false,GetOwner());
+    if(GetWorld()->LineTraceSingleByObjectType(H,Point+FVector(0,0,35),Point-FVector(0,0,65),FCollisionObjectQueryParams(ECC_WorldStatic),Q)&&H.ImpactNormal.Z>.7f)Point.Z=H.ImpactPoint.Z+1.8f*Skin->GetComponentScale().Z;
+    return Point;
+}
+void UAnimalGait::ResetContacts()
+{
+    if(!Ready)return;Last=Skin->GetComponentLocation();Speed=0;++ContactResets;
+    for(auto& L:Legs){L.Planted=false;L.Contact=Ground(Skin->GetComponentTransform().TransformPosition(L.Toe));L.LiftOff=L.Contact;}
+}
+void UAnimalGait::Aim(FName Bone,FVector Start,FVector RestEnd,FVector End)
+{
+    FTransform T=Rest[Bone];T.SetLocation(Start);T.SetRotation(FQuat::FindBetweenNormals((RestEnd-Rest[Bone].GetLocation()).GetSafeNormal(),(End-Start).GetSafeNormal())*T.GetRotation());Skin->SetBoneTransformByName(Bone,T,EBoneSpaces::ComponentSpace);
+}
+void UAnimalGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
+{
+    Super::TickComponent(Delta,Type,Function);if(!Ready||!Skin->IsVisible())return;
+    auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();if(M&&M->Adventure&&M->Adventure->Screen!=ECozyScreen::Playing)return;
+    const float Dt=FMath::Min(Delta,.05f);if(Dt<=0)return;
+    FVector Position=Skin->GetComponentLocation();float Distance=FVector::Dist2D(Position,Last);
+    if(Distance>100){ResetContacts();Distance=0;}Last=Position;
+    Speed=FMath::FInterpTo(Speed,Distance/Dt,Dt,10);Time+=Dt;Travel+=Distance;
+    const float Scale=Skin->GetComponentScale().X,LocalSpeed=Speed/FMath::Max(Scale,.1f);
+    const float Fast=FMath::Clamp((LocalSpeed-115)/75,0.f,1.f),Moving=FMath::Clamp(LocalSpeed/20,0.f,1.f);
+    const float Stride=(Feline?32.f:39.f)*Scale*(1+.3f*Fast);
+    Cycle=FMath::Fmod(Cycle+Distance/FMath::Max(Stride,1.f),1.f);
+    const auto* Character=Cast<ACharacter>(GetOwner());const bool Air=(Character&&Character->GetCharacterMovement()->IsFalling())||GetOwner()->ActorHasTag(TEXT("AnimalAirborne"));
+    const float Wave=Cycle*UE_TWO_PI;
+    const float Bob=Moving*FMath::Sin(Wave*2)*(Feline?.38f:.65f)+(1-Moving)*FMath::Sin(Time*2)*.13f;
+    const float Sway=Moving*FMath::Sin(Wave)*(Feline?.025f:.018f);
+    BodyMotion=Bob;Skin->ResetBoneTransformByName(TEXT("root"));
+    for(const FName N:{FName(TEXT("pelvis")),FName(TEXT("spine")),FName(TEXT("chest")),FName(TEXT("neck")),FName(TEXT("head"))})
+    {
+        FTransform T=Rest[N];const float Weight=N==TEXT("pelvis")?-1.f:N==TEXT("spine")?0.f:1.f;
+        const float Flex=Feline?FMath::Sin(Wave+Weight*.5f)*Moving*(.015f+Fast*.075f):FMath::Sin(Wave*2)*Moving*.018f;
+        T.AddToTranslation(FVector(0,FMath::Sin(Wave)*Moving*Weight*.4f,Bob+Weight*FMath::Sin(Wave)*Moving*.35f));
+        T.SetRotation(FQuat(FVector::ForwardVector,Sway*Weight)*FQuat(FVector::RightVector,Flex+(Sniff&&N==TEXT("head")?.28f:0))*T.GetRotation());
+        if(N==TEXT("head"))T.AddToTranslation(FVector(0,0,Happy?.6f*FMath::Sin(Time*5):0));
+        Skin->SetBoneTransformByName(N,T,EBoneSpaces::ComponentSpace);
+    }
+    const float Walk[]={0,.5f,.75f,.25f},CatWalk[]={0,.5f,.82f,.32f},Trot[]={0,.5f,.5f,0};
+    const FTransform World=Skin->GetComponentTransform();PlantedPaws=0;MaxJointBend=0;
+    for(int32 I=0;I<Legs.Num();++I)
+    {
+        auto& L=Legs[I];const float Phase=FMath::Fmod(Cycle+FMath::Lerp(Feline?CatWalk[I]:Walk[I],Trot[I],Fast),1.f);
+        const float Stance=FMath::Lerp(Feline?.73f:.69f,.52f,Fast);const bool Plant=Phase<Stance||Moving<.03f;
+        const FVector RestWorld=World.TransformPosition(L.Toe);
+        const FVector Target=Ground(RestWorld+World.GetRotation().GetForwardVector()*Stride*.20f);
+        if(Air){L.Planted=false;L.Contact=World.TransformPosition(L.Toe+FVector(I<2?2:-2,0,9));}
+        else if(Plant)
+        {
+            if(!L.Planted)L.Contact=Ground(L.Contact);
+            if(FVector::Dist2D(L.Contact,RestWorld)>Stride*.65f)L.Contact=Ground(RestWorld);
+            L.Planted=true;L.LiftOff=L.Contact;++PlantedPaws;
+        }
+        else
+        {
+            if(L.Planted){L.LiftOff=L.Contact;L.Planted=false;}
+            float T=(Phase-Stance)/(1-Stance);const float Smooth=T*T*(3-2*T);
+            L.Contact=FMath::Lerp(L.LiftOff,Target,Smooth)+FVector(0,0,FMath::Sin(T*UE_PI)*(Feline?4.f:6.f)*Scale*Moving);
+        }
+        const FTransform Parent=Skin->GetBoneTransformByName(I<2?TEXT("chest"):TEXT("pelvis"),EBoneSpaces::ComponentSpace);
+        const FVector Hip=Parent.TransformPosition(Rest[I<2?TEXT("chest"):TEXT("pelvis")].InverseTransformPosition(L.Hip));
+        FVector Toe=World.InverseTransformPosition(L.Contact),Ankle=Toe+L.Ankle-L.Toe;
+        const float Upper=FVector::Dist(L.Hip,L.Knee),Lower=FVector::Dist(L.Knee,L.Ankle);
+        Ankle=Hip+(Ankle-Hip).GetClampedToMaxSize(Upper+Lower-.04f);
+        const FVector Knee=UMartyGait::SolveKnee(Hip,Ankle,Upper,Lower,I<2?-1.f:1.f);
+        Aim(L.Upper,Hip,L.Knee,Knee);Aim(L.Lower,Knee,L.Ankle,Ankle);Aim(L.Hock,Ankle,L.Toe,Toe);
+        FTransform Paw=Rest[L.Paw];Paw.SetLocation(Toe);Skin->SetBoneTransformByName(L.Paw,Paw,EBoneSpaces::ComponentSpace);
+        MaxJointBend=FMath::Max(MaxJointBend,FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(FVector::DotProduct((Knee-Hip).GetSafeNormal(),(Ankle-Knee).GetSafeNormal()),-1.f,1.f))));
+    }
+    for(const FName N:{FName(TEXT("tail")),FName(TEXT("tail_mid")),FName(TEXT("tail_tip")),FName(TEXT("ear_l")),FName(TEXT("ear_r"))})
+    {
+        const bool Ear=N==TEXT("ear_l")||N==TEXT("ear_r");FName Parent=Ear?TEXT("head"):N==TEXT("tail")?TEXT("pelvis"):N==TEXT("tail_mid")?TEXT("tail"):TEXT("tail_mid");
+        FTransform T=Rest[N].GetRelativeTransform(Rest[Parent])*Skin->GetBoneTransformByName(Parent,EBoneSpaces::ComponentSpace);
+        const float Angle=Ear?FMath::Sin(Time*4+(N==TEXT("ear_l")?0:1))*.025f: FMath::Sin(Time*(Feline?2.2f:Happy?9.f:4.f)+(N==TEXT("tail")?0:N==TEXT("tail_mid")?.45f:.9f))*(Feline?.11f:Happy?.32f:.14f);
+        T.SetRotation(FQuat(Ear?FVector::ForwardVector:FVector::UpVector,Angle)*T.GetRotation());Skin->SetBoneTransformByName(N,T,EBoneSpaces::ComponentSpace);
+    }
+    Skin->RefreshBoneTransforms();
+}

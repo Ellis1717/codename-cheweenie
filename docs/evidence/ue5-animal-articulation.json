@@ -1,0 +1,225 @@
+{
+  "date": "2026-11-12",
+  "engine": "5.8.4",
+  "branch": "codex/articulated-dogs-and-cats",
+  "nativeEditorBuild": "passed",
+  "totalFinalAssertions": 254,
+  "runs": [
+    {
+      "report": "ue5-animal-articulation/dogs.json",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/cats.json",
+      "passed": 33,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/cats-reload.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/coop-host.json",
+      "passed": 48,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/coop-guest.json",
+      "passed": 46,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/costumes.json",
+      "passed": 51,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/costumes-reload.json",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/movement.json",
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "report": "ue5-animal-articulation/hockey.json",
+      "passed": 17,
+      "failed": 0
+    }
+  ],
+  "importReport": "ue5-animal-articulation/import.json",
+  "visualReview": [
+    {
+      "file": "../screenshots/ue5-articulated-bauer.png",
+      "sha256": "7e4314f8e495e6e08a2b0fb35131eb4b04dcf96d27cbaab42ed5fc42eb587100",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-articulated-hank.png",
+      "sha256": "c16ca2d0b4a0794d0f188c3beb77d14b0df8b0df5cbdb761c74eb7ed951f7356",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-articulated-potcake.png",
+      "sha256": "689a7b5d980af706ad232a78718ae17906ae54f54edbffb0fbde03101ea28cb6",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-articulated-lakitu.png",
+      "sha256": "dc193e08135a93f5c0b6f196789eee279a328fb81be9708cd40a3ae60f3314cb",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-articulated-rio.png",
+      "sha256": "651932e87447d118f2116bdd86d920f7f87e703c39f7514c7f2bbd853769ce53",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-articulated-hockey.png",
+      "sha256": "aa48d46638f68ed35f47711219a44f91ce8731296339b0177de2dc511a1791c4",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-articulated-walk.png",
+      "sha256": "5c9a670fbe8abc0ed503bd63cbbf05e6f3ad1ea7a1a8d596bb787510d8ea8bf1",
+      "reviewed": true
+    }
+  ],
+  "motion": {
+    "path": "Unreal/UE5MovementLab/Saved/AnimalMotionReview/AnimalMotion.mp4",
+    "frames": 120,
+    "encodedFps": 24,
+    "durationSeconds": 5,
+    "sha256": "07e95e03db2054c83c69271da97a835ee7ad2f4a191fac79188045fce4c2068f",
+    "fullDecode": "passed",
+    "scope": "Real game map with scripted movement, staging and camera; no performance or physical-controller claim"
+  },
+  "logScans": [
+    {
+      "log": "FinalAnimalDogs/DogNPCs.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalCats/Companion-play.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalCats/Companion-resume.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalCoop/host.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalCoop/guest.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalCostumes/Costume-play.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalCostumes/Costume-resume.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalMovement/MovementSmoke.log",
+      "matches": 0
+    },
+    {
+      "log": "FinalAnimalHockey/Hockey.log",
+      "matches": 0
+    },
+    {
+      "log": "AnimalMotionReview/Motion.log",
+      "matches": 0
+    }
+  ],
+  "hashes": {
+    "Source/AnimalGait.h": "c7db4ca62849a7f9a1e3a5f89fe69ad536edb833bd9a38368730608d1f384e77",
+    "Source/AnimalGait.cpp": "328b4b247d3293a57581056f5177baf726555aadae2e0495d65678ec2ae407d5",
+    "Source/CatCompanions.cpp": "2e66e55a3dd52527096ede2e59498b1ea7e3801faa2cfaa3c080e9d1bcb881ab",
+    "Source/CatCompanions.h": "4e5e9044f33cfb8d3a06869ee726f1c2832db5638f736650600dc8d60e5f94e3",
+    "Source/CozyCoop.cpp": "c7c9b008d1d502a01f8eddc7bc2c037423e191826aa90ad1a2c4b67c63d6b959",
+    "Source/CozyCoop.h": "163948f7abb4a742a37cc5680734f1aa6f22ea781e422cf86f7f6027e9abc26e",
+    "Source/HockeySurprise.cpp": "acc756be9e1b5070acd862266823f11d1cf34913aca10db57b7893147ca1ab0c",
+    "Source/NeighbourDogs.cpp": "2d4d4602c535f4c856d77589fb5824b866f7bc17ae381d22d5b1cf74f9af3a7b",
+    "Source/Neighbourhood.h": "157b9b2519e8a1c720ad859e9c4f103cbc288d5cebf896f343ae9649f7e04108",
+    "Source/OutsideSmoke.cpp": "93fad25146b866cfc2cd1b48d86a674e1deefe5a7a9f8a66c45b8332f5bda4d2",
+    "Source/CompanionSmoke.cpp": "01a05a97a98e2554cc97ef67e9fad7a5a82c8d2545724df4ff762826dd0d1ea3",
+    "Source/CoopSmoke.cpp": "03df5fd856aad0037f32329295e5c9bea119b76da720dbf0a9cf26ff1b1543c6",
+    "Source/HockeySmoke.cpp": "aeb6a43c57a05de95f31f084003d51b0179cc63eee093bc54a0e8b883295d2f7",
+    "Source/TrailerCapture.cpp": "611cea0b04282f90ee7cec08b608eb1799f207bd26c568f6ea2daab1fc03edfe",
+    "Binaries/Win64/UnrealEditor-CheweenieUE5Lab.dll": "665af31827ce874f1e850e7ff5318a797d4afdf2f9ddbf5644a28bcea3e32999",
+    "Content/Adventure/CompanionRigs/Bauer_Coat.uasset": "fa8470be62095f7e6a8e43ff2e81b03f6e736e90a72f29c48f2c6e3aa2e2ef1b",
+    "Content/Adventure/CompanionRigs/Bauer_Dark.uasset": "3c1b7185b40846ec8dfb3f007efcd8df857d3e1ab7dba9e9ce38810cebbe4398",
+    "Content/Adventure/CompanionRigs/Bauer_Glint.uasset": "15ccf40a98b5f59497e4e5e42d7353a241827e2811fef72ce22ead33e38e18ff",
+    "Content/Adventure/CompanionRigs/Bauer_Iris.uasset": "4278d43a135526fc3422a1c99443612f82b025cb0439f57f56d4fe5bf395bf28",
+    "Content/Adventure/CompanionRigs/Bauer_Nose.uasset": "f64a59916c951367de211b082082536ab82a948b2c4b3ca06a34ae6efe1e3925",
+    "Content/Adventure/CompanionRigs/Bauer_Pupil.uasset": "f41c0e66689f503a4b441aa44d31fcaaa7e989bb85fc2bce677b8bd3249a40b7",
+    "Content/Adventure/CompanionRigs/Bauer_Rig.uasset": "7e476e4fca07f9baad949ed35a41faed29df41f8714df08e25dd69c4584ac286",
+    "Content/Adventure/CompanionRigs/Bauer_Rig_Skeleton.uasset": "5d6e339213bd87e85b37648bcc03cc2b36155090ca9e9ef006dbdd1450287271",
+    "Content/Adventure/CompanionRigs/Hank_Coat.uasset": "1b4571ce81a80ac72e9f354e616201936b0b31c41b3eec577fa0a4594bec2bc6",
+    "Content/Adventure/CompanionRigs/Hank_Dark.uasset": "7b04ee7d284e887684a3e12f680a0c77e8d5f7627f8d24a5b864f20072d04b2f",
+    "Content/Adventure/CompanionRigs/Hank_Glint.uasset": "1fa08645922cbe1a8f2a37f7c26c22c4d0cf1031825b772d614ce900f5e52ccb",
+    "Content/Adventure/CompanionRigs/Hank_Iris.uasset": "4a93ab30dee7f7e14e4fefba3d472406446ed1a02e8b53515b1c669fdaa02b73",
+    "Content/Adventure/CompanionRigs/Hank_Nose.uasset": "a6c9f8ed3a1e97c696d8a36413977820fad5edcece65b9f08b30ee9cd994fe60",
+    "Content/Adventure/CompanionRigs/Hank_Pupil.uasset": "c494f680203ff4beecf38670d4f26cdd082ce00fedf0f9a0671b62f2bbdea3a1",
+    "Content/Adventure/CompanionRigs/Hank_Rig.uasset": "aa97da4d06134eb5f3508a9f6cda402cf59580e343f6c06c4c9cdb5a337f67a5",
+    "Content/Adventure/CompanionRigs/Hank_Rig_Skeleton.uasset": "47b86425cb2188302463f8b42106909138dfd34b896b568fa97839c5971ec6a6",
+    "Content/Adventure/CompanionRigs/Hank_White.uasset": "1e677cd577c912a62f9e6c72e545f4eed74006654c3cfa3a21300794ded6c639",
+    "Content/Adventure/CompanionRigs/Lakitu_Coat.uasset": "691e6ad1d860667aa814e3fc24be1904afb9b647deee717c5cbbec4a7a6279fc",
+    "Content/Adventure/CompanionRigs/Lakitu_Dark.uasset": "cd3b524d022810f784680cfd5fe7fc6d63be16f1400f7b716e5b4d968161455a",
+    "Content/Adventure/CompanionRigs/Lakitu_EarInner.uasset": "28721cf597f7054d9ffeb1117bbe2b851912176d90699a33fcd44f33a06340a6",
+    "Content/Adventure/CompanionRigs/Lakitu_Glint.uasset": "a0969493a6faacfcc65371d0e6d966c81214d958df958b989096618ed99efde2",
+    "Content/Adventure/CompanionRigs/Lakitu_Iris.uasset": "6487040a76590cf43f0c93bf9bee15b71363905fb721f925675dcf7da6fa2e8d",
+    "Content/Adventure/CompanionRigs/Lakitu_Nose.uasset": "e5655136d2fcb2d47afebc3aef43248397c4834c8b5f71eea447e45653d1585b",
+    "Content/Adventure/CompanionRigs/Lakitu_Pupil.uasset": "d67cb066bb5e1ee1b19913152ee518b287edfd1404fc8c299ac0b3a8b715f50d",
+    "Content/Adventure/CompanionRigs/Lakitu_Rig.uasset": "5f2b1558466f0382eb782c505c60a0608e84f3c71150d76b818ba8f3ad242d86",
+    "Content/Adventure/CompanionRigs/Lakitu_Rig_Skeleton.uasset": "93cb6f8f2eaeb7463e7739d9ac038f5ded107f75b93c323f37b775a1ebcb9f62",
+    "Content/Adventure/CompanionRigs/Lakitu_White.uasset": "baa8d24f7fdf4b56377d035572066c39b4410ffa082c0b4222e48cc2b1b9c27b",
+    "Content/Adventure/CompanionRigs/Potcake_Coat.uasset": "e75c3b47619bdba176b728be864298b2eb6121f7b989e38a747c879ec69f0eff",
+    "Content/Adventure/CompanionRigs/Potcake_Dark.uasset": "f95f4f54c89c92a6e292b0eea507058806218868a411ba889adabaaa6b900c4a",
+    "Content/Adventure/CompanionRigs/Potcake_Glint.uasset": "78dd3505a0fb91fdc89d382f5a652a68a4738ddcc0f371b199a045f2d0bbb731",
+    "Content/Adventure/CompanionRigs/Potcake_Iris.uasset": "e7b4c827176ff45586fcc926c0cd58ceab5bd874315af61fa9f672d61323dd59",
+    "Content/Adventure/CompanionRigs/Potcake_Nose.uasset": "c6fe62a7058f5dcc1339b3d977dc7bac9bac1afd7061fdbf623daf67d63d3edb",
+    "Content/Adventure/CompanionRigs/Potcake_Pupil.uasset": "45919bc52de3f21d938ff508eefba0e5c7ae2a8c36980e85a66782b64bada996",
+    "Content/Adventure/CompanionRigs/Potcake_Rig.uasset": "6641dd85abf754c504209c93a3d2f34f9eb755c5f8e6ba2204a34f29e7d5646f",
+    "Content/Adventure/CompanionRigs/Potcake_Rig_Skeleton.uasset": "3f7241fb29dff6b356b1d859b64d591d696bf47a2c2471eb6e8e81bb129143be",
+    "Content/Adventure/CompanionRigs/Rio_Coat.uasset": "4a5cde75ed978af8ad58ee09cac80838511a05340478c85ca63f52c9b0906df8",
+    "Content/Adventure/CompanionRigs/Rio_Dark.uasset": "0ccaf5bad671cc67c334e37c46b38f57b1dd26aea9c9acf969d486d22ffc4af8",
+    "Content/Adventure/CompanionRigs/Rio_EarInner.uasset": "b8f600c7fdf756bf9cd248a17468f1d45ec500c991d847efc727eab5dfc9d8b8",
+    "Content/Adventure/CompanionRigs/Rio_Glint.uasset": "bcff08db2be40872970c2e53fc10bef76870e61d7bc8fb4b398858f3f70c8b48",
+    "Content/Adventure/CompanionRigs/Rio_Iris.uasset": "7fcd4036d9d4fd73b746a39e98dd116dfd8206d561ae750c2095d81643f05937",
+    "Content/Adventure/CompanionRigs/Rio_Nose.uasset": "666bf881aa4434cc43e896bf9ca4c293d9c564dbbfad68d0953d6d7c44c316eb",
+    "Content/Adventure/CompanionRigs/Rio_Pupil.uasset": "94203e38011a6aed10e8c295ecebd89be36c700a4880e495a2a47eeadf050489",
+    "Content/Adventure/CompanionRigs/Rio_Rig.uasset": "3773f83eb4d2a9f0365260e87cc8b9415aa1428477be39f1c15ade89f4999159",
+    "Content/Adventure/CompanionRigs/Rio_Rig_Skeleton.uasset": "9846a42feb598949d4d42853f059869ba63651cff4233a6830316053305e88d4",
+    "Content/Adventure/CompanionRigs/Rio_White.uasset": "724cfaebed5db219954e79f6867db0e8b5ce370060f0a8ae2eb324552b5cc19c",
+    "SourceArt/CompanionRigs/Bauer_Rig.fbx": "35c9eaa4573abb5249d962c898918030592da353548571974dc9434e78f40611",
+    "SourceArt/CompanionRigs/Hank_Rig.fbx": "41a6516288a86d2e8074f03cb5ba7cb80e211bffc3ceaa0f1704f13cfe6f558a",
+    "SourceArt/CompanionRigs/Lakitu_Rig.fbx": "376b4f2a4347096152162035d0917fde37946f78f2c3c1171c756c3c40638993",
+    "SourceArt/CompanionRigs/manifest.json": "aeb73069039c42d964c4293967d0d536f137f3b76a2a23461989eb14496019f5",
+    "SourceArt/CompanionRigs/Potcake_Rig.fbx": "bab8a312ad37aec25fef88f8527eb7cacf08486c3b1688f30808c2fd97563a4c",
+    "SourceArt/CompanionRigs/README.md": "accdffb93d2973c99381034c0581a5dfb323b9d00b353b5298507848a1eb40b7",
+    "SourceArt/CompanionRigs/Rio_Rig.fbx": "3175abfce4674783d2c7a575c7b9cd045c6d5535d98fce62d783b3aa0425d704",
+    "Scripts/build_companion_rigs.py": "065f369cbd6a89170a7881b041e76aed27b19e6edebe8b7757c0391e894667b2",
+    "Scripts/import_companion_rigs.py": "4825606ddf71270c9a9b84f3c1aa0bd7c554b6ce961b1d511e1e492457d177ea",
+    "BUILD_COMPANION_RIGS.ps1": "ca8e9f501bd0fdce7a72c7900c7002104924897dae2f2411b6311dfacf3b950c",
+    "CAPTURE_ANIMAL_MOTION.ps1": "1cf81912aa873707ee1c975b3a812164d889456e8e27626082d01202367b7c49",
+    "TEST_HOCKEY.ps1": "002a7a1f903a4964a795e89b46d960c074c1aa10271745b2d4cffbd5fdad42c7"
+  },
+  "limitations": [
+    "Stylized original rigs, not photoreal or scanned likenesses",
+    "Neutral potcake coats remain placeholders",
+    "Physical Xbox/PlayStation controllers unverified",
+    "Separate-PC networking unverified; two local network processes tested",
+    "Comparative performance and a fresh standalone package unverified"
+  ],
+  "unityChecks": "Not rerun: Unity source/assets/settings unchanged"
+}

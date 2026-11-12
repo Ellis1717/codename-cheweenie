@@ -9,6 +9,7 @@ class UInstancedStaticMeshComponent;
 class UDirectionalLightComponent;
 class UParkSports;
 class UTextRenderComponent;
+class UAnimalGait;
 enum class ENeighbourActivity : uint8 { Roam, Sniff, Greet, Play, Follow, Return };
 
 struct FNeighbourDog
@@ -21,8 +22,9 @@ struct FNeighbourDog
     ENeighbourActivity Activity=ENeighbourActivity::Roam;
     float Timer=0, Phase=0, Yaw=0, Speed=95, Cooldown=0, Blocked=0;
     int32 Bond=0, Visit=0, RoamStep=0;
-    TWeakObjectPtr<AActor> Body, Head, Tail;
-    TArray<TWeakObjectPtr<AActor>> Legs;
+    TWeakObjectPtr<AActor> Body;
+    TWeakObjectPtr<UAnimalGait> Gait;
+
     TWeakObjectPtr<UTextRenderComponent> Label;
 };
 struct FCozyStreet { FVector A,B; FString Name; };

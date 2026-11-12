@@ -1,0 +1,27 @@
+{
+  "Bauer": {
+    "mesh": "/Game/Adventure/CompanionRigs/Bauer_Rig.Bauer_Rig",
+    "materials": 6,
+    "skeletalUsage": true
+  },
+  "Hank": {
+    "mesh": "/Game/Adventure/CompanionRigs/Hank_Rig.Hank_Rig",
+    "materials": 7,
+    "skeletalUsage": true
+  },
+  "Potcake": {
+    "mesh": "/Game/Adventure/CompanionRigs/Potcake_Rig.Potcake_Rig",
+    "materials": 6,
+    "skeletalUsage": true
+  },
+  "Lakitu": {
+    "mesh": "/Game/Adventure/CompanionRigs/Lakitu_Rig.Lakitu_Rig",
+    "materials": 8,
+    "skeletalUsage": true
+  },
+  "Rio": {
+    "mesh": "/Game/Adventure/CompanionRigs/Rio_Rig.Rio_Rig",
+    "materials": 8,
+    "skeletalUsage": true
+  }
+}

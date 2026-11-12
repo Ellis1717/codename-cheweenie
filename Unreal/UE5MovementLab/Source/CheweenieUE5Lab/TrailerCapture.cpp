@@ -4,6 +4,9 @@
 #include "CatCompanions.h"
 #include "Neighbourhood.h"
 #include "DogLife.h"
+#include "AnimalGait.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -23,6 +26,41 @@ void AMartyPlayMode::TickTrailerCapture(float Delta)
     SmokeTime+=Delta;
     auto* PC=GetWorld()->GetFirstPlayerController();auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
     if(!P||!Adventure||!Adventure->Progress||!Companions||!Neighbourhood||!P->Life)return;
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieAnimalMotion")))
+    {
+        static TWeakObjectPtr<ACameraActor> View;
+        static int32 Frame=0,Warm=24;
+        static FString Previous;
+        const FString Folder=FPaths::ProjectSavedDir()/TEXT("AnimalMotion");
+        if(!View.IsValid())
+        {
+            if(SmokeTime<12)return;
+            IFileManager::Get().MakeDirectory(*Folder,true);Adventure->Start(true);Neighbourhood->GoOutside(P);
+            auto& Dog=Neighbourhood->Dogs[0];
+            P->GetCharacterMovement()->StopMovementImmediately();
+            const bool Placed=P->TeleportTo(Dog.Home+FVector(-100,0,45),FRotator(0,180,0));
+            Adventure->Progress->DisabledFeatures&=~(1<<int32(ECozyFeature::Companions));Companions->CallBoth();Dog.Activity=ENeighbourActivity::Follow;
+            UE_LOG(LogTemp,Display,TEXT("ANIMAL_CAPTURE staged=%d outside=%d catsEnabled=%d catsOutside=%d/%d player=%s dog=%s cats=%s/%s"),Placed,Neighbourhood->Outside,Companions->Enabled(),Companions->Outdoors(0),Companions->Outdoors(1),*P->GetActorLocation().ToString(),*Dog.Position.ToString(),*Companions->Position(0).ToString(),*Companions->Position(1).ToString());
+            if(!Placed||!Companions->Outdoors(0)||!Companions->Outdoors(1)){FApp::SetUseFixedTimeStep(false);FPlatformMisc::RequestExitWithStatus(false,1);return;}
+            if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;
+            Adventure->Progress->DisabledFeatures|=1<<int32(ECozyFeature::WorldLabels);
+            View=GetWorld()->SpawnActor<ACameraActor>();View->GetCameraComponent()->SetFieldOfView(55);
+            FApp::SetUseFixedTimeStep(true);FApp::SetFixedDeltaTime(1.0/24.0);
+        }
+        if(!Previous.IsEmpty()&&!IFileManager::Get().FileExists(*Previous))return;
+        if(Frame>=120)
+        {
+            FApp::SetUseFixedTimeStep(false);
+            FFileHelper::SaveStringToFile(TEXT("120 frames / 24 fps. Real-map dog and feline IK, scripted movement/camera, HUD hidden, isolated acceptance save. Physical controllers unverified."),*(Folder/TEXT("capture-complete.txt")));
+            FPlatformMisc::RequestExitWithStatus(false,0);return;
+        }
+        const FVector Centre=(P->GetActorLocation()+Neighbourhood->Dogs[0].Position+Companions->Position(0)+Companions->Position(1))*.25f+FVector(0,0,35),Eye=Centre+FVector(20,500,190);
+        View->SetActorLocationAndRotation(Eye,(Centre-Eye).Rotation());PC->SetViewTarget(View.Get());
+        if(Warm>0){--Warm;return;}
+        if(Frame<100)P->AddMovementInput(FVector(-1,0,0),.65f);
+        if(Frame==60)UE_LOG(LogTemp,Display,TEXT("ANIMAL_CAPTURE midpoint player=%s dog=%s cats=%s/%s"),*P->GetActorLocation().ToString(),*Neighbourhood->Dogs[0].Position.ToString(),*Companions->Position(0).ToString(),*Companions->Position(1).ToString());
+        Previous=Folder/FString::Printf(TEXT("frame_%04d.png"),Frame);FScreenshotRequest::RequestScreenshot(Previous,false,false);++Frame;return;
+    }
     static TWeakObjectPtr<ACameraActor> Camera;
     static int32 Shot=-1,Frame=0,Warm=0;
     static FString Previous;

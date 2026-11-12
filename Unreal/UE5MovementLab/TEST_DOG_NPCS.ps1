@@ -16,6 +16,6 @@ if($process.ExitCode){throw ('Dog NPC acceptance failed: '+$process.ExitCode)}
 $report=Join-Path $OutputRoot 'dog-npcs.json'
 if(!(Test-Path -LiteralPath $report) -or (Get-Item -LiteralPath $report).LastWriteTimeUtc -lt $started){throw 'Dog NPC report missing or stale'}
 $result=Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
-if($result.failed.Count -or $result.passed.Count -lt 27){throw 'Dog NPC assertions failed'}
+if($result.failed.Count -or $result.passed.Count -lt 32){throw 'Dog NPC assertions failed'}
 if($Render){foreach($name in @('NeighbourDogs.png','NeighbourHank.png','NeighbourPotcake.png')){$capture=Join-Path $OutputRoot $name;if(!(Test-Path -LiteralPath $capture) -or (Get-Item -LiteralPath $capture).LastWriteTimeUtc -lt $started){throw 'Dog NPC capture missing or stale'}}}
 'Dog NPCs: '+$result.passed.Count+' passes'
