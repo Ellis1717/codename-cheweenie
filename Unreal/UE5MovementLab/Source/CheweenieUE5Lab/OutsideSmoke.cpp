@@ -13,6 +13,10 @@
 #include "Misc/CommandLine.h"
 #include "Misc/App.h"
 #include "UnrealClient.h"
+#include "Components/TextRenderComponent.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/HUD.h"
 void AMartyPlayMode::TickOutsideSmoke(float Delta)
 {
     SmokeTime+=Delta;auto* PC=GetWorld()->GetFirstPlayerController();auto* P=PC?Cast<AMartyCharacter>(PC->GetPawn()):nullptr;
@@ -21,6 +25,127 @@ void AMartyPlayMode::TickOutsideSmoke(float Delta)
     auto Key=[PC](FKey K,bool Down){PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
     auto Next=[this](){++SmokeStage;SmokeTime=0;};
     auto Shot=[&](const TCHAR* Name){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/Name,true,false);};
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieDogSmoke")))
+    {
+        auto& D=N->Dogs[0];
+        static TWeakObjectPtr<ACameraActor> DogCamera;
+        auto FrameDog=[&](const FNeighbourDog& Dog)
+        {
+            if(!FApp::CanEverRender())return;
+            if(!DogCamera.IsValid())DogCamera=GetWorld()->SpawnActor<ACameraActor>();
+            const FVector View=Dog.Position+FVector(-350,-350,230),Focus=Dog.Position+FVector(-30,0,65);
+            DogCamera->SetActorLocationAndRotation(View,(Focus-View).Rotation());DogCamera->GetCameraComponent()->SetFieldOfView(55);
+            PC->SetViewTarget(DogCamera.Get());if(PC->GetHUD())PC->GetHUD()->bShowHUD=false;
+        };
+        auto NearDog=[&](){P->GetCharacterMovement()->StopMovementImmediately();P->TeleportTo(D.Position+FVector(-100,0,40),FRotator::ZeroRotator);};
+        switch(SmokeStage)
+        {
+        case 0: if(SmokeTime>(FApp::CanEverRender()?40:3))
+            {
+                Adventure->Start(true);N->GoOutside(P);
+                SmokeCheck(D.Name==TEXT("Bauer")&&N->Dogs[1].Name==TEXT("Hank")&&N->Dogs[2].Name==TEXT("Georgia")&&N->Dogs[3].Name==TEXT("Pieper"),TEXT("Owner roster defaults preserve all four names"));
+                SmokeCheck(N->Dogs[1].Body->GetActorScale3D().X>D.Body->GetActorScale3D().X&&D.Legs.Num()==4&&D.Tail.IsValid(),TEXT("Distinct fluffy dog sizes and animated limbs exist on the real map"));
+                SmokeCheck(D.Bond==0&&Adventure->Progress->NeighbourDogBonds.IsEmpty(),TEXT("Legacy save with no bond array starts safely at zero"));
+                SmokePosition=D.Position;P->TeleportTo(D.Home+FVector(-700,0,40),FRotator::ZeroRotator);Next();
+            }break;
+        case 1: if(SmokeTime>9)
+            {
+                SmokeCheck(FVector::Dist2D(D.Position,SmokePosition)>35&&FVector::Dist2D(D.Position,D.Home)<300,TEXT("Autonomous roaming moves the whole dog within its home area"));
+                SmokeCheck(FMath::Abs(D.Position.Z-D.Home.Z)<5,TEXT("Roaming keeps paws on exterior ground"));
+                NearDog();Next();
+            }break;
+        case 2: if(SmokeTime>.5){SmokeCheck(N->Prompt(P).Contains(TEXT("say hello to Bauer")),TEXT("Nearby dog stops for an accessible greeting prompt"));Key(EKeys::E,true);Next();}break;
+        case 3: if(SmokeTime>.2)
+            {
+                Key(EKeys::E,false);SmokeCheck(D.Met&&D.Visit==1&&N->MetDogs==1&&(Adventure->Progress->NeighbourDogMask&1),TEXT("Keyboard greeting saves existing meeting slot without duplicate friendship"));
+                SmokeCheck(N->Prompt(P).Contains(TEXT("play bow")),TEXT("Greeting advances to an explicit play interaction"));
+                N->Interact(P);SmokeCheck(D.Visit==1&&D.Bond==0,TEXT("Interaction cooldown prevents held input from skipping a stage"));
+                SmokePosition=D.Position;Adventure->Pause();Next();
+            }break;
+        case 4: if(SmokeTime>1)
+            {
+                SmokeCheck(D.Position.Equals(SmokePosition,.01)&&D.Cooldown>0,TEXT("Pause freezes NPC movement and interaction timers"));
+                SmokeCheck(!D.Label->IsVisible(),TEXT("NPC labels hide behind menus"));Adventure->Pause();Next();
+            }break;
+        case 5: if(SmokeTime>1.5){Key(EKeys::Gamepad_FaceButton_Left,true);Next();}break;
+        case 6: if(SmokeTime>.2)
+            {
+                Key(EKeys::Gamepad_FaceButton_Left,false);
+                SmokeCheck(D.Activity==ENeighbourActivity::Play&&D.Bond==1&&D.Visit==2,TEXT("Synthetic controller interaction begins a playful chase and raises bond"));
+                SmokeCheck(Adventure->Progress->NeighbourDogBonds.Num()==8&&Adventure->Progress->NeighbourDogBonds[0]==1,TEXT("Friendship serializes into a compatible appended save array"));
+                SmokePosition=D.Position;Next();
+            }break;
+        case 7: if(SmokeTime>2)
+            {
+                SmokeCheck(FVector::Dist2D(D.Position,SmokePosition)>30,TEXT("Play state produces real movement rather than only dialogue"));
+                SmokeCheck(FMath::Abs(D.Tail->GetRootComponent()->GetRelativeRotation().Yaw)>1,TEXT("Happy tail animates in the real world"));
+                NearDog();Next();
+            }break;
+        case 8: if(SmokeTime>.4){Key(EKeys::E,true);Next();}break;
+        case 9: if(SmokeTime>.2)
+            {
+                Key(EKeys::E,false);SmokeCheck(D.Activity==ENeighbourActivity::Follow&&N->Prompt(P).Contains(TEXT("say goodbye")),TEXT("Keyboard invitation enables walking buddy and clear dismissal prompt"));
+                SmokePosition=D.Position;P->TeleportTo(D.Position+FVector(-500,0,40),FRotator::ZeroRotator);Next();
+            }break;
+        case 10: if(SmokeTime>2)
+            {
+                SmokeCheck(FVector::Dist2D(D.Position,SmokePosition)>80&&D.Activity==ENeighbourActivity::Follow,TEXT("Walking buddy follows a moving-away player"));
+                NearDog();FrameDog(D);Next();
+            }break;
+        case 11: if(SmokeTime>.5){Shot(TEXT("NeighbourDogs.png"));Key(EKeys::Gamepad_FaceButton_Left,true);Next();}break;
+        case 12: if(SmokeTime>.2)
+            {
+                Key(EKeys::Gamepad_FaceButton_Left,false);SmokeCheck(D.Activity==ENeighbourActivity::Return&&D.Visit==0,TEXT("Controller goodbye sends buddy home"));
+                P->TeleportTo(D.Home+FVector(-750,0,40),FRotator::ZeroRotator);Next();
+            }break;
+        case 13: if(SmokeTime>8)
+            {
+                SmokeCheck(FVector::Dist2D(D.Position,D.Home)<300,TEXT("Dismissed buddy returns to the home roaming area"));
+                // Exercise a real house wall: a fast target must not tunnel through it.
+                D.Position=D.Home+FVector(-400,0,0);D.Target=D.Home+FVector(0,-700,0);D.Activity=ENeighbourActivity::Follow;
+                P->TeleportTo(D.Home+FVector(0,-1100,40),FRotator::ZeroRotator);Next();
+            }break;
+        case 14: if(SmokeTime>4)
+            {
+                const FVector House=D.Home+FVector(0,-700,0);
+                SmokeCheck(!(FMath::Abs(D.Position.X-House.X)<390&&FMath::Abs(D.Position.Y-House.Y)<340),TEXT("Body sweeps keep a following dog outside the solid house footprint"));
+                P->TeleportTo(D.Position+FVector(-2000,0,40),FRotator::ZeroRotator);Next();
+            }break;
+        case 15: if(SmokeTime>.3)
+            {
+                SmokeCheck(D.Activity==ENeighbourActivity::Return,TEXT("Long-distance travel safely ends a buddy walk"));
+                N->GoInside(P);Next();
+            }break;
+        case 16: if(SmokeTime>.4)
+            {
+                SmokeCheck(!N->Outside&&D.Visit==0&&D.Position.Equals(D.Home,.1),TEXT("Indoor return resets outdoor visits and positions"));
+                SmokeCheck(D.Bond==1&&Adventure->Progress->NeighbourDogBonds[0]==1,TEXT("Returning home retains earned friendship"));
+                auto* Reload=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(TEXT("CheweenieOutsideAcceptance"),0));
+                SmokeCheck(Reload&&Reload->NeighbourDogBonds.Num()==8&&Reload->NeighbourDogBonds[0]==1,TEXT("Real disk save round trip retains friendship"));
+                N->GoOutside(P);P->TeleportTo(D.Position+FVector(0,0,400),FRotator::ZeroRotator);
+                SmokeCheck(!N->Interact(P)&&!N->Prompt(P).Contains(TEXT("say hello")),TEXT("Different-floor proximity cannot interact with a dog"));
+                NearDog();for(int32 J=0;J<5;++J){D.Visit=1;D.Cooldown=0;D.Activity=ENeighbourActivity::Sniff;N->Interact(P);}
+                SmokeCheck(D.Bond==3&&Adventure->Progress->NeighbourDogBonds[0]==3,TEXT("Repeated play safely caps saved friendship at three"));
+                D.Activity=ENeighbourActivity::Follow;auto& Other=N->Dogs[1];Other.Visit=2;Other.Cooldown=0;
+                P->TeleportTo(Other.Position+FVector(-100,0,40),FRotator::ZeroRotator);N->Interact(P);
+                SmokeCheck(Other.Activity==ENeighbourActivity::Follow&&D.Activity==ENeighbourActivity::Return,TEXT("Inviting another buddy sends the previous companion home"));
+                N->ResetDogVisits();P->TeleportTo(N->Dogs[1].Home+FVector(-150,0,45),FRotator::ZeroRotator);PC->SetControlRotation(FRotator(-10,0,0));FrameDog(N->Dogs[1]);Next();
+            }break;
+        case 17: if(SmokeTime>.6){Shot(TEXT("NeighbourHank.png"));Next();}break;
+        case 18: if(SmokeTime>.4){P->TeleportTo(N->Dogs[2].Home+FVector(-150,0,45),FRotator::ZeroRotator);FrameDog(N->Dogs[2]);Next();}break;
+        case 19: if(SmokeTime>.6){Shot(TEXT("NeighbourPotcake.png"));Next();}break;
+        case 20: if(SmokeTime>.4)
+            {
+                auto Report=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;
+                for(auto& S:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(S));for(auto& S:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(S));
+                Report->SetStringField(TEXT("scope"),TEXT("Real solo game map; synthetic keyboard/gamepad; teleport fixtures; physical hardware unverified"));
+                Report->SetArrayField(TEXT("passed"),Pass);Report->SetArrayField(TEXT("failed"),Fail);FString Json;FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Json));
+                const bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/TEXT("dog-npcs.json")));UGameplayStatics::DeleteGameInSlot(TEXT("CheweenieOutsideAcceptance"),0);
+                FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);SmokeStage=100;
+            }break;
+        }
+        return;
+    }
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieOutsideMapAudit")))
     {
         if(SmokeStage==0&&SmokeTime>3)

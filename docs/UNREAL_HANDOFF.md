@@ -1,5 +1,7 @@
 # Codename .... Cheweenie — Unreal development handoff
 
+**Neighbour dog NPCs (development source, 2026-11-12):** dogs now roam, sniff, play, join walks and head home after goodbye. Bauer/Hank have distinct fuller silhouettes; Georgia/Pieper retain neutral placeholder coats. Friendship saves compatibly. Native UE 5.8.4 Editor compilation and **59 final real-map assertions passed** (27 rendered NPC, 12 outdoor, 20 movement); three captures were reviewed. Input was synthetic keyboard/gamepad; physical devices, complex private-map routing and comparative performance remain unverified. Desktop packages are unchanged. [Controls and actual evidence](UNREAL_DOG_NPCS.md).
+
 **2026-11-11 development:** `codex/wardrobe-attachment-cache` in `Validation/SportsParkReview` adds cached wardrobe spine offsets to the cumulative 0.16 source. Native Editor compilation and 193 real-map assertions passed; six captures were reviewed. Desktop packages remain unchanged. Physical controllers and comparative FPS remain unverified. [Details and evidence](UNREAL_WARDROBE_OPTIMIZATION.md).
 
 <!-- unified016-release:start -->

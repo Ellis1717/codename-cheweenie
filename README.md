@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Neighbour dog NPCs (development source, 2026-11-12):** dogs now roam, sniff, play, join walks and head home after goodbye. Bauer/Hank have distinct fuller silhouettes; Georgia/Pieper retain neutral placeholder coats. Friendship saves compatibly. Native UE 5.8.4 Editor compilation and **59 final real-map assertions passed** (27 rendered NPC, 12 outdoor, 20 movement); three captures were reviewed. Input was synthetic keyboard/gamepad; physical devices, complex private-map routing and comparative performance remain unverified. Desktop packages are unchanged. [Controls and actual evidence](docs/UNREAL_DOG_NPCS.md).
+
 **Wardrobe optimization (development source, 2026-11-11):** jackets and Marty costumes cache their skeleton attachment offset while retaining live pose updates and fur-mesh switching. Native UE 5.8.4 Editor compilation and **193 real-map assertions passed**, including rendered wardrobe, restart, keyboard/synthetic-gamepad and local two-process co-op checks. Six captures were reviewed. Physical controllers, separate-PC networking and an FPS improvement remain unverified; desktop packages are unchanged. [Implementation and actual evidence](docs/UNREAL_WARDROBE_OPTIMIZATION.md).
 
 <!-- unified016-release:start -->

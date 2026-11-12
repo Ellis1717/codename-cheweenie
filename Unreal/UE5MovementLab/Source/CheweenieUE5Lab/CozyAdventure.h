@@ -52,6 +52,7 @@ public:
     UPROPERTY(SaveGame) int32 VisitIndex = 0;
     UPROPERTY(SaveGame) bool Complete = false;
     UPROPERTY(SaveGame) int32 NeighbourDogMask=0;
+    UPROPERTY(SaveGame) TArray<int32> NeighbourDogBonds;
     UPROPERTY(SaveGame) float Music = .25f;
     UPROPERTY(SaveGame) float Effects = .6f;
     UPROPERTY(SaveGame) float PetEnergy=80;

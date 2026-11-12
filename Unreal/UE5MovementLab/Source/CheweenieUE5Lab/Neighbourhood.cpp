@@ -73,22 +73,6 @@ void UCheweenieNeighbourhood::House(FVector P,int32 Slot,const FString& Label)
     Sign(Label,P+FVector(0,-Side*335,300),32,Side>0?-90:90);
     Path(P+FVector(0,-Side*320,0),P+FVector(0,-Side*950,0),160,1);
 }
-void UCheweenieNeighbourhood::Dog(const FNeighbourDog& D,int32 Index)
-{
-    // Explicit schematic neighbours, not likeness claims or copies of Marty.
-    const int32 Color=Palette.Num();auto* Mat=UMaterialInstanceDynamic::Create(LoadObject<UMaterialInterface>(nullptr,TEXT("/Game/Adventure/World/NeighbourhoodSurface.NeighbourhoodSurface")),this);
-    Mat->SetVectorParameterValue(TEXT("Color"),D.Coat);Palette.Add(Mat);
-    const TCHAR* Ball=TEXT("/Engine/BasicShapes/Sphere.Sphere");
-    Shape(TEXT("Neighbour dog"),D.Position+FVector(0,0,30),FVector(60,25,28),Color,false,Ball);
-    Shape(TEXT("Dog head"),D.Position+FVector(-26,0,47),FVector(27,28,29),Color,false,Ball);
-    for(int32 S:{-1,1})
-    {
-        Shape(TEXT("Dog ear"),D.Position+FVector(-25,S*16,42),FVector(15,7,27),Color,false,Ball);
-        for(int32 X:{-1,1})Shape(TEXT("Dog leg"),D.Position+FVector(X*19,S*9,14),FVector(9,9,25),Color,false,Ball);
-    }
-    Shape(TEXT("Dog nose"),D.Position+FVector(-42,0,43),FVector(9,13,8),5,false,Ball);
-    Sign(D.Name,D.Position+FVector(0,0,100),24,180);
-}
 void UCheweenieNeighbourhood::Home()
 {
     ++Houses;const FVector P=Entrance-FVector(0,0,28);
@@ -206,9 +190,10 @@ void UCheweenieNeighbourhood::Build()
     for(int32 I=0;I<8;++I)
     {
         const int32 Row=I/2;const float Side=I%2==0?-1:1;
-        FNeighbourDog D;D.Name=FString::Printf(TEXT("Neighbour dog %d"),I+1);D.House=FString::Printf(TEXT("House %c (editable)"),'A'+I);
+        const TCHAR* Names[]={TEXT("Bauer"),TEXT("Hank"),TEXT("Georgia"),TEXT("Pieper")};
+        FNeighbourDog D;D.Name=I<4?FString(Names[I]):FString::Printf(TEXT("Neighbour dog %d"),I+1);D.House=FString::Printf(TEXT("House %c (editable)"),'A'+I);
         if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Adventure&&Mode->Adventure->Progress){D.Met=(Mode->Adventure->Progress->NeighbourDogMask&(1<<I))!=0;if(D.Met)++MetDogs;}
-        D.Position=Entrance+FVector(1800+Row*1450,Side*850,-28);D.Coat=I%2?FLinearColor(.2f,.12f,.07f):FLinearColor(.64f,.43f,.18f);Dogs.Add(D);
+        D.Position=Entrance+FVector(1800+Row*1450,Side*850,-28);D.Coat=I==0?FLinearColor(.72f,.49f,.22f):I==1?FLinearColor(.06f,.06f,.065f):FLinearColor(.38f,.36f,.32f);Dogs.Add(D);
     }
     LoadDogs();
     for(int32 I=0;I<Dogs.Num();++I)
@@ -219,7 +204,10 @@ void UCheweenieNeighbourhood::Build()
             bool Clear=true;for(const auto& Edge:RoadEdges)if(FMath::PointDistToSegment(P,Edge.Key,Edge.Value)<1400){Clear=false;break;}
             if(Clear)break;P.Y+=Side*900;
         }
-        D.Position=P-FVector(0,Side*700,0);House(P,I,D.House);Dog(D,I);
+        D.Position=P-FVector(0,Side*700,0);D.Home=D.Target=D.Position;
+        D.Speed=I==0?115:I==1?90:I==2?105:125;D.Timer=1.f+I*.3f;
+        if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Adventure&&M->Adventure->Progress&&M->Adventure->Progress->NeighbourDogBonds.IsValidIndex(I))D.Bond=FMath::Clamp(M->Adventure->Progress->NeighbourDogBonds[I],0,3);
+        House(P,I,D.House);Dog(D,I);
     }
     Home();
     Sign(TEXT("HOME\nE / X / Square to go inside"),Entrance+FVector(-120,0,150),26,0);
@@ -275,7 +263,7 @@ void UCheweenieNeighbourhood::Message(const FString& Text)
 }
 void UCheweenieNeighbourhood::GoOutside(AMartyCharacter* Pawn)
 {
-    Pawn->ClearControllerInput();if(Pawn->Life)Pawn->Life->CancelAction();
+    ResetDogVisits();Pawn->ClearControllerInput();if(Pawn->Life)Pawn->Life->CancelAction();
     Pawn->GetCharacterMovement()->StopMovementImmediately();Pawn->TeleportTo(Entrance+FVector(0,-300,0),FRotator(0,-90,0));Outside=true;
     SetOutdoorLighting(true);
     if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Companions)M->Companions->OnPlayerTravel(true);
@@ -286,7 +274,7 @@ void UCheweenieNeighbourhood::GoOutside(AMartyCharacter* Pawn)
 }
 void UCheweenieNeighbourhood::GoInside(AMartyCharacter* Pawn)
 {
-    Outside=false;Pawn->ReturnHome();Message(TEXT("Home sweet headquarters. Your indoor patrol progress is kept."));
+    Outside=false;ResetDogVisits();Pawn->ReturnHome();Message(TEXT("Home sweet headquarters. Your indoor patrol progress is kept."));
 }
 FString UCheweenieNeighbourhood::Prompt(const AMartyCharacter* Pawn) const
 {
@@ -295,7 +283,7 @@ FString UCheweenieNeighbourhood::Prompt(const AMartyCharacter* Pawn) const
     if(Sports){const FString S=Sports->Prompt(Pawn);if(!S.IsEmpty())return S;}
     if(FVector::Dist2D(P,Entrance)<120)return TEXT("E / X / Square: return inside");
     if(FVector::Dist2D(P,Entrance+FVector(160,0,0))<120||FVector::Dist2D(P,Park+FVector(300,0,0))<120||FVector::Dist2D(P,School-FVector(300,0,0))<120)return TEXT("E / X / Square: visit next landmark on walking tour");
-    for(const auto& D:Dogs)if(FVector::Dist2D(P,D.Position)<135)return FString(TEXT("E / X / Square: say hello to "))+D.Name;
+    for(const auto& D:Dogs)if(CheweenieHouse::Near(P,D.Position,180))return FString(TEXT("E / X / Square: "))+DogAction(D);
     return FString::Printf(TEXT("Outside | neighbours met: %d / %d | Home: H | park %.0f m | school %.0f m"),MetDogs,Dogs.Num(),FVector::Dist2D(P,Park)/100,FVector::Dist2D(P,School)/100);
 }
 bool UCheweenieNeighbourhood::Interact(AMartyCharacter* Pawn)
@@ -314,13 +302,39 @@ bool UCheweenieNeighbourhood::Interact(AMartyCharacter* Pawn)
     }
     for(int32 I=0;I<Dogs.Num();++I)
     {
-        auto& D=Dogs[I];if(FVector::Dist2D(P,D.Position)>=135)continue;
+        auto& D=Dogs[I];if(!CheweenieHouse::Near(P,D.Position,180))continue;
+        if(D.Cooldown>0){Message(D.Name+TEXT(" is enjoying the moment. Give your buddy a second!"));return true;}
         if(!D.Met)
         {
             D.Met=true;++MetDogs;
             if(auto* Mode=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(Mode->Adventure&&Mode->Adventure->Progress){Mode->Adventure->Progress->NeighbourDogMask|=1<<I;Mode->Adventure->Save();}
         }
-        Message(D.Name+TEXT(" greets Marty with a friendly sniff. Neighbourhood buddies!"));return true;
+        D.Cooldown=1.2f;
+        if(D.Activity==ENeighbourActivity::Follow)
+        {
+            D.Activity=ENeighbourActivity::Return;D.Visit=0;D.Timer=0;
+            Message(D.Name+TEXT(" gives a happy tail wag and heads home. Come play again soon!"));
+        }
+        else if(D.Visit==0)
+        {
+            D.Visit=1;D.Activity=ENeighbourActivity::Greet;D.Timer=3;
+            Message(D.Name+TEXT(" greets Marty with a friendly sniff. Interact again to offer a play bow."));
+        }
+        else if(D.Visit==1)
+        {
+            D.Visit=2;D.Activity=ENeighbourActivity::Play;D.Timer=6;
+            D.Target=D.Position+FVector(100,60,0);D.Bond=FMath::Min(3,D.Bond+1);
+            if(auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>())if(M->Adventure&&M->Adventure->Progress)
+            {auto* S=M->Adventure->Progress.Get();S->NeighbourDogBonds.SetNum(8);S->NeighbourDogBonds[I]=D.Bond;M->Adventure->Save();}
+            Message(D.Name+TEXT(" answers Marty's play bow with a bouncy chase! Friendship ")+FString::FromInt(D.Bond)+TEXT(" / 3. Interact to invite a walk."));
+        }
+        else
+        {
+            for(auto& Other:Dogs)if(Other.Activity==ENeighbourActivity::Follow){Other.Activity=ENeighbourActivity::Return;Other.Visit=0;}
+            D.Activity=ENeighbourActivity::Follow;D.Timer=0;
+            Message(D.Name+TEXT(" joins Marty's walk! Interact to say goodbye. Your buddy waits through menus and heads home if you travel away."));
+        }
+        return true;
     }
     return false;
 }
