@@ -16,7 +16,7 @@ foreach($phase in @('play','resume')){
     if($process.ExitCode){throw ('Jacket process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'jackets-resume.json'}else{'jackets-smoke.json'})
     if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Jacket report missing/stale'}
-    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){3}else{21}
+    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){3}else{27}
     if($result.failed.Count -or $result.passed.Count -lt $minimum){throw ('Jacket checks failed: '+$phase)}
     if($Render -and !$MapFile -and $phase -eq 'play'){foreach($name in @('JacketYellow.png','JacketFleece.png','JacketNavy.png','JacketPink.png','JacketPinkLow.png','JacketLying.png','JacketRolling.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
     $phase+': '+$result.passed.Count+' passes'

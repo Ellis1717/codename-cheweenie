@@ -1,5 +1,7 @@
 # Codename .... Cheweenie 🐾
 
+**Wardrobe optimization (development source, 2026-11-11):** jackets and Marty costumes cache their skeleton attachment offset while retaining live pose updates and fur-mesh switching. Native UE 5.8.4 Editor compilation and **193 real-map assertions passed**, including rendered wardrobe, restart, keyboard/synthetic-gamepad and local two-process co-op checks. Six captures were reviewed. Physical controllers, separate-PC networking and an FPS improvement remain unverified; desktop packages are unchanged. [Implementation and actual evidence](docs/UNREAL_WARDROBE_OPTIMIZATION.md).
+
 <!-- unified016-release:start -->
 
 **Cumulative 0.16.0 source and validated candidate (2026-11-08):** one native game now combines the sports park and contoured terrain, active-input directions, six saved camera views/zoom, crew bios, optional fantasy clothing, Lakitu's Hockey Bag Surprise and saved feature switches. Released stances, controller comfort, jackets, upstairs, cozy progression, audio, overlays and indoor LAN remain included. [Feature/configuration inventory and actual results](docs/UNREAL_UNIFIED_0160.md).

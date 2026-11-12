@@ -153,15 +153,9 @@ void UHalloweenCostume::TickComponent(float Delta, ELevelTick Type, FActorCompon
         // The outfit is authored along the model's +X (hips to shoulders), not
         // the imported spine bone's local axes. Remove its reference orientation
         // before following animation, so the hot dog cannot turn sideways.
-        const auto* Asset=Skin->GetSkinnedAsset();if(!Asset)return;
-        const auto& Skeleton=Asset->GetRefSkeleton();
-        const int32 Index=Skeleton.FindBoneIndex(TEXT("spine"));if(Index==INDEX_NONE)return;
-        FTransform Bind=Skeleton.GetRefBonePose()[Index];
-        for(int32 Parent=Skeleton.GetParentIndex(Index);Parent!=INDEX_NONE;Parent=Skeleton.GetParentIndex(Parent))
-            Bind=Bind*Skeleton.GetRefBonePose()[Parent];
-        const FTransform Saddle(FQuat::Identity,Bind.GetLocation()+FVector(5,0,4));
+        if(!Attachment.Resolve(Skin->GetSkinnedAsset()))return;
         const FTransform Spine=Skin->GetBoneTransformByName(TEXT("spine"),EBoneSpaces::WorldSpace);
-        FTransform Follow=Saddle.GetRelativeTransform(Bind)*Spine;
+        FTransform Follow=Attachment.RelativeSaddle*Spine;
         Follow.SetScale3D(FVector::OneVector);
         Anchor->SetWorldTransform(Follow);
     }

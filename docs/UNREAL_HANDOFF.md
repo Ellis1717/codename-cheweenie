@@ -1,5 +1,7 @@
 # Codename .... Cheweenie — Unreal development handoff
 
+**2026-11-11 development:** `codex/wardrobe-attachment-cache` in `Validation/SportsParkReview` adds cached wardrobe spine offsets to the cumulative 0.16 source. Native Editor compilation and 193 real-map assertions passed; six captures were reviewed. Desktop packages remain unchanged. Physical controllers and comparative FPS remain unverified. [Details and evidence](UNREAL_WARDROBE_OPTIMIZATION.md).
+
 <!-- unified016-release:start -->
 
 **Cumulative 0.16.0 source and validated candidate (2026-11-08):** one native game now combines the sports park and contoured terrain, active-input directions, six saved camera views/zoom, crew bios, optional fantasy clothing, Lakitu's Hockey Bag Surprise and saved feature switches. Released stances, controller comfort, jackets, upstairs, cozy progression, audio, overlays and indoor LAN remain included. [Feature/configuration inventory and actual results](UNREAL_UNIFIED_0160.md).
