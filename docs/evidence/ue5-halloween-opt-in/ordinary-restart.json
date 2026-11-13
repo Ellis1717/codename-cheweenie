@@ -1,0 +1,13 @@
+{
+	"passed": [
+		"Saved active Halloween cannot become the default title or event on a normal launch",
+		"Default-off migration preserves stickers and permanent rewards",
+		"Ordinary Continue starts headquarters patrol without enabling Halloween",
+		"Opening the Halloween menu alone does not enable the event",
+		"Explicit keyboard enable activates Halloween",
+		"Explicit controller disable restores ordinary scenery and retains progress"
+	],
+	"failed": [],
+	"scope": "Actual game map, synthetic keyboard/controller, isolated checkpoint plus position/action/cosmetic fixtures; physical controllers unverified. Local map source details excluded.",
+	"private_layout": false
+}

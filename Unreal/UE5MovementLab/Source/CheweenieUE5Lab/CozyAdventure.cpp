@@ -110,6 +110,8 @@ void UCozyAdventure::BeginPlay()
     if(Progress->MartyJacket>0)Progress->CostumeMask&=~1;
     Progress->FantasyCostumeMask &= 7;
     Progress->FurDetailPreference=FMath::Clamp(Progress->FurDetailPreference,1,2);
+    // Seasonal play is an explicit per-launch choice; retain earned stamps and badges.
+    Progress->HalloweenActive=false;
     Progress->HalloweenStampMask&=255;
     if(Progress->HalloweenRoundComplete&&Progress->HalloweenStampMask!=255)Progress->HalloweenRoundComplete=false;
     Progress->SnackMask &= (1 << Mission->Snacks.Num()) - 1;
