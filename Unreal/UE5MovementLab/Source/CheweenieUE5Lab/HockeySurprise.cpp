@@ -1,5 +1,5 @@
-#include "AnimalGait.h"
 #include "HockeySurprise.h"
+#include "AnimalGait.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
 #include "CatCompanions.h"

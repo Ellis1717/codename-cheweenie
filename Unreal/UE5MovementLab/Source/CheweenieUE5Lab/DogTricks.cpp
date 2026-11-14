@@ -35,14 +35,14 @@ void UDogLife::Stow()
     if(!Playing()||Busy()||!Allows(ECozyFeature::Backpack))return;auto* D=Data();
     if(D->CarryItem<0){Tell(TEXT("Pick up a toy in Marty's mouth first."));return;}
     if(D->BagItems.Num()>=4){Tell(TEXT("The backpack is full."));return;}
-    D->BagItems.AddUnique(D->CarryItem);D->CarryItem=-1;SyncItems();Save();Tell(TEXT("Treasure tucked safely into the backpack."),TEXT("Toy"));
+    const bool Rainbow=D->CarryItem==RainbowGuyItem;D->BagItems.AddUnique(D->CarryItem);D->CarryItem=-1;SyncItems();if(Rainbow){Session()->RecordMission(TEXT("rainbow-carry"));Session()->RecordMission(TEXT("rainbow-stow"));}Save();Tell(TEXT("Treasure tucked safely into the backpack."),TEXT("Toy"));
 }
 void UDogLife::Retrieve()
 {
     if(!Playing()||Busy()||!Allows(ECozyFeature::Backpack))return;auto* D=Data();
     if(D->CarryItem>=0){Tell(TEXT("Marty's mouth is full. Drop or bury that toy first."));return;}
     if(D->BagItems.IsEmpty()){Tell(TEXT("The backpack is empty."));return;}
-    D->CarryItem=D->BagItems[0];D->BagItems.RemoveAt(0);SyncItems();Save();Tell(D->CarryItem==RainbowGuyItem?TEXT("Squeak! Marty takes Rainbow Guy in his mouth."):TEXT("Marty takes a treasure out of his backpack."),D->CarryItem==RainbowGuyItem?TEXT("RainbowSqueak"):TEXT("Toy"));
+    D->CarryItem=D->BagItems[0];D->BagItems.RemoveAt(0);SyncItems();if(D->CarryItem==RainbowGuyItem)Session()->RecordMission(TEXT("rainbow-carry"));Save();Tell(D->CarryItem==RainbowGuyItem?TEXT("Squeak! Marty takes Rainbow Guy in his mouth."):TEXT("Marty takes a treasure out of his backpack."),D->CarryItem==RainbowGuyItem?TEXT("RainbowSqueak"):TEXT("Toy"));
 }
 void UDogLife::StandUp(){if(Activity==EDogActivity::Lying){Activity=EDogActivity::Idle;if(auto* PC=Cast<APlayerController>(Pawn()->GetController()))PC->SetViewTargetWithBlend(Pawn(),.2f);}}
 void UDogLife::LieDown()

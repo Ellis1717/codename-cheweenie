@@ -101,6 +101,7 @@ private:
     void DropToy();
     void Bark();
     void Backpack();
+    void Missions();
     void ClearBodyStick();
     void Map();
     void PadUp();
@@ -177,6 +178,7 @@ private:
 
     void TickNavigationSmoke(float Delta);
     void TickCompanionSmoke(float Delta);
+    void TickMissionSmoke(float Delta);
     void TickWorldSmoke(float Delta);
     void TickCostumeSmoke(float Delta);
     void TickJacketSmoke(float Delta);

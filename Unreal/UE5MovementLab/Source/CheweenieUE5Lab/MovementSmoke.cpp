@@ -25,6 +25,7 @@ void AMartyPlayMode::SmokeCheck(bool Passed, const FString& Name)
 void AMartyPlayMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+    if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieMissionSmoke"))){TickMissionSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieCoreConfigSmoke"))){TickCoreConfigSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieParkSportsSmoke"))){TickParkSportsSmoke(DeltaSeconds);return;}
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieStanceSmoke"))){TickStanceSmoke(DeltaSeconds);return;}

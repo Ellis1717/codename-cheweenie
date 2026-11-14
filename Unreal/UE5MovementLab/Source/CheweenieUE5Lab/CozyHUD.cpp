@@ -1,4 +1,5 @@
 #include "ControllerGuide.h"
+#include "OpenMissions.h"
 #include "ControllerComfort.h"
 #include "HockeySurprise.h"
 #include "MartyCharacter.h"
@@ -27,6 +28,7 @@ bool AMartyHUD::DrawAdventureHUD()
     const bool HalloweenPage=Session->Screen==ECozyScreen::Halloween;
     const bool Seasonal=HalloweenPage||Session->Progress->HalloweenActive;
     const bool SeasonalArt=HalloweenPage||(Session->Screen==ECozyScreen::Title&&Seasonal);
+    if(Session->Screen==ECozyScreen::Missions)return CozyDrawMissionJournal(this,Session,Width,Height);
     if(Session->Screen != ECozyScreen::Playing)
     {
         const bool Title=Session->Screen==ECozyScreen::Title;
@@ -65,7 +67,7 @@ bool AMartyHUD::DrawAdventureHUD()
             CozyMenuText(this,Text,Color,TX,TY,TW>Available?Scale*S*Available/TW:Scale*S);
         };
         MenuText(Session->Heading(),FLinearColor(1,.85f,.57f),X+24*S,Y+24*S,nullptr,1.65f);
-        MenuText(SeasonalArt?FString(TEXT("BORK OR TREAT / HALLOWEEN SPECIAL")):Session->Screen==ECozyScreen::Companions&&Mode->Companions?Mode->Companions->Status():Modes&&Hub->Page==ECozyHubPage::Crew?FString(TEXT("Three little lives, one shared adventure.")):Modes?FString(TEXT("Play, explore and make yourself at home")):FString(TEXT("Marty, Lakitu & Rio | The Great Cozy Patrol")),FLinearColor(.94f,.89f,.79f),X+24*S,Y+62*S);
+        MenuText(SeasonalArt?FString(TEXT("BORK OR TREAT / HALLOWEEN SPECIAL")):Session->Screen==ECozyScreen::Companions&&Mode->Companions?Mode->Companions->Status():Modes&&Hub->Page==ECozyHubPage::Crew?FString(TEXT("Three little lives, one shared adventure.")):Modes?FString(TEXT("Play, explore and make yourself at home")):FString(TEXT("Marty, Lakitu & Rio | Explore at your own pace")),FLinearColor(.94f,.89f,.79f),X+24*S,Y+62*S);
         if(HalloweenPage)MenuText(FString::Printf(TEXT("PAW-PASS %d / 8 | %s"),Mode->Festival?Mode->Festival->StampCount():0,Session->Progress->HalloweenBadge?TEXT("PUMPKIN PAL EARNED"):TEXT("8 PORCHES / 1 COZY FINALE")),FLinearColor(1,.76f,.43f),X+24*S,Y+90*S,nullptr,.9f);
         if(Controls)
         {
@@ -119,7 +121,7 @@ bool AMartyHUD::DrawAdventureHUD()
         const bool Outside=Mode->Neighbourhood&&Mode->Neighbourhood->Outside;
         const auto* CameraPC=GetWorld()->GetFirstPlayerController();
         const auto* CameraPet=CameraPC?Cast<AMartyCharacter>(CameraPC->GetPawn()):nullptr;
-        if(Show(ECozyOverlay::Objective))CozyDrawText(this,Mode->HomeProgression&&Mode->HomeProgression->Training>=0?Mode->HomeProgression->TrainingObjective():Seasonal?Session->Objective():Outside?TEXT("Neighbourhood walk: meet the dogs, visit the park and school"):Session->Objective(),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
+        if(Show(ECozyOverlay::Objective))CozyDrawText(this,Mode->HomeProgression&&Mode->HomeProgression->Training>=0?Mode->HomeProgression->TrainingObjective():(Seasonal||(Mode->Hockey&&Mode->Hockey->Active()))?Session->Objective():Session->Progress->ShowMissionTracker?Session->MissionTracker():FString(TEXT("Explore freely")),FLinearColor(1,.86f,.5f),28,28,nullptr,1.25f);
         if(Show(ECozyOverlay::Hints)&&Session->Feature(ECozyFeature::Hints)){CozyDrawText(this,TEXT("Move: WASD / left stick | Interact: E / X-Square | Pause: Esc / Options"),FLinearColor::White,28,57);
         CozyDrawText(this,(Session->Progress->BodyControls?FString(TEXT("RS: body sway | ")):FString())+(CameraPet?CameraPet->CameraName()+TEXT(" | "):FString())+TEXT("V / R3: view | Wheel, +/- / D-pad L-R: zoom"),FLinearColor::White,28,79);}
         const auto* OwnerPC=GetWorld()->GetFirstPlayerController();const auto* Pet=OwnerPC?Cast<AMartyCharacter>(OwnerPC->GetPawn()):nullptr;
@@ -135,6 +137,8 @@ bool AMartyHUD::DrawAdventureHUD()
             CozyDrawText(this,TEXT("Tab / View-Touchpad: open backpack"),FLinearColor::White,Width-282,80);}
         }
         if(Show(ECozyOverlay::HomeStats)&&Mode->HomeProgression){auto* H=Mode->HomeProgression.Get();CozyDrawText(this,H->Summary(),FLinearColor(1,.85f,.55f),450,127,nullptr,.9f);if(H->Enabled()){CozyDrawText(this,FString::Printf(TEXT("STR %d | AGI %d | SPD %d"),H->Level(0),H->Level(1),H->Level(2)),FLinearColor(.7f,.95f,.8f),450,146,nullptr,.9f);CozyDrawText(this,H->BuffSummary(),FLinearColor(.75f,.85f,.9f),450,166,nullptr,.85f);}}
+        if(Session->Progress->ShowMissionTracker&&Show(ECozyOverlay::Objective)){CozyDrawRect(this,FLinearColor(.025f,.055f,.07f,.88f),16,186,760,29);CozyDrawText(this,Session->MissionNext(Session->Progress->TrackedOpenMission),FLinearColor(.9f,.86f,.72f),28,192,nullptr,.9f);}
+        if(Show(ECozyOverlay::Messages)&&!Session->MissionNotice.IsEmpty()){CozyDrawRect(this,FLinearColor(.055f,.075f,.055f,.95f),16,FMath::Max(304.f,Height-288.f),760,36);CozyDrawText(this,Session->MissionNotice,FLinearColor(1,.87f,.5f),28,FMath::Max(304.f,Height-288.f)+10, nullptr,.95f);}
         const FString Prompt=Session->Prompt();
         if(Show(ECozyOverlay::Prompts)&&!Prompt.IsEmpty()) CozyDrawText(this,Prompt,FLinearColor(1,.9f,.5f),Width*.5f-140,Height-110,nullptr,1.6f);
         if(Show(ECozyOverlay::Prompts)&&Session->Feature(ECozyFeature::Dig)&&Pet)

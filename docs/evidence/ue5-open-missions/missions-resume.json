@@ -1,0 +1,13 @@
+{
+	"scope": "Real solo map; synthetic keyboard/controller journal input, real location polling and backpack stow, explicit legacy/action-state fixtures. Sports event integration is checked by the separate sports suite. Physical devices unverified.",
+	"passed": [
+		"Seven journal completion pawprints survive a second process",
+		"Partial and bounded progress reload by stable objective key",
+		"Pinned mission and hidden tracker preference reload",
+		"Cosmetic journal rewards do not alter the home upgrade economy",
+		"Mission saves do not enable Halloween on restart",
+		"Continue preserves journal history and permits free play",
+		"Repeated completed objectives cannot grant duplicate pawprints"
+	],
+	"failed": []
+}

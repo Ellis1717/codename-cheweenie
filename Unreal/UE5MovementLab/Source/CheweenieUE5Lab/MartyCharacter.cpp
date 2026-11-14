@@ -236,6 +236,7 @@ void AMartyCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Button(EKeys::Three,EKeys::Invalid,&AMartyCharacter::ShortcutShake);Button(EKeys::Four,EKeys::Invalid,&AMartyCharacter::ShortcutBark);
         Button(EKeys::Tab,EKeys::Gamepad_Special_Left,&AMartyCharacter::Backpack);
         Button(EKeys::M,EKeys::Invalid,&AMartyCharacter::Map);
+        Button(EKeys::J,EKeys::Invalid,&AMartyCharacter::Missions);
     }
     SetupCameraZoom(Enhanced,Mapping);
     Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMartyCharacter::Move);
@@ -297,6 +298,7 @@ void AMartyCharacter::Dig(){if(Life)Life->Dig();}
 void AMartyCharacter::DropToy(){if(Life)Life->Drop();}
 void AMartyCharacter::Bark(){if(Life)Life->Bark();}
 void AMartyCharacter::Map(){if(auto* S=Adventure())S->OpenMap();}
+void AMartyCharacter::Missions(){if(auto* S=Adventure())S->OpenMissions();}
 void AMartyCharacter::Backpack(){if(auto* S=Adventure())S->OpenBackpack();}
 void AMartyCharacter::ClearBodyStick(){if(Life)Life->ClearBodyStick();}
 float AMartyCharacter::TakeDamage(float Amount,const FDamageEvent& Event,AController* EventInstigator,AActor* Causer){const float Applied=Super::TakeDamage(Amount,Event,EventInstigator,Causer);if(Life&&Applied>0)Life->AdjustHealth(-Applied);return Applied;}
