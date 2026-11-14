@@ -1,0 +1,33 @@
+{
+	"passed": [
+		"Wardrobe cache matches uncached attachment and builds once across 64 warm samples, fur 0",
+		"Wardrobe cache matches uncached attachment and builds once across 64 warm samples, fur 1",
+		"Wardrobe cache matches uncached attachment and builds once across 64 warm samples, fur 2",
+		"Missing mesh safely skips wardrobe attachment",
+		"Missing spine is cached safely without repeated hierarchy searches",
+		"Wardrobe cache recovers when a valid mesh returns",
+		"Jacket checks use an isolated save",
+		"New profiles default to no jacket",
+		"Wardrobe keeps three costumes and adds a jacket selector",
+		"Keyboard selects yellow raincoat without changing cat costumes",
+		"Raincoat has visible original geometry and valid non-colliding materials",
+		"Garment surfaces use outward normals and Unreal clockwise front faces",
+		"Yellow coat follows the actual body axis",
+		"Red fleece switches live and stays fitted",
+		"Gamepad D-pad selects the navy winter coat",
+		"Navy winter coat has a fitted collar and loaded materials",
+		"Mouse plus hitbox selects pink quilted coat",
+		"Pink quilted coat stays aligned without blocking movement",
+		"Jacket attachment supports the actual Medium fur model",
+		"Jacket attachment supports the actual smooth Low fur model",
+		"Actual High-fur jacket follows the lying pose",
+		"Jacket follows rolling without changing trick state",
+		"Existing hot-dog costume removes the jacket instead of stacking",
+		"Backward cycling wraps to pink and removes the hot-dog costume",
+		"Synthetic gamepad movement works while wearing the jacket",
+		"Keyboard movement works while wearing the jacket",
+		"Jacket leaves keyboard jumping and character collision active"
+	],
+	"failed": [],
+	"scope": "Actual map; synthetic keyboard/gamepad/mouse hitboxes, menu/save/camera/action fixtures. Physical hardware and cloth simulation unverified."
+}

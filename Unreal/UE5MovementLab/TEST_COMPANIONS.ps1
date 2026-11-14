@@ -14,7 +14,7 @@ foreach($phase in @('play','resume')){
     if($process.ExitCode){throw ('Companion process failed: '+$phase)}
     $report=Join-Path $OutputRoot $(if($phase -eq 'resume'){'companions-resume.json'}else{'companions-smoke.json'})
     if(!(Test-Path $report) -or (Get-Item $report).LastWriteTimeUtc -lt $started){throw 'Companion report missing/stale'}
-    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){4}else{30}
+    $result=Get-Content $report -Raw|ConvertFrom-Json;$minimum=if($phase -eq 'resume'){4}else{33}
     if($result.failed.Count -or $result.passed.Count -lt $minimum){throw ('Companion checks failed: '+$phase)}
     if($Render -and !$MapFile -and $phase -eq 'play'){foreach($name in @('CompanionCrew.png','CompanionMenu.png','CompanionSwitch.png')){if(!(Test-Path (Join-Path $OutputRoot $name))){throw ('Missing capture '+$name)}}}
     $phase+': '+$result.passed.Count+' passes'

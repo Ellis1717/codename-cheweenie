@@ -1,0 +1,21 @@
+{
+	"scope": "Real-map matched-speed transform fixtures compare feline and canine animation. Separate companion tests cover keyboard/controller input. Not a measured biomechanics or performance claim.",
+	"privateMapLoaded": false,
+	"passed": [
+		"Feline comparison rig initializes on the real ground",
+		"Canine comparison rig initializes on the same real ground",
+		"Walking cat repeatedly follows real same-side front paw prints",
+		"Registered hind paw bones land within overlapping front paw prints",
+		"Dog retains its independent paw placement policy",
+		"Cat torso has less vertical bounce than the dog at matched world speed",
+		"Cat head remains steadier than the canine head during matched-speed walking",
+		"Straight-walking feline tail is quieter than the canine wag",
+		"Feline turning drives tail counterbalance rather than the dog wag policy",
+		"Fast cat uses paired catch-up timing distinct from the canine diagonal trot",
+		"Feline and canine joints remain finite through walking, turning and faster movement",
+		"Stationary cat finishes with planted paws and no treadmill stepping",
+		"Cat teleport discards stale registered footprints",
+		"No pre-teleport footprint history survives a recall"
+	],
+	"failed": []
+}

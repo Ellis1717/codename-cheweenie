@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-12",
+  "engine": "5.8.4",
+  "branch": "codex/neighbour-dog-npcs",
+  "scope": "Cumulative solo development source with wardrobe optimization; desktop unchanged",
+  "nativeEditorBuild": "passed",
+  "totalFinalAssertions": 59,
+  "runs": [
+    {
+      "report": "ue5-dog-npcs/dog-npcs.json",
+      "passed": 27,
+      "failed": 0
+    },
+    {
+      "report": "ue5-dog-npcs/outside-smoke.json",
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "report": "ue5-dog-npcs/movement-smoke.json",
+      "passed": 20,
+      "failed": 0
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "../screenshots/ue5-dog-npcs-bauer.png",
+      "sha256": "2b60e99d96feaa833d6da6dbb5d2dc14b4b083a327f1732afcfd0fe12c15d629",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-dog-npcs-hank.png",
+      "sha256": "898c0643fedd8dcdfb9a86d75969da7ac1c462094e0ea496cba2533fe42e71ca",
+      "reviewed": true
+    },
+    {
+      "file": "../screenshots/ue5-dog-npcs-georgia.png",
+      "sha256": "a07f14022bde137737b21d1ca9f495156b6f7d31eb08e852a4d2a44463830371",
+      "reviewed": true
+    }
+  ],
+  "logScans": [
+    {
+      "log": "DogNPCRender/DogNPCs.log",
+      "errorFatalMaterialFallbackVSMOverflowMatches": 0
+    },
+    {
+      "log": "NPCOutsideFinal/Outside.log",
+      "errorFatalMaterialFallbackVSMOverflowMatches": 0
+    },
+    {
+      "log": "NPCMovementFinal/MovementSmoke.log",
+      "errorFatalMaterialFallbackVSMOverflowMatches": 0
+    }
+  ],
+  "hashes": {
+    "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/NeighbourDogs.cpp": "27fb9b5a6c53e69f6a5a71516b519f62f631bd57742ac4216d7d3c6fe20f03f2",
+    "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/Neighbourhood.cpp": "ba85c170f31d0a13e57dbf5203994e8b3c4ddbbcb07c803d96af03f29babde8c",
+    "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/Neighbourhood.h": "a34fb8d134fed25d895859b4531fb7926ecca9db7ad92476bcf711510de92f35",
+    "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/CozyAdventure.h": "47aa3a8934ae06f22469d99aae3460be20968980cfb40f302257b2b3bdbb5430",
+    "Unreal/UE5MovementLab/Source/CheweenieUE5Lab/OutsideSmoke.cpp": "b40419123bd2a84a9dff5d04e070cdff3a1b86baf5aef54456af38a94d6cf312",
+    "Unreal/UE5MovementLab/Binaries/Win64/UnrealEditor-CheweenieUE5Lab.dll": "21d992529a22dfe11c0b8f21430cfb127c6eb9866f49a082e99f27f6d6967ed7"
+  },
+  "initialFindings": [
+    "The acceptance fixture now uses the public pause API.",
+    "Initial rendered and headless NPC runs each passed 26/27: body clearance was too small for the enhanced silhouette. Radius now scales with the entire dog; the final rendered run passed 27/27.",
+    "A compressed 2.5 GB generated PCH delayed recompilation. Only that isolated generated cache was decompressed; BUILD.ps1 then passed."
+  ],
+  "unverified": [
+    "Physical Xbox and PlayStation controllers",
+    "Arbitrary private-map obstacle layouts and complex enclosed routing",
+    "Comparative performance",
+    "Outdoor replicated NPC multiplayer",
+    "New standalone package"
+  ]
+}

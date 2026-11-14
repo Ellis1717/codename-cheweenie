@@ -1,0 +1,101 @@
+{
+  "unityChanged": false,
+  "physicalControllersVerified": false,
+  "sourceHashes": [
+    {
+      "file": "DogJackets.cpp",
+      "sha256": "57E5CC60EA35E2DA98A87B0B8A6958DB868AC2AE04B6388DFA24564134ED4E3E"
+    },
+    {
+      "file": "DogJackets.h",
+      "sha256": "A2D849D6610E69C44C31CBA85EB4A5256EC5DF508637379A065DAADFD94A0444"
+    },
+    {
+      "file": "HalloweenCostume.cpp",
+      "sha256": "DA23DDB9A0C9D39F71A87A96446DC680AAE39E5FAF43BF37D0BDA61F3D632A08"
+    },
+    {
+      "file": "HalloweenCostume.h",
+      "sha256": "D8013BC4F5DF6BEFED4B0801F4007FEFC2A345657C58AD35ACB8297CF7D25C02"
+    },
+    {
+      "file": "JacketSmoke.cpp",
+      "sha256": "B0B8E54D3316B084851EFF487796329CAD40CC34CB14F5BE780A14BE104D79EA"
+    },
+    {
+      "file": "WardrobeAttachment.h",
+      "sha256": "722A93F90559A3834616B8471B012B48104B968B73B44887BE26CDFC4D9553CA"
+    }
+  ],
+  "reports": [
+    {
+      "failed": 0,
+      "sha256": "2E70CB3AD1246BB7FD7B0EE1A93DFEA8EADD1B5515A91BEF2BAC313A3562D325",
+      "report": "jackets-smoke.json",
+      "passed": 27
+    },
+    {
+      "failed": 0,
+      "sha256": "425467C460CFA9A9389E0729A8C1B0F05A61B7141AE71791061A23E6F794CEF8",
+      "report": "jackets-resume.json",
+      "passed": 3
+    },
+    {
+      "failed": 0,
+      "sha256": "5D3832D584F4FA3B216C5073D81F50F208890BF56B2AE1718188EDEE8019666D",
+      "report": "costumes-smoke.json",
+      "passed": 51
+    },
+    {
+      "failed": 0,
+      "sha256": "0FE32A952FB9453FFF5C17453FEF093B926EE4F532430AA216C590100874FA3B",
+      "report": "costumes-resume.json",
+      "passed": 3
+    },
+    {
+      "failed": 0,
+      "sha256": "AE351B646407F0E4D17549DDE2E9A0D7E25A4F08647FBDD272179EDC4C7AE2F5",
+      "report": "coop-host.json",
+      "passed": 46
+    },
+    {
+      "failed": 0,
+      "sha256": "095EF85203F2B190B87D3D2E268109C9E3021B8F8B78EE080E89F0069A9CFF65",
+      "report": "coop-guest.json",
+      "passed": 43
+    },
+    {
+      "failed": 0,
+      "sha256": "25DEE76F2004B28D21D89DC931A6D5B9A0FF968B0F84D81F0DC150877E30DC81",
+      "report": "movement-smoke.json",
+      "passed": 20
+    }
+  ],
+  "engine": "5.8.4",
+  "date": "2026-11-11",
+  "rendered": "Jacket and costume play: offscreen DX12 1280x720. Restart, local co-op and movement: headless.",
+  "runtimeErrorFatalMaterialFallbackVsmOverflowMatches": 0,
+  "initialRun": {
+    "failed": 2,
+    "passed": 25,
+    "reason": "Raincoat geometry checked before pawn applied input preference; corrected fixture waits one stage."
+  },
+  "fpsImprovementMeasured": false,
+  "input": "Synthetic keyboard/gamepad; mouse hitboxes in wardrobe fixture",
+  "desktopPackageChanged": false,
+  "runtimeLogFiles": 7,
+  "newStandalonePackageBuilt": false,
+  "separatePCsVerified": false,
+  "reviewedCaptures": [
+    "JacketsFinal/JacketPinkLow.png",
+    "JacketsFinal/JacketLying.png",
+    "JacketsFinal/JacketRolling.png",
+    "Costumes/HalloweenMartySide.png",
+    "Costumes/HalloweenMartyLying.png",
+    "Costumes/HalloweenLakitu.png"
+  ],
+  "finalAssertions": 193.0,
+  "branch": "codex/wardrobe-attachment-cache",
+  "nativeEditorDllSha256": "2CFB5DBBAF9EF06ADED52FC8C2E014E95E6A521EFD1AB55B84CA59F5382449E7",
+  "nativeEditorBuildPassed": true
+}

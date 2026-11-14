@@ -1,4 +1,5 @@
 #include "CozyCoop.h"
+#include "AnimalGait.h"
 #include "ControllerComfort.h"
 #include "NaturalPetAudio.h"
 #include "CozyHUDStyle.h"
@@ -93,7 +94,14 @@ void ACozyCoopPet::ApplyPet()
     const bool Dog=PetId==0;
     Skin->SetVisibility(Dog);Gait->SetComponentTickEnabled(Dog&&GetNetMode()!=NM_DedicatedServer);
     if(Static){Static->SetVisibility(PetId>0);if(PetId>0){Static->SetStaticMesh(PetId==1?LakituMesh:PetId==2?RioMesh:RatchetMesh);Static->SetRelativeScale3D(FVector(PetId==3?1.f:.32f));}}
-    Costume->SetOutfit(Dog?static_cast<USceneComponent*>(Skin.Get()):Static,PetId,WearingCostume&&PetId<3);
+    if(PetId==1||PetId==2)
+    {
+        if(!CatGait){CatGait=NewObject<UAnimalGait>(this);CatGait->RegisterComponent();}
+        if(CatGait->Initialize(PetId==1?TEXT("Lakitu"):TEXT("Rio"),true,GetMesh(),FTransform(FQuat::Identity,FVector(0,0,-28))))
+        {CatGait->Skin->SetVisibility(true);if(Static)Static->SetVisibility(false);}
+    }
+    else if(CatGait&&CatGait->Skin)CatGait->Skin->SetVisibility(false);
+    Costume->SetOutfit(Dog?static_cast<USceneComponent*>(Skin.Get()):CatGait&&CatGait->Ready&&(PetId==1||PetId==2)?static_cast<USceneComponent*>(CatGait->Skin.Get()):Static,PetId,WearingCostume&&PetId<3);
     if(Dog&&Gait->Ready)Gait->ResetContacts();
 }
 bool ACozyCoopPet::PetAvailable(int32 Id) const

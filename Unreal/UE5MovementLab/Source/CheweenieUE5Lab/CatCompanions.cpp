@@ -1,4 +1,6 @@
 #include "CatCompanions.h"
+#include "AnimalGait.h"
+#include "Components/PoseableMeshComponent.h"
 #include "HockeySurprise.h"
 #include "HouseUpstairs.h"
 #include "HalloweenCostume.h"
@@ -26,6 +28,13 @@ void UCatCompanions::Initialize()
     auto* D=M->Adventure->Progress.Get();D->CatFollowMask&=3;D->LakituBond=FMath::Clamp(D->LakituBond,0,10);D->RioBond=FMath::Clamp(D->RioBond,0,10);
     for(TActorIterator<AStaticMeshActor> It(GetWorld());It;++It){const UStaticMesh* PetMesh=It->GetStaticMeshComponent()->GetStaticMesh();if(!PetMesh)continue;
         for(int32 I=0;I<2;++I)if(PetMesh->GetPathName()==FString::Printf(TEXT("/Game/VisualLab/Pets/%s.%s"),CatName(I),CatName(I))){auto& C=Cats[I];C.Actor=*It;C.Home=It->GetActorTransform();C.Position=It->GetActorLocation();It->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);It->SetActorEnableCollision(false);}}
+    for(int32 I=0;I<2;++I)if(Cats[I].Actor.IsValid())
+    {
+        auto& C=Cats[I];auto* G=NewObject<UAnimalGait>(C.Actor.Get());G->RegisterComponent();
+        const FVector InverseScale=FVector::OneVector/C.Actor->GetActorScale3D();
+        if(G->Initialize(CatName(I),true,C.Actor->GetRootComponent(),FTransform(FQuat::Identity,FVector::ZeroVector,InverseScale)))
+        {C.Gait=G;C.Actor->GetStaticMeshComponent()->SetVisibility(false);}
+    }
     for(auto& Cat:Cats)if(Cat.Actor.IsValid()&&!Cat.Actor->FindComponentByClass<UHalloweenCostume>()){auto* Outfit=NewObject<UHalloweenCostume>(Cat.Actor.Get());Outfit->RegisterComponent();}
     Ready=Cats[0].Actor.IsValid()&&Cats[1].Actor.IsValid();
 }
@@ -44,13 +53,13 @@ bool UCatCompanions::PlaceNear(int32 I,bool Outside)
         if(!GetWorld()->LineTraceSingleByChannel(Ground,Trial+FVector(0,0,80),Trial-FVector(0,0,180),ECC_WorldStatic,Q)||Ground.ImpactNormal.Z<.7f)continue;
         const FVector Spot(Ground.ImpactPoint.X,Ground.ImpactPoint.Y,Ground.ImpactPoint.Z+C.Home.GetLocation().Z);
         if(GetWorld()->OverlapBlockingTestByChannel(Spot+FVector(0,0,22),FQuat::Identity,ECC_WorldStatic,FCollisionShape::MakeSphere(14),Q))continue;
-        C.Position=Spot;C.Speed=0;C.Waiting=false;C.Outdoors=Outside;C.Actor->SetActorLocationAndRotation(Spot,FRotator(0,P->GetActorRotation().Yaw,0));return true;}
+        C.Position=Spot;C.Speed=0;C.Waiting=false;C.Outdoors=Outside;C.Actor->SetActorLocationAndRotation(Spot,FRotator(0,P->GetActorRotation().Yaw,0));if(C.Gait.IsValid())C.Gait->ResetContacts();return true;}
     C.Waiting=true;return false;
 }
 void UCatCompanions::OnPlayerTravel(bool Outside){Initialize();if(!Enabled()||!Ready)return;for(int32 I=0;I<2;++I)if(Following(I))PlaceNear(I,Outside);}
 void UCatCompanions::ApplyFeature()
 {
-    Initialize();if(!Ready)return;for(auto& C:Cats){C.Actor->SetActorTransform(C.Home);C.Position=C.Home.GetLocation();C.Speed=C.Happy=0;C.Waiting=C.Outdoors=false;}
+    Initialize();if(!Ready)return;for(auto& C:Cats){C.Actor->SetActorTransform(C.Home);C.Position=C.Home.GetLocation();C.Speed=C.Happy=0;C.Waiting=C.Outdoors=false;if(C.Gait.IsValid())C.Gait->ResetContacts();}
     const auto* M=Cast<AMartyPlayMode>(GetOwner());if(Enabled()&&M&&M->Neighbourhood)OnPlayerTravel(M->Neighbourhood->Outside);
 }
 void UCatCompanions::ToggleFollow(int32 I)
@@ -77,7 +86,7 @@ FString UCatCompanions::Prompt() const
 }
 void UCatCompanions::TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function)
 {
-    Super::TickComponent(Delta,Type,Function);Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(Ready&&M&&M->Adventure->Progress)for(int32 I=0;I<2;++I)if(auto* Outfit=Cats[I].Actor->FindComponentByClass<UHalloweenCostume>())Outfit->SetOutfit(Cats[I].Actor->GetStaticMeshComponent(),I+1,(M->Adventure->Progress->CostumeMask&(1<<(I+1)))!=0,(M->Adventure->Progress->FantasyCostumeMask&(1<<(I+1)))!=0);
+    Super::TickComponent(Delta,Type,Function);Initialize();auto* M=Cast<AMartyPlayMode>(GetOwner());auto* P=Marty();if(Ready&&M&&M->Adventure->Progress)for(int32 I=0;I<2;++I)if(auto* Outfit=Cats[I].Actor->FindComponentByClass<UHalloweenCostume>())Outfit->SetOutfit(Cats[I].Gait.IsValid()?static_cast<USceneComponent*>(Cats[I].Gait->Skin.Get()):Cats[I].Actor->GetStaticMeshComponent(),I+1,(M->Adventure->Progress->CostumeMask&(1<<(I+1)))!=0,(M->Adventure->Progress->FantasyCostumeMask&(1<<(I+1)))!=0);
     if(!Ready||!Enabled()||!P||M->Adventure->Screen!=ECozyScreen::Playing)return;
     const float Dt=FMath::Min(Delta,.05f);
     for(int32 I=0;I<2;++I){auto& C=Cats[I];C.Phase+=Dt;C.PetCooldown=FMath::Max(0.f,C.PetCooldown-Dt);C.Happy=FMath::Max(0.f,C.Happy-Dt);
@@ -92,6 +101,6 @@ void UCatCompanions::TickComponent(float Delta,ELevelTick Type,FActorComponentTi
         }
         const FVector Look=C.Speed>1&&!C.Waiting&&!Direction.IsNearlyZero()?Direction:P->GetActorLocation()-C.Position;float Yaw=C.Actor->GetActorRotation().Yaw;
         if(C.Outdoors==M->Neighbourhood->Outside&&(C.Speed>1||Look.Size2D()<220))Yaw=FMath::FixedTurn(Yaw,Look.Rotation().Yaw,TurnSpeed*Dt);
-        const float Bob=C.Speed>1&&!C.Waiting?.35f*FMath::Sin(C.Phase*12):.12f*FMath::Sin(C.Phase*2);C.Actor->SetActorLocationAndRotation(C.Position+FVector(0,0,Bob),FRotator(0,Yaw,0));
+        C.Actor->SetActorLocationAndRotation(C.Position,FRotator(0,Yaw,0));if(C.Gait.IsValid()){C.Gait->Happy=C.Happy>0;C.Gait->Sniff=false;}
     }
 }

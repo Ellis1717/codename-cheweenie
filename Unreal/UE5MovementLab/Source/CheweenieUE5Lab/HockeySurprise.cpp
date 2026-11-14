@@ -1,3 +1,4 @@
+#include "AnimalGait.h"
 #include "HockeySurprise.h"
 #include "MartyCharacter.h"
 #include "CozyAdventure.h"
@@ -69,7 +70,9 @@ void UHockeySurprise::Build(bool DressingRoom)
     for(float X:{105.f,175.f})Box(FVector(X,0,DressingRoom?45:95),FVector(7,68,6),Gold,false);
     Box(FVector(140,0,DressingRoom?54:104),FVector(45,8,8),Gold,false);
     Cat=GetWorld()->SpawnActor<AStaticMeshActor>(Origin+FVector(140,0,0),FRotator(0,180,0));Props.Add(Cat);
-    auto* C=Cat->GetStaticMeshComponent();C->SetMobility(EComponentMobility::Movable);C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,TEXT("/Game/VisualLab/Pets/Lakitu.Lakitu")));C->SetCollisionEnabled(ECollisionEnabled::NoCollision);Cat->SetActorScale3D(FVector(.32));Cat->SetActorHiddenInGame(true);
+    auto* C=Cat->GetStaticMeshComponent();C->SetMobility(EComponentMobility::Movable);C->SetStaticMesh(LoadObject<UStaticMesh>(nullptr,TEXT("/Game/VisualLab/Pets/Lakitu.Lakitu")));C->SetCollisionEnabled(ECollisionEnabled::NoCollision);Cat->SetActorScale3D(FVector(.32));
+    auto* Gait=NewObject<UAnimalGait>(Cat);Gait->RegisterComponent();if(Gait->Initialize(TEXT("Lakitu"),true,C,FTransform(FQuat::Identity,FVector::ZeroVector,FVector(3.125))))C->SetVisibility(false);
+    Cat->SetActorHiddenInGame(true);
     auto* P=Cast<AMartyCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());P->GetCharacterMovement()->StopMovementImmediately();P->TeleportTo(Origin+FVector(-230,0,40),FRotator::ZeroRotator);GetWorld()->GetFirstPlayerController()->SetControlRotation(FRotator(-12,0,0));
 }
 void UHockeySurprise::Start()
@@ -117,5 +120,5 @@ void UHockeySurprise::TickComponent(float Delta,ELevelTick Type,FActorComponentT
     Super::TickComponent(Delta,Type,Function);if(!Active())return;
     auto* M=Cast<AMartyPlayMode>(GetOwner());if(M->Adventure->Screen!=ECozyScreen::Playing)return;
     if(Stage<2&&Bag)Bag->SetActorRotation(FRotator(0,4*FMath::Sin(GetWorld()->GetTimeSeconds()*5),0));
-    if(Stage>=2&&Cat){RevealTime=FMath::Min(1.f,RevealTime+Delta);const float T=RevealTime;Cat->SetActorLocation(Origin+FVector(140-90*T,0,50*FMath::Sin(PI*T)));}
+    if(Stage>=2&&Cat){RevealTime=FMath::Min(1.f,RevealTime+Delta);const float T=RevealTime;Cat->SetActorLocation(Origin+FVector(140-90*T,0,50*FMath::Sin(PI*T)));if(T<1)Cat->Tags.AddUnique(TEXT("AnimalAirborne"));else Cat->Tags.Remove(TEXT("AnimalAirborne"));}
 }

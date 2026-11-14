@@ -8,6 +8,9 @@ class AMartyCharacter;
 class UInstancedStaticMeshComponent;
 class UDirectionalLightComponent;
 class UParkSports;
+class UTextRenderComponent;
+class UAnimalGait;
+enum class ENeighbourActivity : uint8 { Roam, Sniff, Greet, Play, Follow, Return };
 
 struct FNeighbourDog
 {
@@ -15,6 +18,14 @@ struct FNeighbourDog
     FVector Position;
     FLinearColor Coat=FLinearColor(.5f,.25f,.1f);
     bool Met=false;
+    FVector Home=FVector::ZeroVector, Target=FVector::ZeroVector;
+    ENeighbourActivity Activity=ENeighbourActivity::Roam;
+    float Timer=0, Phase=0, Yaw=0, Speed=95, Cooldown=0, Blocked=0;
+    int32 Bond=0, Visit=0, RoamStep=0;
+    TWeakObjectPtr<AActor> Body;
+    TWeakObjectPtr<UAnimalGait> Gait;
+
+    TWeakObjectPtr<UTextRenderComponent> Label;
 };
 struct FCozyStreet { FVector A,B; FString Name; };
 
@@ -24,7 +35,11 @@ class UCheweenieNeighbourhood : public UActorComponent
 {
     GENERATED_BODY()
 public:
+    UCheweenieNeighbourhood();
     virtual void BeginPlay() override;
+    virtual void TickComponent(float Delta,ELevelTick Type,FActorComponentTickFunction* Function) override;
+    FString DogAction(const FNeighbourDog& D) const;
+    void ResetDogVisits();
     bool Interact(AMartyCharacter* Pawn);
     FString Prompt(const AMartyCharacter* Pawn) const;
     void GoOutside(AMartyCharacter* Pawn);
@@ -58,7 +73,9 @@ private:
     void Path(FVector A,FVector B,float Width,int32 Color);
     void House(FVector P,int32 Slot,const FString& Label);
     void Home();
-    void Dog(const FNeighbourDog& Definition,int32 Index);
+    void Dog(FNeighbourDog& Definition,int32 Index);
+    void UpdateDogs(float Delta);
+    bool MoveDog(FNeighbourDog& D,FVector Target,float Delta);
     void Build();
     bool LoadMap();
     void LoadDogs();

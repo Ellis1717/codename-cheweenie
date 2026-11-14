@@ -1,3 +1,6 @@
+#include "AnimalGait.h"
+#include "Components/PoseableMeshComponent.h"
+#include "EngineUtils.h"
 #include "MartyCharacter.h"
 #include "HockeySurprise.h"
 #include "CozyAdventure.h"
@@ -27,6 +30,9 @@ void AMartyPlayMode::TickHockeySmoke(float Delta)
     auto Next=[&](){++SmokeStage;SmokeTime=0;};
     auto Shot=[&](const TCHAR* N){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/N,true,false);};
     if(SmokeStage==2)PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,EKeys::Gamepad_LeftY,1.f,Delta,1,FPlatformTime::Cycles64()));
+    auto StoryRig=[&]()->UAnimalGait*{for(TActorIterator<AStaticMeshActor> It(GetWorld());It;++It)if(It->GetActorLocation().Z>2000)if(auto* G=It->FindComponentByClass<UAnimalGait>())return G;return nullptr;};
+    if(SmokeStage==6&&!SmokeMoving&&SmokeTime>.3f)
+    {auto* G=StoryRig();SmokeCheck(G&&G->Ready&&G->GetOwner()->ActorHasTag(TEXT("AnimalAirborne"))&&G->PlantedPaws==0,TEXT("Story Lakitu uses the feline rig and tucks paws during his reveal hop"));SmokeMoving=true;}
     switch(SmokeStage)
     {
     case 0:if(SmokeTime>(FApp::CanEverRender()?15:3))
@@ -60,6 +66,7 @@ void AMartyPlayMode::TickHockeySmoke(float Delta)
         {
             SmokeCheck(Hockey->Stage==2&&Adventure->Message.Contains(TEXT("You're not my skates")),TEXT("Synthetic X/Square unzips bag and reveals Lakitu with Leo's reaction"));
             SmokeCheck(Adventure->AudibleCueCounts.FindRef(TEXT("Lakitu"))==int32(SmokeYaw)+1,TEXT("Reveal triggers Lakitu's meow cue"));
+            auto* G=StoryRig();SmokeCheck(G&&G->Ready&&G->Feline&&G->PlantedPaws>=2&&!G->Skin->GetBoneTransformByName(TEXT("spine"),EBoneSpaces::ComponentSpace).ContainsNaN(),TEXT("Story cat lands with a finite supported articulated pose"));
             SmokeCheck(Adventure->Progress->SnackMask==0&&Adventure->Progress->VisitIndex==0,TEXT("Story does not advance main patrol progress"));
             Shot(TEXT("HockeyDressingRoom.png"));Next();
         }break;

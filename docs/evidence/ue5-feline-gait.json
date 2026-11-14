@@ -1,0 +1,144 @@
+{
+  "date": "2026-11-13",
+  "engine": "5.8.4",
+  "branch": "codex/articulated-dogs-and-cats",
+  "nativeEditorBuild": "passed",
+  "totalFinalAssertions": 268,
+  "runs": [
+    {
+      "report": "ue5-feline-gait/species.json",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/cats.json",
+      "passed": 33,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/cats-reload.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/dogs.json",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/coop-host.json",
+      "passed": 48,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/coop-guest.json",
+      "passed": 46,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/hockey.json",
+      "passed": 17,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/movement.json",
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/costumes.json",
+      "passed": 51,
+      "failed": 0
+    },
+    {
+      "report": "ue5-feline-gait/costumes-reload.json",
+      "passed": 3,
+      "failed": 0
+    }
+  ],
+  "initialRun": {
+    "report": "ue5-feline-gait/initial-cold-companions.json",
+    "passed": 31,
+    "failed": 2,
+    "note": "Initial concurrent cold-start companion run missed acceleration/stride timing checks; unchanged-source warm rerun passed all 33 play and four reload checks. Initial failure retained, not counted as a pass."
+  },
+  "speciesMetrics": "ue5-feline-gait/species-metrics.json",
+  "sourceSha256": {
+    "AnimalGait.cpp": "073178416b37bce61cd88f6592334d967982b93841b4b18b8058b63dd8f93b41",
+    "AnimalGait.h": "60dccffe085728e20fe9b34ac1a87954200f586c27be494bcb974e8ffe563760",
+    "CompanionSmoke.cpp": "ed3669a388c0769937b587f1e90410e95145cbb70cb682dfccee0ec6e5479fa7"
+  },
+  "nativeModuleSha256": "44f35e661b963799f643bd2e1ea8c6b3c471d8223de3979f7919a0e13c22fa83",
+  "motion": {
+    "frames": 120,
+    "playbackFps": 24,
+    "seconds": 5,
+    "fullDecode": "passed",
+    "sha256": "7aacf69854a85b78e960db34925cf8054968e9104f4ccb11ecefedbf73f8a714",
+    "localPath": "D:/CheweenieValidation/NeighbourDogs/Unreal/UE5MovementLab/Saved/FelineMotionReview/AnimalMotion.mp4",
+    "reviewedFrames": [
+      32,
+      75,
+      112
+    ],
+    "note": "Scripted screenshot capture, not a real-time performance benchmark. Marty leaves the left of the camera; companions remain visible."
+  },
+  "reviewedCostumeCaptures": [
+    "HalloweenLakitu.png",
+    "HalloweenRio.png"
+  ],
+  "logScan": [
+    {
+      "log": "SpeciesGait/Species.log",
+      "matches": []
+    },
+    {
+      "log": "FelineDogs/DogNPCs.log",
+      "matches": []
+    },
+    {
+      "log": "FelineCompanionsFinal/Companion-play.log",
+      "matches": []
+    },
+    {
+      "log": "FelineCompanionsFinal/Companion-resume.log",
+      "matches": []
+    },
+    {
+      "log": "FelineCoop/host.log",
+      "matches": []
+    },
+    {
+      "log": "FelineCoop/guest.log",
+      "matches": []
+    },
+    {
+      "log": "FelineHockey/Hockey.log",
+      "matches": []
+    },
+    {
+      "log": "FelineMovement/MovementSmoke.log",
+      "matches": []
+    },
+    {
+      "log": "FelineMotionReview/Motion.log",
+      "matches": []
+    },
+    {
+      "log": "FelineCostumes/Costume-play.log",
+      "matches": []
+    },
+    {
+      "log": "FelineCostumes/Costume-resume.log",
+      "matches": []
+    }
+  ],
+  "unverified": [
+    "physical keyboard/controller play",
+    "separate-PC networking",
+    "comparative performance",
+    "updated standalone desktop package"
+  ],
+  "desktopPackageChanged": false,
+  "UnityChanged": false
+}

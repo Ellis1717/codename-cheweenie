@@ -4,16 +4,18 @@
 #include "CatCompanions.generated.h"
 class AStaticMeshActor;
 class AMartyCharacter;
+class UAnimalGait;
 struct FCozyCatRuntime
 {
     TWeakObjectPtr<AStaticMeshActor> Actor;
+    TWeakObjectPtr<UAnimalGait> Gait;
     FTransform Home;
     FVector Position=FVector::ZeroVector;
     float Speed=0,Phase=0,Happy=0,PetCooldown=0;
     bool Outdoors=false,Waiting=false;
 };
 
-// Behaviour for the retained photo-guided meshes; this does not replace them with a new rig.
+// Companion behavior retains actor identity; a separate skinned feline rig supplies articulation.
 UCLASS(ClassGroup=(Cheweenie),meta=(BlueprintSpawnableComponent))
 class UCatCompanions:public UActorComponent
 {

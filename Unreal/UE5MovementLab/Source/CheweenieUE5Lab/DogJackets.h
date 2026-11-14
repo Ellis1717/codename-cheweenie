@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "WardrobeAttachment.h"
 #include "DogJackets.generated.h"
 class USceneComponent;
 class UProceduralMeshComponent;
@@ -23,6 +24,7 @@ public:
     int32 Style=0;
     static FString Name(int32 Choice);
 private:
+    FWardrobeAttachment Attachment;
     void Build();
     void Shell(float Start,float End,float Width,float Height,float Z,int32 Material,float MinAngle=-108,float MaxAngle=108,bool Puffy=false,float RearCurve=0,float FrontCurve=0,float NeckRise=0);
     UPROPERTY() TObjectPtr<USceneComponent> Anchor;

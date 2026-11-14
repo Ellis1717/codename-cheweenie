@@ -1,3 +1,5 @@
+#include "AnimalGait.h"
+#include "Components/PoseableMeshComponent.h"
 // Real server/client acceptance, opt-in only. Inputs are synthetic, not physical hardware.
 #include "CozyCoop.h"
 #include "CozyModeHub.h"
@@ -61,6 +63,7 @@ void ACozyCoopController::TickAcceptance(float Delta)
         Next();break;
     case 1:
         Key(Host?EKeys::T:EKeys::Gamepad_DPad_Up,false);if(StageTime<1)break;
+        {auto* CatRig=(Host?Other:P)->FindComponentByClass<UAnimalGait>();Check(CatRig&&CatRig->Ready&&CatRig->Feline&&CatRig->Skin->IsVisible(),TEXT("Playable cat has a visible skinned feline rig on both peers"));}
         Check(P->WearingCostume&&Other->WearingCostume&&P->Costume->VisiblePieces()>0&&Other->Costume->VisiblePieces()>0,TEXT("Keyboard and gamepad costume choices reach both peers"));
         Check(CostumeAlignedWithMarty(Host?P:Other),TEXT("Marty's hot dog is lengthwise on both the owner and remote peer"));Check(MartyRootsPinned(Host?P:Other),TEXT("Marty ear and tail roots stay pinned on owner and remote peer"));
         Key(Host?EKeys::E:EKeys::Gamepad_FaceButton_Left,true);Next();break;
@@ -78,6 +81,7 @@ void ACozyCoopController::TickAcceptance(float Delta)
         Axis(EKeys::Gamepad_LeftY,.7f);if(StageTime<1)break;Axis(EKeys::Gamepad_LeftY,0);Key(Host?EKeys::LeftShift:EKeys::Gamepad_FaceButton_Bottom,false);Next();break;
     case 6:
         Axis(EKeys::Gamepad_LeftY,0);if(StageTime<1)break;
+        {auto* CatRig=(Host?Other:P)->FindComponentByClass<UAnimalGait>();Check(CatRig&&CatRig->Travel>10&&CatRig->MaxJointBend>15,TEXT("Local and remote cats articulate weighted legs during network movement"));}
         Check(SawRemoteMove,TEXT("Remote movement reached this peer"));Check(SawRemoteRun,TEXT("Remote hurry speed reached this peer"));
         Check(P->GetVelocity().Size2D()<3,TEXT("Synthetic stick release stops owner"));
         OwnStart=FVector(GetControlRotation().Yaw,0,0);Next();break;
@@ -88,6 +92,7 @@ void ACozyCoopController::TickAcceptance(float Delta)
     case 8:
         Key(EKeys::Gamepad_RightThumbstick,false);Key(Host?EKeys::SpaceBar:EKeys::Gamepad_FaceButton_Top,false);Key(Host?EKeys::B:EKeys::Gamepad_LeftShoulder,false);
         if(StageTime<.2f)break;
+        if(!Host){auto* CatRig=P->FindComponentByClass<UAnimalGait>();Check(CatRig&&CatRig->PlantedPaws==0,TEXT("Jumping cat releases planted paws for its airborne pose"));}
         Check(P->CameraPreset==1,TEXT("Controller camera binding works in co-op"));Check(P->GetCharacterMovement()->IsFalling(),TEXT("Keyboard and controller jump enter replicated falling movement"));Next();break;
     case 9:
         if(StageTime<1.5f)break;Check(P->VoiceCount>0&&SawVoice,TEXT("Both pet voice events replicate"));

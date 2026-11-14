@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "WardrobeAttachment.h"
 #include "HalloweenCostume.generated.h"
 
 class USceneComponent;
@@ -27,4 +28,5 @@ private:
     UPROPERTY() TObjectPtr<USceneComponent> Target;
     UPROPERTY() TArray<TObjectPtr<UStaticMeshComponent>> Pieces;
     bool Wearing = false;
+    FWardrobeAttachment Attachment;
 };

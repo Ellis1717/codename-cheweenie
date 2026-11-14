@@ -7,6 +7,7 @@
 
 class UStaticMeshComponent;
 class USoundBase;
+class UAnimalGait;
 
 // Independent LAN/memory room. Reads host character unlocks; quests remain in solo.
 UCLASS()
@@ -85,6 +86,7 @@ private:
     void ToggleCostume();
     UPROPERTY() TObjectPtr<UInputMappingContext> CoopMapping;
     UPROPERTY() TArray<TObjectPtr<UInputAction>> CoopActions;
+    UPROPERTY() TObjectPtr<UAnimalGait> CatGait;
     UPROPERTY() TObjectPtr<UStaticMesh> LakituMesh;
     UPROPERTY() TObjectPtr<UStaticMesh> RioMesh;
     UPROPERTY() TObjectPtr<UStaticMesh> RatchetMesh;

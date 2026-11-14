@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-12",
+  "nativeEditorBuild": "passed",
+  "engine": "5.8.4",
+  "totalCurrentAssertions": 134,
+  "runs": [
+    {
+      "report": "ue5-halloween-opt-in/festival-play.json",
+      "passed": 41,
+      "failed": 0
+    },
+    {
+      "report": "ue5-halloween-opt-in/ordinary-restart.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "ue5-halloween-opt-in/menu-restart.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "ue5-halloween-opt-in/mode-hub.json",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "report": "ue5-halloween-opt-in/dogs.json",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "report": "ue5-halloween-opt-in/movement.json",
+      "passed": 20,
+      "failed": 0
+    }
+  ],
+  "finalLogScans": [
+    {
+      "log": "HalloweenOptInFinal/Festival-play.log",
+      "errorFatalMaterialFallbackVSMOverflow": 0
+    },
+    {
+      "log": "HalloweenOptInFinal/Festival-default.log",
+      "errorFatalMaterialFallbackVSMOverflow": 0
+    },
+    {
+      "log": "HalloweenOptInFinal/Festival-resume.log",
+      "errorFatalMaterialFallbackVSMOverflow": 0
+    },
+    {
+      "log": "HalloweenOptInFinalHub/solo.log",
+      "errorFatalMaterialFallbackVSMOverflow": 0
+    },
+    {
+      "log": "HalloweenOptInFinalDogs/DogNPCs.log",
+      "errorFatalMaterialFallbackVSMOverflow": 0
+    },
+    {
+      "log": "HalloweenOptInFinalMovement/MovementSmoke.log",
+      "errorFatalMaterialFallbackVSMOverflow": 0
+    }
+  ],
+  "ordinaryTitle": {
+    "file": "../screenshots/ue5-halloween-default-off.png",
+    "reviewed": true,
+    "sha256": "58fe8f610fac7e68903ccbd1662cd7141bf96a2556d6344effbb020622bcc984"
+  },
+  "hashes": {
+    "Source/CheweenieUE5Lab/CozyAdventure.cpp": "7ec2b11eaed0e8c11f824775a14e9cc154f179161133ebc095013177ebb3d302",
+    "Source/CheweenieUE5Lab/FestivalSmoke.cpp": "c2354812f4a952e6efd3b6cb383f7c1bce6bca71c83a8c432b787c5e5c3ed48c",
+    "TEST_FESTIVAL.ps1": "53288bb0b0673e8239cddc27b65a79dc2f98c084b236b4fc75dbe94ca7e15f39",
+    "Binaries/Win64/UnrealEditor-CheweenieUE5Lab.dll": "857bbcb2c7b276405a1d2d5f122f16a7feba20eff8aeabe00ef37895dff1587c"
+  },
+  "behavior": "Halloween starts off on every launch, including saved active events. Explicit Start/Enable required. Stamps, badges and other progress retained.",
+  "initialFixtureCorrection": "Keyboard confirm release and controller confirm press must occur in separate frames; final ordinary-restart run passed all six assertions.",
+  "previousRigMilestone": "ue5-animal-articulation.json (254 assertions before this opt-in change)",
+  "desktopPackages": "unchanged",
+  "physicalControllers": "unverified",
+  "unity": "unchanged; checks not rerun"
+}

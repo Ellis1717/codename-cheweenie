@@ -91,9 +91,8 @@ void UDogJackets::TickComponent(float Delta,ELevelTick Type,FActorComponentTickF
     Super::TickComponent(Delta,Type,Function);if(!Style||!IsValid(Target))return;
     if(auto* Skin=Cast<UPoseableMeshComponent>(Target.Get()))
     {
-        const auto* Asset=Skin->GetSkinnedAsset();if(!Asset)return;const auto& Skeleton=Asset->GetRefSkeleton();const int32 I=Skeleton.FindBoneIndex(TEXT("spine"));if(I==INDEX_NONE)return;
-        FTransform Bind=Skeleton.GetRefBonePose()[I];for(int32 Parent=Skeleton.GetParentIndex(I);Parent!=INDEX_NONE;Parent=Skeleton.GetParentIndex(Parent))Bind=Bind*Skeleton.GetRefBonePose()[Parent];
-        const FTransform Saddle(FQuat::Identity,Bind.GetLocation()+FVector(5,0,4));FTransform Follow=Saddle.GetRelativeTransform(Bind)*Skin->GetBoneTransformByName(TEXT("spine"),EBoneSpaces::WorldSpace);Follow.SetScale3D(FVector::OneVector);Anchor->SetWorldTransform(Follow);
+        if(!Attachment.Resolve(Skin->GetSkinnedAsset()))return;
+        FTransform Follow=Attachment.RelativeSaddle*Skin->GetBoneTransformByName(TEXT("spine"),EBoneSpaces::WorldSpace);Follow.SetScale3D(FVector::OneVector);Anchor->SetWorldTransform(Follow);
     }
     else {const auto Transform=Target->GetComponentTransform();Anchor->SetWorldTransform(FTransform(Transform.GetRotation(),Transform.TransformPosition(FVector(-15,0,82)),FVector::OneVector));}
 }

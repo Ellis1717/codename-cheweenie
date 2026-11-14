@@ -5,6 +5,7 @@
 #include "DogLife.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Engine/SkinnedAsset.h"
+#include "Engine/SkeletalMesh.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -52,10 +53,35 @@ void AMartyPlayMode::TickJacketSmoke(float Delta)
     {
     case 0:
         if(SmokeTime<(FApp::CanEverRender()?25:3))break;
+        {
+            FWardrobeAttachment Cache;
+            const TCHAR* Assets[]={TEXT("/Game/Adventure/MartyPhotoSmooth/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyPhotoReference/Marty_RealCoat.Marty_RealCoat"),TEXT("/Game/Adventure/MartyVisibleStrands/Marty_RealCoat.Marty_RealCoat")};
+            for(int32 Detail=0;Detail<3;++Detail)
+            {
+                auto* Asset=LoadObject<USkeletalMesh>(nullptr,Assets[Detail]);
+                bool Matches=Asset&&Cache.Resolve(Asset);
+                if(Matches)
+                {
+                    const auto& Ref=Asset->GetRefSkeleton();const int32 Spine=Ref.FindBoneIndex(TEXT("spine"));
+                    FTransform Bind=Ref.GetRefBonePose()[Spine];
+                    for(int32 Parent=Ref.GetParentIndex(Spine);Parent!=INDEX_NONE;Parent=Ref.GetParentIndex(Parent))Bind=Bind*Ref.GetRefBonePose()[Parent];
+                    const FTransform Expected=FTransform(FQuat::Identity,Bind.GetLocation()+FVector(5,0,4)).GetRelativeTransform(Bind);
+                    for(int32 Sample=0;Sample<64;++Sample)Matches=Cache.Resolve(Asset)&&Cache.RelativeSaddle.Equals(Expected,.00001f)&&Matches;
+                }
+                SmokeCheck(Matches&&Cache.Builds==Detail+1,FString::Printf(TEXT("Wardrobe cache matches uncached attachment and builds once across 64 warm samples, fur %d"),Detail));
+            }
+            SmokeCheck(!Cache.Resolve(nullptr)&&Cache.Builds==3,TEXT("Missing mesh safely skips wardrobe attachment"));
+            auto* Empty=NewObject<USkeletalMesh>(this);
+            SmokeCheck(!Cache.Resolve(Empty)&&!Cache.Resolve(Empty)&&Cache.Builds==4,TEXT("Missing spine is cached safely without repeated hierarchy searches"));
+            SmokeCheck(Cache.Resolve(P->Skin->GetSkinnedAsset())&&Cache.Builds==5,TEXT("Wardrobe cache recovers when a valid mesh returns"));
+        }
         SmokeCheck(S->Slot==TEXT("CheweenieJacketAcceptance"),TEXT("Jacket checks use an isolated save"));SmokeCheck(D->MartyJacket==0&&J->VisiblePieces()==0,TEXT("New profiles default to no jacket"));
         S->Start(true);D->CostumeMask=6;Wardrobe();SmokeCheck(S->Screen==ECozyScreen::Wardrobe&&S->Menu().Num()==8,TEXT("Wardrobe keeps three costumes and adds a jacket selector"));Key(EKeys::Right,true);Next();break;
     case 1:
-        Key(EKeys::Right,false);SmokeCheck(D->MartyJacket==1&&D->CostumeMask==6,TEXT("Keyboard selects yellow raincoat without changing cat costumes"));SmokeCheck(J->VisiblePieces()>0&&J->CollisionFree()&&J->MaterialsReady(),TEXT("Raincoat has visible original geometry and valid non-colliding materials"));SmokeCheck(J->SurfaceFacesOutward(),TEXT("Garment surfaces use outward normals and Unreal clockwise front faces"));Resume();View();Next();break;
+        Key(EKeys::Right,false);SmokeCheck(D->MartyJacket==1&&D->CostumeMask==6,TEXT("Keyboard selects yellow raincoat without changing cat costumes"));SmokeStage=101;SmokeTime=0;break;
+    case 101:
+        // Input updates preferences before the pawn applies the garment on its next tick.
+        SmokeCheck(J->Style==1&&J->VisiblePieces()>0&&J->CollisionFree()&&J->MaterialsReady(),TEXT("Raincoat has visible original geometry and valid non-colliding materials"));SmokeCheck(J->SurfaceFacesOutward(),TEXT("Garment surfaces use outward normals and Unreal clockwise front faces"));Resume();View();SmokeStage=2;SmokeTime=0;break;
     case 2:
         if(SmokeTime<1)break;SmokeCheck(JacketAligned(P),TEXT("Yellow coat follows the actual body axis"));Shot(TEXT("JacketYellow.png"));SmokeStage=102;SmokeTime=0;break;
     case 102:S->AdjustMartyJacket(1);SmokeStage=3;SmokeTime=0;break;

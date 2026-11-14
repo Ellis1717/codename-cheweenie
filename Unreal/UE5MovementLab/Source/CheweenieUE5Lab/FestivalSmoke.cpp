@@ -29,10 +29,37 @@ void AMartyPlayMode::TickFestivalSmoke(float Delta)
     auto Next=[&](){++SmokeStage;SmokeTime=0;};
     auto Key=[PC](FKey K,bool Down){PC->InputKey(FInputKeyEventArgs(nullptr,INPUTDEVICEID_NONE,K,Down?IE_Pressed:IE_Released,FPlatformTime::Cycles64()));};
     auto Shot=[&](const TCHAR* Name){if(FApp::CanEverRender())FScreenshotRequest::RequestScreenshot(Root/Name,true,false);};
-    auto Finish=[&](bool Resume){auto J=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto V:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(V));for(auto V:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(V));J->SetArrayField(TEXT("passed"),Pass);J->SetArrayField(TEXT("failed"),Fail);J->SetStringField(TEXT("scope"),TEXT("Actual game map, synthetic keyboard/controller, isolated checkpoint plus position/action/cosmetic fixtures; physical controllers unverified. Local map source details excluded."));J->SetBoolField(TEXT("private_layout"),Neighbourhood->PrivateMapLoaded);FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));const bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/(Resume?TEXT("festival-resume.json"):TEXT("festival-smoke.json"))));if(Resume)UGameplayStatics::DeleteGameInSlot(TEXT("CheweenieFestivalAcceptance"),0);FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);SmokeStage=1000;};
+    const bool DefaultAudit=FParse::Param(FCommandLine::Get(),TEXT("CheweenieHalloweenDefaultAudit"));
+    auto Finish=[&](bool Resume){auto J=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto V:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(V));for(auto V:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(V));J->SetArrayField(TEXT("passed"),Pass);J->SetArrayField(TEXT("failed"),Fail);J->SetStringField(TEXT("scope"),TEXT("Actual game map, synthetic keyboard/controller, isolated checkpoint plus position/action/cosmetic fixtures; physical controllers unverified. Local map source details excluded."));J->SetBoolField(TEXT("private_layout"),Neighbourhood->PrivateMapLoaded);FString Json;FJsonSerializer::Serialize(J,TJsonWriterFactory<>::Create(&Json));const bool Saved=FFileHelper::SaveStringToFile(Json,*(Root/(DefaultAudit?TEXT("festival-default.json"):Resume?TEXT("festival-resume.json"):TEXT("festival-smoke.json"))));if(Resume&&!DefaultAudit)UGameplayStatics::DeleteGameInSlot(TEXT("CheweenieFestivalAcceptance"),0);FPlatformMisc::RequestExitWithStatus(false,Saved&&SmokeFailed.IsEmpty()?0:1);SmokeStage=1000;};
+    if(DefaultAudit)
+    {
+        if(SmokeStage==0&&SmokeTime>(FApp::CanEverRender()?10:3))
+        {
+            SmokeCheck(S->Screen==ECozyScreen::Title&&!F->Active()&&!F->DecorationsVisible(),TEXT("Saved active Halloween cannot become the default title or event on a normal launch"));
+            SmokeCheck(D->HalloweenStampMask==3&&D->HalloweenBadge&&!D->HalloweenRoundComplete,TEXT("Default-off migration preserves stickers and permanent rewards"));
+            Shot(TEXT("HalloweenDefaultTitle.png"));Next();
+        }
+        else if(SmokeStage==1&&SmokeTime>.5f)
+        {
+            S->Selection=0;S->Confirm();SmokeCheck(S->Screen==ECozyScreen::Playing&&!F->Active()&&!Neighbourhood->Outside,TEXT("Ordinary Continue starts headquarters patrol without enabling Halloween"));
+            S->OpenHalloween();SmokeCheck(S->Screen==ECozyScreen::Halloween&&!F->Active(),TEXT("Opening the Halloween menu alone does not enable the event"));
+            S->Selection=1;Key(EKeys::Enter,true);Next();
+        }
+        else if(SmokeStage==2&&SmokeTime>.3f)
+        {
+            Key(EKeys::Enter,false);SmokeCheck(F->Active()&&F->DecorationsVisible(),TEXT("Explicit keyboard enable activates Halloween"));Next();
+        }
+        else if(SmokeStage==3&&SmokeTime>.3f){Key(EKeys::Gamepad_FaceButton_Bottom,true);Next();}
+        else if(SmokeStage==4&&SmokeTime>.3f)
+        {
+            Key(EKeys::Gamepad_FaceButton_Bottom,false);SmokeCheck(!F->Active()&&!F->DecorationsVisible()&&D->HalloweenStampMask==3,TEXT("Explicit controller disable restores ordinary scenery and retains progress"));
+            D->HalloweenActive=true;S->Save();Finish(false);
+        }
+        return;
+    }
     if(FParse::Param(FCommandLine::Get(),TEXT("CheweenieFestivalResume")))
     {
-        if(SmokeStage==0&&SmokeTime>3){SmokeCheck(S->Screen==ECozyScreen::Halloween,TEXT("Standalone special launch flag opens the seasonal menu on reload"));SmokeCheck(!D->HalloweenActive&&D->HalloweenStampMask==3,TEXT("Partial replay and disabled Halloween preference survive another process"));SmokeCheck(D->HalloweenBadge&&!D->HalloweenRoundComplete,TEXT("Permanent Pumpkin Pal badge survives replay and reload"));SmokeCheck(D->SnackMask==1&&D->VisitIndex==0&&D->RatchetUnlocked,TEXT("Main patrol and previously earned character remain intact after reload"));SmokeCheck(!F->DecorationsVisible(),TEXT("Paused event restores ordinary scenery visibility on reload"));S->OpenHalloween();S->Selection=0;S->Confirm();Next();}
+        if(SmokeStage==0&&SmokeTime>3){SmokeCheck(S->Screen==ECozyScreen::Halloween,TEXT("Standalone special launch flag opens the seasonal menu on reload"));SmokeCheck(!D->HalloweenActive&&D->HalloweenStampMask==3,TEXT("Saved active Halloween starts off again on explicit-menu launch without losing stamps"));SmokeCheck(D->HalloweenBadge&&!D->HalloweenRoundComplete,TEXT("Permanent Pumpkin Pal badge survives replay and reload"));SmokeCheck(D->SnackMask==1&&D->VisitIndex==0&&D->RatchetUnlocked,TEXT("Main patrol and previously earned character remain intact after reload"));SmokeCheck(!F->DecorationsVisible(),TEXT("Paused event restores ordinary scenery visibility on reload"));S->OpenHalloween();S->Selection=0;S->Confirm();Next();}
         else if(SmokeStage==1&&SmokeTime>.3f){SmokeCheck(F->Active()&&F->StampCount()==2&&Neighbourhood->Outside,TEXT("Continue resumes the saved sticker trail outside"));Finish(true);}return;
     }
     if(SmokeStage>=16&&SmokeStage<=21)
@@ -90,7 +117,7 @@ void AMartyPlayMode::TickFestivalSmoke(float Delta)
         Shot(TEXT("FestivalFinale.png"));Next();break;
     case 25:
         if(SmokeTime<.5f)break;D->RatchetUnlocked=true;S->OpenHalloween();S->Selection=3;S->Confirm();SmokeCheck(D->HalloweenStampMask==0&&D->HalloweenBadge&&!D->HalloweenRoundComplete&&D->RatchetUnlocked,TEXT("Explicit replay clears only the stamp round and preserves earned rewards"));
-        for(int32 I=0;I<2;++I){P->TeleportTo(F->Porches[I].Position,FRotator::ZeroRotator);S->Interact();}S->OpenHalloween();S->Selection=1;S->Confirm();S->Save();Next();break;
+        for(int32 I=0;I<2;++I){P->TeleportTo(F->Porches[I].Position,FRotator::ZeroRotator);S->Interact();}S->OpenHalloween();S->Selection=1;S->Confirm();D->HalloweenActive=true;S->Save();{const auto* Seed=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(S->Slot,0));SmokeCheck(Seed&&Seed->HalloweenActive,TEXT("Reload fixture writes a real legacy active-event checkpoint"));}Next();break;
     case 26:if(SmokeTime>.3f)Finish(false);break;
     }
 }
