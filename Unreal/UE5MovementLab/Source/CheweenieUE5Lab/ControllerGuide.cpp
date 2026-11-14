@@ -83,9 +83,9 @@ TArray<FString> UControllerGuide::Controls() const
     const int32 Mode=GetGameInstance()->GetSubsystem<UControllerComfort>()->L3Mode;
     const FString L3=Mode==2?TEXT(" | L3: toggle hurry"):Mode==1?TEXT(" | L3: hold hurry"):TEXT(" | L3: off");
     if(Family()==ECozyInputFamily::Keyboard)return {
-        TEXT("WASD: move | Mouse: look | Shift: hurry"),TEXT("E: interact | Space: jump | B: bark"),TEXT("F: dig | Q: drop | Tab: backpack"),TEXT("V: camera | R: recenter | H: home | +/-: zoom"),TEXT("M: map | K: crew | C: trick menu"),TEXT("Hold Left Ctrl + 1/2/3/4: lie/roll/shake/bark"),TEXT("Arrows: menu | Enter: select | Backspace: back"),TEXT("Esc: pause | Z: crawl | U: two legs (solo Marty)")};
+        TEXT("WASD: move | Mouse: look | Shift: hurry"),TEXT("E: interact | Space: jump | B: bark"),TEXT("F: dig | Q: drop | Tab: backpack"),TEXT("V: camera | R: recenter | H: home | +/-: zoom"),TEXT("M: map | K: crew | J: missions | C: tricks"),TEXT("Hold Left Ctrl + 1/2/3/4: lie/roll/shake/bark"),TEXT("Arrows: menu | Enter: select | Backspace: back"),TEXT("Esc: pause | Z: crawl | U: two legs (solo Marty)")};
     if(Family()==ECozyInputFamily::Generic)return {
-        FString(TEXT("LS: move/menu | RS: look | Bottom: hurry"))+L3,TEXT("Left face: interact | Top face: jump"),TEXT("Right face: trick menu | Tap LB: bark"),TEXT("RT: dig | LT: drop | Left special: bag"),TEXT("R3: camera | RB: recenter | Right special: pause"),TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),TEXT("Hold LB + Bottom/Right/Left/Top: tricks"),TEXT("Hold LB + L3: crawl | + R3: two legs (solo Marty)")};
+        FString(TEXT("LS: move/menu | RS: look | Bottom: hurry"))+L3,TEXT("Left face: interact | Top face: jump"),TEXT("Right face: trick menu | Tap LB: bark"),TEXT("RT: dig | LT: drop | Left special: bag"),TEXT("R3: camera | RB: recenter | Right special: pause / missions"),TEXT("D-pad Up: map | Down: crew | Left/right: zoom"),TEXT("Hold LB + Bottom/Right/Left/Top: tricks"),TEXT("Hold LB + L3: crawl | + R3: two legs (solo Marty)")};
     return {
         FString(PS?TEXT("LS: move/menu | RS: look | Cross: hurry"):TEXT("LS: move/menu | RS: look | A: hurry"))+L3,
         PS?TEXT("Square: interact | Triangle: jump"):TEXT("X: interact | Y: jump"),

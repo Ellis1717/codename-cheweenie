@@ -11,7 +11,7 @@ class USoundBase;
 class AMartyCharacter;
 
 UENUM(BlueprintType)
-enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes, ControllerSetup };
+enum class ECozyScreen : uint8 { Title, Playing, Pause, Controls, Settings, Restart, Complete, Backpack, Tricks, Features, Map, Companions, Wardrobe, Halloween, Modes, ControllerSetup, Missions };
 
 UENUM()
 enum class ECozyFeature : uint8 { Map, Compass, Waypoint, Route, WorldLabels, Location, Energy, Health, Backpack, Tricks, Jump, Dig, Carry, Food, TV, Bark, Hurry, Orbit, Cameras, ActionViews, Hints, DetailedCoat, Music, Effects, Companions, HomeProgression, ParkSports, HockeyStory, MenuArtwork, Count };
@@ -46,6 +46,11 @@ class UCozyAdventureSave : public USaveGame
 {
     GENERATED_BODY()
 public:
+    // Stable keys preserve optional mission progress across content additions and patrol restarts.
+    UPROPERTY(SaveGame) TMap<FName,int32> OpenMissionProgress;
+    UPROPERTY(SaveGame) TArray<FName> FinishedOpenMissions;
+    UPROPERTY(SaveGame) FName TrackedOpenMission=NAME_None;
+    UPROPERTY(SaveGame) bool ShowMissionTracker=true;
     UPROPERTY(SaveGame) int32 Version = 1;
     UPROPERTY(SaveGame) FString MissionId;
     UPROPERTY(SaveGame) int32 SnackMask = 0;
@@ -122,6 +127,19 @@ public:
     ECozyScreen WardrobeReturn=ECozyScreen::Controls;
     void CheckRatchetUnlock();
     void VisitRatchet();
+    void OpenMissions();
+    void TrackMission(FName Id);
+    void RecordMission(FName Key,int32 Value=1);
+    void TickOpenMissions(float Delta);
+    int32 MissionValue(FName Key) const;
+    int32 MissionPercent(FName Id) const;
+    int32 FinishedMissionCount() const;
+    FString MissionTracker() const;
+    FString MissionNext(FName Id) const;
+    bool MissionWaypoint(FVector& Position,bool& Outdoors,FString& Label) const;
+    TArray<FString> MissionRows() const;
+    FString MissionNotice;
+    float MissionNoticeTime=0;
     void OpenBackpack();
     void OpenTricks();
     void OpenMap();
@@ -169,4 +187,6 @@ private:
     ECozyScreen ModesReturn = ECozyScreen::Title;
     float MessageTime = 0;
     float PulseTime = 0;
+    float MissionPollTime=0;
+    ECozyScreen MissionReturn=ECozyScreen::Playing;
 };

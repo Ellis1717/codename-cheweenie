@@ -52,6 +52,7 @@ void AMartyHUD::DrawNavigation(bool Full)
         if(Full){CozyDrawText(this,TEXT("Short arrow: Marty | Long: camera | X: destination"),FLinearColor::White,X,Y+Size+14);CozyDrawText(this,TEXT("Route: street guidance or direct bearing. Not obstacle avoidance."),FLinearColor(.7f,.85f,.8f),X,Y+Size+38);}
     }
     if(!Full&&Hub->OverlayVisible(ECozyOverlay::Compass)&&S->Feature(ECozyFeature::Compass)){const float Bearing=UCozyNavigation::Bearing(P->GetActorForwardVector());CozyDrawRect(this,FLinearColor(.025f,.065f,.075f,.94f),W-278,395,250,50);CozyDrawText(this,FString::Printf(TEXT("Marty: %s %03.0f deg"),*UCozyNavigation::Cardinal(Bearing),Bearing),FLinearColor(1,.85f,.4f),W-266,403);CozyDrawText(this,TEXT("Short: body | Long: camera"),FLinearColor(.6f,.8f,1),W-266,425);}
-    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Location)&&S->Feature(ECozyFeature::Location))CozyDrawText(this,TEXT("You are at: ")+N->Location(),FLinearColor(.7f,.9f,1),28,193);
-    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Guidance)&&S->Feature(ECozyFeature::Waypoint)){CozyDrawRect(this,FLinearColor(.025f,.065f,.075f,.94f),16,220,FMath::Min(W-32,960.f),48);CozyDrawText(this,N->Guidance(),FLinearColor(1,.85f,.45f),28,231,nullptr,1.1f);}
+    const float MissionOffset=S->Progress->ShowMissionTracker&&Hub->OverlayVisible(ECozyOverlay::Objective)?29.f:0.f;
+    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Location)&&S->Feature(ECozyFeature::Location))CozyDrawText(this,TEXT("You are at: ")+N->Location(),FLinearColor(.7f,.9f,1),28,193+MissionOffset);
+    if(!Full&&Hub->OverlayVisible(ECozyOverlay::Guidance)&&S->Feature(ECozyFeature::Waypoint)){CozyDrawRect(this,FLinearColor(.025f,.065f,.075f,.94f),16,220+MissionOffset,FMath::Min(W-32,960.f),48);CozyDrawText(this,N->Guidance(),FLinearColor(1,.85f,.45f),28,231+MissionOffset,nullptr,1.1f);}
 }

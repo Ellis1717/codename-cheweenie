@@ -1,0 +1,230 @@
+{
+  "date": "2026-11-14",
+  "engine": "5.8.4",
+  "nativeEditorBuild": "passed",
+  "nativeModuleSha256": "d5c9c26fc1778e304607923132e0a3cdb0f192006eb166f38f350aec5d99896d",
+  "sourceSha256": {
+    "AdventureSmoke.cpp": "a071fe8eec63d055d9fbbb11b505c18065a08baac4ecf8965e2c72a8f27f1b8f",
+    "ControllerGuide.cpp": "d0fb09c535b49c3818e51b69269337b1257452ebd281bbe51e1be4a7b0787ce9",
+    "CozyAdventure.cpp": "33500f8268af1fbbe76e4d295a87b4734e0f6ffb4cef1ac9fd9c7cf042e0809b",
+    "CozyAdventure.h": "eb9980a4c137795597fe828b1e49425fa6009a610c4f6c38e84d6ce529f87b28",
+    "CozyHUD.cpp": "da106deed4dbd1d6c166e84b72f146792ea8d66ba7c1b0ebc9997c2fcd0e1690",
+    "CozyNavigation.cpp": "e1e5f771f91da01a2ea13e2d9bd8c5432c97bdfe12eb329994ab0a55aed9fc6d",
+    "DogLife.cpp": "f36d295b794e51c90756854b97f23a765ab32a18ab668422d6ffe3745b13e1b3",
+    "DogTricks.cpp": "a91005208e8406b04231326a048db0d3bccc158e68086a4a2d6e039c53514a11",
+    "HockeySurprise.cpp": "65c03d1a8779491c0cb5fdbac56365aa264544ce0d838d87f14c1720dc39ddcd",
+    "MartyCharacter.cpp": "e511926e358b304b90b96f30acc5962e0640786708e3db98cdc389871b8fa7ab",
+    "MartyCharacter.h": "acc32c313cedaa77a360ce3114597892fece1984b1b2cd5d0465d556ebeafbad",
+    "MissionHUD.cpp": "b157f92e9badfee64d9eff8fb2e9710f4f8b115e3689ab098a82c9a87263ce65",
+    "MissionSmoke.cpp": "351f84a9744da0f77e9fe8daf8b635c457c3c5c09480b1fcc9bcc1c4a82708b1",
+    "MovementSmoke.cpp": "ab397abcab48fee959db5f14abe6887f6c838352dd4c2b33c45967bc8dcbbe9c",
+    "NavigationHUD.cpp": "ddde645cfeadd9615350f0b3d46cdcec6d81fc90884e7ca315d28caaa9117980",
+    "OpenMissions.cpp": "979f5d60453883c0efe8cd5b71ece608869a4b09c452d3471fccc3dff7fb4767",
+    "OpenMissions.h": "30670e181788d96f100c240fecaadbef1eb36b540685ef46699a880730c4354b",
+    "ParkSports.cpp": "cad21c923c4288bcced7f5035fdc724df95c60dcedec6a3724229ac3f41a1a32",
+    "ParkSportsSmoke.cpp": "ed7bafcad5a74eb6dc127611dfd4e4db61d67982c176e1cb2fcd1d31a2f557a8"
+  },
+  "totalFinalAssertions": 400,
+  "runs": [
+    {
+      "report": "ue5-open-missions/missions-play.json",
+      "passed": 30,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/missions-resume.json",
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/adventure.json",
+      "passed": 26,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/adventure-resume.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/navigation.json",
+      "passed": 63,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/navigation-resume.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/sports.json",
+      "passed": 37,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/home.json",
+      "passed": 34,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/home-resume.json",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/cats.json",
+      "passed": 33,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/cats-resume.json",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/hockey.json",
+      "passed": 17,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/movement.json",
+      "passed": 20,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/dogs.json",
+      "passed": 32,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/hub.json",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/festival.json",
+      "passed": 41,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/festival-default.json",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "report": "ue5-open-missions/festival-resume.json",
+      "passed": 6,
+      "failed": 0
+    }
+  ],
+  "reviewedCaptures": [
+    "MissionCompleted.png",
+    "MissionTracker.png",
+    "HalloweenDefaultTitle.png",
+    "FestivalTitle.png"
+  ],
+  "captureScope": "Test profiles with explicit location, action-state and migration fixtures; screenshots do not represent owner completion progress.",
+  "initialIterations": [
+    {
+      "report": "ue5-open-missions/initial-mission-fixture.json",
+      "passed": 17,
+      "failed": 13,
+      "note": "An indoor waypoint assertion ignored the exit-door stage; combined confirm keys lacked a release frame, cascading into wrong-screen fixtures. Fixed the fixture edges/expectations and isolated the action-state setup. Visual review also found and fixed tracker/location/hint overlaps. Final 30 play + seven second-process checks passed."
+    },
+    {
+      "report": "ue5-open-missions/initial-headless-festival.json",
+      "passed": 40,
+      "failed": 1,
+      "note": "Headless texture-size assertion failed; asset existence and SHA256 matched main. Rendered rerun passed all 41 play and both six-check restart paths. Original failed report retained, not counted as green."
+    }
+  ],
+  "buildNotes": [
+    "Clean build exposed an existing HockeySurprise.cpp first-include error; corrected header order.",
+    "Corrected new sports-hook local-variable shadowing.",
+    "Used -NoHotReloadFromIDE only for the isolated checkout so the separate owner main session stayed open.",
+    "Uncompressed the generated header cache. The initial concurrent decompression briefly locked it; final incremental build passed after decompression finished."
+  ],
+  "logScan": [
+    {
+      "log": "MissionsFinal/play.log",
+      "matches": []
+    },
+    {
+      "log": "MissionsFinal/resume.log",
+      "matches": []
+    },
+    {
+      "log": "AdventureFinal/Adventure-patrol.log",
+      "matches": []
+    },
+    {
+      "log": "AdventureFinal/Adventure-resume.log",
+      "matches": []
+    },
+    {
+      "log": "NavigationFinal/Navigation-play.log",
+      "matches": []
+    },
+    {
+      "log": "NavigationFinal/Navigation-resume.log",
+      "matches": []
+    },
+    {
+      "log": "SportsFinal/ParkSports.log",
+      "matches": []
+    },
+    {
+      "log": "HomeFinal/play.log",
+      "matches": []
+    },
+    {
+      "log": "HomeFinal/resume.log",
+      "matches": []
+    },
+    {
+      "log": "CompanionsFinal/Companion-play.log",
+      "matches": []
+    },
+    {
+      "log": "CompanionsFinal/Companion-resume.log",
+      "matches": []
+    },
+    {
+      "log": "HockeyFinal/Hockey.log",
+      "matches": []
+    },
+    {
+      "log": "MovementFinal/MovementSmoke.log",
+      "matches": []
+    },
+    {
+      "log": "DogsFinal/DogNPCs.log",
+      "matches": []
+    },
+    {
+      "log": "HubFinal/solo.log",
+      "matches": []
+    },
+    {
+      "log": "FestivalRenderedFinal/Festival-default.log",
+      "matches": []
+    },
+    {
+      "log": "FestivalRenderedFinal/Festival-play.log",
+      "matches": []
+    },
+    {
+      "log": "FestivalRenderedFinal/Festival-resume.log",
+      "matches": []
+    }
+  ],
+  "scope": "Native solo map, synthetic keyboard/gamepad and documented transform/action-state fixtures. Sports objectives also verified from real scored gameplay. Solo journal is not replicated to LAN peers.",
+  "unverified": [
+    "physical keyboard/controller play",
+    "new standalone package",
+    "separate-PC networking",
+    "performance improvement"
+  ],
+  "desktopPackageChanged": false,
+  "UnityChanged": false
+}

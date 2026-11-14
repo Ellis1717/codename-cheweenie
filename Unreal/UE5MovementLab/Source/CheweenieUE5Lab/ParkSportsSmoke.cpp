@@ -177,6 +177,8 @@ void AMartyPlayMode::TickParkSportsSmoke(float Delta)
         {
             SmokeCheck(Adventure->Progress->SnackMask==0&&Adventure->Progress->VisitIndex==0,TEXT("Sports preserve indoor patrol progress"));
             P->ReturnHome();SmokeCheck(!Neighbourhood->Outside&&P->GetActorLocation().Z<200,TEXT("Return-home recovery works from sports park"));
+            SmokeCheck(Adventure->MissionValue(TEXT("soccer"))==1&&Adventure->MissionValue(TEXT("baseball"))==1&&Adventure->MissionValue(TEXT("basketball"))==1,TEXT("Actual scored soccer, baseball and basketball events persist mission objectives"));
+            SmokeCheck(Adventure->MissionPercent(TEXT("sports"))==100&&Adventure->Progress->FinishedOpenMissions.Contains(TEXT("sports")),TEXT("Park Playdate completes once from real sports gameplay"));
             auto O=MakeShared<FJsonObject>();TArray<TSharedPtr<FJsonValue>> Pass,Fail;for(auto& C:SmokePassed)Pass.Add(MakeShared<FJsonValueString>(C));for(auto& C:SmokeFailed)Fail.Add(MakeShared<FJsonValueString>(C));
             O->SetStringField(TEXT("scope"),TEXT("Real game map; synthetic keyboard/gamepad; fixture teleports for individual cases; real movement for park approach, hills, court ramp and a complete timed baseball circuit; camera steering toward each base; elevated HUD-free field captures and actual hill follow camera; physical hardware unverified"));
             O->SetBoolField(TEXT("rendered"),FApp::CanEverRender());O->SetBoolField(TEXT("privateMap"),Neighbourhood->PrivateMapLoaded);

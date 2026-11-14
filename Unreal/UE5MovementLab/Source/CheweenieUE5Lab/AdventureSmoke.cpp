@@ -190,6 +190,7 @@ void AMartyPlayMode::TickAdventureSmoke(float Delta)
     case 26:
         if(SmokeTime<.15)break;Key(EKeys::Enter,false);
         SmokeCheck(Session->Progress->Complete&&Session->Screen==ECozyScreen::Title,TEXT("Cancel restart preserves completed progress"));
+        SmokeCheck(Session->MissionPercent(TEXT("patrol"))==100&&Session->Progress->FinishedOpenMissions.Contains(TEXT("patrol")),TEXT("Completed original patrol is also recorded permanently in the open mission journal"));
         {
             const auto* Saved=Cast<UCozyAdventureSave>(UGameplayStatics::LoadGameFromSlot(Session->Slot,0));
             SmokeCheck(Saved&&Saved->Complete&&Saved->SnackMask==7,TEXT("Mission checkpoints are written to the isolated save slot"));

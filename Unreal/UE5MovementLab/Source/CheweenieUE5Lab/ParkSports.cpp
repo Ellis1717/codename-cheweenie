@@ -142,7 +142,7 @@ void UParkSports::TickComponent(float Delta,ELevelTick Type,FActorComponentTickF
     if(FMath::Abs(Previous.X)<1130&&FMath::Abs(Next.X)>=1130)
     {
         const float Crossing=FMath::Lerp(Previous.Y,Next.Y,(FMath::Sign(Next.X)*1130-Previous.X)/(Next.X-Previous.X));
-        if(FMath::Abs(Crossing)<224){++Goals[Next.X>0?0:1];Reset(0);UpdateScore();Tell(FString::Printf(TEXT("GOAL! Soccer %d : %d. Ball back at centre."),Goals[0],Goals[1]));Next=SoccerBall->GetActorLocation()-Soccer;}
+        if(FMath::Abs(Crossing)<224){++Goals[Next.X>0?0:1];if(M&&M->Adventure)M->Adventure->RecordMission(TEXT("soccer"));Reset(0);UpdateScore();Tell(FString::Printf(TEXT("GOAL! Soccer %d : %d. Ball back at centre."),Goals[0],Goals[1]));Next=SoccerBall->GetActorLocation()-Soccer;}
     }
     SoccerBall->SetActorLocation(GroundPoint(Soccer+Next)+FVector(0,0,16));
     // Gravity projected along the local slope, with rolling resistance. Deadband prevents jitter.
@@ -156,13 +156,13 @@ void UParkSports::TickComponent(float Delta,ELevelTick Type,FActorComponentTickF
     {
         BatTime+=Dt;if(BatTime<2){BatVelocity.Z-=700*Dt;FVector B=Baseball->GetActorLocation()+BatVelocity*Dt;const float Floor=GroundHeight(B)+10;B.Z=FMath::Max(double(Floor),B.Z);if(B.Z<=Floor)BatVelocity.Z=0;Baseball->SetActorLocation(B);}
         if(FVector::Dist2D(P->GetActorLocation(),Base(NextBase))<115&&FMath::Abs(P->GetActorLocation().Z-Base(NextBase).Z)<110)
-        {if(NextBase==0){++Runs;Reset(1);UpdateScore();Tell(FString::Printf(TEXT("Safe at home! Baseball runs: %d."),Runs));}else{NextBase=(NextBase+1)%4;Tell(NextBase==0?TEXT("Third base! Head HOME!"):TEXT("Safe! Keep running to the next numbered base."));}}
+        {if(NextBase==0){++Runs;if(M&&M->Adventure)M->Adventure->RecordMission(TEXT("baseball"));Reset(1);UpdateScore();Tell(FString::Printf(TEXT("Safe at home! Baseball runs: %d."),Runs));}else{NextBase=(NextBase+1)%4;Tell(NextBase==0?TEXT("Third base! Head HOME!"):TEXT("Safe! Keep running to the next numbered base."));}}
         if(BatTime>=25){Reset(1);Tell(TEXT("Time's up! Try another hit and run the bases."));}
     }
     if(ShotTime>=0)
     {
         ShotTime+=Dt;const float T=FMath::Min(ShotTime/1.2f,1.f);FVector Aim=Basketball->GetActorForwardVector();FVector End=ShotStart+Aim*1070;End.Z=Court.Z+290;
         Basketball->SetActorLocation(FMath::Lerp(ShotStart,End,T)+FVector(0,0,460*FMath::Sin(PI*T)));
-        if(T>=1){const bool Scored=FVector::Dist2D(End,Court+FVector(0,620,290))<32;if(Scored){++Baskets;UpdateScore();}Reset(2);Tell(Scored?FString::Printf(TEXT("Swish! Baskets: %d. Shoot again!"),Baskets):TEXT("Miss! Face the hoop from the ball and try again."));}
+        if(T>=1){const bool Scored=FVector::Dist2D(End,Court+FVector(0,620,290))<32;if(Scored){++Baskets;if(M&&M->Adventure)M->Adventure->RecordMission(TEXT("basketball"));UpdateScore();}Reset(2);Tell(Scored?FString::Printf(TEXT("Swish! Baskets: %d. Shoot again!"),Baskets):TEXT("Miss! Face the hoop from the ball and try again."));}
     }
 }

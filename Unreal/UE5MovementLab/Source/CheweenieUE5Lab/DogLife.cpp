@@ -168,7 +168,7 @@ bool UDogLife::Interact()
     }
     if(Allows(ECozyFeature::Carry)&&D->CarryItem<0)for(int32 I=0;I<Items.Num();++I)
         if(D->ItemHoles[I]<0&&!D->BagItems.Contains(I)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Items[I]->GetActorLocation(),70))
-        {D->CarryItem=I;Excitement=12;Save();Tell(I==RainbowGuyItem?TEXT("Squeak! Marty bites down on Rainbow Guy, his favorite toy. Q / LT drops it; E buries it at an open hole."):TEXT("Marty carries his treasure in his mouth. Q / LT drops it; E buries it at an open hole."),I==RainbowGuyItem?TEXT("RainbowSqueak"):TEXT("Toy"));return true;}
+        {D->CarryItem=I;Excitement=12;if(I==RainbowGuyItem)Session()->RecordMission(TEXT("rainbow-carry"));Save();Tell(I==RainbowGuyItem?TEXT("Squeak! Marty bites down on Rainbow Guy, his favorite toy. Q / LT drops it; E buries it at an open hole."):TEXT("Marty carries his treasure in his mouth. Q / LT drops it; E buries it at an open hole."),I==RainbowGuyItem?TEXT("RainbowSqueak"):TEXT("Toy"));return true;}
     if(Allows(ECozyFeature::Food)&&CheweenieHouse::Near(Pawn()->GetActorLocation(),Bowl,80))
     {
         if(FoodCooldown>0){Tell(TEXT("The bowl will refill soon. Marty can rest in the meantime."));return true;}
