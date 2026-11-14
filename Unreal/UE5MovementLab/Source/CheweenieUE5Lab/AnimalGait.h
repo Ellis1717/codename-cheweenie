@@ -6,8 +6,8 @@ class UPoseableMeshComponent;
 struct FAnimalLeg
 {
     FName Upper,Lower,Hock,Paw;
-    FVector Hip,Knee,Ankle,Toe,Contact,LiftOff;
-    bool Planted=false;
+    FVector Hip,Knee,Ankle,Toe,Contact,LiftOff,LastPlant,PreviousPlant,SwingTarget;
+    bool Planted=false,PrintValid=false,PreviousPrintValid=false,Swinging=false,RegisteredSwing=false;
 };
 // Shared skin/IK driver; canine and feline rhythms remain distinct. No movement authority.
 UCLASS(ClassGroup=(Cheweenie))
@@ -22,13 +22,15 @@ public:
     UPROPERTY() TObjectPtr<UPoseableMeshComponent> Skin;
     bool Ready=false,Feline=false,Happy=false,Sniff=false;
     float Cycle=0,Travel=0,MaxJointBend=0,BodyMotion=0,Speed=0;
-    int32 PlantedPaws=0,ContactResets=0;
+    int32 PlantedPaws=0,ContactResets=0,RegisteredHindSteps=0;
+    float TurnBalance=0;
     const TArray<FAnimalLeg>& LegStates() const{return Legs;}
 private:
     TArray<FAnimalLeg> Legs;
     TMap<FName,FTransform> Rest;
     FVector Last=FVector::ZeroVector;
-    float Time=0;
+    float Time=0,LastYaw=0;
+    bool WasAir=false;
     FString BoundProfile;
     FVector Ground(FVector Point) const;
     void Aim(FName Bone,FVector Start,FVector RestEnd,FVector End);

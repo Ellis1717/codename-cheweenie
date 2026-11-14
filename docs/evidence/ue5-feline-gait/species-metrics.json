@@ -1,0 +1,14 @@
+{
+  "registeredHindSwings": 22,
+  "registeredLandingSamples": 1479,
+  "maxPrintErrorCm": 2,
+  "maxTurnBalance": 0.19445128738880157,
+  "catBodySpan": 0.4799998998641968,
+  "dogBodySpan": 1.2999985218048096,
+  "catHeadSpan": 0.14966201782226562,
+  "dogHeadSpan": 1.8164787292480469,
+  "catTailSpan": 1.6245397329330444,
+  "dogTailSpan": 6.100171089172363,
+  "fastCatFrontPairFraction": 0.7323943376541138,
+  "fastDogFrontPairFraction": 0.0338028185069561
+}

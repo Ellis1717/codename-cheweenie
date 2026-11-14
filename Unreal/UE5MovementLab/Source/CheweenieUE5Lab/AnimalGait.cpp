@@ -42,8 +42,8 @@ FVector UAnimalGait::Ground(FVector Point) const
 }
 void UAnimalGait::ResetContacts()
 {
-    if(!Ready)return;Last=Skin->GetComponentLocation();Speed=0;++ContactResets;
-    for(auto& L:Legs){L.Planted=false;L.Contact=Ground(Skin->GetComponentTransform().TransformPosition(L.Toe));L.LiftOff=L.Contact;}
+    if(!Ready)return;Last=Skin->GetComponentLocation();LastYaw=Skin->GetComponentRotation().Yaw;TurnBalance=0;Speed=0;++ContactResets;
+    for(auto& L:Legs){L.Planted=L.PrintValid=L.PreviousPrintValid=L.Swinging=L.RegisteredSwing=false;FVector Toe=L.Toe;if(Feline)Toe.Y*=.84f;L.Contact=Ground(Skin->GetComponentTransform().TransformPosition(Toe));L.LiftOff=L.LastPlant=L.PreviousPlant=L.SwingTarget=L.Contact;}
 }
 void UAnimalGait::Aim(FName Bone,FVector Start,FVector RestEnd,FVector End)
 {
@@ -55,49 +55,86 @@ void UAnimalGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickF
     auto* M=GetWorld()->GetAuthGameMode<AMartyPlayMode>();if(M&&M->Adventure&&M->Adventure->Screen!=ECozyScreen::Playing)return;
     const float Dt=FMath::Min(Delta,.05f);if(Dt<=0)return;
     FVector Position=Skin->GetComponentLocation();float Distance=FVector::Dist2D(Position,Last);
-    if(Distance>100){ResetContacts();Distance=0;}Last=Position;
+    const float Yaw=Skin->GetComponentRotation().Yaw;const float Turn=FRotator::NormalizeAxis(Yaw-LastYaw);
+    if(Distance>100||FMath::Abs(Turn)>65){ResetContacts();Distance=0;}
+    else TurnBalance=FMath::FInterpTo(TurnBalance,Feline?FMath::Clamp(Turn/(Dt*180.f),-1.f,1.f):0.f,Dt,5.f);
+    LastYaw=Yaw;Last=Position;
     Speed=FMath::FInterpTo(Speed,Distance/Dt,Dt,10);Time+=Dt;Travel+=Distance;
     const float Scale=Skin->GetComponentScale().X,LocalSpeed=Speed/FMath::Max(Scale,.1f);
     const float Fast=FMath::Clamp((LocalSpeed-115)/75,0.f,1.f),Moving=FMath::Clamp(LocalSpeed/20,0.f,1.f);
-    const float Stride=(Feline?32.f:39.f)*Scale*(1+.3f*Fast);
+    const float Bound=Feline?FMath::Clamp((LocalSpeed-200.f)/50.f,0.f,1.f):0.f;
+    const float Stride=(Feline?30.f:39.f)*Scale*(1+.3f*Fast+.12f*Bound);
     Cycle=FMath::Fmod(Cycle+Distance/FMath::Max(Stride,1.f),1.f);
     const auto* Character=Cast<ACharacter>(GetOwner());const bool Air=(Character&&Character->GetCharacterMovement()->IsFalling())||GetOwner()->ActorHasTag(TEXT("AnimalAirborne"));
+    if(!Air&&WasAir)ResetContacts();
+    if(Air)for(auto& L:Legs){L.PrintValid=L.PreviousPrintValid=false;}
+    WasAir=Air;
     const float Wave=Cycle*UE_TWO_PI;
-    const float Bob=Moving*FMath::Sin(Wave*2)*(Feline?.38f:.65f)+(1-Moving)*FMath::Sin(Time*2)*.13f;
-    const float Sway=Moving*FMath::Sin(Wave)*(Feline?.025f:.018f);
+    const float Bob=Moving*FMath::Sin(Wave*2)*(Feline?.24f+Bound*.45f:.65f)+(1-Moving)*FMath::Sin(Time*2)*.13f-(Feline?.65f*Moving:0.f);
+    const float Sway=Moving*FMath::Sin(Wave)*(Feline?.012f:.018f);
     BodyMotion=Bob;Skin->ResetBoneTransformByName(TEXT("root"));
     for(const FName N:{FName(TEXT("pelvis")),FName(TEXT("spine")),FName(TEXT("chest")),FName(TEXT("neck")),FName(TEXT("head"))})
     {
         FTransform T=Rest[N];const float Weight=N==TEXT("pelvis")?-1.f:N==TEXT("spine")?0.f:1.f;
-        const float Flex=Feline?FMath::Sin(Wave+Weight*.5f)*Moving*(.015f+Fast*.075f):FMath::Sin(Wave*2)*Moving*.018f;
+        const float Flex=Feline?FMath::Sin(Wave+Weight*.5f)*Moving*(.018f+Fast*.035f+Bound*.12f):FMath::Sin(Wave*2)*Moving*.018f;
         T.AddToTranslation(FVector(0,FMath::Sin(Wave)*Moving*Weight*.4f,Bob+Weight*FMath::Sin(Wave)*Moving*.35f));
         T.SetRotation(FQuat(FVector::ForwardVector,Sway*Weight)*FQuat(FVector::RightVector,Flex+(Sniff&&N==TEXT("head")?.28f:0))*T.GetRotation());
-        if(N==TEXT("head"))T.AddToTranslation(FVector(0,0,Happy?.6f*FMath::Sin(Time*5):0));
+        if(N==TEXT("head"))
+        {
+            if(Feline){T.AddToTranslation(FVector(0,0,-Bob*.85f-FMath::Sin(Wave)*Moving*.30f));T.SetRotation(FQuat(FVector::RightVector,-Flex*.8f)*T.GetRotation());}
+            T.AddToTranslation(FVector(0,0,Happy?.6f*FMath::Sin(Time*5):0));
+        }
         Skin->SetBoneTransformByName(N,T,EBoneSpaces::ComponentSpace);
     }
-    const float Walk[]={0,.5f,.75f,.25f},CatWalk[]={0,.5f,.82f,.32f},Trot[]={0,.5f,.5f,0};
+    const float Walk[]={0,.5f,.75f,.25f},CatWalk[]={0,.5f,.18f,.68f},Trot[]={0,.5f,.5f,0},CatBound[]={0,.1f,.52f,.62f};
     const FTransform World=Skin->GetComponentTransform();PlantedPaws=0;MaxJointBend=0;
     for(int32 I=0;I<Legs.Num();++I)
     {
-        auto& L=Legs[I];const float Phase=FMath::Fmod(Cycle+FMath::Lerp(Feline?CatWalk[I]:Walk[I],Trot[I],Fast),1.f);
-        const float Stance=FMath::Lerp(Feline?.73f:.69f,.52f,Fast);const bool Plant=Phase<Stance||Moving<.03f;
-        const FVector RestWorld=World.TransformPosition(L.Toe);
-        const FVector Target=Ground(RestWorld+World.GetRotation().GetForwardVector()*Stride*.20f);
-        if(Air){L.Planted=false;L.Contact=World.TransformPosition(L.Toe+FVector(I<2?2:-2,0,9));}
+        auto& L=Legs[I];const float Phase=FMath::Fmod(Cycle+FMath::Lerp(FMath::Lerp(Feline?CatWalk[I]:Walk[I],Trot[I],Fast),Feline?CatBound[I]:Trot[I],Bound),1.f);
+        const float Stance=FMath::Lerp(FMath::Lerp(Feline?.62f:.69f,.52f,Fast),.48f,Bound);const bool Plant=Phase<Stance||Moving<.03f;
+        FVector RestToe=L.Toe;if(Feline)RestToe.Y*=.84f;
+        const FVector RestWorld=World.TransformPosition(RestToe);
+        FVector Target=Ground(RestWorld+World.GetRotation().GetForwardVector()*Stride*(Feline?.48f:.20f));
+        if(Air){L.Planted=L.Swinging=L.RegisteredSwing=false;L.Contact=World.TransformPosition(RestToe+FVector(I<2?2:-2,0,9));}
         else if(Plant)
         {
-            if(!L.Planted)L.Contact=Ground(L.Contact);
-            if(FVector::Dist2D(L.Contact,RestWorld)>Stride*.65f)L.Contact=Ground(RestWorld);
+            if(!L.Planted)
+            {
+                L.Contact=Ground(Feline&&L.Swinging?L.SwingTarget:L.Contact);
+                L.PreviousPlant=L.LastPlant;L.PreviousPrintValid=L.PrintValid;L.LastPlant=L.Contact;L.PrintValid=true;L.Swinging=false;
+            }
+            if(FVector::Dist2D(L.Contact,RestWorld)>Stride*.65f){L.Contact=Ground(RestWorld);L.RegisteredSwing=false;if(Feline&&I<2){L.LastPlant=L.Contact;L.PrintValid=true;L.PreviousPrintValid=false;}}
             L.Planted=true;L.LiftOff=L.Contact;++PlantedPaws;
         }
         else
         {
-            if(L.Planted){L.LiftOff=L.Contact;L.Planted=false;}
-            float T=(Phase-Stance)/(1-Stance);const float Smooth=T*T*(3-2*T);
-            L.Contact=FMath::Lerp(L.LiftOff,Target,Smooth)+FVector(0,0,FMath::Sin(T*UE_PI)*(Feline?4.f:6.f)*Scale*Moving);
+            if(L.Planted||!L.Swinging)
+            {
+                L.LiftOff=L.Contact;L.Planted=false;L.Swinging=true;L.RegisteredSwing=false;
+                // Follow an actual same-side front print, never a moving swing paw.
+                if(Feline&&I>=2&&Bound<.1f&&Fast<.25f)
+                {
+                    const auto& Front=Legs[I-2];float Best=Stride*.55f;FVector Pick=Target;bool Found=false;
+                    const FVector FutureHip=World.TransformPosition(L.Hip+FVector(0,0,Bob))+World.GetRotation().GetForwardVector()*Stride*(1-Stance);
+                    const float Reach=(FVector::Dist(L.Hip,L.Knee)+FVector::Dist(L.Knee,L.Ankle)+FVector::Dist(L.Ankle,L.Toe))*Scale;
+                    for(int32 Print=0;Print<2;++Print)
+                    {
+                        if(!(Print==0?Front.PrintValid:Front.PreviousPrintValid))continue;
+                        const FVector Candidate=(Print==0?Front.LastPlant:Front.PreviousPlant)-World.GetRotation().GetForwardVector()*2.f*Scale;
+                        const float Error=FVector::Dist2D(Candidate,Target);
+                        if(Error<Best&&FVector::Dist(Candidate,FutureHip)<Reach){Best=Error;Pick=Candidate;Found=true;}
+                    }
+                    if(Found){Target=Ground(Pick);L.RegisteredSwing=true;++RegisteredHindSteps;}
+                }
+                L.SwingTarget=Target;
+            }
+            float T=(Phase-Stance)/(1-Stance);const float Smooth=Feline?T*T*T*(10+T*(-15+6*T)):T*T*(3-2*T);
+            const float Arc=Feline?FMath::Pow(FMath::Max(0.f,FMath::Sin(T*UE_PI)),1.4f):FMath::Sin(T*UE_PI);
+            L.Contact=FMath::Lerp(L.LiftOff,Feline?L.SwingTarget:Target,Smooth)+FVector(0,0,Arc*(Feline?3.6f:6.f)*Scale*Moving);
         }
         const FTransform Parent=Skin->GetBoneTransformByName(I<2?TEXT("chest"):TEXT("pelvis"),EBoneSpaces::ComponentSpace);
-        const FVector Hip=Parent.TransformPosition(Rest[I<2?TEXT("chest"):TEXT("pelvis")].InverseTransformPosition(L.Hip));
+        FVector Hip=Parent.TransformPosition(Rest[I<2?TEXT("chest"):TEXT("pelvis")].InverseTransformPosition(L.Hip));
+        if(Feline&&I<2)Hip+=FVector(FMath::Sin(Phase*UE_TWO_PI)*1.1f*Moving,0,FMath::Cos(Phase*UE_TWO_PI)*.65f*Moving);
         FVector Toe=World.InverseTransformPosition(L.Contact),Ankle=Toe+L.Ankle-L.Toe;
         const float Upper=FVector::Dist(L.Hip,L.Knee),Lower=FVector::Dist(L.Knee,L.Ankle);
         Ankle=Hip+(Ankle-Hip).GetClampedToMaxSize(Upper+Lower-.04f);
@@ -111,7 +148,15 @@ void UAnimalGait::TickComponent(float Delta,ELevelTick Type,FActorComponentTickF
         const bool Ear=N==TEXT("ear_l")||N==TEXT("ear_r");FName Parent=Ear?TEXT("head"):N==TEXT("tail")?TEXT("pelvis"):N==TEXT("tail_mid")?TEXT("tail"):TEXT("tail_mid");
         FTransform T=Rest[N].GetRelativeTransform(Rest[Parent])*Skin->GetBoneTransformByName(Parent,EBoneSpaces::ComponentSpace);
         const float Angle=Ear?FMath::Sin(Time*4+(N==TEXT("ear_l")?0:1))*.025f: FMath::Sin(Time*(Feline?2.2f:Happy?9.f:4.f)+(N==TEXT("tail")?0:N==TEXT("tail_mid")?.45f:.9f))*(Feline?.11f:Happy?.32f:.14f);
-        T.SetRotation(FQuat(Ear?FVector::ForwardVector:FVector::UpVector,Angle)*T.GetRotation());Skin->SetBoneTransformByName(N,T,EBoneSpaces::ComponentSpace);
+        if(Feline&&!Ear)
+        {
+            const float Segment=N==TEXT("tail")?1.f:N==TEXT("tail_mid")?.7f:.45f;
+            const float Balance=-TurnBalance*.28f*Segment+FMath::Sin(Time*1.2f+(1-Segment)*2)*(.02f+Moving*.02f);
+            const float Carry=N==TEXT("tail")?.16f+(Happy?.12f:0):N==TEXT("tail_tip")?.16f:.035f;
+            T.SetRotation(FQuat(FVector::UpVector,Balance)*FQuat(FVector::RightVector,Carry)*T.GetRotation());
+        }
+        else T.SetRotation(FQuat(Ear?FVector::ForwardVector:FVector::UpVector,Angle)*T.GetRotation());
+        Skin->SetBoneTransformByName(N,T,EBoneSpaces::ComponentSpace);
     }
     Skin->RefreshBoneTransforms();
 }
